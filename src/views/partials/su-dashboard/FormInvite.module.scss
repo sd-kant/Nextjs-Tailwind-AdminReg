@@ -1,0 +1,221 @@
+@import "../../../assets/scss/colors";
+
+.FormBody {
+  width: 100%;
+  max-width: 924px;
+  padding-right: 14px;
+  height: auto;
+  overflow-y: unset;
+  z-index: 1;
+  margin-bottom: 50px;
+
+  .AddButton {
+    display: flex;
+    justify-content: center;
+    border: 1px solid #DE7D2C;
+    box-sizing: border-box;
+    border-radius: 24px;
+    padding: 36px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1;
+    background-color: $app-bg;
+
+    .PlusIcon {
+      margin-right: 24px;
+    }
+  }
+
+  .User {
+    background: #313131;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 40px;
+    position: relative;
+
+    .RemoveIcon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+
+    .UserRow {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      & > div {
+        margin-top: 10px;
+      }
+
+      .SelectWrapper {
+        display: flex;
+        flex-direction: column;
+
+        & > div:last-child {
+          margin-top: 10px;
+        }
+
+        .Select {
+          width: 100%;
+        }
+
+        .PermissionSelect {
+          margin-left: 0;
+        }
+      }
+
+      .Input {
+        width: calc(100% - 45px);
+      }
+    }
+  }
+}
+
+.Mt40 {
+  margin-top: 40px;
+}
+
+.Ml27 {
+  margin-left: 28px;
+}
+
+.Mt20 {
+  margin-top: 20px;
+}
+
+.Footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+
+  .Reupload {
+    position: relative;
+    margin: 10px 0;
+    z-index: 1;
+    cursor: pointer;
+    opacity: 1;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .FormBody {
+    width: calc(100vw - 130px);
+
+    .User {
+      border-radius: 24px;
+      padding: 40px;
+
+      .RemoveIcon {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        cursor: pointer;
+      }
+
+      .UserRow {
+        .SelectWrapper {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-column-gap: 40px;
+
+          & > div:last-child {
+            margin-top: 0;
+          }
+
+          .Select {
+            width: 100%;
+          }
+
+          .PermissionSelect {
+          }
+        }
+      }
+
+      & > .UserRow:first-child > div:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+
+  .Footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    .Reupload {
+      margin-left: 76px;
+    }
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .FormBody {
+    width: calc(100vw - 210px);
+
+    .User {
+      border-radius: 12px;
+      padding: 20px;
+
+      .RemoveIcon {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        cursor: pointer;
+      }
+
+      .UserRow {
+        flex-direction: row;
+
+        .Input {
+          width: calc(350px - 22px);
+        }
+
+        .SelectWrapper {
+          width: 50%;
+          max-width: 370px;
+        }
+      }
+
+      & > .UserRow:first-child > div {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .FormBody {
+    width: 910px;
+    height: 500px;
+    overflow-y: auto;
+
+    .User {
+      border-radius: 24px;
+      padding: 40px;
+
+      .RemoveIcon {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        cursor: pointer;
+      }
+
+      .UserRow {
+        flex-direction: row;
+
+        .Input {
+          width: calc(375px - 22px);
+        }
+
+        .SelectWrapper {
+          width: 50%;
+          max-width: 397px;
+        }
+      }
+    }
+  }
+}
