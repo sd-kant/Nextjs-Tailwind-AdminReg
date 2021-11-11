@@ -75,7 +75,7 @@ const FormTeamModify = (props) => {
             options={formatTeams()}
             value={values["name"]}
             name="name"
-            styles={customStyles}
+            styles={customStyles()}
             placeholder={t("team name select")}
             onChange={(value) => changeHandler("name", value)}
           />

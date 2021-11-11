@@ -3,7 +3,7 @@ import {actionTypes} from "../type";
 
 const initialState = {
   token: localStorage.getItem("kop-v2-token"),
-  userType: localStorage.getItem("kop-v2-user-type"),
+  userType: localStorage.getItem("kop-v2-user-type") ? JSON.parse(localStorage.getItem("kop-v2-user-type")) : null,
   email: localStorage.getItem("kop-v2-email"),
   // organizationId: localStorage.getItem("kop-organization-id"),
 };

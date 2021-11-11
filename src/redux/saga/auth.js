@@ -34,7 +34,7 @@ function* loginSaga({payload: {email, password}}) {
 
     if (ableToLogin(userType)) {
       localStorage.setItem("kop-v2-token", token);
-      localStorage.setItem("kop-v2-user-type", userType);
+      localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
       localStorage.setItem("kop-v2-email", email);
     }
 

@@ -13,7 +13,7 @@ import {AVAILABLE_COUNTRIES} from "../../../constant";
 import {queryAllOrganizationsAction} from "../../../redux/action/base";
 import {get} from "lodash";
 
-export const customStyles = {
+export const customStyles = (disabled = false) => ({
   option: (provided, state) => ({
     ...provided,
     backgroundColor: state.isSelected ? '#DE7D2C' : 'white',
@@ -23,7 +23,7 @@ export const customStyles = {
   menu: styles => ({...styles, zIndex: 2}),
   input: styles => ({...styles,zIndex: 1,}),
   singleValue: (provided) => ({...provided,zIndex: 1,})
-}
+});
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -118,7 +118,7 @@ const FormCompany = (props) => {
             options={formatOrganizations()}
             value={values["companyName"]}
             name="companyName"
-            styles={customStyles}
+            styles={customStyles()}
             placeholder={t("enter name")}
             onChange={(value) => changeHandler("companyName", value)}
           />
@@ -140,7 +140,7 @@ const FormCompany = (props) => {
             options={options}
             value={values["companyLocation"]}
             name="companyLocation"
-            styles={customStyles}
+            styles={customStyles()}
             onChange={(value) => changeHandler("companyLocation", value)}
             placeholder={t("select")}
           />

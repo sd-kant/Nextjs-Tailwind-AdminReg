@@ -73,7 +73,7 @@ const AddMembersModal = (props) => {
     // TODO scroll to bottom
   }
 
-  const customStyles = {
+  const customStyles = (disabled = false) => ({
     menu: (provided, state) => ({
       ...provided,
       width: 200,
@@ -100,7 +100,7 @@ const AddMembersModal = (props) => {
       ...provided,
       color: 'white'
     })
-  }
+  });
 
   const changeHandler = (fieldName, value) => {
     setFieldValue(fieldName, value);
@@ -257,7 +257,7 @@ const AddMembersModal = (props) => {
                       options={options}
                       name={`users[${index}].userType`}
                       value={values?.users && values.users[index] && values.users[index]?.userType}
-                      styles={customStyles}
+                      styles={customStyles()}
                       onChange={(value) => changeHandler(`users[${index}].userType`, value)}
                     />
                     {

@@ -27,7 +27,13 @@ import style from "./FormInviteModify.module.scss";
 import clsx from "clsx";
 import Select from "react-select";
 import {_handleSubmit, customStyles} from "./FormInvite";
-import {AVAILABLE_JOBS, defaultPassword, permissionLevels} from "../../../constant";
+import {
+  AVAILABLE_JOBS,
+  defaultPassword,
+  permissionLevels,
+  USER_TYPE_ADMIN,
+  USER_TYPE_ORG_ADMIN
+} from "../../../constant";
 import {
   deleteUserAction,
   queryAllTeamsAction,
@@ -38,6 +44,7 @@ import {get} from "lodash";
 import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
 import AddMemberModalV2 from "../../components/AddMemberModalV2";
+import Button from "../../components/Button";
 
 export const defaultTeamMember = {
   email: '',
@@ -128,15 +135,18 @@ const FormInviteModify = (props) => {
     status,
     setStatus,
     deleteUser: deleteAction,
+    userType,
   } = props;
   const id = match?.params?.id;
   const [keyword, setKeyword] = useState('');
   const [newChanges, setNewChanges] = useState(0);
   const [visibleDeleteModal, setVisibleDeleteModal] = useState(false);
+  const [visibleRemoveModal, setVisibleRemoveModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [visibleAddModal, setVisibleAddModal] = useState(false);
   const [inviteMode, setInviteMode] = useState("invite-only"); // invite-only, register-invite
   const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
+  const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -397,6 +407,28 @@ const FormInviteModify = (props) => {
     }
   };
 
+  const removeFromTeam = async () => {
+    if (id && selectedUser?.email) {
+      try {
+        setLoading(true);
+        await inviteTeamMember(id, {
+          remove: [selectedUser.email],
+        });
+
+        let temp = values?.["teamMembers"].filter(it => it.email !== selectedUser.email);
+        setFieldValue("teamMembers", temp);
+        temp = values?.["tempTeamMembers"].filter(it => it.email !== selectedUser.email);
+        setFieldValue("tempTeamMembers", temp);
+
+        setVisibleRemoveModal(false);
+      } catch (e) {
+        showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   const renderUser = (user, index, key) => {
     let errorField = errors?.users;
     let touchField = touched?.users;
@@ -425,8 +457,9 @@ const FormInviteModify = (props) => {
             </label>
 
             <input
-              className={clsx(style.Input, 'input mt-10 font-heading-small text-white')}
+              className={clsx(style.Input, !isAdmin ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
               value={user?.firstName}
+              disabled={!isAdmin}
               type="text"
               onChange={(e) => _handleChange(e.target.value, user?.originIndex, 'firstName')}
             />
@@ -445,9 +478,10 @@ const FormInviteModify = (props) => {
             </label>
 
             <input
-              className={clsx(style.Input, 'input mt-10 font-heading-small text-white')}
+              className={clsx(style.Input, !isAdmin ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
               value={user?.lastName}
               type="text"
+              disabled={!isAdmin}
               onChange={(e) => _handleChange(e.target.value, user?.originIndex, 'lastName')}
               // onChange={changeFormField}
             />
@@ -468,9 +502,10 @@ const FormInviteModify = (props) => {
             </label>
 
             <input
-              className={clsx(style.Input, 'input mt-10 font-heading-small text-white')}
+              className={clsx(style.Input, style.DisabledInput, 'input mt-10 font-heading-small text-white')}
               value={user?.email}
               type="text"
+              disabled={true}
               onChange={(e) => _handleChange(e.target.value, user?.originIndex, 'email')}
             />
 
@@ -492,7 +527,7 @@ const FormInviteModify = (props) => {
               isClearable
               options={formattedTeams}
               value={user?.team}
-              styles={customStyles}
+              styles={customStyles()}
               placeholder={t("team name select")}
               onChange={(e) => _handleChange(e?.value, user?.originIndex, 'teamId')}
             />
@@ -516,8 +551,9 @@ const FormInviteModify = (props) => {
               options={sortedJobs}
               placeholder={t("select")}
               value={user?.job}
-              styles={customStyles}
+              styles={customStyles(!isAdmin)}
               maxMenuHeight={190}
+              isDisabled={!isAdmin}
               onChange={(e) => _handleChange(e?.value, user?.originIndex, 'job')}
             />
             {
@@ -539,7 +575,8 @@ const FormInviteModify = (props) => {
               options={permissionLevels}
               placeholder={t("select")}
               value={user?.permissionLevel}
-              styles={customStyles}
+              styles={customStyles(!isAdmin)}
+              isDisabled={!isAdmin}
               onChange={(e) => _handleChangeForTeamUserType(e, user?.originIndex)}
             />
             {
@@ -548,6 +585,18 @@ const FormInviteModify = (props) => {
                 <span className="font-helper-text text-error mt-10">{errorField[index].permissionLevel}</span>
               )
             }
+          </div>
+        </div>
+
+        <div className={clsx(style.UserRow, style.ButtonRow, 'mt-10')}>
+          <div className={style.ButtonWrapper}>
+            <Button
+              title={t('remove from team')}
+              onClick={() => {
+                setSelectedUser(user);
+                setVisibleRemoveModal(true);
+              }}
+            />
           </div>
         </div>
       </div>
@@ -578,6 +627,13 @@ const FormInviteModify = (props) => {
           setVisibleAddMemberSuccessModal(false);
           setVisibleAddModal(true);
         }}
+      />
+      <ConfirmModalV2
+        show={visibleRemoveModal}
+        header={t('remove team user header')}
+        subheader={t('remove team user description')}
+        onOk={removeFromTeam}
+        onCancel={() => setVisibleRemoveModal(false)}
       />
       <ConfirmModalV2
         show={visibleDeleteModal}
@@ -739,13 +795,18 @@ const EnhancedForm = withFormik({
         userTypes: it.userTypes,
       }));
 
+      const {userType} = props;
+
       if (usersToModify?.length > 0) {
         const updatePromises = [];
         let inviteBody = {};
         usersToModify?.forEach(userToModify => {
           const organizationId = allTeams?.find(it => it.id?.toString() === userToModify.teamId?.toString())?.orgId;
           if (!!organizationId) {
-            updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
+            const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
+            if (isAdmin) {
+              updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
+            }
             if (inviteBody?.[userToModify?.teamId]?.add) {
               inviteBody[userToModify?.teamId].add.push({
                 email: userToModify?.emailAddress,
@@ -765,6 +826,29 @@ const EnhancedForm = withFormik({
         });
         const failedEmails = [];
         let totalSuccessForModify = 0;
+
+        const inviteFunc = () => {
+          const invitePromises = [];
+          Object.keys(inviteBody).forEach((teamId, index) => {
+            invitePromises.push(inviteTeamMember(teamId, Object.values(inviteBody)?.[index]));
+          });
+
+          if (invitePromises?.length > 0) {
+            Promise.allSettled(invitePromises)
+              .finally(() => {
+                if (failedEmails?.length === 0) {
+                  setStatus({visibleSuccessModal: true});
+                }
+                const teamId = props?.match?.params?.id;
+                if (teamId) {
+                  loadTeamMembers(teamId, showErrorNotification, setFieldValue, false).catch(e => console.log(e));
+                }
+                setLoading(false);
+              });
+          } else {
+            setLoading(false);
+          }
+        };
 
         if (updatePromises?.length > 0) {
           Promise.allSettled(updatePromises)
@@ -789,30 +873,11 @@ const EnhancedForm = withFormik({
               }
             })
             .finally(async () => {
-              const invitePromises = [];
-              Object.keys(inviteBody).forEach((teamId, index) => {
-                invitePromises.push(inviteTeamMember(teamId, Object.values(inviteBody)?.[index]));
-              });
-
-              if (invitePromises?.length > 0) {
-                Promise.allSettled(invitePromises)
-                  .finally(() => {
-                    setLoading(false);
-
-                    if (failedEmails?.length === 0) {
-                      setStatus({visibleSuccessModal: true});
-                    }
-                    const teamId = props?.match?.params?.id;
-                    if (teamId) {
-                      loadTeamMembers(teamId, showErrorNotification, setFieldValue, false).catch(e => console.log(e));
-                    }
-                  });
-              } else {
-                setLoading(false);
-              }
+              // finished promise
+              inviteFunc();
             });
         } else {
-          setLoading(false);
+          inviteFunc();
         }
       } else {
         setLoading(false);
@@ -827,6 +892,7 @@ const EnhancedForm = withFormik({
 const mapStateToProps = (state) => ({
   allTeams: get(state, 'base.allTeams'),
   loading: get(state, 'ui.loading'),
+  userType: get(state, 'auth.userType'),
 });
 
 const mapDispatchToProps = (dispatch) =>

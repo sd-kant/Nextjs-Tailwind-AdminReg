@@ -92,8 +92,22 @@
         width: calc(100% - 45px);
       }
 
+      .DisabledInput {
+        border: 1px solid $app-ts;
+        background-color: $app-tf;
+      }
+
       .Select {
         width: 100%;
+      }
+    }
+
+    .UserRow.ButtonRow {
+      justify-content: flex-end;
+
+      .ButtonWrapper {
+        display: flex;
+        justify-content: flex-end;
       }
     }
   }

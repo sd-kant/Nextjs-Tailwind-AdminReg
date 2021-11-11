@@ -145,7 +145,7 @@ const FormReInvite = (props) => {
                         options={permissionLevels}
                         name={`users[${index}].userType`}
                         value={values?.users && values.users[index] && values.users[index]?.userType}
-                        styles={customStyles}
+                        styles={customStyles()}
                         onChange={(value) => changeHandler(`users[${index}].userType`, value)}
                         placeholder={t("select")}
                       />

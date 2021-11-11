@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useMemo, useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
@@ -8,6 +8,7 @@ import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
 import removeIcon from "../../../assets/images/remove.svg";
+import {get} from "lodash";
 import {
   setLoadingAction,
   setRestBarClassAction,
@@ -25,7 +26,7 @@ import {
 import style from "./FormInvite.module.scss";
 import clsx from "clsx";
 import Select from "react-select";
-import {AVAILABLE_JOBS, permissionLevels} from "../../../constant";
+import {AVAILABLE_JOBS, permissionLevels, USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
 
 export const defaultTeamMember = {
@@ -63,7 +64,7 @@ const formSchema = (t) => {
   });
 };
 
-export const customStyles = {
+export const customStyles = (disabled = false) => ({
   menu: (provided, state) => {
     return {
       ...provided,
@@ -77,11 +78,11 @@ export const customStyles = {
   }),
   control: styles => ({
     ...styles,
-    border: 'none',
+    border: disabled ? '1px solid #272727' : 'none',
     outline: 'none',
     boxShadow: 'none',
     height: 54,
-    backgroundColor: '#272727',
+    backgroundColor: disabled ? '#2f2f2f' : '#272727',
     zIndex: 1,
   }),
   input: styles => ({
@@ -94,7 +95,7 @@ export const customStyles = {
     color: 'white',
     zIndex: 1,
   })
-};
+});
 
 const FormInvite = (props) => {
   const {
@@ -107,6 +108,7 @@ const FormInvite = (props) => {
     status,
     setStatus,
     setVisibleSuccessModal,
+    userType,
   } = props;
 
   useEffect(() => {
@@ -170,6 +172,16 @@ const FormInvite = (props) => {
     else
       navigateTo('/invite/upload');
   };
+
+  const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
+
+  const options = useMemo(() => {
+    if (isAdmin) {
+      return permissionLevels;
+    } else {
+      return permissionLevels.filter(it => it.value?.toString() !== "1");
+    }
+  }, [isAdmin])
 
   const renderUser = (user, index, key) => {
     let errorField = errors?.users?.[user.index];
@@ -259,7 +271,7 @@ const FormInvite = (props) => {
                 options={sortedJobs}
                 name={`${formInputName}.job`}
                 value={v?.job}
-                styles={customStyles}
+                styles={customStyles()}
                 maxMenuHeight={190}
                 onChange={(value) => changeHandler(`${formInputName}.job`, value)}
                 placeholder={t("select")}
@@ -279,10 +291,11 @@ const FormInvite = (props) => {
 
               <Select
                 className='mt-10 font-heading-small text-black select-custom-class'
-                options={permissionLevels}
+                options={options}
+                // options={permissionLevels}
                 name={`${formInputName}.userType`}
                 value={v?.userType}
-                styles={customStyles}
+                styles={customStyles()}
                 onChange={(value) => changeHandler(`${formInputName}.userType`, value)}
                 placeholder={t("select")}
               />
@@ -588,6 +601,10 @@ const EnhancedForm = withFormik({
   }
 })(FormInvite);
 
+const mapStateToProps = (state) => ({
+  userType: get(state, 'auth.userType'),
+});
+
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
@@ -601,6 +618,6 @@ const mapDispatchToProps = (dispatch) =>
   );
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(withTranslation()(EnhancedForm));

@@ -1,6 +1,8 @@
-import React, {useEffect} from "react";
+import React, {useMemo, useEffect} from "react";
 import Modal from "react-modal";
 import Select from "react-select";
+import {connect} from "react-redux";
+import {get} from "lodash";
 import clsx from "clsx";
 import style from "./AddMemberModalV2.module.scss";
 import {customStyles} from "../partials/su-dashboard/FormInvite";
@@ -8,6 +10,7 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import removeIcon from "../../assets/images/remove.svg";
+import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
 
 const userSchema = (t) => {
   return Yup.object().shape({
@@ -64,8 +67,17 @@ const AddMemberModalV2 = (
     errors,
     touched,
     inviteOnly,
+    userType,
   }) => {
   const {user} = values;
+  const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
+  const options = useMemo(() => {
+    if (isAdmin) {
+      return permissionLevels;
+    } else {
+      return permissionLevels.filter(it => it.value?.toString() !== "1");
+    }
+  }, [isAdmin]);
 
   useEffect(() => {
     if (isOpen) {
@@ -149,8 +161,9 @@ const AddMemberModalV2 = (
                     <Select
                       className={clsx(style.FullWidthSelect, 'mt-10 font-heading-small text-black select-custom-class')}
                       placeholder={t("select")}
-                      styles={customStyles}
-                      options={permissionLevels}
+                      styles={customStyles()}
+                      options={options}
+                      // options={permissionLevels}
                       value={user?.permissionLevel}
                       name={'user.permissionLevel'}
                       onChange={(e) => setFieldValue('user.permissionLevel', e)}
@@ -242,7 +255,7 @@ const AddMemberModalV2 = (
                       <Select
                         className='mt-10 font-heading-small text-black select-custom-class'
                         placeholder={t("select")}
-                        styles={customStyles}
+                        styles={customStyles()}
                         options={sortedJobs}
                         maxMenuHeight={190}
                         value={user.jobRole}
@@ -268,8 +281,9 @@ const AddMemberModalV2 = (
                       <Select
                         className='mt-10 font-heading-small text-black select-custom-class'
                         placeholder={t("select")}
-                        styles={customStyles}
-                        options={permissionLevels}
+                        styles={customStyles()}
+                        options={options}
+                        // options={permissionLevels}
                         value={user.permissionLevel}
                         name={'user.permissionLevel'}
                         onChange={(e) => setFieldValue('user.permissionLevel', e)}
@@ -319,4 +333,10 @@ const EnhancedForm = withFormik({
   },
 })(AddMemberModalV2);
 
-export default withTranslation()(EnhancedForm);
+const mapStateToProps = (state) => ({
+  userType: get(state, 'auth.userType'),
+});
+
+export default withTranslation()(
+  connect(mapStateToProps, null)(EnhancedForm)
+);
