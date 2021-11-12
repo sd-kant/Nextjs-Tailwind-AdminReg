@@ -8,6 +8,8 @@ import {setRestBarClassAction} from "../../../redux/action/ui";
 import {loginAction} from "../../../redux/action/auth";
 import {checkPasswordValidation} from "../../../utils";
 import {Link} from "react-router-dom";
+import MicrosoftLogin from "react-microsoft-login";
+import {microsoftAppClientID} from "../../../config";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -49,6 +51,10 @@ const FormSULogin = (props) => {
     sum += values["email"] ? 1 : 0;
     setRestBarClass(`progress-${sum * 50}`);
   }
+
+  const authHandler = (err, data) => {
+    console.log(err, data);
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -101,14 +107,26 @@ const FormSULogin = (props) => {
       </div>
 
       <div className='mt-80'>
-        <button
-          className={`button ${values['email'] && values['password'] ? "active cursor-pointer" : "inactive cursor-default"}`}
-          type={values['email'] && values['password'] ? "submit" : "button"}
-        >
+        <div>
+          <button
+            className={`button ${values['email'] && values['password'] ? "active cursor-pointer" : "inactive cursor-default"}`}
+            type={values['email'] && values['password'] ? "submit" : "button"}
+          >
           <span className='font-button-label text-white'>
             {t("sign in")}
           </span>
-        </button>
+          </button>
+        </div>
+
+        <div className="mt-40">
+          <span className="font-binary text-gray">
+            {t("or login with")}
+          </span>
+        </div>
+
+        <div className={"mt-15"}>
+          <MicrosoftLogin clientId={microsoftAppClientID} authCallback={authHandler} />
+        </div>
       </div>
     </Form>
   )

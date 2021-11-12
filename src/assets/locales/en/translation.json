@@ -175,5 +175,11 @@
   "south africa": "South Africa",
   "switzerland": "Switzerland",
   "united kingdom": "United Kingdom",
-  "usa": "USA"
+  "usa": "USA",
+  "auth code": "Authentication Code",
+  "auth code description": "Please enter the code sent to the phone number:",
+  "auth code number": "Ends with {{number}}",
+  "auth code not receive": "Didn’t receive a code?",
+  "auth code resend": "Resend Code",
+  "or login with": "Or login with"
 }

@@ -11,6 +11,7 @@ import {get} from "lodash";
 import ForgotPassword from "./views/pages/ForgotPassword";
 import ResetPassword from "./views/pages/ResetPassword";
 import {ableToLogin} from "./utils";
+import PhoneVerification from "./views/pages/PhoneVerification";
 
 const Router = ({token, userType, email}) => {
   return (
@@ -72,6 +73,15 @@ const Router = ({token, userType, email}) => {
               path="/reset-password"
               render={(props) => (
                 <ResetPassword
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/phone-verification"
+              render={(props) => (
+                <PhoneVerification
                   {...props}
                 />
               )}
