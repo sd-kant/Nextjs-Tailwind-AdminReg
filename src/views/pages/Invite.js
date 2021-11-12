@@ -5,7 +5,7 @@ import FormCompany from "../partials/su-dashboard/FormCompany";
 import FormRepresentative from "../partials/su-dashboard/FormRepresentative";
 import FormTeam from "../partials/su-dashboard/FormTeamCreate";
 import FormUploadSelect from "../partials/su-dashboard/FormUploadSelect";
-import {SUPER_ADMIN_EMAIL, USER_TYPE_ADMIN} from "../../constant";
+import {SUPER_ADMIN_EMAIL, USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
 import FormInvite from "../partials/su-dashboard/FormInvite";
 import FormTeamMode from "../partials/su-dashboard/FormTeamMode";
 import FormUpload from "../partials/su-dashboard/FormUpload";
@@ -23,7 +23,8 @@ const Invite = (
     userType,
   }) => {
   const isSuperAdmin = userType?.includes(USER_TYPE_ADMIN);
-  let redirectPath = isSuperAdmin ? "/invite/company" : "/invite/team-mode";
+  const isOrgAdmin = userType?.includes(USER_TYPE_ORG_ADMIN);
+  let redirectPath = isSuperAdmin ? "/invite/company" : (isOrgAdmin ? "/invite/team-mode" : "/invite/team-modify");
 
   return (
     <div className='form-main'>
@@ -50,15 +51,17 @@ const Invite = (
             <FormRepresentative/>
           </Route>
         }
-
-        <Route
-          exact
-          path='/invite/team-create'
-        >
-          <FormTeam
-            email={email}
-          />
-        </Route>
+        {
+          (isSuperAdmin || isOrgAdmin) &&
+          <Route
+            exact
+            path='/invite/team-create'
+          >
+            <FormTeam
+              email={email}
+            />
+          </Route>
+        }
 
         <Route
           exact
@@ -81,12 +84,15 @@ const Invite = (
           <FormUpload/>
         </Route>
 
-        <Route
-          exact
-          path='/invite/team-mode'
+        {
+          (isSuperAdmin || isOrgAdmin) &&
+          <Route
+            exact
+            path='/invite/team-mode'
           >
-          <FormTeamMode/>
-        </Route>
+            <FormTeamMode/>
+          </Route>
+        }
 
         <Route
           exact

@@ -13,9 +13,11 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
+import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../../constant";
+import {get} from 'lodash';
 
 const FormTeamMode = (props) => {
-  const {t, setRestBarClass} = props;
+  const {t, setRestBarClass, userType} = props;
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -24,6 +26,7 @@ const FormTeamMode = (props) => {
   const navigateTo = (path) => {
     history.push(path);
   }
+  const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
 
   return (
     <div className='form-group mt-57'>
@@ -52,18 +55,21 @@ const FormTeamMode = (props) => {
         </div>
 
         <div className="mt-40 d-flex">
-          <div
-            className={`tap cursor-pointer`}
-            onClick={() => {
-              history.push("/invite/team-create");
-            }}
-          >
-            <img src={plusIcon} alt="male icon"/>
+          {
+            isAdmin &&
+            <div
+              className={`tap cursor-pointer`}
+              onClick={() => {
+                history.push("/invite/team-create");
+              }}
+            >
+              <img src={plusIcon} alt="male icon"/>
 
-            <span className='font-binary mt-8'>
+              <span className='font-binary mt-8'>
                 {t("create")}
               </span>
-          </div>
+            </div>
+          }
 
           <div
             className={`ml-40 cursor-pointer tap`}
@@ -88,6 +94,10 @@ const FormTeamMode = (props) => {
   )
 }
 
+const mapStateToProps = (state) => ({
+  userType: get(state, 'auth.userType'),
+});
+
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
@@ -101,6 +111,6 @@ const mapDispatchToProps = (dispatch) =>
   );
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(withTranslation()(FormTeamMode));
