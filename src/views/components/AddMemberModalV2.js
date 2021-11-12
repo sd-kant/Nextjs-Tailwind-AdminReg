@@ -11,6 +11,8 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import removeIcon from "../../assets/images/remove.svg";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
+import CustomPhoneInput from "./PhoneInput";
+import {checkPhoneNumberValidation} from "../../utils";
 
 const userSchema = (t) => {
   return Yup.object().shape({
@@ -28,6 +30,15 @@ const userSchema = (t) => {
       .required(t('role required')),
     jobRole: Yup.object()
       .required(t('role required')),
+    phoneNumber: Yup.object()
+      .required(t('phone number required'))
+      .test(
+        'is-valid',
+        t('phone number invalid'),
+        function (obj) {
+          return checkPhoneNumberValidation(obj.value, obj.countryCode);
+        },
+      ),
   }).required();
 };
 
@@ -298,6 +309,31 @@ const AddMemberModalV2 = (
                     </div>
                   </div>
                 </div>
+
+                <div className={clsx(style.UserRow)}>
+                  <div>
+                    <label className='font-input-label'>
+                      {t("phone number")}
+                    </label>
+                    <CustomPhoneInput
+                      containerClass={style.PhoneNumberContainer}
+                      inputClass={style.PhoneNumberInput}
+                      dropdownClass={style.PhoneNumberDropdown}
+                      value={user.phoneNumber.value}
+                      onChange={(value, countryCode) => setFieldValue('user.phoneNumber', {value, countryCode})}
+                    />
+                    {
+                      touched?.user && touched.user?.phoneNumber &&
+                      errors?.user && errors.user?.phoneNumber && (
+                        <span className="font-helper-text text-error mt-10">{errors.user.phoneNumber}</span>
+                      )
+                    }
+                  </div>
+
+                  <div>
+
+                  </div>
+                </div>
               </div>
           }
           <div className={clsx(style.Footer)}>
@@ -322,6 +358,10 @@ const defaultUser = {
   lastName: '',
   permissionLevel: '',
   jobRole: "",
+  phoneNumber: {
+    value: '',
+    countryCode: '',
+  },
 };
 
 const EnhancedForm = withFormik({
@@ -329,7 +369,7 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => props.inviteOnly ? formSchemaForInvite(props.t) : formSchema(props.t)),
   enableReinitialize: true,
   handleSubmit: async (values, {props}) => {
-    props.onAdd(values.user);
+    props.onAdd({...values.user, phoneNumber: values.user?.phoneNumber?.value});
   },
 })(AddMemberModalV2);
 

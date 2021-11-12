@@ -181,5 +181,6 @@
   "auth code number": "Ends with {{number}}",
   "auth code not receive": "Didn’t receive a code?",
   "auth code resend": "Resend Code",
-  "or login with": "Or login with"
+  "or login with": "Or login with",
+  "phone number": "Phone Number"
 }
