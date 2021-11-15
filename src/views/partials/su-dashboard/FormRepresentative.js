@@ -14,8 +14,8 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import {registerMultipleUsers, sendRegistrationEmail} from "../../../http";
-import {defaultPassword, REPRESENTATIVE_TYPE} from "../../../constant";
+import {createUserByAdmin, registerMultipleUsers, sendRegistrationEmail} from "../../../http";
+import {defaultPassword, REPRESENTATIVE_TYPE, USER_TYPE_ORG_ADMIN} from "../../../constant";
 import clsx from "clsx";
 import style from "./FormRepresentative.module.scss";
 
@@ -242,21 +242,7 @@ export const lowercaseEmail = (users) => {
 export const setUserTypeToUsers = (users, userType) => {
   return users && users.map((user) => ({
     ...user,
-    userType,
-  }));
-}
-
-export const setOrganizationIdToUsers = (users, orgId) => {
-  return users && users.map((user) => ({
-    ...user,
-    orgId,
-  }));
-}
-
-export const setPasswordToUsers = (users, password) => {
-  return users && users.map((user) => ({
-    ...user,
-    password,
+    userTypes: userType,
   }));
 }
 
@@ -267,49 +253,64 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
     let users = values?.users;
-    const organizationId = localStorage.getItem("kop-picked-organization-id");
+    const organizationId = localStorage.getItem("kop-v2-picked-organization-id");
     if (!organizationId) {
       history.push("/invite/company");
     } else {
-      users = setOrganizationIdToUsers(setUserTypeToUsers(lowercaseEmail(users), 1), parseInt(organizationId));
-      users = setPasswordToUsers(users, defaultPassword);
+      users = setUserTypeToUsers(lowercaseEmail(users), [USER_TYPE_ORG_ADMIN]);
     }
 
     try {
-      props.setLoading(true);
-      const apiRes = await registerMultipleUsers(users);
-      const responseData = apiRes?.data;
+      const promises = [];
+      let totalSuccessForInvite = 0;
+      let alreadyRegisteredUsers = [];
+      const updatePromises = [];
 
-      if (responseData?.data?.success > 0) {
-        // send invitation link manually
-        responseData.data["list for success"].map((entity) => {
-          sendRegistrationEmail({
-            email: entity.email,
-            type: REPRESENTATIVE_TYPE,
-          });
-        });
+      users?.forEach(it => {
+        it["emailAddress"] = it.email;
+        delete it.email;
 
-        props.showSuccessNotification(props.t(
-          responseData.data.success > 1 ?
-          'msg users created success' : 'msg user created success', {
-          numberOfSuccess: responseData?.data?.success
-        }));
-
-        setTimeout(() => {
-          history.push("/invite/select");
-        }, 1000);
-      }
-
-      responseData?.data?.["reasons for failure"]?.map(fail => {
-        const failedEmail = fail["failed value"];
-        const failedReason = fail["msg"];
-        props.showErrorNotification(failedReason, failedEmail);
+        promises.push(createUserByAdmin(organizationId, it));
       });
+      if (promises?.length > 0) {
+        props.setLoading(true);
+        Promise.allSettled(promises)
+          .then(items => {
+            items.forEach((item, index) => {
+              let addToPayload = false;
+              if (item.status === "fulfilled") {
+                totalSuccessForInvite++;
+                addToPayload = true;
+              } else {
+                console.error("creating user failed", item.reason?.response?.data);
+                // fixme be sure if 409 is for already registered error
+                if (item?.reason?.response?.data?.status?.toString() === "409") {
+                  addToPayload = true;
+                  alreadyRegisteredUsers.push({
+                    email: users[index]?.emailAddress,
+                  });
+                }
+              }
+              if (addToPayload) {
+                // todo add to invite promises
+              }
+            });
+          })
+          .finally(() => {
+            if (totalSuccessForInvite > 0) {
+              props.showSuccessNotification(props.t(
+                totalSuccessForInvite ?
+                  'msg users created success' : 'msg user created success', {
+                  numberOfSuccess: totalSuccessForInvite,
+                }));
+            }
+            props.setLoading(false);
+            history.push("/invite/team-mode");
+          });
+      }
     } catch (e) {
       console.log("registering multiple users error", e);
       props.showErrorNotification(props.t("msg something went wrong"));
-    } finally {
-      props.setLoading(false);
     }
   }
 })(FormRepresentative);

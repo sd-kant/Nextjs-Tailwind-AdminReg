@@ -190,7 +190,8 @@ const EnhancedForm = withFormik({
         const apiRes = await createCompany(data);
         const companyData = apiRes.data;
         localStorage.setItem("kop-v2-picked-organization-id", companyData?.id);
-        history.push("/invite/team-mode");
+        history.push("/invite/representative");
+        // history.push("/invite/team-mode");
       } catch (e) {
         console.log("creating company error", e);
         props.showErrorNotification(props.t("msg something went wrong"));

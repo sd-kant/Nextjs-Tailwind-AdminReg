@@ -514,8 +514,8 @@ export const _handleSubmit = (
             addToPayload = true;
           } else {
             console.error("creating user failed", item.reason?.response?.data);
-            // fixme encode error response
-            if (item?.reason?.response?.data?.message?.toLowerCase() === "user profile already exists") {
+            // fixme be sure if 409 is for already registered error
+            if (item?.reason?.response?.data?.status?.toString() === "409") {
               addToPayload = true;
               alreadyRegisteredUsers.push({
                 email: users[index]?.emailAddress,

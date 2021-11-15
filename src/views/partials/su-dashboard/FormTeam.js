@@ -169,9 +169,6 @@ const EnhancedForm = withFormik({
 
     if (values?.name?.created) {
       localStorage.setItem("kop-team-id", values?.name?.value);
-      // if (isSuperAdmin)
-      //   history.push("/invite/representative");
-      // else
       history.push("/invite/select");
     } else {
       const data = {
@@ -191,9 +188,6 @@ const EnhancedForm = withFormik({
           // store created company id in local storage, so that we can use it when inviting users
           const teamData = responseData?.data;
           localStorage.setItem("kop-team-id", teamData?.id);
-          // if (isSuperAdmin)
-          //   history.push("/invite/representative");
-          // else
           history.push("/invite/select");
         }
       } catch (e) {

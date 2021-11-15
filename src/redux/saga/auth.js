@@ -30,12 +30,14 @@ function* loginSaga({payload: {email, password}}) {
     const {
       accessToken: token,
       userType,
+      orgId,
     } = responseData;
 
     if (ableToLogin(userType)) {
       localStorage.setItem("kop-v2-token", token);
       localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
       localStorage.setItem("kop-v2-email", email);
+      localStorage.setItem("kop-v2-picked-organization-id", orgId);
     }
 
     yield put({
