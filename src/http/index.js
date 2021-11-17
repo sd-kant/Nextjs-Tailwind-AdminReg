@@ -351,6 +351,18 @@ export const resetPasswordV2 = payload => {
   });
 };
 
+export const getCompany = id => {
+  return new Promise((resolve, reject) => {
+    instance.get(`/organization/${id}`)
+      .then(res => {
+        resolve(res);
+      })
+      .catch(e => {
+        reject(e);
+      })
+  });
+};
+
 export const retrieveCredentials = (token) => {
   return get(`/user/byToken?token=` + token);
 }

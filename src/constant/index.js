@@ -123,3 +123,39 @@ export const permissionLevels = [
     label: i18n.t('operator'),
   }
 ];
+export const twoFAOptions = [
+  {
+    title: i18n.t('on'),
+    value: true,
+  }, {
+    title: i18n.t('off'),
+    value: false,
+  },
+];
+export const passwordMinLengthOptions = [
+  {
+    title: 6,
+    value: 6,
+  }, {
+    title: 8,
+    value: 8,
+  }, {
+    title: 10,
+    value: 10,
+  },
+];
+export const passwordExpirationDaysOptions = [
+  {
+    title: 60,
+    value: 60,
+  },{
+    title: 90,
+    value: 90,
+  },{
+    title: 180,
+    value: 180,
+  },{
+    title: i18n.t('off'),
+    value: 0,
+  },
+];

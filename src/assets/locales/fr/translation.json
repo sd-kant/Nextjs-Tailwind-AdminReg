@@ -71,6 +71,14 @@
   "company location": "Emplacement de l’entreprise",
   "company location required": "Veuillez indiquer le siège de l’entreprise",
   "company location max error": "Veuillez saisir moins de 1024 lettres",
+  "2fa": "Authentification à deux facteurs (2FA)",
+  "on": "sur",
+  "off": "éteint",
+  "password min length": "Longueur minimale du mot de passe (caractères)",
+  "password expiration days": "Expiration du mot de passe (jours)",
+  "save": "enregistrer",
+  "cancel": "Annuler",
+  "edit": "Éditer",
   "team representative": "Représentant de l’équipe",
   "team representative description": "Ajouter le(s) représentant(s) de l’équipe.  Les représentants des équipes sont des administrateurs d’équipe.",
   "team representative add another": "Ajouter un autre représentant de l’équipe",
@@ -175,5 +183,12 @@
   "south africa": "Afrique du Sud",
   "switzerland": "Suisse",
   "united kingdom": "Royaume-Uni",
-  "usa": "États-Unis"
+  "usa": "États-Unis",
+  "auth code": "code d'identification",
+  "auth code description": "Veuillez saisir le code envoyé au numéro de téléphone :",
+  "auth code number": "Se termine par {{number}}",
+  "auth code not receive": "Vous n'avez pas reçu de code ?",
+  "auth code resend": "Renvoyer le code",
+  "or login with": "Ou connectez-vous avec",
+  "phone number": "Numéro de téléphone"
 }

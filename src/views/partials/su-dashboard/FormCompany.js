@@ -9,9 +9,17 @@ import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import {createCompany} from "../../../http";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
-import {AVAILABLE_COUNTRIES} from "../../../constant";
+import {
+  AVAILABLE_COUNTRIES,
+  passwordExpirationDaysOptions,
+  passwordMinLengthOptions,
+  twoFAOptions
+} from "../../../constant";
 import {queryAllOrganizationsAction} from "../../../redux/action/base";
 import {get} from "lodash";
+import ButtonGroup from "../../components/ButtonGroup";
+import clsx from "clsx";
+import style from "./FormCompany.module.scss";
 
 export const customStyles = (disabled = false) => ({
   option: (provided, state) => ({
@@ -37,7 +45,10 @@ const formSchema = (t) => {
       .nullable()
       .required(t('company name required')),
     companyLocation: Yup.object()
-      .required(t('company location required'))
+      .required(t('company location required')),
+    twoFA: Yup.boolean(),
+    passwordMinimumLength: Yup.number().required(),
+    passwordExpirationDays: Yup.number(),
   });
 };
 
@@ -73,30 +84,35 @@ const FormCompany = (props) => {
         } else {
           setFieldValue("companyLocation", AVAILABLE_COUNTRIES && AVAILABLE_COUNTRIES[0]);
         }
+        const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays'];
+        fields?.forEach(item => setFieldValue(item, value[item]))
       }
     }
     setFieldValue(key, value);
   }
 
-  const formatOrganizations = () => {
+  const organizations = useMemo(() => {
     return (allOrganizations && allOrganizations.map(organization => ({
       value: organization.id,
       label: organization.name,
       location: organization.country,
+      twoFA: organization.settings?.twoFA ?? false,
+      passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 6,
+      passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
       created: true,
     }))) || [];
-  }
+  }, [allOrganizations]);
 
   return (
     <Form className='form mt-57'>
-      <div>
+      <div className={clsx(style.TopWrapper)}>
         <div className='grouped-form'>
           <label className="font-header-medium">
             {t("create or select company")}
           </label>
 
-          <label className="font-binary d-block mt-8">
-            {t("create or select company description")}
+          <label className={`font-binary d-block mt-8 text-capitalize ${values.companyName?.created ? 'text-orange' : 'text-white'}`}>
+            {values.companyName?.created ? t("edit"): t("create or select company description")}
           </label>
         </div>
 
@@ -115,7 +131,7 @@ const FormCompany = (props) => {
           <CreatableSelect
             className='mt-10 font-heading-small text-black input-field'
             isClearable
-            options={formatOrganizations()}
+            options={organizations}
             value={values["companyName"]}
             name="companyName"
             styles={customStyles()}
@@ -151,6 +167,56 @@ const FormCompany = (props) => {
             )
           }
         </div>
+
+        {/*todo add translations*/}
+        <div className='d-flex flex-column mt-40'>
+          <label className='font-input-label'>
+            {t("2fa")}
+          </label>
+
+          <div className='d-inline-block mt-10'>
+            <ButtonGroup
+              options={twoFAOptions}
+              value={values["twoFA"]}
+              id={'2fa-option'}
+              setValue={(v) => changeHandler("twoFA", v)}
+            />
+          </div>
+        </div>
+
+        <div className='d-flex flex-column mt-40'>
+          <label className='font-input-label'>
+            {t("password min length")}
+          </label>
+
+          <div className='d-inline-block mt-10'>
+            <ButtonGroup
+              size={'sm'}
+              rounded={true}
+              options={passwordMinLengthOptions}
+              value={values["passwordMinimumLength"]}
+              id={'password-min-length-option'}
+              setValue={(v) => changeHandler("passwordMinimumLength", v)}
+            />
+          </div>
+        </div>
+
+        <div className='d-flex flex-column mt-40'>
+          <label className='font-input-label'>
+            {t("Password Expiration (Days)")}
+          </label>
+
+          <div className='d-inline-block mt-10'>
+            <ButtonGroup
+              size={'sm'}
+              rounded={true}
+              options={passwordExpirationDaysOptions}
+              value={values["passwordExpirationDays"]}
+              id={'password-expiration-days-option'}
+              setValue={(v) => changeHandler("passwordExpirationDays", v)}
+            />
+          </div>
+        </div>
       </div>
 
       <div className='mt-80'>
@@ -171,15 +237,19 @@ const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     companyName: '',
     companyLocation: '',
+    twoFA: false,
+    passwordMinimumLength: 6,
+    passwordExpirationDays: 0,
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
     if (values?.companyName?.created) { // if selected already created company
       localStorage.setItem("kop-v2-picked-organization-id", values?.companyName?.value);
-      // fixme
-      // history.push("/invite/team");
+      // fixme redirect to organization modify page
       history.push("/invite/team-mode");
     } else {
+      console.log("values", values);
+      return;
       const data = {
         name: values?.companyName?.label,
         country: values?.companyLocation?.label,

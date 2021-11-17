@@ -32,6 +32,8 @@ const Button = (
         return '#272727';
       case 'green':
         return '#2B5734';
+      case "black":
+        return '#212121';
       default:
         return '#DE7D2C';
     }

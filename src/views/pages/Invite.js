@@ -12,6 +12,7 @@ import FormUpload from "../partials/su-dashboard/FormUpload";
 import FormReInvite from "../partials/su-dashboard/FormReInvite";
 import FormTeamModify from "../partials/su-dashboard/FormTeamModify";
 import FormInviteModify from "../partials/su-dashboard/FormInviteModify";
+import FormCompanyModify from "../partials/su-dashboard/FormCompanyModify";
 
 export const checkIfSuperAdmin = (email) => {
   return ((email && email.toLowerCase()) === SUPER_ADMIN_EMAIL.toLowerCase());
@@ -24,6 +25,7 @@ const Invite = (
   }) => {
   const isSuperAdmin = userType?.includes(USER_TYPE_ADMIN);
   const isOrgAdmin = userType?.includes(USER_TYPE_ORG_ADMIN);
+  // fixme orgAdmin will be redirected to organization modify page
   let redirectPath = isSuperAdmin ? "/invite/company" : (isOrgAdmin ? "/invite/team-mode" : "/invite/team-modify");
 
   return (
@@ -62,13 +64,28 @@ const Invite = (
             />
           </Route>
         }
+        {
+          (isSuperAdmin || isOrgAdmin) &&
+          <Route
+            exact
+            path='/invite/company/:id'
+            render={matchProps => (
+              <FormCompanyModify
+                {...matchProps}
+              />
+            )}
+          />
+        }
 
         <Route
           exact
           path='/invite/team-modify'
-        >
-          <FormTeamModify/>
-        </Route>
+          render={matchProps => (
+            <FormTeamModify
+              {...matchProps}
+            />
+          )}
+        />
 
         <Route
           exact

@@ -71,6 +71,14 @@
   "company location": "会社所在地",
   "company location required": "会社所在地を入力してください",
   "company location max error": "1024文字未満で入力してください",
+  "2fa": "二要素認証（2FA）",
+  "on": "オン",
+  "off": "オフ",
+  "password min length": "パスワードの最小長（文字）",
+  "password expiration days": "パスワードの有効期限（日）",
+  "save": "保存する",
+  "cancel": "キャンセル",
+  "edit": "編集",
   "team representative": "チーム代表",
   "team representative description": "チーム代表を追加します。 チームの代表者はチーム管理者です。別のチーム代表を追加する",
   "team representative add another": "別のチーム代表を追加する",
@@ -175,5 +183,12 @@
   "south africa": "南アフリカ",
   "switzerland": "スイス",
   "united kingdom": "イギリス",
-  "usa": "米国"
+  "usa": "米国",
+  "auth code": "認証コード",
+  "auth code description": "電話番号に送信されたコードを入力してください：",
+  "auth code number": "{{number}}で終わります",
+  "auth code not receive": "コードを受け取りませんでしたか？",
+  "auth code resend": "コードを再送する",
+  "or login with": "またはでログイン",
+  "phone number": "電話番号"
 }
