@@ -26,7 +26,7 @@ const Invite = (
   const isSuperAdmin = userType?.includes(USER_TYPE_ADMIN);
   const isOrgAdmin = userType?.includes(USER_TYPE_ORG_ADMIN);
   // fixme orgAdmin will be redirected to organization modify page
-  let redirectPath = isSuperAdmin ? "/invite/company" : (isOrgAdmin ? "/invite/team-mode" : "/invite/team-modify");
+  let redirectPath = (isSuperAdmin || isOrgAdmin) ? "/invite/company" : "/invite/team-modify";
 
   return (
     <div className='form-main'>
@@ -36,12 +36,15 @@ const Invite = (
 
       <Switch>
         {
-          isSuperAdmin &&
+          (isSuperAdmin || isOrgAdmin) &&
           <Route
             exact
             path='/invite/company'
           >
-            <FormCompany/>
+            <FormCompany
+              isSuperAdmin={isSuperAdmin}
+              isOrgAdmin={isOrgAdmin}
+            />
           </Route>
         }
         {

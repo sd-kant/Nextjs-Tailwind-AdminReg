@@ -64,6 +64,8 @@
   "team create success description": "Your invitation has been sent to each of the team member emails.",
   "create or select company": "Create or Select a Company",
   "create or select company description": "Create a New Company or Select from Current Company List",
+  "select company": "Select a Company",
+  "select company description": "Select from Current Company List",
   "company name": "Company Name",
   "company name required": "Please enter the company name",
   "company name min error": "Please enter more than 6 letters",

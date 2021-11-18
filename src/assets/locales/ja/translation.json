@@ -64,6 +64,8 @@
   "team create success description": "招待状が、チームメンバーのEメールアドレスに送信されました。",
   "create or select company": "会社を作成もしくは選択",
   "create or select company description": "新規の会社を作成、または既存の会社リストから選択",
+  "select company": "会社を選択してください",
+  "select company description": "現在の会社リストから選択",
   "company name": "会社名",
   "company name required": "会社名を入力してください",
   "company name min error": "6文字以上を入力してください",

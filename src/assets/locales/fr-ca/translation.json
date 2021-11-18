@@ -64,6 +64,8 @@
   "team create success description": "Votre invitation a été envoyée à chacun des membres de l'équipe.",
   "create or select company": "Créer ou sélectionner une entreprise",
   "create or select company description": "Créer une nouvelle entreprise ou sélectionner dans la liste d'entreprises actuelle",
+  "select company": "Sélectionnez une entreprise",
+  "select company description": "Sélectionnez dans la liste actuelle de l'entreprise",
   "company name": "Nom de l'entreprise",
   "company name required": "Veuillez entrer le nom de l'entreprise",
   "company name min error": "Veuillez saisir plus de 6 lettres",

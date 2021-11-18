@@ -1,4 +1,4 @@
-import React, {useMemo, useEffect} from 'react';
+import React, {useMemo, useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
@@ -29,8 +29,8 @@ export const customStyles = (disabled = false) => ({
   }),
   control: styles => ({...styles, border: 'none', outline: 'none', boxShadow: 'none', zIndex: 1}),
   menu: styles => ({...styles, zIndex: 2}),
-  input: styles => ({...styles,zIndex: 1,}),
-  singleValue: (provided) => ({...provided,zIndex: 1,})
+  input: styles => ({...styles, zIndex: 1,}),
+  singleValue: (provided) => ({...provided, zIndex: 1,})
 });
 
 const formSchema = (t) => {
@@ -44,10 +44,20 @@ const formSchema = (t) => {
       })
       .nullable()
       .required(t('company name required')),
+    editingCompanyName: Yup.string()
+      .test(
+        'is-valid',
+        t('company name required'),
+        function (value) {
+          return this.parent.isEditing ? !!value : true;
+        }
+      )
+      .min(6, t('company name min error'))
+      .max(1024, t('company name max error')),
     companyLocation: Yup.object()
       .required(t('company location required')),
     twoFA: Yup.boolean(),
-    passwordMinimumLength: Yup.number().required(),
+    passwordMinimumLength: Yup.number(),
     passwordExpirationDays: Yup.number(),
   });
 };
@@ -62,6 +72,8 @@ const FormCompany = (props) => {
     setFieldValue,
     setRestBarClass,
     queryAllOrganizations,
+    isOrgAdmin,
+    isSuperAdmin,
   } = props;
   const options = useMemo(() => AVAILABLE_COUNTRIES, []);
 
@@ -103,46 +115,90 @@ const FormCompany = (props) => {
     }))) || [];
   }, [allOrganizations]);
 
+  useEffect(() => {
+    if (organizations?.length > 0 && isOrgAdmin) {
+      changeHandler("companyName", organizations[0]);
+    }
+  }, [organizations, isOrgAdmin]);
+
+  const cancelEditing = () => {
+    setFieldValue("isEditing", false);
+    setFieldValue("selectedItem", null);
+  };
+
+  const enableEditing = () => {
+    setFieldValue("isEditing", true);
+    setFieldValue("selectedItem", values.companyName?.value);
+    setFieldValue('editingCompanyName', values.companyName?.label);
+  };
+
   return (
     <Form className='form mt-57'>
       <div className={clsx(style.TopWrapper)}>
         <div className='grouped-form'>
           <label className="font-header-medium">
-            {t("create or select company")}
+            {isSuperAdmin ? t("create or select company") : t("select company")}
           </label>
-
-          <label className={`font-binary d-block mt-8 text-capitalize ${values.companyName?.created ? 'text-orange' : 'text-white'}`}>
-            {values.companyName?.created ? t("edit"): t("create or select company description")}
-          </label>
+          {
+            values.companyName?.created ?
+              <label
+                className={`font-binary d-block mt-8 text-capitalize text-orange cursor-pointer`}
+                onClick={enableEditing}
+              >
+                {t("edit")}
+              </label> :
+              <label className={`font-binary d-block mt-8 text-capitalize text-white`}>
+                {isSuperAdmin ? t("create or select company description") : t("select company description")}
+              </label>
+          }
         </div>
 
         <div className='d-flex flex-column mt-40'>
           <label className='font-input-label'>
             {t("company name")}
           </label>
-
-          {/*<input
-            className='input input-field mt-10 font-heading-small text-white'
-            name="companyName"
-            value={values["companyName"]}
-            type='text'
-            onChange={changeFormField}
-          />*/}
-          <CreatableSelect
-            className='mt-10 font-heading-small text-black input-field'
-            isClearable
-            options={organizations}
-            value={values["companyName"]}
-            name="companyName"
-            styles={customStyles()}
-            placeholder={t("enter name")}
-            onChange={(value) => changeHandler("companyName", value)}
-          />
-
           {
-            touched.companyName && errors.companyName && (
-              <span className="font-helper-text text-error mt-10">{errors.companyName?.label}</span>
-            )
+            values.isEditing ?
+              <input
+                className='input input-field mt-10 font-heading-small text-white'
+                name="editingCompanyName"
+                value={values["editingCompanyName"]}
+                type='text'
+                onChange={changeFormField}
+              /> :
+              (
+                isSuperAdmin ?
+                  <CreatableSelect
+                    className='mt-10 font-heading-small text-black input-field'
+                    isClearable
+                    options={organizations}
+                    value={values["companyName"]}
+                    name="companyName"
+                    styles={customStyles()}
+                    placeholder={t("enter name")}
+                    onChange={(value) => changeHandler("companyName", value)}
+                  /> :
+                  <Select
+                    className='mt-10 font-heading-small text-black input-field'
+                    isClearable
+                    options={organizations}
+                    value={values["companyName"]}
+                    name="companyName"
+                    styles={customStyles()}
+                    placeholder={t("enter name")}
+                    onChange={(value) => changeHandler("companyName", value)}
+                  />
+              )
+          }
+          {
+            values["isEditing"] ?
+              touched.editingCompanyName && errors.editingCompanyName && (
+                <span className="font-helper-text text-error mt-10">{errors.editingCompanyName}</span>
+              )
+              :
+              touched.companyName && errors.companyName && (
+                <span className="font-helper-text text-error mt-10">{errors.companyName?.label}</span>
+              )
           }
         </div>
 
@@ -166,22 +222,6 @@ const FormCompany = (props) => {
               <span className="font-helper-text text-error mt-10">{errors.companyLocation}</span>
             )
           }
-        </div>
-
-        {/*todo add translations*/}
-        <div className='d-flex flex-column mt-40'>
-          <label className='font-input-label'>
-            {t("2fa")}
-          </label>
-
-          <div className='d-inline-block mt-10'>
-            <ButtonGroup
-              options={twoFAOptions}
-              value={values["twoFA"]}
-              id={'2fa-option'}
-              setValue={(v) => changeHandler("twoFA", v)}
-            />
-          </div>
         </div>
 
         <div className='d-flex flex-column mt-40'>
@@ -217,6 +257,21 @@ const FormCompany = (props) => {
             />
           </div>
         </div>
+
+        <div className='d-flex flex-column mt-40'>
+          <label className='font-input-label'>
+            {t("2fa")}
+          </label>
+
+          <div className='d-inline-block mt-10'>
+            <ButtonGroup
+              options={twoFAOptions}
+              value={values["twoFA"]}
+              id={'2fa-option'}
+              setValue={(v) => changeHandler("twoFA", v)}
+            />
+          </div>
+        </div>
       </div>
 
       <div className='mt-80'>
@@ -224,10 +279,22 @@ const FormCompany = (props) => {
           className={`button ${values['companyName'] && values["companyLocation"] ? "active cursor-pointer" : "inactive cursor-default"}`}
           type={values['companyName'] && values["companyLocation"] ? "submit" : "button"}
         >
-          <span className='font-button-label text-white'>
-            {t("next")}
+          <span className='font-button-label text-white text-uppercase'>
+            {values["isEditing"] ? t("save") : t("next")}
           </span>
         </button>
+        {
+          values.isEditing &&
+          <button
+            className={`button cursor-pointer cancel ml-15`}
+            type={"button"}
+            onClick={cancelEditing}
+          >
+            <span className='font-button-label text-orange text-uppercase'>
+              {t("cancel")}
+            </span>
+          </button>
+        }
       </div>
     </Form>
   )
@@ -242,31 +309,35 @@ const EnhancedForm = withFormik({
     passwordExpirationDays: 0,
   }),
   validationSchema: ((props) => formSchema(props.t)),
-  handleSubmit: async (values, {props}) => {
-    if (values?.companyName?.created) { // if selected already created company
-      localStorage.setItem("kop-v2-picked-organization-id", values?.companyName?.value);
-      // fixme redirect to organization modify page
-      history.push("/invite/team-mode");
+  handleSubmit: async (values, {props, setFieldValue}) => {
+    console.log("values", values);
+    if (values.isEditing) {
+      if (values.selectedItem) {
+        // todo update company, and cancel editing
+      }
     } else {
-      console.log("values", values);
-      return;
-      const data = {
-        name: values?.companyName?.label,
-        country: values?.companyLocation?.label,
-      };
+      if (values?.companyName?.created) { // if selected already created company
+        localStorage.setItem("kop-v2-picked-organization-id", values?.companyName?.value);
+        history.push("/invite/team-mode");
+      } else {
+        const data = {
+          name: values?.companyName?.label,
+          country: values?.companyLocation?.label,
+        };
 
-      try {
-        props.setLoading(true);
-        const apiRes = await createCompany(data);
-        const companyData = apiRes.data;
-        localStorage.setItem("kop-v2-picked-organization-id", companyData?.id);
-        history.push("/invite/representative");
-        // history.push("/invite/team-mode");
-      } catch (e) {
-        console.log("creating company error", e);
-        props.showErrorNotification(props.t("msg something went wrong"));
-      } finally {
-        props.setLoading(false);
+        try {
+          props.setLoading(true);
+          const apiRes = await createCompany(data);
+          const companyData = apiRes.data;
+          localStorage.setItem("kop-v2-picked-organization-id", companyData?.id);
+          history.push("/invite/representative");
+          // history.push("/invite/team-mode");
+        } catch (e) {
+          console.log("creating company error", e);
+          props.showErrorNotification(props.t("msg something went wrong"));
+        } finally {
+          props.setLoading(false);
+        }
       }
     }
   }
