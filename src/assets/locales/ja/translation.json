@@ -97,6 +97,8 @@
   "reset password confirm subheader": "Kenzenアプリの新しいパスワードを使用してください。",
   "password rule": "パスワードには、大文字1文字、小文字1文字、数字1文字、特殊文字1文字の計6文字以上以下を含める必要があります",
   "create team": "チームを作成する",
+  "phone number invalid": "有効な電話番号を入力して下さい",
+  "required for 2fa": "2要素認証に必要",
   "add another member": "別のチームメンバーを追加する",
   "modify team": "更新チーム",
   "search user": "名前またはメールアドレスでユーザーを検索する",

@@ -28,6 +28,8 @@ import clsx from "clsx";
 import Select from "react-select";
 import {AVAILABLE_JOBS, permissionLevels, USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
+import CustomPhoneInput from "../../components/PhoneInput";
+import {checkPhoneNumberValidation} from "../../../utils";
 
 export const defaultTeamMember = {
   email: '',
@@ -35,6 +37,10 @@ export const defaultTeamMember = {
   lastName: '',
   userType: '',
   job: "",
+  phoneNumber: {
+    value: '',
+    countryCode: '',
+  },
 };
 
 const userSchema = (t) => {
@@ -52,7 +58,16 @@ const userSchema = (t) => {
     userType: Yup.object()
       .required(t('role required')),
     job: Yup.object()
-      .required(t('role required'))
+      .required(t('role required')),
+    phoneNumber: Yup.object()
+      .required(t('phone number required'))
+      .test(
+        'is-valid',
+        t('phone number invalid'),
+        function (obj) {
+          return checkPhoneNumberValidation(obj.value, obj.countryCode);
+        },
+      ),
   }).required();
 };
 
@@ -308,6 +323,31 @@ const FormInvite = (props) => {
             </div>
           </div>
         </div>
+
+        <div className={clsx(style.UserRow)}>
+          <div>
+            <label className='font-input-label'>
+              {t("phone number")}
+            </label>
+            <CustomPhoneInput
+              containerClass={style.PhoneNumberContainer}
+              inputClass={style.PhoneNumberInput}
+              dropdownClass={style.PhoneNumberDropdown}
+              value={user.phoneNumber.value}
+              onChange={(value, countryCode) => changeHandler(`${formInputName}.phoneNumber`, {value, countryCode})}
+            />
+            {
+              (touchField?.phoneNumber &&
+                errorField?.phoneNumber) ? (
+                <span className="font-helper-text text-error mt-10">{errorField.phoneNumber}</span>
+              ) : (<span className="font-helper-text text-white mt-10">{t("required for 2fa")}</span>)
+            }
+          </div>
+
+          <div>
+
+          </div>
+        </div>
       </div>
     );
   };
@@ -422,19 +462,19 @@ const FormInvite = (props) => {
             className={`button ${values['users']?.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'}`}
             type={values['users']?.length > 0 ? "submit" : "button"}
           >
-          <span className='font-button-label text-white'>
-            {t("finish")}
-          </span>
+            <span className='font-button-label text-white'>
+              {t("finish")}
+            </span>
           </button>
           {
             !isManual &&
             <span className={clsx("font-binary", style.Reupload)}>
-          <Trans
-            i18nKey={"reupload csv"}
-            components={{
-              a: (<span className={"text-orange"} onClick={() => navigateTo("/invite/upload")}/>)
-            }}
-          />
+            <Trans
+              i18nKey={"reupload csv"}
+              components={{
+                a: (<span className={"text-orange"} onClick={() => navigateTo("/invite/upload")}/>)
+              }}
+            />
         </span>
           }
         </div>

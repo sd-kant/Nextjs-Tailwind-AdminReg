@@ -97,6 +97,8 @@
   "reset password confirm subheader": "Veuillez utiliser votre nouveau mot de passe pour l’application Kenzen.",
   "password rule": "Le mot de passe doit contenir : Au moins six caractères, un caractère majuscule, un caractère minuscule, un chiffre, un caractère spécial",
   "create team": "Créer une équipe",
+  "phone number invalid": "s'il vous plaît entrer un numéro de téléphone valide",
+  "required for 2fa": "Requis pour l'authentification à 2 facteurs",
   "add another member": "ajouter un autre membre d’équipe",
   "modify team": "Modifier l’équipe",
   "search user": "Recherche d’un utilisateur par nom ou par e-mail",

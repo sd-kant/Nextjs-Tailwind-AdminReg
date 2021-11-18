@@ -323,10 +323,10 @@ const AddMemberModalV2 = (
                       onChange={(value, countryCode) => setFieldValue('user.phoneNumber', {value, countryCode})}
                     />
                     {
-                      touched?.user && touched.user?.phoneNumber &&
-                      errors?.user && errors.user?.phoneNumber && (
+                      (touched?.user && touched.user?.phoneNumber &&
+                      errors?.user && errors.user?.phoneNumber) ? (
                         <span className="font-helper-text text-error mt-10">{errors.user.phoneNumber}</span>
-                      )
+                      ) : (<span className="font-helper-text text-white mt-10">{t("required for 2fa")}</span>)
                     }
                   </div>
 
