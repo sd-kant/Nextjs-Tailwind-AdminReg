@@ -5,7 +5,7 @@ const initialState = {
   token: localStorage.getItem("kop-v2-token"),
   userType: localStorage.getItem("kop-v2-user-type") ? JSON.parse(localStorage.getItem("kop-v2-user-type")) : null,
   email: localStorage.getItem("kop-v2-email"),
-  loggedIn: false,
+  loggedIn: localStorage.getItem("kop-v2-logged-in")?.toString() === "true",
   // organizationId: localStorage.getItem("kop-organization-id"),
 };
 

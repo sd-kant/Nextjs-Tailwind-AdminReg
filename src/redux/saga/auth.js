@@ -65,6 +65,7 @@ function* loginSaga({payload: {
           loggedIn: !mfa,
         }
       });
+      localStorage.setItem("kop-v2-logged-in", !mfa ? "true" : "false");
 
       if (!mfa) { // if multi-factor authentication off
         localStorage.setItem("kop-v2-token", token);

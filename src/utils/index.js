@@ -13,7 +13,7 @@ export const getTokenFromUrl = () => {
 export const getParamFromUrl = key => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  return urlParams.get('key');
+  return urlParams.get(key);
 }
 
 export const checkPasswordValidation = (password) => {

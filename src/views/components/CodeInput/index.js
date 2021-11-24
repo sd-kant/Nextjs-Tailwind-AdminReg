@@ -1,6 +1,4 @@
 import * as React from "react";
-import style from "./CodeInput.module.scss";
-import clsx from "clsx";
 import ReactCodeInput from "react-code-input";
 
 function useWindowSize() {

@@ -124,7 +124,6 @@ const FormPhoneVerification = (props) => {
             value={code}
             onChange={(v) => {
               setCode(v);
-              console.log("v", v);
             }}
           />
         </div>
