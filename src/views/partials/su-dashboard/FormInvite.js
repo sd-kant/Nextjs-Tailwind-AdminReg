@@ -541,8 +541,8 @@ export const _handleSubmit = (
     const users = formatUserType(formatJob(lowercaseEmail(unFormattedUsers)));
     const promises = [];
     users?.forEach(it => {
-      it["emailAddress"] = it.email;
-      delete it.email;
+      // it["emailAddress"] = it.email;
+      // delete it.email;
       delete it.userType;
 
       promises.push(createUserByAdmin(organizationId, it));
@@ -565,13 +565,13 @@ export const _handleSubmit = (
             if (item?.reason?.response?.data?.status?.toString() === "409") {
               addToPayload = true;
               alreadyRegisteredUsers.push({
-                email: users[index]?.emailAddress,
+                email: users[index]?.email,
               });
             }
           }
           if (addToPayload) {
             inviteBody.add.push({
-              email: users?.[index]?.emailAddress,
+              email: users?.[index]?.email,
               userTypes: users?.[index]?.userTypes,
             });
           }
@@ -587,8 +587,6 @@ export const _handleSubmit = (
               numberOfSuccess: numberOfSuccess,
             }));
 
-          setLoading(false);
-
           resolve({
             alreadyRegisteredUsers,
             numberOfSuccess,
@@ -599,6 +597,7 @@ export const _handleSubmit = (
             numberOfSuccess: 0,
           });
         }
+        setLoading(false);
       });
   })
 };

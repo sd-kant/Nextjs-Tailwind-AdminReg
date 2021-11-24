@@ -174,8 +174,8 @@ const AddMemberModalV2 = (
                       placeholder={t("select")}
                       styles={customStyles()}
                       options={options}
-                      menuPortalTarget={document.body}
-                      menuPosition={'fixed'}
+                      // menuPortalTarget={document.body}
+                      // menuPosition={'fixed'}
                       // options={permissionLevels}
                       value={user?.permissionLevel}
                       name={'user.permissionLevel'}
@@ -273,8 +273,8 @@ const AddMemberModalV2 = (
                         maxMenuHeight={190}
                         value={user.jobRole}
                         name={'user.jobRole'}
-                        menuPortalTarget={document.body}
-                        menuPosition={'fixed'}
+                        // menuPortalTarget={document.body}
+                        // menuPosition={'fixed'}
                         onChange={(e) => {
                           setFieldValue('user.jobRole', e)
                         }}
@@ -301,8 +301,8 @@ const AddMemberModalV2 = (
                         // options={permissionLevels}
                         value={user.permissionLevel}
                         name={'user.permissionLevel'}
-                        menuPortalTarget={document.body}
-                        menuPosition={'fixed'}
+                        // menuPortalTarget={document.body}
+                        // menuPosition={'fixed'}
                         onChange={(e) => setFieldValue('user.permissionLevel', e)}
                       />
 

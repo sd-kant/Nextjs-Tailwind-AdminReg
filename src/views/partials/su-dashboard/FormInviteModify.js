@@ -797,7 +797,7 @@ const EnhancedForm = withFormik({
         lastName: it.lastName,
         job: it.job,
         teamId: it.teamId,
-        emailAddress: it.email,
+        email: it.email,
         userTypes: it.userTypes,
       }));
 
@@ -815,14 +815,14 @@ const EnhancedForm = withFormik({
             }
             if (inviteBody?.[userToModify?.teamId]?.add) {
               inviteBody[userToModify?.teamId].add.push({
-                email: userToModify?.emailAddress,
+                email: userToModify?.email,
                 userTypes: userToModify?.userTypes,
               });
             } else {
               inviteBody[userToModify?.teamId] = {
                 add: [
                   {
-                    email: userToModify?.emailAddress,
+                    email: userToModify?.email,
                     userTypes: userToModify?.userTypes,
                   }
                 ],

@@ -52,7 +52,7 @@ const FormTeamModify = (props) => {
     <Form className='form mt-57'>
       <div>
         <div
-          className="d-flex align-center cursor-pointer"
+          className="d-inline-flex align-center cursor-pointer"
           onClick={() => navigateTo('/invite/team-mode')}
         >
           <img src={backIcon} alt="back"/>
