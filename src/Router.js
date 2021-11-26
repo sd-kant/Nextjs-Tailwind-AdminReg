@@ -14,7 +14,7 @@ import {ableToLogin} from "./utils";
 import PhoneVerification from "./views/pages/PhoneVerification";
 import PhoneRegister from "./views/pages/PhoneRegister";
 
-const Router = ({token, userType, email, loggedIn}) => {
+const Router = ({token, userType, loggedIn}) => {
   return (
     <BrowserRouter basename="/" history={history}>
       {
@@ -29,7 +29,6 @@ const Router = ({token, userType, email, loggedIn}) => {
                 render={(props) => (
                   <Invite
                     {...props}
-                    email={email}
                     userType={userType}
                   />
                 )}
@@ -118,7 +117,6 @@ const Router = ({token, userType, email, loggedIn}) => {
 const mapStateToProps = (state) => ({
   token: get(state, 'auth.token'),
   userType: get(state, 'auth.userType'),
-  email: get(state, 'auth.email'),
   loggedIn: get(state, 'auth.loggedIn'),
 });
 

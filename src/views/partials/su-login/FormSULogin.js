@@ -13,10 +13,10 @@ import {microsoftAppClientID} from "../../../config";
 
 const formSchema = (t) => {
   return Yup.object().shape({
-    email: Yup.string()
-      .required(t('your email required'))
-      // .email(t("email invalid"))
-      .max(1024, t('email max error')),
+    username: Yup.string()
+      .required(t('username required'))
+      .min(6, t('username min error'))
+      .max(1024, t('username max error')),
     password: Yup.string()
       .required(t('your password required'))
       .min(6, t('password min error'))
@@ -48,7 +48,7 @@ const FormSULogin = (props) => {
   const setClassName = () => {
     let sum = 0;
     sum += values["password"] ? 1 : 0;
-    sum += values["email"] ? 1 : 0;
+    sum += values["username"] ? 1 : 0;
     setRestBarClass(`progress-${sum * 50}`);
   }
 
@@ -61,20 +61,20 @@ const FormSULogin = (props) => {
       <div>
         <div className='d-flex flex-column'>
           <label className='font-input-label'>
-            {t("email")}
+            {t("username")}
           </label>
 
           <input
             className='input input-field mt-10 font-heading-small text-white'
-            name="email"
-            value={values["email"]}
+            name="username"
+            value={values["username"]}
             type='text'
             onChange={changeFormField}
           />
 
           {
-            errors.email && touched.email && (
-              <span className="font-helper-text text-error mt-10">{errors.email}</span>
+            errors.username && touched.username && (
+              <span className="font-helper-text text-error mt-10">{errors.username}</span>
             )
           }
         </div>
@@ -109,8 +109,8 @@ const FormSULogin = (props) => {
       <div className='mt-80'>
         <div>
           <button
-            className={`button ${values['email'] && values['password'] ? "active cursor-pointer" : "inactive cursor-default"}`}
-            type={values['email'] && values['password'] ? "submit" : "button"}
+            className={`button ${values['username'] && values['password'] ? "active cursor-pointer" : "inactive cursor-default"}`}
+            type={values['username'] && values['password'] ? "submit" : "button"}
           >
           <span className='font-button-label text-white'>
             {t("sign in")}
@@ -134,14 +134,14 @@ const FormSULogin = (props) => {
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
-    email: '',
+    username: '',
     password: '',
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     // history.push("/invite/company");
     const {loginAction} = props;
-    loginAction(values.email, values.password);
+    loginAction(values.username, values.password);
   }
 })(FormSULogin);
 

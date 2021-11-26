@@ -14,7 +14,7 @@ function* actionWatcher() {
 }
 
 function* loginSaga({payload: {
-  email,
+  username,
   password,
   phoneNumber,
   loginCode,
@@ -27,9 +27,9 @@ function* loginSaga({payload: {
       }
     });
     let body, apiRes;
-    if (email && password) {
+    if (username && password) {
       body = {
-        username: email,
+        username,
         password,
       };
       apiRes = yield call(login, body);
@@ -56,7 +56,6 @@ function* loginSaga({payload: {
         payload: {
           token,
           userType,
-          email,
         }
       });
       yield put({
@@ -70,7 +69,6 @@ function* loginSaga({payload: {
       if (!mfa) { // if multi-factor authentication off
         localStorage.setItem("kop-v2-token", token);
         localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
-        localStorage.setItem("kop-v2-email", email);
         localStorage.setItem("kop-v2-picked-organization-id", orgId);
         history.push("/invite");
       } else {
