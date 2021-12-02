@@ -77,7 +77,7 @@
   "company location": "Company Location",
   "company location required": "Please enter the company location",
   "company location max error": "Please enter less than 1024 letters",
-  "2fa": "Two-Factor Authentication (2FA)",
+  "2fa": "Two-Factor Authentication",
   "2fa description": "Let’s set up your Two-Factor Authentication. Please provide your phone number in the field below.",
   "on": "on",
   "off": "off",
@@ -200,5 +200,8 @@
   "auth code resend": "Resend Code",
   "back to login": "back to login",
   "or login with": "Or login with",
-  "phone number": "Phone Number"
+  "phone number": "Phone Number",
+  "2fa auth code": "Two-Factor Authentication Code",
+  "2fa auth code description": "Your company requires two-factor authentication.\nYou should have received an SMS text to your registered phone number.",
+  "2fa auth code contact administrator": "Contact your administrator is you have questions"
 }

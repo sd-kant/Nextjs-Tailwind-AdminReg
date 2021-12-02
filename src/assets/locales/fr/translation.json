@@ -200,5 +200,8 @@
   "auth code resend": "Renvoyer le code",
   "back to login": "retour à la connexion",
   "or login with": "Ou connectez-vous avec",
-  "phone number": "Numéro de téléphone"
+  "phone number": "Numéro de téléphone",
+  "2fa auth code": "Code d'authentification à deux facteurs",
+  "2fa auth code description": "Votre entreprise requiert une authentification à deux facteurs.\nVous devriez avoir reçu un SMS sur votre numéro de téléphone enregistré.",
+  "2fa auth code contact administrator": "Contactez votre administrateur si vous avez des questions"
 }

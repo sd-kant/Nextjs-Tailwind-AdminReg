@@ -99,8 +99,14 @@ const FormPhoneVerification = (props) => {
 
         <div className='d-flex mt-15 flex-column'>
           <label className='font-heading-small text-capitalize'>
-            {t("auth code")}
+            {t("2fa auth code")}
           </label>
+        </div>
+
+        <div className="mt-15">
+          <span className={"font-binary"}>
+            {t("2fa auth code description")}
+          </span>
         </div>
 
         <div className='mt-15'>
@@ -129,16 +135,24 @@ const FormPhoneVerification = (props) => {
         </div>
 
         <div className='mt-40'>
-          <span className={"font-binary"}>
-            {t("auth code not receive")}
-          </span>
-          &nbsp;
-          <span
-            className={"font-binary text-orange cursor-pointer"}
-            onClick={resendCode}
-          >
-            {t("auth code resend")}
-          </span>
+          <div>
+            <span className={"font-binary"}>
+              {t("auth code not receive")}
+            </span>
+              &nbsp;
+              <span
+                className={"font-binary text-orange cursor-pointer"}
+                onClick={resendCode}
+              >
+              {t("auth code resend")}
+            </span>
+          </div>
+
+          <div>
+            <span className={"font-binary"}>
+              {t("2fa auth code contact administrator")}
+            </span>
+          </div>
         </div>
       </div>
 
