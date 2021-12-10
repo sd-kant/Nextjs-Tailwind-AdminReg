@@ -1,0 +1,24 @@
+.ReInviteWrapper {
+  display: block;
+  position: absolute;
+  width: 100%;
+  top: 0;
+}
+
+@media only screen and (min-width: 768px) {
+  .ReInviteWrapper {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .ReInviteWrapper {
+    display: block;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .ReInviteWrapper {
+    //display: block;
+  }
+}
