@@ -131,6 +131,18 @@ export const createCompany = (body) => {
   });
 }
 
+export const updateCompany = (id, body) => {
+  return new Promise((resolve, reject) => {
+    instance.patch(`/organization/${id}`, body)
+      .then(res => {
+        resolve(res);
+      })
+      .catch(e => {
+        reject(e);
+      })
+  });
+}
+
 export const registerMultipleUsers = (body) => {
   return new Promise((resolve, reject) => {
     instance.post("/user/create/batch", body)

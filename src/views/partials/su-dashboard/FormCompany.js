@@ -7,7 +7,7 @@ import {bindActionCreators} from "redux";
 import history from "../../../history";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import {createCompany} from "../../../http";
+import {createCompany, updateCompany} from "../../../http";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {
   AVAILABLE_COUNTRIES,
@@ -323,20 +323,36 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue}) => {
     console.log("values", values);
+    const data = {
+      name: values?.companyName?.label,
+      country: values?.companyLocation?.label,
+      settings: {
+        twoFA: values.twoFA,
+        passwordMinimumLength: values.passwordMinimumLength,
+        passwordExpirationDays: values.passwordExpirationDays,
+      },
+    };
+
     if (values.isEditing) {
       if (values.selectedItem) {
         // todo update company, and cancel editing
+        try {
+          props.setLoading(true);
+          await updateCompany(values.selectedItem, data);
+          setFieldValue("isEditing", false);
+          setFieldValue("selectedItem", null);
+        } catch (e) {
+          console.log("update company error", e);
+          props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
+        } finally {
+          props.setLoading(false);
+        }
       }
     } else {
       if (values?.companyName?.created) { // if selected already created company
         localStorage.setItem("kop-v2-picked-organization-id", values?.companyName?.value);
         history.push("/invite/team-mode");
       } else {
-        const data = {
-          name: values?.companyName?.label,
-          country: values?.companyLocation?.label,
-        };
-
         try {
           props.setLoading(true);
           const apiRes = await createCompany(data);
@@ -346,7 +362,7 @@ const EnhancedForm = withFormik({
           // history.push("/invite/team-mode");
         } catch (e) {
           console.log("creating company error", e);
-          props.showErrorNotification(props.t("msg something went wrong"));
+          props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
         } finally {
           props.setLoading(false);
         }

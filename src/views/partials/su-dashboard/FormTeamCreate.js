@@ -7,23 +7,14 @@ import {bindActionCreators} from "redux";
 import history from "../../../history";
 import {createTeam} from "../../../http";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
-import {queryAllTeamsAction} from "../../../redux/action/base";
-import {get} from "lodash";
-import CreatableSelect from "react-select/creatable/dist/react-select.esm";
-import {customStyles} from "./FormCompany";
 import backIcon from "../../../assets/images/back.svg";
 
 const formSchema = (t) => {
   return Yup.object().shape({
-    name: Yup.object()
-      .shape({
-        label: Yup.string()
-          .required(t('team name required'))
-          .min(6, t('team name min error'))
-          .max(1024, t('team name max error')),
-      })
-      .nullable()
-      .required(t('team name required')),
+    name: Yup.string()
+      .required(t('team name required'))
+      .min(6, t('team name min error'))
+      .max(1024, t('team name max error')),
     location: Yup.string()
       .required(t('team location required'))
       .min(2, t('team location min error'))
@@ -31,36 +22,17 @@ const formSchema = (t) => {
   });
 };
 
-const FormTeam = (props) => {
-  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams} = props;
+const FormTeamCreate = (props) => {
+  const {values, errors, touched, t, setRestBarClass, setFieldValue} = props;
 
   useEffect(() => {
     setRestBarClass("progress-54 medical");
-    queryAllTeams();
   }, []);
 
   const changeFormField = (e) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
-
-  const changeHandler = (key, value) => {
-    if (key === "name") {
-      if (value && value.created) { // if already created team, then set location according to picked team
-        setFieldValue("location", value.location);
-      }
-    }
-    setFieldValue(key, value);
-  }
-
-  const formatTeams = () => {
-    return (allTeams && allTeams.map(team => ({
-      value: team.id,
-      label: team.name,
-      location: team.location,
-      created: true,
-    }))) || [];
   }
 
   const navigateTo = (path) => {
@@ -83,7 +55,7 @@ const FormTeam = (props) => {
 
         <div className='grouped-form mt-40'>
           <label className="font-header-medium">
-            {t("create or select team")}
+            {t("create team")}
           </label>
 
           <label className="font-binary d-block mt-8">
@@ -96,28 +68,17 @@ const FormTeam = (props) => {
             {t("team name")}
           </label>
 
-          {/*<input
+          <input
             className='input input-field mt-10 font-heading-small text-white'
             name="name"
             value={values["name"]}
             type='text'
             onChange={changeFormField}
-          />*/}
-
-          <CreatableSelect
-            className='mt-10 font-heading-small text-black input-field'
-            isClearable
-            options={formatTeams()}
-            value={values["name"]}
-            name="name"
-            styles={customStyles()}
-            placeholder={t("enter name")}
-            onChange={(value) => changeHandler("name", value)}
           />
 
           {
             touched?.name && errors?.name && (
-              <span className="font-helper-text text-error mt-10">{errors.name.label}</span>
+              <span className="font-helper-text text-error mt-10">{errors.name}</span>
             )
           }
         </div>
@@ -164,41 +125,33 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
-    if (values?.name?.created) {
-      localStorage.setItem("kop-team-id", values?.name?.value);
+    const orgId = localStorage.getItem("kop-v2-picked-organization-id");
+    if (!orgId) {
+      history.push("/invite/company");
+      return;
+    }
+    const data = {
+      orgId: parseInt(orgId),
+      name: values?.name,
+      location: values?.location,
+    };
+
+    try {
+      props.setLoading(true);
+      const apiRes = await createTeam(data);
+      const teamData = apiRes.data;
+      localStorage.setItem("kop-v2-team-id", teamData?.id);
       history.push("/invite/select");
-    } else {
-      const data = {
-        ...values,
-        name: values?.name?.label,
-        measure: 2,
-      };
-
-      try {
-        props.setLoading(true);
-        const apiRes = await createTeam(data);
-        const responseData = apiRes.data;
-
-        if (responseData?.status !== 200) {
-          props.showErrorNotification(responseData?.msg);
-        } else {
-          // store created company id in local storage, so that we can use it when inviting users
-          const teamData = responseData?.data;
-          localStorage.setItem("kop-team-id", teamData?.id);
-          history.push("/invite/select");
-        }
-      } catch (e) {
-        console.log("creating team error", e);
-        props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
-      } finally {
-        props.setLoading(false);
-      }
+    } catch (e) {
+      console.log("creating team error", e);
+      props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
+    } finally {
+      props.setLoading(false);
     }
   }
-})(FormTeam);
+})(FormTeamCreate);
 
 const mapStateToProps = (state) => ({
-  allTeams: get(state, 'base.allTeams'),
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -207,7 +160,6 @@ const mapDispatchToProps = (dispatch) =>
       setLoading: setLoadingAction,
       setRestBarClass: setRestBarClassAction,
       showErrorNotification: showErrorNotificationAction,
-      queryAllTeams: queryAllTeamsAction,
     },
     dispatch
   );
