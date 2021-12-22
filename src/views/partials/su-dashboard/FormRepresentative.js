@@ -242,7 +242,7 @@ export const lowercaseEmail = (users) => {
 export const setUserTypeToUsers = (users, userType) => {
   return users && users.map((user) => ({
     ...user,
-    userTypes: userType,
+    userType: userType,
   }));
 }
 
@@ -257,7 +257,7 @@ const EnhancedForm = withFormik({
     if (!organizationId) {
       history.push("/invite/company");
     } else {
-      users = setUserTypeToUsers(lowercaseEmail(users), [USER_TYPE_ORG_ADMIN]);
+      users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
     }
 
     try {

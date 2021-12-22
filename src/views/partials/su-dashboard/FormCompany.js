@@ -87,7 +87,7 @@ const FormCompany = (props) => {
     setRestBarClass("progress-0 medical");
     queryAllOrganizations();
   }, []);
-
+  const [organizations, setOrganizations] = useState([]);
   const changeFormField = (e) => {
     const {value, name} = e.target;
     setFieldValue(name, value);
@@ -109,8 +109,8 @@ const FormCompany = (props) => {
     setFieldValue(key, value);
   }
 
-  const organizations = useMemo(() => {
-    return (allOrganizations && allOrganizations.map(organization => ({
+  useEffect(() => {
+    setOrganizations((allOrganizations && allOrganizations.map(organization => ({
       value: organization.id,
       label: organization.name,
       location: organization.country,
@@ -118,7 +118,7 @@ const FormCompany = (props) => {
       passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 6,
       passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
       created: true,
-    }))) || [];
+    }))) || []);
   }, [allOrganizations]);
 
   useEffect(() => {
@@ -322,9 +322,8 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue}) => {
-    console.log("values", values);
     const data = {
-      name: values?.companyName?.label,
+      name: values.isEditing ? values?.editingCompanyName : values?.companyName?.label,
       country: values?.companyLocation?.label,
       settings: {
         twoFA: values.twoFA,
@@ -341,6 +340,7 @@ const EnhancedForm = withFormik({
           await updateCompany(values.selectedItem, data);
           setFieldValue("isEditing", false);
           setFieldValue("selectedItem", null);
+          props.queryAllOrganizations();
         } catch (e) {
           console.log("update company error", e);
           props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
