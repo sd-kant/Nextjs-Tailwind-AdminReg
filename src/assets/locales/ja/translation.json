@@ -203,5 +203,6 @@
   "phone number": "電話番号",
   "2fa auth code": "二要素認証コード",
   "2fa auth code description": "会社では2要素認証が必要です。\n登録した電話番号にSMSテキストが届いているはずです。",
-  "2fa auth code contact administrator": "質問がある場合は、管理者に連絡してください"
+  "2fa auth code contact administrator": "質問がある場合は、管理者に連絡してください",
+  "wearing a device": "wearing a device?"
 }

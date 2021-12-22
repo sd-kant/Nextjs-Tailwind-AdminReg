@@ -31,8 +31,8 @@ import {
   AVAILABLE_JOBS,
   defaultPassword,
   permissionLevels,
-  USER_TYPE_ADMIN,
-  USER_TYPE_ORG_ADMIN
+  USER_TYPE_ADMIN, USER_TYPE_OPERATOR,
+  USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, yesNoOptions
 } from "../../../constant";
 import {
   deleteUserAction,
@@ -45,14 +45,16 @@ import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
 import AddMemberModalV2 from "../../components/AddMemberModalV2";
 import Button from "../../components/Button";
+import CustomPhoneInput from "../../components/PhoneInput";
 
 export const defaultTeamMember = {
   email: '',
   firstName: '',
   lastName: '',
-  permissionLevel: [],
+  permissionLevel: "",
   job: "",
   team: "",
+  wearingDevice: "",
 };
 
 const loadTeamMembers = async (id, showErrorNotification, setFieldValue, initializeTemp = false) => {
@@ -89,11 +91,16 @@ const userSchema = (t) => {
     lastName: Yup.string()
       .required(t('lastName required'))
       .max(1024, t("lastName max error")),
-    permissionLevel: Yup.array()
-      .min(1, t('role required'))
+    permissionLevel: Yup.object()
+      .shape({
+        label: Yup.string()
+          .required(t('role required'))
+      })
       .required(t('role required')),
     job: Yup.object()
       .required(t('role required')),
+    wearingDevice: Yup.object()
+      .required(t('wearing device required')),
     team: Yup.object()
       .shape({
         label: Yup.string()
@@ -218,18 +225,19 @@ const FormInviteModify = (props) => {
   }, [values["teamMembers"], values?.["tempTeamMembers"], allTeams, keyword]);
 
   const formatForFormValue = (it) => {
-    const roleMap = {
-      "1": "TeamAdmin",
-      "2": "Operator",
-    };
+    // const roleMap = {
+    //   "1": "TeamAdmin",
+    //   "2": "Operator",
+    // };
     return {
       userId: it.userId,
       firstName: it.firstName,
       lastName: it.lastName,
       email: it.email,
       job: sortedJobs?.find(ele => ele.value?.toString() === (it?.job?.toString() ?? "14")),
-      // fixme role name
-      permissionLevel: permissionLevels?.filter(ele => it?.userTypes.includes(roleMap[ele.value?.toString()])),
+      // permissionLevel: permissionLevels?.filter(ele => it?.userTypes.includes(roleMap[ele.value?.toString()])),
+      permissionLevel: it?.userTypes.includes(USER_TYPE_TEAM_ADMIN) ? permissionLevels[0]: (it?.userTypes.includes(USER_TYPE_OPERATOR) ? permissionLevels[1] : null),
+      wearingDevice: it?.userTypes.includes(USER_TYPE_OPERATOR) ? yesNoOptions[0] : yesNoOptions[1],
       userTypes: it.userTypes,
       team: formattedTeams?.find(ele => ele.value?.toString() === (it?.teamId ?? id)?.toString()),
       index: it.index,
@@ -277,9 +285,33 @@ const FormInviteModify = (props) => {
     setFieldValue("tempTeamMembers", temp);
   };
 
-  const _handleChangeForTeamUserType = (value, index) => {
+  const _handleChangeForTeamUserType = (optionValue, index, fromWearingDevice) => {
     const temp = (values?.["tempTeamMembers"] && JSON.parse(JSON.stringify(values?.["tempTeamMembers"]))) ?? [];
-    temp[index]["userTypes"] = value?.map(it => it.value?.toString() === "1" ? "TeamAdmin" : "Operator");
+    let roleToAdd = null;
+    let roleToRemove = null;
+
+    if (fromWearingDevice) {
+      if (optionValue?.value?.toString() === "true") {
+        roleToAdd = USER_TYPE_OPERATOR;
+      } else if (optionValue?.value?.toString() === "false") {
+        roleToRemove = USER_TYPE_OPERATOR;
+      }
+    } else {
+      if (optionValue?.value?.toString() === "2") {
+        roleToAdd = USER_TYPE_OPERATOR;
+        roleToRemove = USER_TYPE_TEAM_ADMIN;
+      } else if (optionValue?.value?.toString() === "1") {
+        roleToAdd = USER_TYPE_TEAM_ADMIN;
+      }
+    }
+
+
+    if (roleToRemove && temp[index]["userTypes"]?.includes(roleToRemove)) {
+      temp[index]["userTypes"] = temp[index]["userTypes"].filter(it => it !== roleToRemove);
+    }
+    if (roleToAdd && !temp[index]["userTypes"]?.includes(roleToAdd)) {
+      temp[index]["userTypes"].push(roleToAdd);
+    }
     setFieldValue("tempTeamMembers", temp);
   };
 
@@ -436,6 +468,7 @@ const FormInviteModify = (props) => {
       errorField = errors?.admins;
       touchField = touched?.admins;
     }
+    const wearingDeviceDisabled = user?.permissionLevel?.value?.toString() === "2" || !isAdmin;
     return (
       <div className={clsx(style.User)} key={`${key}-${index}`}>
         <div className={clsx(style.RemoveIconWrapper)}>
@@ -575,7 +608,7 @@ const FormInviteModify = (props) => {
 
             <Select
               className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
-              isMulti
+              // isMulti
               options={permissionLevels}
               placeholder={t("select")}
               value={user?.permissionLevel}
@@ -583,7 +616,7 @@ const FormInviteModify = (props) => {
               isDisabled={!isAdmin}
               menuPortalTarget={document.body}
               menuPosition={'fixed'}
-              onChange={(e) => _handleChangeForTeamUserType(e, user?.originIndex)}
+              onChange={(e) => _handleChangeForTeamUserType(e, user?.originIndex, false)}
             />
             {
               touchField?.[index]?.permissionLevel &&
@@ -594,15 +627,57 @@ const FormInviteModify = (props) => {
           </div>
         </div>
 
-        <div className={clsx(style.UserRow, style.ButtonRow, 'mt-10')}>
-          <div className={style.ButtonWrapper}>
-            <Button
-              title={t('remove from team')}
-              onClick={() => {
-                setSelectedUser(user);
-                setVisibleRemoveModal(true);
-              }}
+        <div className={clsx(style.UserRow, 'mt-10')}>
+        {/*<div className={clsx(style.UserRow, style.ButtonRow, 'mt-10')}>*/}
+          <div className="d-flex flex-column">
+            <label className='font-input-label'>
+              {t("phone number")}
+            </label>
+            <CustomPhoneInput
+              containerClass={style.PhoneNumberContainer}
+              inputClass={style.PhoneNumberInput}
+              dropdownClass={style.PhoneNumberDropdown}
+              value={user?.phoneNumber?.value}
+              onChange={(value, countryCode) => setFieldValue('user.phoneNumber', {value, countryCode})}
             />
+            {
+              (touched?.user?.phoneNumber && errors?.user?.phoneNumber) ? (
+                <span className="font-helper-text text-error mt-10">{errors.user.phoneNumber}</span>
+              ) : /*(<span className="font-helper-text text-white mt-10">{t("required for 2fa")}</span>)*/''
+            }
+          </div>
+
+          <div className={style.GroupWrapper}>
+            <div className="d-flex flex-column">
+              <label className="font-input-label text-white text-capitalize">
+                {t("wearing a device")}
+              </label>
+              <Select
+                className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
+                options={yesNoOptions}
+                placeholder={t("select")}
+                value={user?.wearingDevice}
+                styles={customStyles(wearingDeviceDisabled)}
+                isDisabled={wearingDeviceDisabled}
+                menuPortalTarget={document.body}
+                menuPosition={'fixed'}
+                onChange={(e) => _handleChangeForTeamUserType(e, user?.originIndex, true)}
+              />
+            </div>
+
+            <div className="d-flex flex-column justify-end">
+              <div className={clsx(style.ButtonWrapper)}>
+                <Button
+                  size={'md'}
+                  title={t('remove')}
+                  // title={t('remove from team')}
+                  onClick={() => {
+                    setSelectedUser(user);
+                    setVisibleRemoveModal(true);
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>

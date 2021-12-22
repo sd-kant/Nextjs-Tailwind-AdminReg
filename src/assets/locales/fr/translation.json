@@ -203,5 +203,6 @@
   "phone number": "Numéro de téléphone",
   "2fa auth code": "Code d'authentification à deux facteurs",
   "2fa auth code description": "Votre entreprise requiert une authentification à deux facteurs.\nVous devriez avoir reçu un SMS sur votre numéro de téléphone enregistré.",
-  "2fa auth code contact administrator": "Contactez votre administrateur si vous avez des questions"
+  "2fa auth code contact administrator": "Contactez votre administrateur si vous avez des questions",
+  "wearing a device": "porter un appareil?"
 }

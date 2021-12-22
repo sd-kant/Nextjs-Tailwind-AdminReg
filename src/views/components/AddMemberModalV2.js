@@ -30,7 +30,7 @@ const userSchema = (t) => {
       .required(t('role required')),
     jobRole: Yup.object()
       .required(t('role required')),
-    phoneNumber: Yup.object()
+    /*phoneNumber: Yup.object()
       .required(t('phone number required'))
       .test(
         'is-valid',
@@ -38,7 +38,7 @@ const userSchema = (t) => {
         function (obj) {
           return checkPhoneNumberValidation(obj.value, obj.countryCode);
         },
-      ),
+      ),*/
   }).required();
 };
 
@@ -316,7 +316,7 @@ const AddMemberModalV2 = (
                   </div>
                 </div>
 
-                <div className={clsx(style.UserRow)}>
+                {/*<div className={clsx(style.UserRow)}>
                   <div>
                     <label className='font-input-label'>
                       {t("phone number")}
@@ -339,7 +339,7 @@ const AddMemberModalV2 = (
                   <div>
 
                   </div>
-                </div>
+                </div>*/}
               </div>
           }
           <div className={clsx(style.Footer)}>
@@ -364,10 +364,10 @@ const defaultUser = {
   lastName: '',
   permissionLevel: '',
   jobRole: "",
-  phoneNumber: {
-    value: '',
-    countryCode: '',
-  },
+  // phoneNumber: {
+  //   value: '',
+  //   countryCode: '',
+  // },
 };
 
 const EnhancedForm = withFormik({
@@ -375,7 +375,7 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => props.inviteOnly ? formSchemaForInvite(props.t) : formSchema(props.t)),
   enableReinitialize: true,
   handleSubmit: async (values, {props}) => {
-    props.onAdd({...values.user, phoneNumber: values.user?.phoneNumber?.value});
+    props.onAdd({...values.user/*, phoneNumber: values.user?.phoneNumber?.value*/});
   },
 })(AddMemberModalV2);
 

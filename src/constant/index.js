@@ -123,6 +123,16 @@ export const permissionLevels = [
     label: i18n.t('operator'),
   }
 ];
+export const yesNoOptions = [
+  {
+    value: true,
+    label: i18n.t('yes'),
+  },
+  {
+    value: false,
+    label: i18n.t('no'),
+  },
+];
 export const twoFAOptions = [
   {
     title: i18n.t('on'),
