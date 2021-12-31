@@ -4,7 +4,7 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setRestBarClassAction} from "../../../redux/action/ui";
+import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {loginAction} from "../../../redux/action/auth";
 import {checkPasswordValidation} from "../../../utils";
 import {Link} from "react-router-dom";
@@ -141,6 +141,10 @@ const EnhancedForm = withFormik({
   handleSubmit: (values, {props}) => {
     // history.push("/invite/company");
     const {loginAction} = props;
+    if (values.username?.includes("@")) {
+      props.showErrorNotification(props.t("user your username"));
+      return;
+    }
     loginAction(values.username, values.password);
   }
 })(FormSULogin);
@@ -150,6 +154,7 @@ const mapDispatchToProps = (dispatch) =>
     {
       setRestBarClass: setRestBarClassAction,
       loginAction: loginAction,
+      showErrorNotification: showErrorNotificationAction,
     },
     dispatch
   );
