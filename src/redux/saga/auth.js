@@ -4,7 +4,7 @@ import {
   call,
 } from 'redux-saga/effects';
 import {actionTypes} from '../type';
-import {login, loginWithCode} from "../../http";
+import {login} from "../../http";
 import i18n from '../../i18nextInit';
 import {ableToLogin} from "../../utils";
 import history from "../../history";
@@ -32,14 +32,13 @@ function* loginSaga({payload: {
         username,
         password,
       };
-      apiRes = yield call(login, body);
     } else if (phoneNumber && loginCode) {
       body = {
         phoneNumber,
         loginCode,
       };
-      apiRes = yield call(loginWithCode, body);
     }
+    apiRes = yield call(login, body);
     const responseData = apiRes.data;
     const {
       accessToken: token,

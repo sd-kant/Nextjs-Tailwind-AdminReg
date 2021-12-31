@@ -407,18 +407,6 @@ export const requestSmsCode = phoneNumber => {
   });
 };
 
-export const loginWithCode = body => {
-  return new Promise((resolve, reject) => {
-    instance.post(`/auth/login`, body)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(e => {
-        reject(e);
-      })
-  });
-};
-
 export const retrieveCredentials = (token) => {
   return get(`/user/byToken?token=` + token);
 }
