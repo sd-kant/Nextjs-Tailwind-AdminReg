@@ -18,6 +18,10 @@ instance.interceptors.request.use(
         'Authorization': `Bearer ${token}`,
       }
     }
+    const lang = localStorage.getItem("kop-v2-lang") || 'en';
+    config.headers = {
+      'Accept-Language': lang,
+    }
     return config;
   },
   error => {
