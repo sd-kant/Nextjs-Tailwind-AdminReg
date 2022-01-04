@@ -15,11 +15,13 @@ instance.interceptors.request.use(
 
     if (token) {
       config.headers = {
+        ...config.headers,
         'Authorization': `Bearer ${token}`,
       }
     }
     const lang = localStorage.getItem("kop-v2-lang") || 'en';
     config.headers = {
+      ...config.headers,
       'Accept-Language': lang,
     }
     return config;
