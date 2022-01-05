@@ -8,9 +8,9 @@ import history from "../../../history";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {queryAllTeamsAction} from "../../../redux/action/base";
 import {get} from "lodash";
-import Select from "react-select";
 import {customStyles} from "./FormCompany";
 import backIcon from "../../../assets/images/back.svg";
+import ResponsiveSelect from "../../components/ResponsiveSelect";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -69,7 +69,7 @@ const FormTeamModify = (props) => {
         </div>
 
         <div className='d-flex flex-column mt-40'>
-          <Select
+          <ResponsiveSelect
             className='mt-10 font-heading-small text-black input-field'
             isClearable
             options={formatTeams()}

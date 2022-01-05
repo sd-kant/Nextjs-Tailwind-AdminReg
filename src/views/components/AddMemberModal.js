@@ -7,6 +7,7 @@ import {Form, withFormik} from "formik";
 import * as Yup from "yup";
 import closeIcon from "../../assets/images/close.svg";
 import Select from 'react-select';
+import ResponsiveSelect from "./ResponsiveSelect";
 
 export const defaultTeamMember = {
   email: '',
@@ -255,7 +256,7 @@ const AddMembersModal = (props) => {
                         &nbsp;
                       </label>
                     }
-                    <Select
+                    <ResponsiveSelect
                       className='mt-10 font-heading-small text-black'
                       options={options}
                       name={`users[${index}].userType`}

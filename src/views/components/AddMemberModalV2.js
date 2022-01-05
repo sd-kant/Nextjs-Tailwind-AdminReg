@@ -1,6 +1,5 @@
 import React, {useMemo, useEffect} from "react";
 import Modal from "react-modal";
-import Select from "react-select";
 import {connect} from "react-redux";
 import {get} from "lodash";
 import clsx from "clsx";
@@ -13,6 +12,7 @@ import removeIcon from "../../assets/images/remove.svg";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
 import CustomPhoneInput from "./PhoneInput";
 import {checkPhoneNumberValidation} from "../../utils";
+import ResponsiveSelect from "./ResponsiveSelect";
 
 const userSchema = (t) => {
   return Yup.object().shape({
@@ -169,14 +169,11 @@ const AddMemberModalV2 = (
                       {t("permission level")}
                     </label>
 
-                    <Select
+                    <ResponsiveSelect
                       className={clsx(style.FullWidthSelect, 'mt-10 font-heading-small text-black select-custom-class')}
                       placeholder={t("select")}
                       styles={customStyles()}
                       options={options}
-                      // menuPortalTarget={document.body}
-                      // menuPosition={'fixed'}
-                      // options={permissionLevels}
                       value={user?.permissionLevel}
                       name={'user.permissionLevel'}
                       onChange={(e) => setFieldValue('user.permissionLevel', e)}
@@ -265,7 +262,7 @@ const AddMemberModalV2 = (
                         {t("job")}
                       </label>
 
-                      <Select
+                      <ResponsiveSelect
                         className='mt-10 font-heading-small text-black select-custom-class'
                         placeholder={t("select")}
                         styles={customStyles()}
@@ -293,7 +290,7 @@ const AddMemberModalV2 = (
                         {t("permission level")}
                       </label>
 
-                      <Select
+                      <ResponsiveSelect
                         className='mt-10 font-heading-small text-black select-custom-class'
                         placeholder={t("select")}
                         styles={customStyles()}

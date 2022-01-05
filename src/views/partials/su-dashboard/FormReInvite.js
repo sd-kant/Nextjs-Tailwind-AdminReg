@@ -23,9 +23,9 @@ import {
 } from "./FormRepresentative";
 import style from "./FormReInvite.module.scss";
 import clsx from "clsx";
-import Select from "react-select";
 import {customStyles} from "./FormInvite";
 import {permissionLevels} from "../../../constant";
+import ResponsiveSelect from "../../components/ResponsiveSelect";
 
 export const defaultItem = {
   email: '',
@@ -140,7 +140,7 @@ const FormReInvite = (props) => {
                         {t("permission level")}
                       </label>
 
-                      <Select
+                      <ResponsiveSelect
                         className='mt-10 font-heading-small text-black select-custom-class'
                         options={permissionLevels}
                         name={`users[${index}].userType`}

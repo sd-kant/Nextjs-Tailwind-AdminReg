@@ -25,11 +25,9 @@ import {
 } from "./FormRepresentative";
 import style from "./FormInviteModify.module.scss";
 import clsx from "clsx";
-import Select from "react-select";
 import {_handleSubmit, customStyles} from "./FormInvite";
 import {
   AVAILABLE_JOBS,
-  defaultPassword,
   permissionLevels,
   USER_TYPE_ADMIN, USER_TYPE_OPERATOR,
   USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, yesNoOptions
@@ -46,6 +44,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import AddMemberModalV2 from "../../components/AddMemberModalV2";
 import Button from "../../components/Button";
 import CustomPhoneInput from "../../components/PhoneInput";
+import ResponsiveSelect from "../../components/ResponsiveSelect";
 
 export const defaultTeamMember = {
   email: '',
@@ -555,7 +554,7 @@ const FormInviteModify = (props) => {
               {t("team")}
             </label>
 
-            <Select
+            <ResponsiveSelect
               className={clsx(style.Select, 'mt-10 font-heading-small text-black')}
               isClearable
               options={formattedTeams}
@@ -581,7 +580,7 @@ const FormInviteModify = (props) => {
               {t("job")}
             </label>
 
-            <Select
+            <ResponsiveSelect
               className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
               options={sortedJobs}
               placeholder={t("select")}
@@ -606,7 +605,7 @@ const FormInviteModify = (props) => {
               {t("permission level")}
             </label>
 
-            <Select
+            <ResponsiveSelect
               className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
               // isMulti
               options={permissionLevels}
@@ -652,7 +651,7 @@ const FormInviteModify = (props) => {
               <label className="font-input-label text-white text-capitalize">
                 {t("wearing a device")}
               </label>
-              <Select
+              <ResponsiveSelect
                 className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
                 options={yesNoOptions}
                 placeholder={t("select")}

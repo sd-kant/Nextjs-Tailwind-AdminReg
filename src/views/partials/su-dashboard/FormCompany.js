@@ -5,7 +5,6 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import history from "../../../history";
-import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import {createCompany, updateCompany} from "../../../http";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
@@ -20,6 +19,7 @@ import {get} from "lodash";
 import ButtonGroup from "../../components/ButtonGroup";
 import clsx from "clsx";
 import style from "./FormCompany.module.scss";
+import ResponsiveSelect from "../../components/ResponsiveSelect";
 
 export const customStyles = (disabled = false) => ({
   option: (provided, state) => ({
@@ -186,7 +186,7 @@ const FormCompany = (props) => {
                     menuPosition={'fixed'}
                     onChange={(value) => changeHandler("companyName", value)}
                   /> :
-                  <Select
+                  <ResponsiveSelect
                     className='mt-10 font-heading-small text-black input-field'
                     isClearable
                     options={organizations}
@@ -217,7 +217,7 @@ const FormCompany = (props) => {
             {t("country")}
           </label>
 
-          <Select
+          <ResponsiveSelect
             className='mt-10 font-heading-small text-black input-field'
             options={options}
             value={values["companyLocation"]}

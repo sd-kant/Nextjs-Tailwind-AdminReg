@@ -25,11 +25,11 @@ import {
 } from "./FormRepresentative";
 import style from "./FormInvite.module.scss";
 import clsx from "clsx";
-import Select from "react-select";
 import {AVAILABLE_JOBS, permissionLevels, USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
 import CustomPhoneInput from "../../components/PhoneInput";
 import {checkPhoneNumberValidation} from "../../../utils";
+import ResponsiveSelect from "../../components/ResponsiveSelect";
 
 export const defaultTeamMember = {
   email: '',
@@ -286,7 +286,7 @@ const FormInvite = (props) => {
                 {t("job")}
               </label>
 
-              <Select
+              <ResponsiveSelect
                 className='mt-10 font-heading-small text-black select-custom-class'
                 options={sortedJobs}
                 name={`${formInputName}.job`}
@@ -311,7 +311,7 @@ const FormInvite = (props) => {
                 {t("permission level")}
               </label>
 
-              <Select
+              <ResponsiveSelect
                 className='mt-10 font-heading-small text-black select-custom-class'
                 options={options}
                 // options={permissionLevels}
