@@ -60,11 +60,13 @@ const userSchema = (t) => {
     job: Yup.object()
       .required(t('role required')),
     phoneNumber: Yup.object()
-      .required(t('phone number required'))
+      // .required(t('phone number required'))
       .test(
         'is-valid',
         t('phone number invalid'),
         function (obj) {
+          if (!obj.value)
+            return true;
           return checkPhoneNumberValidation(obj.value, obj.countryCode);
         },
       ),
@@ -512,6 +514,13 @@ const formatJob = (users) => {
   }));
 }
 
+const formatPhoneNumber = (users) => {
+  return users && users.map((user) => ({
+    ...user,
+    phoneNumber: user?.phoneNumber?.value ? `+${user?.phoneNumber?.value}` : null,
+  }));
+}
+
 const onFinish = (setVisibleSuccessModal) => {
   let keysToRemove = ["kop-team-id", "kop-picked-organization-id"];
   keysToRemove.map(key => localStorage.removeItem(key));
@@ -538,7 +547,7 @@ export const _handleSubmit = (
 ) => {
   return new Promise((resolve, reject) => {
     setLoading(true);
-    const users = formatUserType(formatJob(lowercaseEmail(unFormattedUsers)));
+    const users = formatUserType(formatPhoneNumber(formatJob(lowercaseEmail(unFormattedUsers))));
     const promises = [];
     users?.forEach(it => {
       // it["emailAddress"] = it.email;
