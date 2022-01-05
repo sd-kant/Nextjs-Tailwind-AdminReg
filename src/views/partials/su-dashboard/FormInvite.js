@@ -187,10 +187,11 @@ const FormInvite = (props) => {
   const isManual = pathname.split("/").includes("manual");
 
   const goBack = () => {
-    if (isManual)
+    history.back();
+    /*if (isManual)
       navigateTo('/invite/select');
     else
-      navigateTo('/invite/upload');
+      navigateTo('/invite/upload');*/
   };
 
   const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
