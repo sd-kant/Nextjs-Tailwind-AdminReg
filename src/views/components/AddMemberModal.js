@@ -80,7 +80,7 @@ const AddMembersModal = (props) => {
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isSelected ? '#DE7D2C' : 'white',
+      backgroundColor: state.isSelected ? '#DE7D2C' : (state.isFocused ? '#5BAEB6': 'white'),
       width: 200,
       color: 'black',
       fontSize: '21px',

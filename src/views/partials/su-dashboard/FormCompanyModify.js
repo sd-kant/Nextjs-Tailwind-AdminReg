@@ -4,28 +4,12 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import history from "../../../history";
 import Select from 'react-select';
 import {getCompany} from "../../../http";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {AVAILABLE_COUNTRIES} from "../../../constant";
-import {get} from "lodash";
 import Toggle from "../../components/Toggle";
-
-export const customStyles = (disabled = false) => ({
-  option: (provided, state) => ({
-    ...provided,
-    backgroundColor: state.isSelected ? '#DE7D2C' : 'white',
-    color: 'black',
-    fontSize: '21px',
-    lineHeight: '24.13px',
-    zIndex: 1,
-  }),
-  control: styles => ({...styles, border: 'none', outline: 'none', boxShadow: 'none', zIndex: 1}),
-  menu: styles => ({...styles, zIndex: 2}),
-  input: styles => ({...styles,zIndex: 1,}),
-  singleValue: (provided) => ({...provided,zIndex: 1,})
-});
+import {customStyles} from "./FormCompany";
 
 const formSchema = (t) => {
   return Yup.object().shape({

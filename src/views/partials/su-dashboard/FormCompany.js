@@ -24,7 +24,7 @@ import style from "./FormCompany.module.scss";
 export const customStyles = (disabled = false) => ({
   option: (provided, state) => ({
     ...provided,
-    backgroundColor: state.isSelected ? '#DE7D2C' : 'white',
+    backgroundColor: state.isSelected ? '#DE7D2C' : (state.isFocused ? '#5BAEB6': 'white'),
     color: 'black',
     fontSize: '21px',
     lineHeight: '24.13px',

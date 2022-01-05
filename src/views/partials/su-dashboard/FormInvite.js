@@ -90,7 +90,7 @@ export const customStyles = (disabled = false) => ({
   },
   option: (provided, state) => ({
     ...provided,
-    backgroundColor: state.isSelected ? '#DE7D2C' : 'white',
+    backgroundColor: state.isSelected ? '#DE7D2C' : (state.isFocused ? '#5BAEB6': 'white'),
     zIndex: 1,
     color: 'black',
     fontSize: '21px',
