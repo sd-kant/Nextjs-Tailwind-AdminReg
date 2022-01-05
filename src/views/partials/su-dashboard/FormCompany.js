@@ -245,6 +245,7 @@ const FormCompany = (props) => {
             <ButtonGroup
               size={'sm'}
               rounded={true}
+              disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
               options={passwordMinLengthOptions}
               value={values["passwordMinimumLength"]}
               id={'password-min-length-option'}
@@ -262,6 +263,7 @@ const FormCompany = (props) => {
             <ButtonGroup
               size={'sm'}
               rounded={true}
+              disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
               options={passwordExpirationDaysOptions}
               value={values["passwordExpirationDays"]}
               id={'password-expiration-days-option'}
@@ -278,6 +280,7 @@ const FormCompany = (props) => {
           <div className='d-inline-block mt-10'>
             <ButtonGroup
               options={twoFAOptions}
+              disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
               value={values["twoFA"]}
               id={'2fa-option'}
               setValue={(v) => changeHandler("twoFA", v)}
