@@ -78,7 +78,12 @@ function* loginSaga({payload: {
         }
       }
     } else {
-      // todo show notification: normal user is not allowed to login to admin portal
+      yield put({
+        type: actionTypes.ERROR_NOTIFICATION,
+        payload: {
+          msg: i18n.t("msg login not allowed"),
+        }
+      });
     }
   } catch (e) {
     console.log(e);

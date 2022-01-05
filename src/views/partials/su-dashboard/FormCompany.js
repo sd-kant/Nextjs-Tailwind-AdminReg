@@ -337,7 +337,6 @@ const EnhancedForm = withFormik({
 
     if (values.isEditing) {
       if (values.selectedItem) {
-        // todo update company, and cancel editing
         try {
           props.setLoading(true);
           await updateCompany(values.selectedItem, data);

@@ -12,7 +12,6 @@ import FormUpload from "../partials/su-dashboard/FormUpload";
 import FormReInvite from "../partials/su-dashboard/FormReInvite";
 import FormTeamModify from "../partials/su-dashboard/FormTeamModify";
 import FormInviteModify from "../partials/su-dashboard/FormInviteModify";
-// import FormCompanyModify from "../partials/su-dashboard/FormCompanyModify";
 
 const Invite = (
   {
@@ -60,18 +59,6 @@ const Invite = (
             <FormTeam/>
           </Route>
         }
-        {/*{
-          (isSuperAdmin || isOrgAdmin) &&
-          <Route
-            exact
-            path='/invite/company/:id'
-            render={matchProps => (
-              <FormCompanyModify
-                {...matchProps}
-              />
-            )}
-          />
-        }*/}
 
         <Route
           exact

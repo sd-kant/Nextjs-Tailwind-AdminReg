@@ -173,45 +173,9 @@ export const createTeam = (body) => {
   });
 }
 
-export const inviteRegisteredUsersToTeam = (body) => {
-  return new Promise((resolve, reject) => {
-    instance.post("team/invite", body)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(e => {
-        reject(e);
-      })
-  });
-}
-
-export const inviteRegisteredUsersToTeamAsAdmin = (body) => {
-  return new Promise((resolve, reject) => {
-    instance.post("team/invite/admin", body)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(e => {
-        reject(e);
-      })
-  });
-}
-
 export const queryAllOrganizations = () => {
   return new Promise((resolve, reject) => {
     instance.get("organization")
-      .then(res => {
-        resolve(res);
-      })
-      .catch(e => {
-        reject(e);
-      })
-  });
-}
-
-export const queryTeamsByToken = () => {
-  return new Promise((resolve, reject) => {
-    instance.post("team/queryAll", {})
       .then(res => {
         resolve(res);
       })
@@ -236,18 +200,6 @@ export const queryTeams = () => {
 export const sendRegistrationEmail = (data) => {
   return new Promise((resolve, reject) => {
     instance.post("email/reSend", data)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(e => {
-        reject(e);
-      })
-  });
-}
-
-export const sendPasswordRecoveryEmail = (data, mode) => {
-  return new Promise((resolve, reject) => {
-    instance.post(`user/reset/password/sendEmail/${mode}`, data)
       .then(res => {
         resolve(res);
       })
@@ -292,42 +244,6 @@ export const deleteUser = (userId) => {
       })
   });
 }
-
-export const modifyTeamMember = (payload) => {
-  return new Promise((resolve, reject) => {
-    instance.post(`team/updateUserInfo`, payload)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(e => {
-        reject(e);
-      })
-  });
-}
-
-export const updateUser = user => {
-  return new Promise((resolve, reject) => {
-    instance.patch(`user`, user)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(e => {
-        reject(e);
-      })
-  });
-};
-
-export const createUser = user => {
-  return new Promise((resolve, reject) => {
-    instance.post(`user`, user)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(e => {
-        reject(e);
-      })
-  });
-};
 
 export const createUserByAdmin = (orgId, user) => {
   return new Promise((resolve, reject) => {
@@ -389,18 +305,6 @@ export const resetPasswordV2 = payload => {
   });
 };
 
-export const getCompany = id => {
-  return new Promise((resolve, reject) => {
-    instance.get(`/organization/${id}`)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(e => {
-        reject(e);
-      })
-  });
-};
-
 export const requestSmsCode = phoneNumber => {
   return new Promise((resolve, reject) => {
     instance.get(`/auth/loginCode/${phoneNumber}`)
@@ -412,14 +316,6 @@ export const requestSmsCode = phoneNumber => {
       })
   });
 };
-
-export const retrieveCredentials = (token) => {
-  return get(`/user/byToken?token=` + token);
-}
-
-export const resetPassword = (body, token) => {
-  return post("/user/update/password", body, token);
-}
 
 export const getMyProfileWithToken = token => {
   return get("/user", token);
