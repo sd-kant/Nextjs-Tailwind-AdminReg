@@ -7,13 +7,13 @@ export const getTokenFromUrl = () => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   // replace space because + was replaced with space
-  return urlParams.get('token') && urlParams.get('token').replace(" ", "+");
+  return urlParams.get('token')?.replace(/ /g, '+');
 }
 
 export const getParamFromUrl = key => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  return urlParams.get(key);
+  return urlParams.get(key)?.replace(/ /g, '+');
 }
 
 export const checkPasswordValidation = (password) => {
@@ -26,20 +26,6 @@ export const checkPhoneNumberValidation = (value, country) => {
     return false;
   }
   return isValidPhoneNumber(value, country?.toUpperCase() ?? 'US');
-}
-
-export const formatTokenForHeader = (token) => {
-  if (token) {
-    return token.replaceAll(" ", "+");
-  }
-  return null;
-}
-
-export const formatTokenForQueryParam = (token) => {
-  if (token) {
-    return encodeURIComponent(token.replaceAll(" ", "+"));
-  }
-  return null;
 }
 
 export const ableToLogin = userType => {
