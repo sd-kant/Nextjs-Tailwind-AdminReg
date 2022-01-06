@@ -8,6 +8,7 @@ export const WidthProvider = (
   }) => {
   const [width, setWidth] = React.useState(null);
   React.useEffect(() => {
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
