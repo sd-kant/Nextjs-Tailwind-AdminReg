@@ -621,7 +621,7 @@ const EnhancedForm = withFormik({
     const {showErrorNotification, showSuccessNotification, setLoading, setVisibleSuccessModal, t} = props;
     let users = values?.users;
     const organizationId = localStorage.getItem("kop-v2-picked-organization-id");
-    const teamId = localStorage.getItem("kop-v2-team-id")
+    const teamId = localStorage.getItem("kop-v2-team-id");
     if (!organizationId) {
       showErrorNotification(
         t("msg create organization before inviting users"),

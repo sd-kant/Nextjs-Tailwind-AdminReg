@@ -11,6 +11,7 @@ import {get} from "lodash";
 import {customStyles} from "./FormCompany";
 import backIcon from "../../../assets/images/back.svg";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
+import {queryTeamMembers} from "../../../http";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -110,7 +111,29 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
-    history.push(`/invite/edit/modify/${values?.name?.value}`);
+    if (values?.name?.value) {
+      const {setLoading, showErrorNotification} = props;
+      try {
+        setLoading(true);
+        const teamMembersResponse = await queryTeamMembers(values?.name?.value);
+        let teamMembers = teamMembersResponse?.data?.members;
+        if (teamMembers?.length > 0) {
+          history.push(`/invite/edit/modify/${values?.name?.value}`);
+        } else {
+          const {allTeams} = props;
+          const team = allTeams.find(it => it.id?.toString() === values?.name?.value?.toString());
+          if (team) {
+            localStorage.setItem("kop-v2-picked-organization-id", team.orgId);
+            localStorage.setItem("kop-v2-team-id", team.id);
+            history.push(`/invite/edit/manual`);
+          }
+        }
+      } catch (e) {
+        showErrorNotification(e.response?.data?.message);
+      } finally {
+        setLoading(false);
+      }
+    }
   }
 })(FormTeamModify);
 

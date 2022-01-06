@@ -165,7 +165,7 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
     if (values?.name?.created) {
-      localStorage.setItem("kop-team-id", values?.name?.value);
+      localStorage.setItem("kop-v2-team-id", values?.name?.value);
       history.push("/invite/select");
     } else {
       const data = {
@@ -184,7 +184,7 @@ const EnhancedForm = withFormik({
         } else {
           // store created company id in local storage, so that we can use it when inviting users
           const teamData = responseData?.data;
-          localStorage.setItem("kop-team-id", teamData?.id);
+          localStorage.setItem("kop-v2-team-id", teamData?.id);
           history.push("/invite/select");
         }
       } catch (e) {
