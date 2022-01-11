@@ -5,7 +5,7 @@ import {useWidthContext} from "../../../providers/WidthProvider";
 const ResponsiveSelect = (
   {
     className,
-    isClearable = true,
+    isClearable = false,
     options = [],
     value = null,
     styles = null,
