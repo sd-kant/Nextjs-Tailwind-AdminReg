@@ -22,3 +22,17 @@ export const setTokenAction = token => ({
     token,
   }
 });
+
+export const setBaseUriAction = baseUri => ({
+  type: actionTypes.SET_BASE_URI,
+  payload: {
+    baseUri,
+  }
+});
+
+export const setMobileTokenAction = token => ({
+  type: actionTypes.SET_MOBILE_TOKEN,
+  payload: {
+    token,
+  }
+});

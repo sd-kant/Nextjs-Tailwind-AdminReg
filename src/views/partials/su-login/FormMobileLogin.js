@@ -4,12 +4,14 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
-import {loginAction} from "../../../redux/action/auth";
+import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {loginAction, setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth";
 import {checkPasswordValidation} from "../../../utils";
 import {Link} from "react-router-dom";
 import MicrosoftLogin from "react-microsoft-login";
-import {microsoftAppClientID} from "../../../config";
+import {microsoftAppClientID, productionApiBaseUrl} from "../../../config";
+import axios from "axios";
+import history from "../../../history";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -31,7 +33,7 @@ const formSchema = (t) => {
   });
 };
 
-const FormSULogin = (props) => {
+const FormMobileLogin = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
 
   useEffect(() => {
@@ -100,9 +102,10 @@ const FormSULogin = (props) => {
         </div>
 
         <div className='mt-40 d-flex flex-column'>
-          <Link to={"/forgot-password"} className="font-input-label text-orange no-underline">
+          {/*fixme update link before moving production version*/}
+          <a href="https://admin-kenzen.netlify.app/forgot-password" className="font-input-label text-orange no-underline">
             {t("forgot password")}
-          </Link>
+          </a>
         </div>
       </div>
 
@@ -138,15 +141,52 @@ const EnhancedForm = withFormik({
     password: '',
   }),
   validationSchema: ((props) => formSchema(props.t)),
-  handleSubmit: (values, {props}) => {
-    const {loginAction} = props;
+  handleSubmit: async (values, {props}) => {
+    const {t, showErrorNotification, setLoading, setBaseUri, setMobileToken} = props;
     if (values.username?.includes("@")) {
-      props.showErrorNotification(props.t("use your username"));
+      showErrorNotification(t("use your username"));
       return;
     }
-    loginAction(values.username, values.password);
+    try {
+      setLoading(true);
+      const res = await axios.get(`${productionApiBaseUrl}/master/lookup/username/${values.username}`);
+      const {baseUri} = res.data;
+
+      const loginRes = await axios.post(`${baseUri}/auth/login`, values);
+      const {mfa, havePhone, accessToken, refreshToken} = loginRes.data;
+      if (!mfa) {
+        // deliver token to app
+        const payload = {
+          command: "login",
+          baseUri: baseUri,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        };
+
+        if (window.hasOwnProperty("kenzenAndroidClient")) {
+          window.kenzenAndroidClient.postMessage(JSON.stringify(payload));
+        } else if (window.hasOwnProperty("webkit")) {
+          window.webkit.messageHandlers.kenzenIosClient.postMessage(payload);
+        } else {
+          console.log("Oh shit. What do I do with the token");
+        }
+      } else {
+        setBaseUri(baseUri);
+        setMobileToken(accessToken);
+
+        if (havePhone) {
+          history.push('/mobile-phone-verification/1');
+        } else {
+          history.push('/mobile-phone-register');
+        }
+      }
+    } catch (e) {
+      showErrorNotification(e.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
   }
-})(FormSULogin);
+})(FormMobileLogin);
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
@@ -154,6 +194,9 @@ const mapDispatchToProps = (dispatch) =>
       setRestBarClass: setRestBarClassAction,
       loginAction: loginAction,
       showErrorNotification: showErrorNotificationAction,
+      setBaseUri: setBaseUriAction,
+      setMobileToken: setMobileTokenAction,
+      setLoading: setLoadingAction,
     },
     dispatch
   );

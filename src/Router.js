@@ -13,6 +13,9 @@ import ResetPassword from "./views/pages/ResetPassword";
 import {ableToLogin} from "./utils";
 import PhoneVerification from "./views/pages/PhoneVerification";
 import PhoneRegister from "./views/pages/PhoneRegister";
+import MobileLogin from "./views/pages/MobileLogin";
+import MobilePhoneRegister from "./views/pages/MobilePhoneRegister";
+import MobilePhoneVerification from "./views/pages/MobilePhoneVerification";
 
 const Router = ({token, userType, loggedIn}) => {
   return (
@@ -83,6 +86,33 @@ const Router = ({token, userType, loggedIn}) => {
               path="/login"
               render={(props) => (
                 <SULogin
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/mobile-login"
+              render={(props) => (
+                <MobileLogin
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/mobile-phone-register"
+              render={(props) => (
+                <MobilePhoneRegister
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/mobile-phone-verification/:mode"
+              render={(props) => (
+                <MobilePhoneVerification
                   {...props}
                 />
               )}

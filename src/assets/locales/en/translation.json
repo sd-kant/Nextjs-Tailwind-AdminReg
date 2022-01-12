@@ -205,7 +205,7 @@
   "2fa auth code description": "Your company requires two-factor authentication.\nYou should have received an SMS text to your registered phone number.",
   "2fa auth code contact administrator": "Contact your administrator is you have questions",
   "wearing a device": "wearing a device?",
-  "user your username": "Please use your username",
+  "use your username": "Please use your username",
   "wearing device required": "Please select yes or no",
   "team": "Team"
 }
