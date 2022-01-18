@@ -128,7 +128,7 @@
   "create another": "別のものを作成",
   "create another team": "別のチームを作成",
   "complete": "完了",
-  "administrator": "管理者",
+  "administrator": "チーム管理者",
   "operator": "運用者",
   "administrators": "管理者",
   "operators": "演算子",
@@ -207,5 +207,9 @@
   "wearing a device": "wearing a device?",
   "use your username": "ユーザー名を使用してください",
   "wearing device required": "はいまたはいいえを選択してください",
-  "team": "チーム"
+  "team": "チーム",
+  "search": "探す",
+  "super admin": "管理者スーパーユーザー",
+  "org admin": "組織管理者",
+  "re-invite user": "ユーザーを再招待する"
 }

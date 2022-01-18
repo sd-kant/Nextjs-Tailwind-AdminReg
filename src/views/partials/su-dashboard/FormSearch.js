@@ -6,7 +6,6 @@ import {Form, withFormik} from "formik";
 import {withTranslation} from "react-i18next";
 import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
-import plusIcon from "../../../assets/images/plus-circle-fire.svg";
 import removeIcon from "../../../assets/images/remove.svg";
 import searchIcon from "../../../assets/images/search.svg";
 import {
@@ -23,10 +22,11 @@ import {
 import {
   lowercaseEmail,
 } from "./FormRepresentative";
-import style from "./FormInviteModify.module.scss";
+import style from "./FormSearch.module.scss";
 import clsx from "clsx";
-import {_handleSubmit, customStyles} from "./FormInvite";
+import {customStyles} from "./FormInvite";
 import {
+  actions,
   AVAILABLE_JOBS,
   permissionLevels,
   USER_TYPE_ADMIN, USER_TYPE_OPERATOR,
@@ -37,14 +37,15 @@ import {
   queryAllTeamsAction,
   removeTeamMemberAction,
 } from "../../../redux/action/base";
-import {queryTeamMembers as queryTeamMembersAPI} from "../../../http";
+import {searchMembers as searchMembersAPI} from "../../../http";
 import {get} from "lodash";
 import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
-import AddMemberModalV2 from "../../components/AddMemberModalV2";
-import Button from "../../components/Button";
 import CustomPhoneInput from "../../components/PhoneInput";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
+import DropdownButton from "../../components/DropdownButton";
+
+let searchTimeout = null;
 
 export const defaultTeamMember = {
   email: '',
@@ -54,15 +55,18 @@ export const defaultTeamMember = {
   job: "",
   team: "",
   wearingDevice: "",
+  action: 1,
 };
 
-const loadTeamMembers = async (id, showErrorNotification, setFieldValue, initializeTemp = false) => {
-  if (id) {
+const loadMembers = async (keyword, showErrorNotification, setFieldValue, initializeTemp = false) => {
+  const trimmedKeyword = keyword?.trim()?.toLowerCase();
+  if (trimmedKeyword) {
     try {
-      const teamMembersResponse = await queryTeamMembersAPI(id);
-      let teamMembers = teamMembersResponse?.data?.members;
+      const teamMembersResponse = await searchMembersAPI(trimmedKeyword);
+      let teamMembers = teamMembersResponse?.data;
       teamMembers.forEach((item, index) => {
         item['index'] = index;
+        item['action'] = 1;
       });
       teamMembers?.sort((a, b) => {
         return a?.lastName?.localeCompare(b?.lastName);
@@ -75,10 +79,9 @@ const loadTeamMembers = async (id, showErrorNotification, setFieldValue, initial
       showErrorNotification(e?.response?.data?.message);
     }
   }
-  return [];
 };
 
-const userSchema = (t) => {
+const userSchema = (t, values) => {
   return Yup.object().shape({
     email: Yup.string()
       .required(t('email required'))
@@ -113,13 +116,10 @@ const userSchema = (t) => {
   }).required();
 }
 
-const formSchema = (t) => {
+const formSchema = (t, values) => {
   return Yup.object().shape({
     users: Yup.array().of(
-      userSchema(t),
-    ),
-    admins: Yup.array().of(
-      userSchema(t),
+      userSchema(t, values),
     ),
   });
 };
@@ -132,12 +132,10 @@ const FormInviteModify = (props) => {
     errors,
     touched,
     t,
-    match,
     loading,
     setLoading,
     setFieldValue,
     showErrorNotification,
-    showSuccessNotification,
     allTeams,
     queryAllTeams,
     setRestBarClass,
@@ -146,29 +144,34 @@ const FormInviteModify = (props) => {
     deleteUser: deleteAction,
     userType,
   } = props;
-  const id = match?.params?.id;
   const [keyword, setKeyword] = useState('');
   const [newChanges, setNewChanges] = useState(0);
   const [visibleDeleteModal, setVisibleDeleteModal] = useState(false);
   const [visibleRemoveModal, setVisibleRemoveModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [visibleAddModal, setVisibleAddModal] = useState(false);
-  const [inviteMode, setInviteMode] = useState("invite-only"); // invite-only, register-invite
-  const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
   const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
+  const [action, setAction] = useState(1);
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
-    if (id) {
-      loadTeamMembers(id, showErrorNotification, setFieldValue, true).catch(e => console.log(e));
-    }
     loadAllTeams();
     countChanges();
 
     return () => {
       clearInterval(intervalForChangesDetect);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    searchTimeout = setTimeout(() => {
+      loadMembers(keyword, showErrorNotification, setFieldValue, true).catch(e => console.log(e));
+    }, 700);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keyword]);
 
   useEffect(() => {
     if (!loading) {
@@ -185,51 +188,30 @@ const FormInviteModify = (props) => {
 
   useEffect(() => {
     let users = [];
-    let admins = [];
 
     values?.["tempTeamMembers"]?.forEach((it, index) => {
-      let fitOnKeyword = false;
-      if (keyword && keyword.trim() !== '') {
-        const trimmedKeyword = keyword.trim().toLowerCase();
-        if (
-          it.firstName?.toLowerCase()?.includes(trimmedKeyword) ||
-          it.lastName?.toLowerCase()?.includes(trimmedKeyword) ||
-          it.email?.toLowerCase()?.includes(trimmedKeyword)
-        ) {
-          fitOnKeyword = true;
-        }
-      } else {
-        fitOnKeyword = true;
-      }
-
-      if (fitOnKeyword) {
-        const item = {
-          ...formatForFormValue(it),
-          originIndex: index,
-        };
-        const updated = isUpdated(item);
-        if (item?.userTypes?.includes("TeamAdmin")) { // admins
-          admins.push({
-            ...item,
-            updated,
-          })
-        } else {
-          users.push({
-            ...item,
-            updated,
-          });
-        }
-      }
+      const item = {
+        ...formatForFormValue(it),
+        originIndex: index,
+      };
+      const updated = isUpdated(item);
+      users.push({
+        ...item,
+        updated,
+      });
     });
 
     setFieldValue("users", users);
-    setFieldValue("admins", admins);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values["teamMembers"], values?.["tempTeamMembers"], allTeams, keyword]);
+  }, [values["teamMembers"], values?.["tempTeamMembers"], allTeams]);
 
   const formatForFormValue = (it) => {
     let permissionLevel = null;
-    if (it?.userTypes?.includes(USER_TYPE_TEAM_ADMIN)) {
+    if (it?.userTypes?.includes(USER_TYPE_ADMIN)) {
+      permissionLevel = permissionLevels?.find(it => it.value?.toString() === "3");
+    } else if (it?.userTypes?.includes(USER_TYPE_ORG_ADMIN)) {
+      permissionLevel = permissionLevels?.find(it => it.value?.toString() === "4");
+    } else if (it?.userTypes?.includes(USER_TYPE_TEAM_ADMIN)) {
       permissionLevel = permissionLevels?.find(it => it.value?.toString() === "1");
     } else if (it?.userTypes?.includes(USER_TYPE_OPERATOR)) {
       permissionLevel = permissionLevels?.find(it => it.value?.toString() === "2");
@@ -240,12 +222,13 @@ const FormInviteModify = (props) => {
       lastName: it.lastName,
       email: it.email,
       job: sortedJobs?.find(ele => ele.value?.toString() === (it?.job?.toString() ?? "14")),
-      // permissionLevel: permissionLevels?.filter(ele => it?.userTypes.includes(roleMap[ele.value?.toString()])),
       permissionLevel: permissionLevel,
       wearingDevice: it?.userTypes.includes(USER_TYPE_OPERATOR) ? yesNoOptions[0] : yesNoOptions[1],
       userTypes: it.userTypes,
-      team: formattedTeams?.find(ele => ele.value?.toString() === (it?.teamId ?? id)?.toString()),
+      team: formattedTeams?.find(ele => ele.value?.toString() === (it?.teamId)?.toString()),
+      teamId: it?.teamId,
       index: it.index,
+      action: it.action,
     }
   };
 
@@ -268,19 +251,14 @@ const FormInviteModify = (props) => {
     }))) || [];
   }, [allTeams]);
 
-  const addAnother = () => {
-    setVisibleAddModal(true);
-  };
-
   const goBack = () => {
     navigateTo('/invite/team-modify');
   };
 
   const deleteUser = () => {
-    if (selectedUser) {
-      if (selectedUser?.userId) {
-        deleteAction(selectedUser.userId);
-      }
+    if (selectedUser?.userId) {
+      alert('todo delete user');
+      // deleteAction(selectedUser.userId);
     }
   };
 
@@ -291,6 +269,7 @@ const FormInviteModify = (props) => {
   };
 
   const _handleChangeForTeamUserType = (optionValue, index, fromWearingDevice) => {
+    // fixme check if loggedin-user has right to change role
     const temp = (values?.["tempTeamMembers"] && JSON.parse(JSON.stringify(values?.["tempTeamMembers"]))) ?? [];
     let roleToAdd = null;
     let roleToRemove = [];
@@ -356,7 +335,7 @@ const FormInviteModify = (props) => {
             ret = true;
           }
         }
-        if (get(user, "team.value")?.toString() !== id?.toString()) {
+        if (get(user, "team.value")?.toString() !== get(user, "teamId")?.toString()) {
           ret = true;
         }
         if (ret === false) {
@@ -367,78 +346,6 @@ const FormInviteModify = (props) => {
       return ret;
     } else { // if item is newly added
       return true;
-    }
-  };
-
-  const addHandler = async user => {
-    if (!id) {
-      return;
-    }
-    const alreadyExist = values?.teamMembers?.findIndex(it => it.email === user.email) !== -1;
-    if (alreadyExist) {
-      showErrorNotification(
-        '',
-        t('team has same email user'),
-      );
-      return;
-    }
-
-    if (inviteMode === 'invite-only') {
-      try {
-        setLoading(true);
-        const inviteResponse = await inviteTeamMember(id, {
-          add: [
-            {
-              email: user.email,
-              userTypes: [user.permissionLevel?.value?.toString() === "1" ? "TeamAdmin" : "Operator"],
-            },
-          ],
-        });
-        if (inviteResponse?.data?.added?.length !== 1) {
-          setInviteMode('register-invite');
-        } else {
-          loadTeamMembers(id, showErrorNotification, setFieldValue, true).catch(e => console.log(e));
-          setVisibleAddModal(false);
-          setVisibleAddMemberSuccessModal(true);
-        }
-      } catch (e) {
-        showErrorNotification(e.response?.data?.message)
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      try {
-        setLoading(true);
-        const users = [{
-          ...user,
-          job: user.jobRole,
-          userType: user.permissionLevel,
-        }];
-        // const organizationId = localStorage.getItem("kop-v2-picked-organization-id");
-        const organizationId = allTeams?.find(it => it?.id?.toString() === id?.toString())?.orgId;
-        if (!organizationId) {
-          history.push("/invite/company");
-          return;
-        }
-        const {numberOfSuccess} =
-          await _handleSubmit({
-            users,
-            setLoading,
-            showSuccessNotification,
-            organizationId,
-            teamId: id,
-            t,
-          });
-        loadTeamMembers(id, showErrorNotification, setFieldValue, true).catch(e => console.log(e));
-        if (numberOfSuccess === 1) {
-          setVisibleAddModal(false);
-          setVisibleAddMemberSuccessModal(true);
-        }
-      } catch (e) {
-        console.log('_handleSubmit error', e);
-      } finally {
-        setLoading(false);
-      }
     }
   };
 
@@ -456,10 +363,10 @@ const FormInviteModify = (props) => {
   };
 
   const removeFromTeam = async () => {
-    if (id && selectedUser?.email) {
+    if (selectedUser?.teamId && selectedUser?.email) {
       try {
         setLoading(true);
-        await inviteTeamMember(id, {
+        await inviteTeamMember(selectedUser?.teamId, {
           remove: [selectedUser.email],
         });
 
@@ -477,13 +384,44 @@ const FormInviteModify = (props) => {
     }
   };
 
+  const reInviteUser = () => {
+    // todo if organization admin will receive invitation?
+    alert('todo re-invite user');
+  };
+
+  const _onAction = user => {
+    switch (user?.action) {
+      case 1:
+        setSelectedUser(user);
+        reInviteUser();
+        break;
+      case 2:
+        setSelectedUser(user);
+        setVisibleRemoveModal(true);
+        break;
+      case 3:
+        setSelectedUser(user);
+        setVisibleDeleteModal(true);
+        break;
+      default:
+        console.log('action type not valid');
+    }
+  }
+
+  const doableActions = useMemo(() => {
+    if (userType?.includes(USER_TYPE_ADMIN)) {
+      return actions;
+    } else if (userType?.includes(USER_TYPE_ORG_ADMIN)) {
+      return actions;
+    } else if (userType?.includes(USER_TYPE_TEAM_ADMIN)) {
+      return actions.filter(it => it.value !== 3);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userType]);
+
   const renderUser = (user, index, key) => {
     let errorField = errors?.users;
     let touchField = touched?.users;
-    if (key === 'admin') {
-      errorField = errors?.admins;
-      touchField = touched?.admins;
-    }
     const wearingDeviceDisabled = user?.permissionLevel?.value?.toString() === "2" || !isAdmin;
     return (
       <div className={clsx(style.User)} key={`${key}-${index}`}>
@@ -621,7 +559,7 @@ const FormInviteModify = (props) => {
             <label className="font-input-label text-white text-capitalize">
               {t("permission level")}
             </label>
-
+            {/*fixme disable if logged in user has no right to update this user */}
             <ResponsiveSelect
               className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
               // isMulti
@@ -637,14 +575,14 @@ const FormInviteModify = (props) => {
             {
               touchField?.[index]?.permissionLevel &&
               errorField?.[index]?.permissionLevel && (
-                <span className="font-helper-text text-error mt-10">{get(errorField, `${index}.permissionLevel.label`)}</span>
+                <span
+                  className="font-helper-text text-error mt-10">{get(errorField, `${index}.permissionLevel.label`)}</span>
               )
             }
           </div>
         </div>
 
         <div className={clsx(style.UserRow, 'mt-10')}>
-        {/*<div className={clsx(style.UserRow, style.ButtonRow, 'mt-10')}>*/}
           <div className="d-flex flex-column">
             <label className='font-input-label'>
               {t("phone number")}
@@ -659,7 +597,7 @@ const FormInviteModify = (props) => {
             {
               (touched?.user?.phoneNumber && errors?.user?.phoneNumber) ? (
                 <span className="font-helper-text text-error mt-10">{errors.user.phoneNumber}</span>
-              ) : /*(<span className="font-helper-text text-white mt-10">{t("required for 2fa")}</span>)*/''
+              ) : ''
             }
           </div>
 
@@ -683,14 +621,12 @@ const FormInviteModify = (props) => {
 
             <div className="d-flex flex-column justify-end">
               <div className={clsx(style.ButtonWrapper)}>
-                <Button
-                  size={'md'}
-                  title={t('remove')}
-                  // title={t('remove from team')}
-                  onClick={() => {
-                    setSelectedUser(user);
-                    setVisibleRemoveModal(true);
-                  }}
+                {/*fixme dropdown button options change according to loggedin user role*/}
+                <DropdownButton
+                  option={user?.action}
+                  options={doableActions}
+                  onClick={() => _onAction(user)}
+                  onClickOption={value => _handleChange(value, user?.originIndex, 'action')}
                 />
               </div>
             </div>
@@ -710,21 +646,6 @@ const FormInviteModify = (props) => {
           window.location.reload();
         }}
       />
-      <ConfirmModal
-        show={visibleAddMemberSuccessModal}
-        header={t('new team member added header')}
-        subheader={inviteMode !== 'invite-only' ? t('new team member added description') : null}
-        onOk={() => {
-          setInviteMode('invite-only');
-          setVisibleAddMemberSuccessModal(false);
-        }}
-        cancelText={t('add another member')}
-        onCancel={() => {
-          setInviteMode('invite-only');
-          setVisibleAddMemberSuccessModal(false);
-          setVisibleAddModal(true);
-        }}
-      />
       <ConfirmModalV2
         show={visibleRemoveModal}
         header={t('remove team user header')}
@@ -739,17 +660,6 @@ const FormInviteModify = (props) => {
         onOk={deleteUser}
         onCancel={() => setVisibleDeleteModal(false)}
       />
-      <AddMemberModalV2
-        inviteOnly={inviteMode === 'invite-only'}
-        isOpen={visibleAddModal}
-        sortedJobs={sortedJobs}
-        permissionLevels={permissionLevels}
-        onAdd={addHandler}
-        onClose={() => {
-          setInviteMode('invite-only');
-          setVisibleAddModal(false);
-        }}
-      />
       <Form className='form-group mt-57'>
         <div>
           <div className="d-flex align-center">
@@ -763,8 +673,8 @@ const FormInviteModify = (props) => {
           <div className={clsx(style.FormHeader, "mt-40 d-flex flex-column")}>
             <div className={clsx(style.Header)}>
               <div className={"d-flex align-center"}>
-              <span className='font-header-medium d-block'>
-              {t("modify team")}
+              <span className='font-header-medium d-block text-capitalize'>
+                {t("search")}
               </span>
               </div>
 
@@ -790,39 +700,9 @@ const FormInviteModify = (props) => {
           </div>
 
           <div className={clsx(style.FormBody, "mt-40 d-flex flex-column")}>
-            <div className={clsx(style.AddButton, "mt-28")} onClick={addAnother}>
-              <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
-              <span className="font-heading-small text-capitalize">
-                {t("add another member")}
-            </span>
-            </div>
-
-            {
-              values?.users?.length > 0 &&
-              <div className="mt-28">
-              <span className="font-heading-small text-uppercase text-orange">
-                {t("operators")}
-              </span>
-              </div>
-            }
-
             {
               values?.users?.map((user, index) => renderUser(user, index, 'user'))
             }
-
-            {
-              values?.admins?.length > 0 &&
-              <div className="mt-28">
-              <span className="font-heading-small text-uppercase text-orange">
-                {t("administrators")}
-              </span>
-              </div>
-            }
-
-            {
-              values?.admins?.map((user, index) => renderUser(user, index, 'admin'))
-            }
-
           </div>
         </div>
         {
@@ -881,14 +761,13 @@ const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     users: [defaultTeamMember],
   }),
-  validationSchema: ((props) => formSchema(props.t)),
+  validationSchema: ((props) => Yup.lazy(values => formSchema(props.t, values))),
   handleSubmit: async (values, {props, setStatus, setFieldValue}) => {
     const {showErrorNotification, showSuccessNotification, setLoading, t, allTeams} = props;
     // filter users that were modified to update
-    let users = [...values?.users ?? [], ...values?.admins ?? []]?.filter(it => it.updated);
+    let users = (values?.users ?? [])?.filter(it => it.updated);
     try {
       setLoading(true);
-      // const organizationId = localStorage.getItem("kop-v2-picked-organization-id");
       let usersToModify = [];
       users?.forEach(it => {
         if (!!it.userId) {
@@ -921,6 +800,7 @@ const EnhancedForm = withFormik({
             if (isAdmin) {
               updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
             }
+            // fixme enforce correctness
             if (userToModify?.teamId) {
               if (inviteBody?.[userToModify?.teamId]?.add) {
                 inviteBody[userToModify?.teamId].add.push({
@@ -945,9 +825,11 @@ const EnhancedForm = withFormik({
 
         const inviteFunc = () => {
           const invitePromises = [];
-          Object.keys(inviteBody).forEach((teamId, index) => {
-            invitePromises.push(inviteTeamMember(teamId, Object.values(inviteBody)?.[index]));
-          });
+          if (inviteBody) {
+            Object.keys(inviteBody).forEach((teamId, index) => {
+              invitePromises.push(inviteTeamMember(teamId, Object.values(inviteBody)?.[index]));
+            });
+          }
 
           if (invitePromises?.length > 0) {
             Promise.allSettled(invitePromises)
@@ -957,7 +839,7 @@ const EnhancedForm = withFormik({
                 }
                 const teamId = props?.match?.params?.id;
                 if (teamId) {
-                  loadTeamMembers(teamId, showErrorNotification, setFieldValue, false).catch(e => console.log(e));
+                  loadMembers(teamId, showErrorNotification, setFieldValue, false).catch(e => console.log(e));
                 }
                 setLoading(false);
               });

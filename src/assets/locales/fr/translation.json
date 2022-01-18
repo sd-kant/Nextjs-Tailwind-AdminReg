@@ -128,7 +128,7 @@
   "create another": "créer un autre",
   "create another team": "créer une autre équipe",
   "complete": "terminer",
-  "administrator": "Administrateur",
+  "administrator": "Administrateur d'équipe",
   "operator": "Opérateur",
   "administrators": "Administrateurs",
   "operators": "Les opérateurs",
@@ -207,5 +207,9 @@
   "wearing a device": "porter un appareil?",
   "use your username": "Veuillez utiliser votre nom d'utilisateur",
   "wearing device required": "Veuillez sélectionner oui ou non",
-  "team": "équipe"
+  "team": "équipe",
+  "search": "chercher",
+  "super admin": "Super utilisateur administrateur",
+  "org admin": "Administrateur de l'organisation",
+  "re-invite user": "Réinviter un utilisateur"
 }

@@ -12,6 +12,7 @@ import FormUpload from "../partials/su-dashboard/FormUpload";
 import FormReInvite from "../partials/su-dashboard/FormReInvite";
 import FormTeamModify from "../partials/su-dashboard/FormTeamModify";
 import FormInviteModify from "../partials/su-dashboard/FormInviteModify";
+import FormSearch from "../partials/su-dashboard/FormSearch";
 
 const Invite = (
   {
@@ -117,6 +118,13 @@ const Invite = (
             />
           )}
         />
+
+        <Route
+          exact
+          path='/invite/search'
+        >
+          <FormSearch/>
+        </Route>
 
         <Route
           exact

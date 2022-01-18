@@ -128,7 +128,7 @@
   "create another": "create another",
   "create another team": "create another team",
   "complete": "complete",
-  "administrator": "Administrator",
+  "administrator": "Team Admin",
   "operator": "Operator",
   "administrators": "Administrators",
   "operators": "Operators",
@@ -207,5 +207,9 @@
   "wearing a device": "wearing a device?",
   "use your username": "Please use your username",
   "wearing device required": "Please select yes or no",
-  "team": "Team"
+  "team": "Team",
+  "search": "search",
+  "super admin": "Admin Super User",
+  "org admin": "Org Admin",
+  "re-invite user": "Re-Invite User"
 }

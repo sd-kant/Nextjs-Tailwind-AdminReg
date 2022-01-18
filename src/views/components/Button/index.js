@@ -10,9 +10,14 @@ const Button = (
     bgColor = "orange",
     borderColor = "orange",
     title = 'ok',
+    dropdown = false,
     rounded = false,
-    onClick = () => {},
+    fullWidth = false,
+    icon = null,
     disabled,
+    drop,
+    onClick = () => {},
+    onClickArrow = () => {},
   }) => {
 
   const calcColor = () => {
@@ -84,15 +89,38 @@ const Button = (
 
   return (
     <div
-      className={clsx(style.Wrapper, disabled ? style.Disabled : null, calcSizeStyle(), rounded ? style.Rounded : null)}
+      className={
+        clsx(
+          style.Wrapper,
+          disabled ? style.Disabled : null,
+          calcSizeStyle(),
+          rounded ? style.Rounded : null,
+          fullWidth ? style.FullWidth : null,
+          dropdown ? style.Dropdown : null,
+        )
+      }
       style={{color: calcColor(), backgroundColor: calcBgColor(), borderColor: calcBorderColor()}}
       onClick={onClick}
     >
       <span
-        className={clsx(calcTxtSizeStyle())}
+        className={clsx(calcTxtSizeStyle(), dropdown ? style.ButtonLabel : null)}
       >
         {title}
       </span>
+      {
+        icon ?
+          <div
+            className={clsx(style.IconWrapper)}
+            ref={drop}
+            onClick={e => {
+              onClickArrow();
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            {icon}
+          </div> : null
+      }
     </div>
   )
 }

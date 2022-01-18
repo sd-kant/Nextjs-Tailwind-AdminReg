@@ -115,13 +115,35 @@ export const AVAILABLE_JOBS = [
 ];
 export const permissionLevels = [
   {
+    value: 3,
+    label: i18n.t('super admin'),
+  },
+  {
+    value: 4,
+    label: i18n.t('org admin'),
+  },
+  {
     value: 1,
     label: i18n.t('administrator'),
   },
   {
     value: 2,
     label: i18n.t('operator'),
-  }
+  },
+];
+export const actions = [
+  {
+    value: 1,
+    label: i18n.t('re-invite user'),
+  },
+  {
+    value: 2,
+    label: i18n.t('remove from team'),
+  },
+  {
+    value: 3,
+    label: i18n.t('delete user'),
+  },
 ];
 export const yesNoOptions = [
   {

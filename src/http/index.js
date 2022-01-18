@@ -211,7 +211,19 @@ export const sendRegistrationEmail = (data) => {
 
 export const queryTeamMembers = (teamId) => {
   return new Promise((resolve, reject) => {
-    instance.get(`team/${teamId}/members`, {})
+    instance.get(`team/${teamId}/members`)
+      .then(res => {
+        resolve(res);
+      })
+      .catch(e => {
+        reject(e);
+      })
+  });
+}
+
+export const searchMembers = keyword => {
+  return new Promise((resolve, reject) => {
+    instance.get(`user/find/${keyword}`)
       .then(res => {
         resolve(res);
       })
