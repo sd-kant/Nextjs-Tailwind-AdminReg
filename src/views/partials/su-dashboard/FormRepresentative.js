@@ -14,8 +14,8 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import {createUserByAdmin, registerMultipleUsers, sendRegistrationEmail} from "../../../http";
-import {defaultPassword, REPRESENTATIVE_TYPE, USER_TYPE_ORG_ADMIN} from "../../../constant";
+import {createUserByAdmin} from "../../../http";
+import {USER_TYPE_ORG_ADMIN} from "../../../constant";
 import clsx from "clsx";
 import style from "./FormRepresentative.module.scss";
 
@@ -264,7 +264,6 @@ const EnhancedForm = withFormik({
       const promises = [];
       let totalSuccessForInvite = 0;
       let alreadyRegisteredUsers = [];
-      const updatePromises = [];
 
       users?.forEach(it => {
         // it["emailAddress"] = it.email;

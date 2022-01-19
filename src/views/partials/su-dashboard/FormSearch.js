@@ -150,7 +150,6 @@ const FormInviteModify = (props) => {
   const [visibleRemoveModal, setVisibleRemoveModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
-  const [action, setAction] = useState(1);
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -252,7 +251,7 @@ const FormInviteModify = (props) => {
   }, [allTeams]);
 
   const goBack = () => {
-    navigateTo('/invite/team-modify');
+    navigateTo('/invite/team-mode');
   };
 
   const deleteUser = () => {
@@ -268,8 +267,19 @@ const FormInviteModify = (props) => {
     setFieldValue("tempTeamMembers", temp);
   };
 
+  const checkIfHigherThanMe = (permissionLevel) => {
+    if (userType.includes(USER_TYPE_ADMIN)) {
+      return false;
+    } else if (userType.includes(USER_TYPE_ORG_ADMIN)) {
+      return ["3"].includes(permissionLevel?.value?.toString());
+    } else if (userType.includes(USER_TYPE_TEAM_ADMIN)) {
+      return ["3", "4"].includes(permissionLevel?.value?.toString());
+    }
+
+    return true;
+  }
+
   const _handleChangeForTeamUserType = (optionValue, index, fromWearingDevice) => {
-    // fixme check if loggedin-user has right to change role
     const temp = (values?.["tempTeamMembers"] && JSON.parse(JSON.stringify(values?.["tempTeamMembers"]))) ?? [];
     let roleToAdd = null;
     let roleToRemove = [];
@@ -281,6 +291,11 @@ const FormInviteModify = (props) => {
         roleToRemove = [USER_TYPE_OPERATOR];
       }
     } else {
+      /*check if logged-in-user has right to change role*/
+      if (checkIfHigherThanMe(optionValue)) {
+        return;
+      }
+
       if (optionValue?.value?.toString() === "2") {
         roleToAdd = USER_TYPE_OPERATOR;
         roleToRemove = [USER_TYPE_TEAM_ADMIN, USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN];
@@ -422,7 +437,9 @@ const FormInviteModify = (props) => {
   const renderUser = (user, index, key) => {
     let errorField = errors?.users;
     let touchField = touched?.users;
-    const wearingDeviceDisabled = user?.permissionLevel?.value?.toString() === "2" || !isAdmin;
+    const hasRightToEdit = !checkIfHigherThanMe(user?.permissionLevel);
+    const wearingDeviceDisabled = user?.permissionLevel?.value?.toString() === "2" || !isAdmin || !hasRightToEdit;
+
     return (
       <div className={clsx(style.User)} key={`${key}-${index}`}>
         <div className={clsx(style.RemoveIconWrapper)}>
@@ -444,9 +461,9 @@ const FormInviteModify = (props) => {
             </label>
 
             <input
-              className={clsx(style.Input, !isAdmin ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
+              className={clsx(style.Input, (!isAdmin || !hasRightToEdit) ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
               value={user?.firstName}
-              disabled={!isAdmin}
+              disabled={!isAdmin || !hasRightToEdit}
               type="text"
               onChange={(e) => _handleChange(e.target.value, user?.originIndex, 'firstName')}
             />
@@ -465,12 +482,11 @@ const FormInviteModify = (props) => {
             </label>
 
             <input
-              className={clsx(style.Input, !isAdmin ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
+              className={clsx(style.Input, (!isAdmin || !hasRightToEdit) ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
               value={user?.lastName}
               type="text"
-              disabled={!isAdmin}
+              disabled={!isAdmin || !hasRightToEdit}
               onChange={(e) => _handleChange(e.target.value, user?.originIndex, 'lastName')}
-              // onChange={changeFormField}
             />
 
             {
@@ -514,10 +530,11 @@ const FormInviteModify = (props) => {
               isClearable
               options={formattedTeams}
               value={user?.team}
-              styles={customStyles()}
+              styles={customStyles(!hasRightToEdit)}
               placeholder={t("team name select")}
               menuPortalTarget={document.body}
               menuPosition={'fixed'}
+              isDisabled={!hasRightToEdit}
               onChange={(e) => _handleChange(e?.value, user?.originIndex, 'teamId')}
             />
             {
@@ -540,9 +557,9 @@ const FormInviteModify = (props) => {
               options={sortedJobs}
               placeholder={t("select")}
               value={user?.job}
-              styles={customStyles(!isAdmin)}
+              styles={customStyles(!isAdmin || !hasRightToEdit)}
               maxMenuHeight={190}
-              isDisabled={!isAdmin}
+              isDisabled={!isAdmin || !hasRightToEdit}
               menuPortalTarget={document.body}
               menuPosition={'fixed'}
               onChange={(e) => _handleChange(e?.value, user?.originIndex, 'job')}
@@ -559,15 +576,14 @@ const FormInviteModify = (props) => {
             <label className="font-input-label text-white text-capitalize">
               {t("permission level")}
             </label>
-            {/*fixme disable if logged in user has no right to update this user */}
             <ResponsiveSelect
               className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
               // isMulti
               options={permissionLevels}
               placeholder={t("select")}
               value={user?.permissionLevel}
-              styles={customStyles(!isAdmin)}
-              isDisabled={!isAdmin}
+              styles={customStyles(!isAdmin || !hasRightToEdit)}
+              isDisabled={!isAdmin || !hasRightToEdit}
               menuPortalTarget={document.body}
               menuPosition={'fixed'}
               onChange={(e) => _handleChangeForTeamUserType(e, user?.originIndex, false)}
@@ -621,7 +637,6 @@ const FormInviteModify = (props) => {
 
             <div className="d-flex flex-column justify-end">
               <div className={clsx(style.ButtonWrapper)}>
-                {/*fixme dropdown button options change according to loggedin user role*/}
                 <DropdownButton
                   option={user?.action}
                   options={doableActions}
@@ -794,13 +809,13 @@ const EnhancedForm = withFormik({
         const updatePromises = [];
         let inviteBody = {};
         usersToModify?.forEach(userToModify => {
+          // fixme enforce correctness
           const organizationId = allTeams?.find(it => it.id?.toString() === userToModify.teamId?.toString())?.orgId;
           if (!!organizationId) {
             const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
             if (isAdmin) {
               updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
             }
-            // fixme enforce correctness
             if (userToModify?.teamId) {
               if (inviteBody?.[userToModify?.teamId]?.add) {
                 inviteBody[userToModify?.teamId].add.push({
@@ -884,7 +899,8 @@ const EnhancedForm = withFormik({
       console.log('_handleSubmit error', e);
     } finally {
     }
-  }
+  },
+  enableReinitialize: true,
 })(FormInviteModify);
 
 const mapStateToProps = (state) => ({
