@@ -5,8 +5,6 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const defaultPassword = "Kenzen2021#";
-export const SUPER_ADMIN_EMAIL = "Support@kenzen.com";
 export const CURRENT_VERSION = "2.0.0";
 export const AVAILABLE_COUNTRIES = [
   {
@@ -54,7 +52,6 @@ export const AVAILABLE_COUNTRIES = [
     "label": i18n.t("usa"),
   },
 ];
-export const REPRESENTATIVE_TYPE = "orgAdmin";
 export const AVAILABLE_JOBS = [
   {
     value: "1",

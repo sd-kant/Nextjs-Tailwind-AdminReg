@@ -84,10 +84,11 @@ const AddMemberModalV2 = (
   const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
   const options = useMemo(() => {
     if (isAdmin) {
-      return permissionLevels;
+      return permissionLevels.filter(it => ["1", "2"].includes(it.value?.toString()));
     } else {
-      return permissionLevels.filter(it => it.value?.toString() !== "1");
+      return permissionLevels.filter(it => ["1"].includes(it.value?.toString()));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin]);
 
   useEffect(() => {

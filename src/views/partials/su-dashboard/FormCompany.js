@@ -352,16 +352,13 @@ const EnhancedForm = withFormik({
       }
     } else {
       if (values?.companyName?.created) { // if selected already created company
-        localStorage.setItem("kop-v2-picked-organization-id", values?.companyName?.value);
-        history.push("/invite/team-mode");
+        history.push(`/invite/${values?.companyName?.value}/team-mode`);
       } else {
         try {
           props.setLoading(true);
           const apiRes = await createCompany(data);
           const companyData = apiRes.data;
-          localStorage.setItem("kop-v2-picked-organization-id", companyData?.id);
-          history.push("/invite/representative");
-          // history.push("/invite/team-mode");
+          history.push(`/invite/${companyData?.id}/representative`);
         } catch (e) {
           console.log("creating company error", e);
           props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));

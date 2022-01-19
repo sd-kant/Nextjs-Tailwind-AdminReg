@@ -65,7 +65,7 @@ const userSchema = (t) => {
         'is-valid',
         t('phone number invalid'),
         function (obj) {
-          if (!obj.value)
+          if (!obj?.value)
             return true;
           return checkPhoneNumberValidation(obj.value, obj.countryCode);
         },
@@ -151,6 +151,7 @@ const FormInvite = (props) => {
     });
     d && setFieldValue("users", d);
     localStorage.removeItem("kop-csv-data");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const navigateTo = (path) => {
@@ -188,10 +189,6 @@ const FormInvite = (props) => {
 
   const goBack = () => {
     history.back();
-    /*if (isManual)
-      navigateTo('/invite/select');
-    else
-      navigateTo('/invite/upload');*/
   };
 
   const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
@@ -343,7 +340,7 @@ const FormInvite = (props) => {
               containerClass={style.PhoneNumberContainer}
               inputClass={style.PhoneNumberInput}
               dropdownClass={style.PhoneNumberDropdown}
-              value={user.phoneNumber.value}
+              value={user?.phoneNumber?.value}
               onChange={(value, countryCode) => changeHandler(`${formInputName}.phoneNumber`, {value, countryCode})}
             />
             {
@@ -618,11 +615,9 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue, setStatus}) => {
-    const {showErrorNotification, showSuccessNotification, setLoading, setVisibleSuccessModal, t} = props;
+    const {showErrorNotification, showSuccessNotification, setLoading, setVisibleSuccessModal, t, match: {params: {organizationId, id: teamId}}} = props;
     let users = values?.users;
-    const organizationId = localStorage.getItem("kop-v2-picked-organization-id");
-    const teamId = localStorage.getItem("kop-v2-team-id");
-    if (!organizationId) {
+    if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {
       showErrorNotification(
         t("msg create organization before inviting users"),
       );

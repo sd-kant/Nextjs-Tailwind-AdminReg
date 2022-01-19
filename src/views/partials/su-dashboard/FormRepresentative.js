@@ -45,10 +45,11 @@ export const defaultMember = {
 };
 
 const FormRepresentative = (props) => {
-  const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
+  const {values, errors, touched, t, setFieldValue, setRestBarClass, match: {params: {organizationId}}} = props;
 
   useEffect(() => {
     setRestBarClass("progress-18 medical");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeFormField = (e) => {
@@ -78,7 +79,7 @@ const FormRepresentative = (props) => {
       <div style={{padding: '0 10px'}}>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/invite/team-create')}
+          onClick={() => navigateTo('/invite/company')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -226,7 +227,7 @@ const FormRepresentative = (props) => {
           </span>
         </button>
 
-        <span className={clsx(style.Skip, 'font-binary')} onClick={() => history.push("/invite/select")}>{t("skip")}</span>
+        <span className={clsx(style.Skip, 'font-binary')} onClick={() => history.push(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
       </div>
     </Form>
   )
@@ -252,9 +253,9 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
+    const {match: {params: {organizationId}}} = props;
     let users = values?.users;
-    const organizationId = localStorage.getItem("kop-v2-picked-organization-id");
-    if (!organizationId) {
+    if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {
       history.push("/invite/company");
     } else {
       users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
@@ -266,9 +267,6 @@ const EnhancedForm = withFormik({
       let alreadyRegisteredUsers = [];
 
       users?.forEach(it => {
-        // it["emailAddress"] = it.email;
-        // delete it.email;
-
         promises.push(createUserByAdmin(organizationId, it));
       });
       if (promises?.length > 0) {
@@ -304,7 +302,7 @@ const EnhancedForm = withFormik({
                 }));
             }
             props.setLoading(false);
-            history.push("/invite/team-mode");
+            history.push(`/invite/${organizationId}/team-mode`);
           });
       }
     } catch (e) {

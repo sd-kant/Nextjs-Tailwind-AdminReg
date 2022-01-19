@@ -126,7 +126,7 @@ const formSchema = (t, values) => {
 
 let intervalForChangesDetect;
 
-const FormInviteModify = (props) => {
+const FormSearch = (props) => {
   const {
     values,
     errors,
@@ -143,6 +143,7 @@ const FormInviteModify = (props) => {
     setStatus,
     deleteUser: deleteAction,
     userType,
+    match: {params: {organizationId}},
   } = props;
   const [keyword, setKeyword] = useState('');
   const [newChanges, setNewChanges] = useState(0);
@@ -185,6 +186,23 @@ const FormInviteModify = (props) => {
     }, 500);
   };
 
+  const formattedTeams = useMemo(() => {
+    const teams = [];
+    allTeams?.forEach(team => {
+      if (
+        ["undefined", "-1", "null", ""].includes(organizationId?.toString()) ||
+        team?.orgId?.toString() === organizationId?.toString()
+      ) {
+        teams.push({
+          value: team.id,
+          label: team.name,
+        });
+      }
+    });
+    return teams;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allTeams]);
+
   useEffect(() => {
     let users = [];
 
@@ -199,10 +217,9 @@ const FormInviteModify = (props) => {
         updated,
       });
     });
-
     setFieldValue("users", users);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values["teamMembers"], values?.["tempTeamMembers"], allTeams]);
+  }, [values["teamMembers"], values?.["tempTeamMembers"], formattedTeams]);
 
   const formatForFormValue = (it) => {
     let permissionLevel = null;
@@ -224,7 +241,7 @@ const FormInviteModify = (props) => {
       permissionLevel: permissionLevel,
       wearingDevice: it?.userTypes.includes(USER_TYPE_OPERATOR) ? yesNoOptions[0] : yesNoOptions[1],
       userTypes: it.userTypes,
-      team: formattedTeams?.find(ele => ele.value?.toString() === (it?.teamId)?.toString()),
+      team: formattedTeams?.find(ele => ele.value?.toString() === it?.teamId?.toString()),
       teamId: it?.teamId,
       index: it.index,
       action: it.action,
@@ -243,15 +260,8 @@ const FormInviteModify = (props) => {
     return a.label > b.label ? 1 : -1;
   });
 
-  const formattedTeams = useMemo(() => {
-    return (allTeams && allTeams.map(team => ({
-      value: team.id,
-      label: team.name,
-    }))) || [];
-  }, [allTeams]);
-
   const goBack = () => {
-    navigateTo('/invite/team-mode');
+    navigateTo(`/invite/${organizationId}/team-mode`);
   };
 
   const deleteUser = () => {
@@ -350,7 +360,7 @@ const FormInviteModify = (props) => {
             ret = true;
           }
         }
-        if (get(user, "team.value")?.toString() !== get(user, "teamId")?.toString()) {
+        if (get(origin, "teamId")?.toString() !== get(user, "teamId")?.toString()) {
           ret = true;
         }
         if (ret === false) {
@@ -778,7 +788,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => Yup.lazy(values => formSchema(props.t, values))),
   handleSubmit: async (values, {props, setStatus, setFieldValue}) => {
-    const {showErrorNotification, showSuccessNotification, setLoading, t, allTeams} = props;
+    const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId}}} = props;
     // filter users that were modified to update
     let users = (values?.users ?? [])?.filter(it => it.updated);
     try {
@@ -810,8 +820,7 @@ const EnhancedForm = withFormik({
         let inviteBody = {};
         usersToModify?.forEach(userToModify => {
           // fixme enforce correctness
-          const organizationId = allTeams?.find(it => it.id?.toString() === userToModify.teamId?.toString())?.orgId;
-          if (!!organizationId) {
+          if (!(["undefined", "-1", "null", ""].includes(organizationId?.toString()))) {
             const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
             if (isAdmin) {
               updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
@@ -852,10 +861,10 @@ const EnhancedForm = withFormik({
                 if (failedEmails?.length === 0) {
                   setStatus({visibleSuccessModal: true});
                 }
-                const teamId = props?.match?.params?.id;
+                /*const teamId = props?.match?.params?.id;
                 if (teamId) {
                   loadMembers(teamId, showErrorNotification, setFieldValue, false).catch(e => console.log(e));
-                }
+                }*/
                 setLoading(false);
               });
           } else {
@@ -901,7 +910,7 @@ const EnhancedForm = withFormik({
     }
   },
   enableReinitialize: true,
-})(FormInviteModify);
+})(FormSearch);
 
 const mapStateToProps = (state) => ({
   allTeams: get(state, 'base.allTeams'),

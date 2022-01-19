@@ -18,10 +18,11 @@ import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../../constant";
 import {get} from 'lodash';
 
 const FormTeamMode = (props) => {
-  const {t, setRestBarClass, userType} = props;
+  const {t, setRestBarClass, userType, match: {params: {organizationId}}} = props;
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const navigateTo = (path) => {
@@ -61,7 +62,7 @@ const FormTeamMode = (props) => {
             <div
               className={`tap cursor-pointer`}
               onClick={() => {
-                history.push("/invite/team-create");
+                history.push(`/invite/${organizationId}/team-create`);
               }}
             >
               <img src={plusIcon} alt="male icon"/>
@@ -75,7 +76,7 @@ const FormTeamMode = (props) => {
           <div
             className={`ml-40 cursor-pointer tap`}
             onClick={() => {
-              history.push("/invite/team-modify");
+              history.push(`/invite/${organizationId}/team-modify`);
             }}
           >
             <img src={editIcon} alt="female icon"/>
@@ -88,7 +89,7 @@ const FormTeamMode = (props) => {
           <div
             className={`ml-40 tap cursor-pointer`}
             onClick={() => {
-              history.push("/invite/search");
+              history.push(`/invite/${organizationId}/search`);
             }}
           >
             <img src={searchIcon} alt="search icon"/>

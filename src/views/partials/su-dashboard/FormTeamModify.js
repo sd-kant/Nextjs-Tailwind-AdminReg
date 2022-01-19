@@ -26,24 +26,35 @@ const formSchema = (t) => {
 };
 
 const FormTeamModify = (props) => {
-  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams} = props;
+  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams, match: {params: {organizationId}}} = props;
 
   useEffect(() => {
     setRestBarClass("progress-54 medical");
     queryAllTeams();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeHandler = (key, value) => {
     setFieldValue(key, value);
   }
 
-  const formatTeams = () => {
-    return (allTeams && allTeams.map(team => ({
-      value: team.id,
-      label: team.name,
-      location: team.location,
-    }))) || [];
-  }
+  const filteredTeams = React.useMemo(() => {
+    let teams = [];
+    allTeams?.forEach(team => {
+      if (
+        ["undefined", "-1", "null", ""].includes(organizationId?.toString()) ||
+        team.orgId?.toString() === organizationId?.toString()
+      ) {
+        teams.push({
+          value: team.id,
+          label: team.name,
+          location: team.location,
+        });
+      }
+    });
+    return teams;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allTeams]);
 
   const navigateTo = (path) => {
     history.push(path);
@@ -54,7 +65,7 @@ const FormTeamModify = (props) => {
       <div>
         <div
           className="d-inline-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/invite/team-mode')}
+          onClick={() => navigateTo(`/invite/${organizationId}/team-mode`)}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -73,7 +84,7 @@ const FormTeamModify = (props) => {
           <ResponsiveSelect
             className='mt-10 font-heading-small text-black input-field'
             isClearable
-            options={formatTeams()}
+            options={filteredTeams}
             value={values["name"]}
             name="name"
             styles={customStyles()}
@@ -112,20 +123,18 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
     if (values?.name?.value) {
-      const {setLoading, showErrorNotification} = props;
+      const {setLoading, showErrorNotification, match: {params: {organizationId}}} = props;
       try {
         setLoading(true);
         const teamMembersResponse = await queryTeamMembers(values?.name?.value);
         let teamMembers = teamMembersResponse?.data?.members;
         if (teamMembers?.length > 0) {
-          history.push(`/invite/edit/modify/${values?.name?.value}`);
+          history.push(`/invite/${organizationId}/edit/modify/${values?.name?.value}`);
         } else {
           const {allTeams} = props;
           const team = allTeams.find(it => it.id?.toString() === values?.name?.value?.toString());
           if (team) {
-            localStorage.setItem("kop-v2-picked-organization-id", team.orgId);
-            localStorage.setItem("kop-v2-team-id", team.id);
-            history.push(`/invite/edit/manual`);
+            history.push(`/invite/${team.orgId}/edit/manual/${team.id}`);
           }
         }
       } catch (e) {

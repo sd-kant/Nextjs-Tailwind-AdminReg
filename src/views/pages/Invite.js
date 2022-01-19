@@ -21,7 +21,7 @@ const Invite = (
   const isSuperAdmin = userType?.includes(USER_TYPE_ADMIN);
   const isOrgAdmin = userType?.includes(USER_TYPE_ORG_ADMIN);
   // fixme orgAdmin will be redirected to organization modify page
-  let redirectPath = (isSuperAdmin || isOrgAdmin) ? "/invite/company" : "/invite/team-modify";
+  let redirectPath = (isSuperAdmin || isOrgAdmin) ? "/invite/company" : "/invite/-1/team-modify";
 
   return (
     <div className='form-main'>
@@ -46,24 +46,30 @@ const Invite = (
           isSuperAdmin &&
           <Route
             exact
-            path='/invite/representative'
-          >
-            <FormRepresentative/>
-          </Route>
+            path='/invite/:organizationId/representative'
+            render={matchProps => (
+              <FormRepresentative
+                {...matchProps}
+              />
+            )}
+          />
         }
         {
           (isSuperAdmin || isOrgAdmin) &&
           <Route
             exact
-            path='/invite/team-create'
-          >
-            <FormTeam/>
-          </Route>
+            path='/invite/:organizationId/team-create'
+            render={matchProps => (
+              <FormTeam
+                {...matchProps}
+              />
+            )}
+          />
         }
 
         <Route
           exact
-          path='/invite/team-modify'
+          path='/invite/:organizationId/team-modify'
           render={matchProps => (
             <FormTeamModify
               {...matchProps}
@@ -73,45 +79,60 @@ const Invite = (
 
         <Route
           exact
-          path='/invite/select'
-        >
-          <FormUploadSelect/>
-        </Route>
+          path='/invite/:organizationId/select/:id'
+          render={matchProps => (
+            <FormUploadSelect
+              {...matchProps}
+            />
+          )}
+        />
 
         <Route
           exact
-          path='/invite/upload'
-        >
-          <FormUpload/>
-        </Route>
+          path='/invite/:organizationId/upload/:id'
+          render={matchProps => (
+            <FormUpload
+              {...matchProps}
+            />
+          )}
+        />
 
         {
           (isSuperAdmin || isOrgAdmin) &&
           <Route
             exact
-            path='/invite/team-mode'
-          >
-            <FormTeamMode/>
-          </Route>
+            path='/invite/:organizationId/team-mode'
+            render={matchProps => (
+              <FormTeamMode
+                {...matchProps}
+              />
+            )}
+          />
         }
 
         <Route
           exact
-          path='/invite/edit/upload'
-        >
-          <FormInvite/>
-        </Route>
+          path='/invite/:organizationId/edit/upload/:id'
+          render={matchProps => (
+            <FormInvite
+              {...matchProps}
+            />
+          )}
+        />
 
         <Route
           exact
-          path='/invite/edit/manual'
-        >
-          <FormInvite/>
-        </Route>
+          path='/invite/:organizationId/edit/manual/:id'
+          render={matchProps => (
+            <FormInvite
+              {...matchProps}
+            />
+          )}
+        />
 
         <Route
           exact
-          path='/invite/edit/modify/:id'
+          path='/invite/:organizationId/edit/modify/:id'
           render={matchProps => (
             <FormInviteModify
               {...matchProps}
@@ -121,10 +142,13 @@ const Invite = (
 
         <Route
           exact
-          path='/invite/search'
-        >
-          <FormSearch/>
-        </Route>
+          path='/invite/:organizationId/search'
+          render={matchProps => (
+            <FormSearch
+              {...matchProps}
+            />
+          )}
+        />
 
         <Route
           exact

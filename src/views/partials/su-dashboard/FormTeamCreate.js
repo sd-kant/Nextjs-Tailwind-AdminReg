@@ -23,10 +23,11 @@ const formSchema = (t) => {
 };
 
 const FormTeamCreate = (props) => {
-  const {values, errors, touched, t, setRestBarClass, setFieldValue} = props;
+  const {values, errors, touched, t, setRestBarClass, setFieldValue, match: {params: {organizationId}}} = props;
 
   useEffect(() => {
     setRestBarClass("progress-54 medical");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeFormField = (e) => {
@@ -44,7 +45,7 @@ const FormTeamCreate = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/invite/team-mode')}
+          onClick={() => navigateTo(`/invite/${organizationId}/team-mode`)}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -125,8 +126,9 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
-    const orgId = localStorage.getItem("kop-v2-picked-organization-id");
-    if (!orgId) {
+    const { match: {params: {organizationId: orgId}}} = props;
+    // const orgId = localStorage.getItem("kop-v2-picked-organization-id");
+    if (["undefined", "-1", "null", ""].includes(orgId?.toString())) {
       history.push("/invite/company");
       return;
     }
@@ -140,8 +142,7 @@ const EnhancedForm = withFormik({
       props.setLoading(true);
       const apiRes = await createTeam(data);
       const teamData = apiRes.data;
-      localStorage.setItem("kop-v2-team-id", teamData?.id);
-      history.push("/invite/select");
+      history.push(`/invite/${teamData?.orgId}/select/${teamData?.id}`);
     } catch (e) {
       console.log("creating team error", e);
       props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));

@@ -132,7 +132,7 @@ const FormInviteModify = (props) => {
     errors,
     touched,
     t,
-    match,
+    match: {params: {id, organizationId}},
     loading,
     setLoading,
     setFieldValue,
@@ -146,7 +146,6 @@ const FormInviteModify = (props) => {
     deleteUser: deleteAction,
     userType,
   } = props;
-  const id = match?.params?.id;
   const [keyword, setKeyword] = useState('');
   const [newChanges, setNewChanges] = useState(0);
   const [visibleDeleteModal, setVisibleDeleteModal] = useState(false);
@@ -168,6 +167,7 @@ const FormInviteModify = (props) => {
     return () => {
       clearInterval(intervalForChangesDetect);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -229,7 +229,11 @@ const FormInviteModify = (props) => {
 
   const formatForFormValue = (it) => {
     let permissionLevel = null;
-    if (it?.userTypes?.includes(USER_TYPE_TEAM_ADMIN)) {
+    if (it?.userTypes?.includes(USER_TYPE_ADMIN)) {
+      permissionLevel = permissionLevels?.find(it => it.value?.toString() === "3");
+    } else if (it?.userTypes?.includes(USER_TYPE_ORG_ADMIN)) {
+      permissionLevel = permissionLevels?.find(it => it.value?.toString() === "4");
+    } else if (it?.userTypes?.includes(USER_TYPE_TEAM_ADMIN)) {
       permissionLevel = permissionLevels?.find(it => it.value?.toString() === "1");
     } else if (it?.userTypes?.includes(USER_TYPE_OPERATOR)) {
       permissionLevel = permissionLevels?.find(it => it.value?.toString() === "2");
@@ -240,7 +244,6 @@ const FormInviteModify = (props) => {
       lastName: it.lastName,
       email: it.email,
       job: sortedJobs?.find(ele => ele.value?.toString() === (it?.job?.toString() ?? "14")),
-      // permissionLevel: permissionLevels?.filter(ele => it?.userTypes.includes(roleMap[ele.value?.toString()])),
       permissionLevel: permissionLevel,
       wearingDevice: it?.userTypes.includes(USER_TYPE_OPERATOR) ? yesNoOptions[0] : yesNoOptions[1],
       userTypes: it.userTypes,
@@ -262,10 +265,20 @@ const FormInviteModify = (props) => {
   });
 
   const formattedTeams = useMemo(() => {
-    return (allTeams && allTeams.map(team => ({
-      value: team.id,
-      label: team.name,
-    }))) || [];
+    const teams = [];
+    allTeams.forEach(team => {
+      if (
+        ["undefined", "-1", "null", ""].includes(organizationId?.toString()) ||
+        team?.orgId?.toString() === organizationId?.toString()
+      ) {
+        teams.push({
+          value: team.id,
+          label: team.name,
+        });
+      }
+    });
+    return teams;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTeams]);
 
   const addAnother = () => {
@@ -273,7 +286,7 @@ const FormInviteModify = (props) => {
   };
 
   const goBack = () => {
-    navigateTo('/invite/team-modify');
+    navigateTo(`/invite/${organizationId}/team-modify`);
   };
 
   const deleteUser = () => {
@@ -319,7 +332,7 @@ const FormInviteModify = (props) => {
 
 
     if (roleToRemove?.length > 0) {
-      temp[index]["userTypes"] = temp[index]["userTypes"].filter(it => !roleToRemove.includes(it));
+      temp[index]["userTypes"] = temp[index]["userTypes"].filter(it => !(roleToRemove.includes(it)));
     }
     if (roleToAdd && !temp[index]["userTypes"]?.includes(roleToAdd)) {
       temp[index]["userTypes"].push(roleToAdd);
@@ -414,9 +427,7 @@ const FormInviteModify = (props) => {
           job: user.jobRole,
           userType: user.permissionLevel,
         }];
-        // const organizationId = localStorage.getItem("kop-v2-picked-organization-id");
-        const organizationId = allTeams?.find(it => it?.id?.toString() === id?.toString())?.orgId;
-        if (!organizationId) {
+        if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {
           history.push("/invite/company");
           return;
         }
@@ -883,7 +894,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus, setFieldValue}) => {
-    const {showErrorNotification, showSuccessNotification, setLoading, t, allTeams} = props;
+    const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId}}} = props;
     // filter users that were modified to update
     let users = [...values?.users ?? [], ...values?.admins ?? []]?.filter(it => it.updated);
     try {
@@ -915,8 +926,7 @@ const EnhancedForm = withFormik({
         const updatePromises = [];
         let inviteBody = {};
         usersToModify?.forEach(userToModify => {
-          const organizationId = allTeams?.find(it => it.id?.toString() === userToModify.teamId?.toString())?.orgId;
-          if (!!organizationId) {
+          if (!(["undefined", "-1", "null", ""].includes(organizationId?.toString()))) {
             const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
             if (isAdmin) {
               updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
