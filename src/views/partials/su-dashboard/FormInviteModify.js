@@ -875,7 +875,7 @@ const formatTeam = (users) => {
 const setUserType = (users) => {
   return users && users.map((user) => {
     const userTypes = user?.userTypes;
-    let userType = null;
+    let userType = "";
     if (userTypes?.includes(USER_TYPE_ADMIN)) {
       userType = USER_TYPE_ADMIN;
     } else if (userTypes?.includes(USER_TYPE_ORG_ADMIN)) {
