@@ -29,12 +29,14 @@ const FormMobilePhoneVerification = (props) => {
   useEffect(() => {
     setClassName();
     getMyPhoneNumber().then();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
   useEffect(() => {
     if (code?.length === 6) {
       submitCode().then();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
   const getMyPhoneNumber = async () => {
@@ -92,6 +94,7 @@ const FormMobilePhoneVerification = (props) => {
         // something went wrong
       }
     } catch (e) {
+      setCode('');
       showErrorNotification(e.response?.data?.message);
     } finally {
       setLoading(false);

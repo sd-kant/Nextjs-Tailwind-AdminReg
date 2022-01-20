@@ -28,12 +28,14 @@ const FormPhoneVerification = (props) => {
   useEffect(() => {
     setClassName();
     getMyPhoneNumber();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
   useEffect(() => {
     if (code?.length === 6) {
       login(phoneNumber, code);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
   const getMyPhoneNumber = async () => {

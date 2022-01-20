@@ -16,7 +16,7 @@ import {
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import {
-  inviteTeamMember,
+  inviteTeamMember, searchMembersUnderOrganization,
   updateUserByAdmin,
 } from "../../../http";
 import {
@@ -58,11 +58,16 @@ export const defaultTeamMember = {
   action: 1,
 };
 
-const loadMembers = async (keyword, showErrorNotification, setFieldValue, initializeTemp = false) => {
+const loadMembers = async ({keyword, showErrorNotification, setFieldValue, initializeTemp = false, organizationId}) => {
   const trimmedKeyword = keyword?.trim()?.toLowerCase();
   if (trimmedKeyword) {
     try {
-      const teamMembersResponse = await searchMembersAPI(trimmedKeyword);
+      let teamMembersResponse = null;
+      if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {
+        teamMembersResponse = await searchMembersAPI(trimmedKeyword);
+      } else {
+        teamMembersResponse = await searchMembersUnderOrganization({organizationId, keyword: trimmedKeyword});
+      }
       let teamMembers = teamMembersResponse?.data;
       teamMembers.forEach((item, index) => {
         item['index'] = index;
@@ -168,7 +173,7 @@ const FormSearch = (props) => {
       clearTimeout(searchTimeout);
     }
     searchTimeout = setTimeout(() => {
-      loadMembers(keyword, showErrorNotification, setFieldValue, true).catch(e => console.log(e));
+      loadMembers({keyword, showErrorNotification, setFieldValue, initializeTemp: true, organizationId}).catch(e => console.log(e));
     }, 700);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keyword]);

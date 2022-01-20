@@ -233,6 +233,18 @@ export const searchMembers = keyword => {
   });
 }
 
+export const searchMembersUnderOrganization = ({keyword, organizationId}) => {
+  return new Promise((resolve, reject) => {
+    instance.get(`organization/${organizationId}/user/find/${keyword}`)
+      .then(res => {
+        resolve(res);
+      })
+      .catch(e => {
+        reject(e);
+      })
+  });
+}
+
 export const removeTeamMember = (userId) => {
   return new Promise((resolve, reject) => {
     instance.post(`team/remove/user/${userId}`, {})
