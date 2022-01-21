@@ -78,15 +78,14 @@ const AddMemberModalV2 = (
     errors,
     touched,
     inviteOnly,
-    userType,
+    isAdmin,
   }) => {
   const {user} = values;
-  const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
   const options = useMemo(() => {
     if (isAdmin) {
       return permissionLevels.filter(it => ["1", "2"].includes(it.value?.toString()));
     } else {
-      return permissionLevels.filter(it => ["1"].includes(it.value?.toString()));
+      return permissionLevels.filter(it => ["2"].includes(it.value?.toString()));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin]);
@@ -378,6 +377,7 @@ const EnhancedForm = withFormik({
 })(AddMemberModalV2);
 
 const mapStateToProps = (state) => ({
+  isAdmin: get(state, 'auth.isAdmin'),
   userType: get(state, 'auth.userType'),
 });
 

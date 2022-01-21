@@ -8,6 +8,7 @@ import history from "../../../history";
 import {createTeam} from "../../../http";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import backIcon from "../../../assets/images/back.svg";
+import {get} from "lodash";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -23,7 +24,7 @@ const formSchema = (t) => {
 };
 
 const FormTeamCreate = (props) => {
-  const {values, errors, touched, t, setRestBarClass, setFieldValue, match: {params: {organizationId}}} = props;
+  const {values, errors, touched, t, setRestBarClass, setFieldValue, match: {params: {organizationId}}, isAdmin,} = props;
 
   useEffect(() => {
     setRestBarClass("progress-54 medical");
@@ -45,7 +46,7 @@ const FormTeamCreate = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo(`/invite/${organizationId}/team-mode`)}
+          onClick={() => navigateTo(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -127,7 +128,6 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
     const { match: {params: {organizationId: orgId}}} = props;
-    // const orgId = localStorage.getItem("kop-v2-picked-organization-id");
     if (["undefined", "-1", "null", ""].includes(orgId?.toString())) {
       history.push("/invite/company");
       return;
@@ -153,6 +153,7 @@ const EnhancedForm = withFormik({
 })(FormTeamCreate);
 
 const mapStateToProps = (state) => ({
+  isAdmin: get(state, 'auth.isAdmin'),
 });
 
 const mapDispatchToProps = (dispatch) =>

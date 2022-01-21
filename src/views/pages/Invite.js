@@ -21,7 +21,7 @@ const Invite = (
   const isSuperAdmin = userType?.includes(USER_TYPE_ADMIN);
   const isOrgAdmin = userType?.includes(USER_TYPE_ORG_ADMIN);
   // fixme orgAdmin will be redirected to organization modify page
-  let redirectPath = (isSuperAdmin || isOrgAdmin) ? "/invite/company" : "/invite/-1/team-modify";
+  let redirectPath = (isSuperAdmin || isOrgAdmin) ? "/invite/company" : "/invite/-1/team-mode";
 
   return (
     <div className='form-main'>
@@ -54,18 +54,15 @@ const Invite = (
             )}
           />
         }
-        {
-          (isSuperAdmin || isOrgAdmin) &&
-          <Route
-            exact
-            path='/invite/:organizationId/team-create'
-            render={matchProps => (
-              <FormTeam
-                {...matchProps}
-              />
-            )}
-          />
-        }
+        <Route
+          exact
+          path='/invite/:organizationId/team-create'
+          render={matchProps => (
+            <FormTeam
+              {...matchProps}
+            />
+          )}
+        />
 
         <Route
           exact
@@ -97,18 +94,15 @@ const Invite = (
           )}
         />
 
-        {
-          (isSuperAdmin || isOrgAdmin) &&
-          <Route
-            exact
-            path='/invite/:organizationId/team-mode'
-            render={matchProps => (
-              <FormTeamMode
-                {...matchProps}
-              />
-            )}
-          />
-        }
+        <Route
+          exact
+          path='/invite/:organizationId/team-mode'
+          render={matchProps => (
+            <FormTeamMode
+              {...matchProps}
+            />
+          )}
+        />
 
         <Route
           exact

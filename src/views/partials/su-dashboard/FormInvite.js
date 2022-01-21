@@ -195,9 +195,9 @@ const FormInvite = (props) => {
 
   const options = useMemo(() => {
     if (isAdmin) {
-      return permissionLevels;
+      return permissionLevels.filter(it => ["1", "2"].includes(it.value?.toString()));
     } else {
-      return permissionLevels.filter(it => it.value?.toString() !== "1");
+      return permissionLevels.filter(it => ["2"].includes(it.value?.toString()));
     }
   }, [isAdmin])
 

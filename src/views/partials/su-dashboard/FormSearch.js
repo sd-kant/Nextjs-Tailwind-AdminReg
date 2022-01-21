@@ -205,13 +205,13 @@ const FormSearch = (props) => {
     deleteUser: deleteAction,
     userType,
     match: {params: {organizationId}},
+    isAdmin,
   } = props;
   const [keyword, setKeyword] = useState('');
   const [newChanges, setNewChanges] = useState(0);
   const [visibleDeleteModal, setVisibleDeleteModal] = useState(false);
   const [visibleRemoveModal, setVisibleRemoveModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -326,7 +326,7 @@ const FormSearch = (props) => {
   }, [AVAILABLE_JOBS]);
 
   const goBack = () => {
-    navigateTo(`/invite/${organizationId}/team-mode`);
+    navigateTo(`/invite/${isAdmin ? organizationId : -1}/team-mode`);
   };
 
   const deleteUser = () => {
@@ -1105,6 +1105,7 @@ const mapStateToProps = (state) => ({
   allTeams: get(state, 'base.allTeams'),
   loading: get(state, 'ui.loading'),
   userType: get(state, 'auth.userType'),
+  isAdmin: get(state, 'auth.isAdmin'),
 });
 
 const mapDispatchToProps = (dispatch) =>

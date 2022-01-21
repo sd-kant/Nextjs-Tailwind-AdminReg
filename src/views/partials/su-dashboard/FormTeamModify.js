@@ -26,7 +26,7 @@ const formSchema = (t) => {
 };
 
 const FormTeamModify = (props) => {
-  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams, match: {params: {organizationId}}} = props;
+  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams, match: {params: {organizationId}}, isAdmin,} = props;
 
   useEffect(() => {
     setRestBarClass("progress-54 medical");
@@ -65,7 +65,7 @@ const FormTeamModify = (props) => {
       <div>
         <div
           className="d-inline-flex align-center cursor-pointer"
-          onClick={() => navigateTo(`/invite/${organizationId}/team-mode`)}
+          onClick={() => navigateTo(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -148,6 +148,7 @@ const EnhancedForm = withFormik({
 
 const mapStateToProps = (state) => ({
   allTeams: get(state, 'base.allTeams'),
+  isAdmin: get(state, 'auth.isAdmin'),
 });
 
 const mapDispatchToProps = (dispatch) =>

@@ -1,11 +1,13 @@
 import {produce} from 'immer';
 import {actionTypes} from "../type";
-
+import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
+const userType = localStorage.getItem("kop-v2-user-type") ? JSON.parse(localStorage.getItem("kop-v2-user-type")) : null;
 const initialState = {
   token: localStorage.getItem("kop-v2-token"),
-  userType: localStorage.getItem("kop-v2-user-type") ? JSON.parse(localStorage.getItem("kop-v2-user-type")) : null,
+  userType,
   loggedIn: localStorage.getItem("kop-v2-logged-in")?.toString() === "true",
-  // organizationId: localStorage.getItem("kop-organization-id"),
+  organizationId: localStorage.getItem("kop-v2-picked-organization-id"),
+  isAdmin: userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN),
   mobileToken: null,
   baseUri: null,
 };
@@ -16,7 +18,7 @@ export default (state = initialState, action) => {
       return produce(state, draft => {
         draft.token = action.payload.token;
         draft.userType = action.payload.userType;
-        // draft.organizationId = action.payload.organizationId;
+        draft.organizationId = action.payload.organizationId;
       });
     case actionTypes.LOGGED_IN:
       return produce(state, draft => {

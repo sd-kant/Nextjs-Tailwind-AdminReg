@@ -55,6 +55,7 @@ function* loginSaga({payload: {
         payload: {
           token,
           userType,
+          organizationId: orgId,
         }
       });
       yield put({

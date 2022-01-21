@@ -18,7 +18,7 @@ import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../../constant";
 import {get} from 'lodash';
 
 const FormTeamMode = (props) => {
-  const {t, setRestBarClass, userType, match: {params: {organizationId}}} = props;
+  const {t, setRestBarClass, userType, match: {params: {organizationId}}, myOrganizationId} = props;
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -29,6 +29,7 @@ const FormTeamMode = (props) => {
     history.push(path);
   }
   const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
+  const orgId = ["undefined", "-1", "null", ""].includes(organizationId?.toString()) ? myOrganizationId : organizationId;
 
   return (
     <div className='form-group mt-57'>
@@ -57,21 +58,18 @@ const FormTeamMode = (props) => {
         </div>
 
         <div className="mt-40 d-flex">
-          {
-            isAdmin &&
-            <div
-              className={`tap cursor-pointer`}
-              onClick={() => {
-                history.push(`/invite/${organizationId}/team-create`);
-              }}
-            >
-              <img src={plusIcon} alt="male icon"/>
+          <div
+            className={`tap cursor-pointer`}
+            onClick={() => {
+              history.push(`/invite/${orgId}/team-create`);
+            }}
+          >
+            <img src={plusIcon} alt="male icon"/>
 
-              <span className='font-binary mt-8'>
+            <span className='font-binary mt-8'>
                 {t("create")}
               </span>
-            </div>
-          }
+          </div>
 
           <div
             className={`ml-40 cursor-pointer tap`}
@@ -111,6 +109,7 @@ const FormTeamMode = (props) => {
 
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
+  myOrganizationId: get(state, 'auth.organizationId'),
 });
 
 const mapDispatchToProps = (dispatch) =>

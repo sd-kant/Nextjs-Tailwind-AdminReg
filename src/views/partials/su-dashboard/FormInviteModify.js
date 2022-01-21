@@ -899,7 +899,6 @@ const EnhancedForm = withFormik({
     let users = [...values?.users ?? [], ...values?.admins ?? []]?.filter(it => it.updated);
     try {
       setLoading(true);
-      // const organizationId = localStorage.getItem("kop-v2-picked-organization-id");
       let usersToModify = [];
       users?.forEach(it => {
         if (!!it.userId) {
