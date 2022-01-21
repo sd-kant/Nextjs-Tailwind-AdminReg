@@ -38,7 +38,7 @@ import {
   removeTeamMemberAction,
 } from "../../../redux/action/base";
 import {queryTeamMembers as queryTeamMembersAPI} from "../../../http";
-import {get} from "lodash";
+import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
 import AddMemberModalV2 from "../../components/AddMemberModalV2";
@@ -360,7 +360,7 @@ const FormInviteModify = (props) => {
             ret = true;
           }
         });
-        if (!(get(user, "userTypes").equals(get(origin, "userTypes")))) {
+        if (!isEqual(get(user, "userTypes")?.sort(), get(origin, "userTypes")?.sort())) {
           ret = true;
         }
         // No Role Defined will be selected as default when user's job role is null, and this will not be considered as updated

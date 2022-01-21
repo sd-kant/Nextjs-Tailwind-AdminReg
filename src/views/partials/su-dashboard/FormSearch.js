@@ -13,7 +13,7 @@ import {
   setRestBarClassAction,
   setVisibleSuccessModalAction,
   showErrorNotificationAction,
-  showSuccessNotificationAction
+  showSuccessNotificationAction,
 } from "../../../redux/action/ui";
 import {
   inviteTeamMember, searchMembersUnderOrganization,
@@ -38,13 +38,13 @@ import {
   removeTeamMemberAction,
 } from "../../../redux/action/base";
 import {searchMembers as searchMembersAPI} from "../../../http";
-import {get} from "lodash";
+import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
 import CustomPhoneInput from "../../components/PhoneInput";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import DropdownButton from "../../components/DropdownButton";
-import {getParamFromUrl} from "../../../utils";
+import {getParamFromUrl, updateUrlParam} from "../../../utils";
 
 let searchTimeout = null;
 
@@ -75,7 +75,7 @@ const loadMembers = async ({keyword, showErrorNotification, setFieldValue, initi
   const trimmedKeyword = keyword?.trim()?.toLowerCase();
   if (trimmedKeyword) {
     try {
-      let teamMembersResponse = null;
+      let teamMembersResponse;
       if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {
         teamMembersResponse = await searchMembersAPI(trimmedKeyword);
       } else {
@@ -93,9 +93,8 @@ const loadMembers = async ({keyword, showErrorNotification, setFieldValue, initi
         }
 
         let permissionLevel = getPermissionLevelFromUserTypes(it?.userTypes);
-        // if this user is an team administrator
-        if (["1"].includes(permissionLevel?.value?.toString())) {
-          it.teams?.forEach(ele => {
+        if (["1"].includes(permissionLevel?.value?.toString())) { // if this user is an team administrator
+          it["teams"]?.forEach(ele => {
             const already = accessibleTeams?.findIndex(item => item.teamId?.toString() === ele.teamId?.toString());
             if (already !== -1) {
               if (accessibleTeams[already]?.userTypes?.length > 0) {
@@ -103,13 +102,13 @@ const loadMembers = async ({keyword, showErrorNotification, setFieldValue, initi
                   const newUserTypes = accessibleTeams[already].userTypes;
                   newUserTypes.push(USER_TYPE_TEAM_ADMIN);
                   accessibleTeams[already] = {
-                    ...accessibleTeams[already],
-                    userTypes: newUserTypes,
+                    teamId: ele.teamId,
+                    userTypes: newUserTypes?.sort(),
                   };
                 }
               } else {
                 accessibleTeams[already] = {
-                  ...accessibleTeams[already],
+                  teamId: ele.teamId,
                   userTypes: [USER_TYPE_TEAM_ADMIN],
                 };
               }
@@ -125,6 +124,10 @@ const loadMembers = async ({keyword, showErrorNotification, setFieldValue, initi
         it['index'] = index;
         it['action'] = 1;
         it['accessibleTeams'] = accessibleTeams;
+        it['originalAccessibleTeams'] = accessibleTeams;
+        if (!it['teamId'] && it['teams']?.length > 0) {
+          it['teamId'] = it['teams'][0]?.teamId;
+        }
       });
       teamMembers?.sort((a, b) => {
         return a?.lastName?.localeCompare(b?.lastName);
@@ -159,8 +162,8 @@ const userSchema = (t, values) => {
       .required(t('role required')),*/
     job: Yup.object()
       .required(t('role required')),
-    wearingDevice: Yup.object()
-      .required(t('wearing device required')),
+    /*wearingDevice: Yup.object()
+      .required(t('wearing device required')),*/
     /*team: Yup.object()
       .test(
         'is-valid',
@@ -227,6 +230,7 @@ const FormSearch = (props) => {
     if (searchTimeout) {
       clearTimeout(searchTimeout);
     }
+    updateUrlParam({param: {key: 'keyword', value: keyword}});
     searchTimeout = setTimeout(() => {
       loadMembers({
         keyword,
@@ -298,7 +302,11 @@ const FormSearch = (props) => {
       job: sortedJobs?.find(ele => ele.value?.toString() === (it?.job?.toString() ?? "14")),
       userTypes: it.userTypes,
       accessibleTeams: it.accessibleTeams,
+      originalAccessibleTeams: it.originalAccessibleTeams,
       action: it.action,
+      phoneNumber: {
+        value: it.phoneNumber,
+      },
     }
   };
 
@@ -347,6 +355,7 @@ const FormSearch = (props) => {
   }
 
   const _handleChangeForTeamUserType = (optionValue, index, fromWearingDevice) => {
+    // todo if permission level null
     const temp = (values?.["tempTeamMembers"] && JSON.parse(JSON.stringify(values?.["tempTeamMembers"]))) ?? [];
     let roleToAdd = null;
     let roleToRemove = [];
@@ -380,40 +389,43 @@ const FormSearch = (props) => {
         roleToRemove = [USER_TYPE_TEAM_ADMIN, USER_TYPE_ADMIN];
       }
     }
-
     if (needToUpdateAccessibleTeams) {
       // todo optimize this code part
       // update accessibleTeams of tempTeamUsers
+      let newAccessibleTeams = temp[index]?.accessibleTeams;
       const currentSelectedTeamId = temp[index]?.teamId;
       const alreadyIndex = temp[index]?.accessibleTeams?.findIndex(it => it.teamId?.toString() === currentSelectedTeamId?.toString());
-      let newAccessibleTeams = temp[index]?.accessibleTeams;
       if (alreadyIndex !== -1) {
-        const a = temp[index]?.accessibleTeams[alreadyIndex];
-        if (a?.userTypes?.length > 0) {
-          if (!(temp[index]?.accessibleTeams[alreadyIndex]?.userTypes?.includes(roleToAdd))) {
-            const b = newAccessibleTeams[alreadyIndex].userTypes;
-            b.push(roleToAdd);
+        if (roleToAdd) {
+          const a = temp[index]?.accessibleTeams[alreadyIndex];
+          if (a?.userTypes?.length > 0) {
+            if (!(temp[index]?.accessibleTeams[alreadyIndex]?.userTypes?.includes(roleToAdd))) {
+              const b = newAccessibleTeams[alreadyIndex].userTypes;
+              b.push(roleToAdd);
+              newAccessibleTeams[alreadyIndex] = {
+                teamId: currentSelectedTeamId,
+                userTypes: b,
+              };
+            }
+          } else {
             newAccessibleTeams[alreadyIndex] = {
-              ...newAccessibleTeams[alreadyIndex],
-              userTypes: b,
+              teamId: currentSelectedTeamId,
+              userTypes: [roleToAdd],
             };
           }
-        } else {
-          newAccessibleTeams[alreadyIndex] = {
-            ...newAccessibleTeams[alreadyIndex],
-            userTypes: [roleToAdd],
-          };
         }
         // remove role based on roleToRemove
         newAccessibleTeams[alreadyIndex] = {
-          ...newAccessibleTeams[alreadyIndex],
+          teamId: currentSelectedTeamId,
           userTypes: newAccessibleTeams[alreadyIndex]?.userTypes.filter(it => !roleToRemove.includes(it)),
         };
       } else {
-        newAccessibleTeams.push({
-          teamId: currentSelectedTeamId,
-          userTypes: [roleToAdd],
-        });
+        if (roleToAdd) {
+          newAccessibleTeams.push({
+            teamId: currentSelectedTeamId,
+            userTypes: [roleToAdd],
+          });
+        }
       }
       if (roleToAdd === USER_TYPE_OPERATOR) {
         // only remain as team operator on current team
@@ -427,6 +439,16 @@ const FormSearch = (props) => {
           return it;
         });
       }
+      newAccessibleTeams = newAccessibleTeams?.map((it) => {
+        return {
+          ...it,
+          userTypes: it.userTypes?.sort(),
+        };
+      });
+      // remove team whose userTypes is empty
+      newAccessibleTeams = newAccessibleTeams?.filter((it) => {
+        return it?.userTypes?.length > 0;
+      });
 
       temp[index]["accessibleTeams"] = newAccessibleTeams;
       setFieldValue("tempTeamMembers", temp);
@@ -445,7 +467,7 @@ const FormSearch = (props) => {
   const isUpdated = (user) => {
     const origins = values?.["teamMembers"]?.filter(it => it.index === user.index) ?? [];
     if (origins?.length > 0) {
-      // todo update this logic
+      // todo optimize this logic
       const keysInOrigin = ["firstName", "lastName", "email"];
       const keys = ["firstName", "lastName", "email"];
       let shouldSkip = false;
@@ -462,7 +484,10 @@ const FormSearch = (props) => {
             ret = true;
           }
         });
-        if (!(get(user, "userTypes").equals(get(origin, "userTypes")))) {
+        if (!isEqual(get(user, "userTypes")?.sort(), get(origin, "userTypes")?.sort())) {
+          ret = true;
+        }
+        if (!isEqual(get(user, "accessibleTeams")?.sort(), get(origin, "accessibleTeams")?.sort())) {
           ret = true;
         }
         // No Role Defined will be selected as default when user's job role is null, and this will not be considered as updated
@@ -470,9 +495,6 @@ const FormSearch = (props) => {
           if (!(get(user, "job.value") === "14" && [null, undefined, ""].includes(get(origin, "job")))) {
             ret = true;
           }
-        }
-        if (get(origin, "teamId")?.toString() !== get(user, "teamId")?.toString()) {
-          ret = true;
         }
         if (ret === false) {
           shouldSkip = true;
@@ -501,6 +523,8 @@ const FormSearch = (props) => {
   const removeFromTeam = async () => {
     if (selectedUser?.teamId && selectedUser?.email) {
       try {
+        alert("todo remove from team");
+        return;
         setLoading(true);
         await inviteTeamMember(selectedUser?.teamId, {
           remove: [selectedUser.email],
@@ -594,7 +618,8 @@ const FormSearch = (props) => {
     });
 
     newlyFormattedTeams.sort((a, b) => {
-      let aAffect = 0; let bAffect = 0;
+      let aAffect = 0;
+      let bAffect = 0;
       if (a.color === approvalGreen) {
         aAffect = 2;
       } else if (b.color === approvalGreen) {
@@ -782,6 +807,7 @@ const FormSearch = (props) => {
               containerClass={style.PhoneNumberContainer}
               inputClass={style.PhoneNumberInput}
               dropdownClass={style.PhoneNumberDropdown}
+              disabled={true}
               value={user?.phoneNumber?.value}
               onChange={(value, countryCode) => setFieldValue('user.phoneNumber', {value, countryCode})}
             />
@@ -920,17 +946,6 @@ const formatJob = (users) => {
   }));
 };
 
-const formatTeam = (users) => {
-  return users && users.map((user) => {
-    const teamId = user?.team?.value;
-    delete user.team
-    return {
-      ...user,
-      teamId: teamId,
-    }
-  });
-};
-
 const setUserType = (users) => {
   return users && users.map((user) => {
     const userTypes = user?.userTypes;
@@ -955,9 +970,8 @@ const EnhancedForm = withFormik({
   handleSubmit: async (values, {props, setStatus, setFieldValue}) => {
     const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId}}} = props;
     // filter users that were modified to update
-    // fixme refactor according to new data structures
-    return;
     let users = (values?.users ?? [])?.filter(it => it.updated);
+    // fixme optimize
     try {
       setLoading(true);
       let usersToModify = [];
@@ -966,18 +980,16 @@ const EnhancedForm = withFormik({
           usersToModify.push(it);
         }
       });
-
-      usersToModify = setUserType(formatTeam(formatJob(lowercaseEmail(usersToModify))));
-
+      usersToModify = setUserType(formatJob(lowercaseEmail(usersToModify)));
       usersToModify = usersToModify?.map(it => ({
         userId: it.userId,
         firstName: it.firstName,
         lastName: it.lastName,
         job: it.job,
-        teamId: it.teamId,
         email: it.email,
         userType: it.userType,
-        userTypes: it.userTypes?.filter(ele => [USER_TYPE_OPERATOR, USER_TYPE_TEAM_ADMIN].includes(ele)),
+        accessibleTeams: it.accessibleTeams,
+        originalAccessibleTeams: it.originalAccessibleTeams,
       }));
 
       const {userType} = props;
@@ -986,28 +998,41 @@ const EnhancedForm = withFormik({
         const updatePromises = [];
         let inviteBody = {};
         usersToModify?.forEach(userToModify => {
-          // fixme enforce correctness
           if (!(["undefined", "-1", "null", ""].includes(organizationId?.toString()))) {
-            const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
+            const isAdmin = [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].some(it => userType?.includes(it));
             if (isAdmin) {
               updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
             }
-            if (userToModify?.teamId) {
-              if (inviteBody?.[userToModify?.teamId]?.add) {
-                inviteBody[userToModify?.teamId].add.push({
-                  email: userToModify?.email,
-                  userTypes: userToModify?.userTypes,
-                });
-              } else {
-                inviteBody[userToModify?.teamId] = {
-                  add: [
-                    {
+            if (!([USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(userToModify.userType))) { // if not super admin or org admin
+              userToModify?.originalAccessibleTeams?.forEach(originalAccessibleTeam => {
+                const isRemoved = !(userToModify?.accessibleTeams?.some(accessibleTeam => accessibleTeam.teamId?.toString() === originalAccessibleTeam.teamId?.toString()));
+                if (isRemoved) {
+                  if (inviteBody[originalAccessibleTeam.teamId]?.remove) {
+                    inviteBody[originalAccessibleTeam.teamId].remove.push(userToModify?.email);
+                  } else {
+                    inviteBody[originalAccessibleTeam.teamId] = {remove: [userToModify?.email]};
+                  }
+                }
+              });
+              userToModify?.accessibleTeams?.forEach(accessibleTeam => {
+                if (accessibleTeam.teamId && accessibleTeam.userTypes?.length > 0) {
+                  if (inviteBody[accessibleTeam.teamId]?.add) {
+                    inviteBody[accessibleTeam.teamId].add.push({
                       email: userToModify?.email,
-                      userTypes: userToModify?.userTypes,
-                    }
-                  ],
-                };
-              }
+                      userTypes: accessibleTeam?.userTypes,
+                    });
+                  } else {
+                    inviteBody[accessibleTeam.teamId] = {
+                      add: [
+                        {
+                          email: userToModify?.email,
+                          userTypes: accessibleTeam?.userTypes,
+                        }
+                      ],
+                    };
+                  }
+                }
+              });
             }
           }
         });
@@ -1028,13 +1053,10 @@ const EnhancedForm = withFormik({
                 if (failedEmails?.length === 0) {
                   setStatus({visibleSuccessModal: true});
                 }
-                /*const teamId = props?.match?.params?.id;
-                if (teamId) {
-                  loadMembers(teamId, showErrorNotification, setFieldValue, false).catch(e => console.log(e));
-                }*/
                 setLoading(false);
               });
           } else {
+            setStatus({visibleSuccessModal: true});
             setLoading(false);
           }
         };

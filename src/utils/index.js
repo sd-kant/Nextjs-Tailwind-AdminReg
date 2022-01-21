@@ -47,3 +47,12 @@ export const uuidv4 = () => {
     return v.toString(16);
   });
 };
+
+export const updateUrlParam = ({param: {key, value}, reload = false}) => {
+  const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?${key}=${value}`;
+  if (!reload) {
+    window.history.pushState({path: newUrl},'', newUrl);
+  } else {
+    window.location.href = newUrl;
+  }
+}
