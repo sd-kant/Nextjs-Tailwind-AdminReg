@@ -41,10 +41,11 @@ import {searchMembers as searchMembersAPI} from "../../../http";
 import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
-import CustomPhoneInput from "../../components/PhoneInput";
+// import CustomPhoneInput from "../../components/PhoneInput";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import DropdownButton from "../../components/DropdownButton";
 import {getParamFromUrl, updateUrlParam} from "../../../utils";
+import Button from "../../components/Button";
 
 let searchTimeout = null;
 
@@ -581,6 +582,29 @@ const FormSearch = (props) => {
 
   const approvalGreen = '#35EA6C';
 
+  const resetPhoneNumber = async (userId) => {
+    try {
+      setLoading(true);
+      await updateUserByAdmin(organizationId, userId, {
+        phoneNumber: "",
+      });
+      // set phone number null on values
+      for (let keys = ["tempTeamMembers", "teamMembers"], i = 0; i < keys.length; i++) {
+        const temp = (values?.[keys[i]] && JSON.parse(JSON.stringify(values?.[keys[i]]))) ?? [];
+        const index = temp.findIndex(it => it.userId?.toString() === userId?.toString());
+        if (index !== -1) {
+          temp[index]['phoneNumber'] = null;
+          setFieldValue(keys[i], temp);
+        }
+      }
+    } catch (e) {
+      console.log("reset phone number error", e.response?.data);
+      showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderUser = (user, index, key) => {
     let errorField = errors?.users;
     let touchField = touched?.users;
@@ -637,6 +661,8 @@ const FormSearch = (props) => {
     if (entity?.userTypes?.includes(USER_TYPE_OPERATOR)) {
       wearingDeviceSelected = yesNoOptions?.[0];
     }
+    const hiddenPhoneNumber = (user?.phoneNumber?.value) ? t('ends with', {number: user?.phoneNumber?.value?.slice(-4)}) : t("not registered");
+    const phoneNumberInputDisabled = !((user?.phoneNumber?.value) && isAdmin);
 
     return (
       <div className={clsx(style.User)} key={`${key}-${index}`}>
@@ -799,23 +825,32 @@ const FormSearch = (props) => {
         </div>
 
         <div className={clsx(style.UserRow, 'mt-10')}>
-          <div className="d-flex flex-column">
-            <label className='font-input-label'>
-              {t("phone number")}
-            </label>
-            <CustomPhoneInput
-              containerClass={style.PhoneNumberContainer}
-              inputClass={style.PhoneNumberInput}
-              dropdownClass={style.PhoneNumberDropdown}
-              disabled={true}
-              value={user?.phoneNumber?.value}
-              onChange={(value, countryCode) => setFieldValue('user.phoneNumber', {value, countryCode})}
-            />
-            {
-              (touched?.user?.phoneNumber && errors?.user?.phoneNumber) ? (
-                <span className="font-helper-text text-error mt-10">{errors.user.phoneNumber}</span>
-              ) : ''
-            }
+          <div className={style.GroupWrapper2}>
+            <div className="d-flex flex-column">
+              <label className='font-input-label'>
+                {t("phone number")}
+              </label>
+              <input
+                className={clsx(style.InputHalf, style.DisabledInput, 'input mt-10 font-heading-small text-white text-capitalize')}
+                value={hiddenPhoneNumber}
+                type="text"
+                disabled={true}
+                onChange={() => {
+                }}
+              />
+            </div>
+
+            <div className="d-flex flex-column justify-end">
+              <div className={clsx(style.ButtonWrapper)}>
+                <Button
+                  title={t('reset')}
+                  borderColor={'orange'}
+                  bgColor={'gray'}
+                  disabled={phoneNumberInputDisabled}
+                  onClick={() => resetPhoneNumber(user?.userId, user?.originIndex)}
+                />
+              </div>
+            </div>
           </div>
 
           <div className={style.GroupWrapper}>

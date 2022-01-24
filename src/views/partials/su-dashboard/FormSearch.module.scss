@@ -92,6 +92,10 @@
         width: calc(100% - 45px);
       }
 
+      .InputHalf {
+        width: calc(100% - 45PX);
+      }
+
       .DisabledInput {
         border: 1px solid $app-ts;
         background-color: $app-tf;
@@ -109,6 +113,17 @@
           display: flex;
           justify-content: flex-end;
           margin-top: 10px;
+        }
+      }
+
+      .GroupWrapper2 {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-column-gap: 20px;
+
+        .ButtonWrapper {
+          display: flex;
+          justify-content: flex-end;
         }
       }
 
@@ -263,6 +278,11 @@
           max-width: 370px;
         }
 
+        .GroupWrapper2 {
+          width: 50%;
+          max-width: 370px;
+        }
+
         .Select {
           width: 372px;
         }
@@ -302,6 +322,11 @@
         }
 
         .GroupWrapper {
+          width: 50%;
+          max-width: 397px;
+        }
+
+        .GroupWrapper2 {
           width: 50%;
           max-width: 397px;
         }

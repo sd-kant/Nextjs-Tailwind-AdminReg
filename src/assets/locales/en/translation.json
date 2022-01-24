@@ -211,5 +211,8 @@
   "search": "search",
   "super admin": "Admin Super User",
   "org admin": "Org Admin",
-  "re-invite user": "Re-Invite User"
+  "re-invite user": "Re-Invite User",
+  "ends with": "ending-{{number}}",
+  "not registered": "not registered",
+  "reset": "reset"
 }

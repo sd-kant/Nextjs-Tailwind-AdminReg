@@ -14,7 +14,7 @@ const Button = (
     rounded = false,
     fullWidth = false,
     icon = null,
-    disabled,
+    disabled = false,
     drop,
     onClick = () => {},
     onClickArrow = () => {},
@@ -100,7 +100,7 @@ const Button = (
         )
       }
       style={{color: calcColor(), backgroundColor: calcBgColor(), borderColor: calcBorderColor()}}
-      onClick={onClick}
+      onClick={() => disabled ? () => {} : onClick()}
     >
       <span
         className={clsx(calcTxtSizeStyle(), dropdown ? style.ButtonLabel : null)}

@@ -211,5 +211,8 @@
   "search": "探す",
   "super admin": "管理者スーパーユーザー",
   "org admin": "組織管理者",
-  "re-invite user": "ユーザーを再招待する"
+  "re-invite user": "ユーザーを再招待する",
+  "ends with": "エンディング-{{number}}",
+  "not registered": "未登録",
+  "reset": "リセット"
 }

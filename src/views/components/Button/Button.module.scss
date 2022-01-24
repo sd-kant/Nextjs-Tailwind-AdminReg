@@ -26,10 +26,10 @@
 
   .ButtonLabel {
     overflow: hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    width:120px;
-    display:inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 120px;
+    display: inline-block;
   }
 }
 
@@ -38,7 +38,7 @@
 }
 
 .Disabled {
-  cursor: default;
+  cursor: not-allowed;
 }
 
 .XS {
