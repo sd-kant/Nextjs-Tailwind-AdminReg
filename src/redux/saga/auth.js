@@ -19,6 +19,7 @@ function* loginSaga({payload: {
   phoneNumber,
   loginCode,
 }}) {
+  let mode = 1; // 1: username, 2: sms
   try {
     yield put({
       type: actionTypes.LOADING,
@@ -37,6 +38,7 @@ function* loginSaga({payload: {
         phoneNumber,
         loginCode,
       };
+      mode = 2;
     }
     apiRes = yield call(login, body);
     const responseData = apiRes.data;
@@ -87,13 +89,25 @@ function* loginSaga({payload: {
       });
     }
   } catch (e) {
-    console.log(e);
-    yield put({
-      type: actionTypes.ERROR_NOTIFICATION,
-      payload: {
-        msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
-      }
-    });
+    if (e.response?.data?.status?.toString() === "400" && mode === 2) {
+      yield put({
+        type: actionTypes.LOGIN_FAILED,
+        payload: {},
+      });
+      yield put({
+        type: actionTypes.ERROR_NOTIFICATION,
+        payload: {
+          msg: i18n.t("msg wrong code"),
+        }
+      });
+    } else {
+      yield put({
+        type: actionTypes.ERROR_NOTIFICATION,
+        payload: {
+          msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+        }
+      });
+    }
   } finally {
     yield put({
       type: actionTypes.LOADING,

@@ -219,7 +219,9 @@ const FormSearch = (props) => {
     loadAllTeams();
     countChanges();
     const keyword = getParamFromUrl('keyword');
-    setKeyword(keyword);
+    if (keyword) {
+      setKeyword(keyword);
+    }
 
     return () => {
       clearInterval(intervalForChangesDetect);

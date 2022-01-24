@@ -214,5 +214,6 @@
   "re-invite user": "ユーザーを再招待する",
   "ends with": "エンディング-{{number}}",
   "not registered": "未登録",
-  "reset": "リセット"
+  "reset": "リセット",
+  "msg wrong code": "コードが間違っています。コードを確認してください"
 }

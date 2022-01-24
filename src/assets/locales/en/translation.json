@@ -214,5 +214,6 @@
   "re-invite user": "Re-Invite User",
   "ends with": "ending-{{number}}",
   "not registered": "not registered",
-  "reset": "reset"
+  "reset": "reset",
+  "msg wrong code": "Wrong code, please check your code"
 }

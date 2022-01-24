@@ -214,5 +214,6 @@
   "re-invite user": "Réinviter un utilisateur",
   "ends with": "Fin-{{number}}",
   "not registered": "non enregistré",
-  "reset": "réinitialiser"
+  "reset": "réinitialiser",
+  "msg wrong code": "Mauvais code, veuillez vérifier votre code"
 }

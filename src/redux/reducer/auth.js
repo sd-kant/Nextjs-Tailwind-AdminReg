@@ -10,6 +10,7 @@ const initialState = {
   isAdmin: userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it?.toString())),
   mobileToken: null,
   baseUri: null,
+  smsAuthFailedCount: 0,
 };
 
 export default (state = initialState, action) => {
@@ -34,6 +35,11 @@ export default (state = initialState, action) => {
     case actionTypes.SET_BASE_URI:
       return produce(state, draft => {
         draft.baseUri = action.payload.baseUri;
+      });
+
+    case actionTypes.LOGIN_FAILED:
+      return produce(state, draft => {
+        draft.smsAuthFailedCount++;
       });
 
     default:

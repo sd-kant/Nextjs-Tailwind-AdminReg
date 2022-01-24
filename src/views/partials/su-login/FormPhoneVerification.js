@@ -21,6 +21,7 @@ const FormPhoneVerification = (props) => {
     mode,
     login,
     setToken,
+    smsAuthFailedCount,
   } = props;
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [code, setCode] = useState('');
@@ -37,6 +38,12 @@ const FormPhoneVerification = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
+
+  useEffect(() => {
+    if (smsAuthFailedCount !== 0) {
+      setCode("");
+    }
+  }, [smsAuthFailedCount]);
 
   const getMyPhoneNumber = async () => {
     if (mode === "0") {
@@ -73,7 +80,8 @@ const FormPhoneVerification = (props) => {
     if (phoneNumber) {
       try {
         setLoading(true);
-        await requestSmsCode(phoneNumber)
+        await requestSmsCode(phoneNumber);
+        setCode("");
       } catch (e) {
         showErrorNotification(e.response?.data?.message);
       } finally {
@@ -167,6 +175,7 @@ const FormPhoneVerification = (props) => {
 
 const mapStateToProps = (state) => ({
   token: get(state, 'auth.token'),
+  smsAuthFailedCount: get(state, 'auth.smsAuthFailedCount'),
 });
 
 const mapDispatchToProps = (dispatch) =>

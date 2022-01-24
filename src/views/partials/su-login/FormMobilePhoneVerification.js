@@ -94,8 +94,10 @@ const FormMobilePhoneVerification = (props) => {
         // something went wrong
       }
     } catch (e) {
-      setCode('');
-      showErrorNotification(e.response?.data?.message);
+      setCode("");
+      if (e.response?.data?.status?.toString() === "400") {
+        showErrorNotification(t("msg wrong code"));
+      }
     } finally {
       setLoading(false);
     }
@@ -113,7 +115,8 @@ const FormMobilePhoneVerification = (props) => {
     if (phoneNumber) {
       try {
         setLoading(true);
-        await requestSmsCode(phoneNumber)
+        await requestSmsCode(phoneNumber);
+        setCode("");
       } catch (e) {
         showErrorNotification(e.response?.data?.message);
       } finally {

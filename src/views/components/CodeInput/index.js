@@ -1,5 +1,5 @@
 import * as React from "react";
-import ReactCodeInput from "react-code-input";
+import ReactCodeInput from "./ReactCodeInput";
 
 function useWindowSize() {
   const [size, setSize] = React.useState([0, 0]);
@@ -87,7 +87,7 @@ const CodeInput = ({
   return (
     <div>
       <ReactCodeInput
-        type='text'
+        type='number'
         fields={6}
         {...inputCodeStyle}
         value={value}
