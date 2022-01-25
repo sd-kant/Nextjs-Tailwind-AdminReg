@@ -1,0 +1,240 @@
+@import "colors";
+@import "fonts";
+
+.font-header-medium {
+  font-family: Ubuntu-Medium;
+  font-size: 27px;
+  line-height: 41px;
+}
+
+.font-heading-small {
+  font-family: Ubuntu-Regular;
+  font-size: 21px;
+  line-height: 24.13px;
+}
+
+.font-button-label {
+  font-family: Ubuntu-Bold;
+  font-size: 16px;
+  line-height: 18.38px;
+}
+
+.font-button-label-sm {
+  font-family: Ubuntu-Bold;
+  font-size: 14px;
+  line-height: 16.09px;
+}
+
+.font-input-label {
+  font-family: Ubuntu-Medium;
+  font-size: 16px;
+  line-height: 18.38px;
+}
+
+.font-input-label-italic {
+  font-family: Ubuntu-Medium-Italic;
+  font-size: 16px;
+  line-height: 18.38px;
+}
+
+.font-helper-text {
+  font-family: Ubuntu-Regular;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.font-binary {
+  font-family: Ubuntu-Regular;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.font-search {
+  font-family: Ubuntu-Regular;
+  font-size: 13px;
+  line-height: 19px;
+  letter-spacing: 0.39px;
+}
+
+.font-modal-header {
+  font-family: Ubuntu-Regular;
+  font-size: 1.5em;
+  line-height: 39px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-white {
+  color: $app-white;
+}
+
+.text-black {
+  color: $app-black;
+}
+
+.text-error {
+  color: $app-error-red;
+}
+
+.text-orange {
+  color: $app-orange;
+}
+
+.text-gray {
+  color: $app-gray;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mt-15 {
+  margin-top: 15px;
+}
+
+.mt-25 {
+  margin-top: 25px;
+}
+
+.mt-28 {
+  margin-top: 28px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.mt-57 {
+  margin-top: 57px;
+}
+
+.mt-80 {
+  margin-top: 80px;
+}
+
+.mt-8 {
+  margin-top: 8px;
+}
+
+.mt-50 {
+  margin-top: 50px;
+}
+
+.mt-119 {
+  margin-top: 119px;
+}
+
+.mt-60 {
+  margin-top: 60px;
+}
+
+.mt-65 {
+  margin-top: 65px;
+}
+
+.ml-40 {
+  margin-left: 40px;
+}
+
+.ml-15 {
+  margin-left: 15px;
+}
+
+.ml-25 {
+  margin-left: 25px;
+}
+
+.mb-15 {
+  margin-bottom: 15px;
+}
+
+.mb-60 {
+  margin-bottom: 60px;
+}
+
+.mb-100 {
+  margin-bottom: 100px;
+}
+
+.pt-22 {
+  padding-top: 22px !important;
+}
+
+.px-15 {
+  padding: 0 15px !important;
+}
+
+.d-block {
+  display: block;
+}
+
+.d-inline-block {
+  display: inline-block;
+}
+
+.d-inline-flex {
+  display: flex;
+}
+
+
+.d-flex {
+  display: flex;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.align-center  {
+  align-items: center;
+}
+
+.align-end {
+  align-items: flex-end;
+}
+
+.align-start {
+  align-items: start;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.cursor-default {
+  cursor: default !important;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+@media only screen and (min-width: 1400px) {
+  .font-modal-header {
+    font-family: Ubuntu-Regular;
+    font-size: 34px;
+    line-height: 39px;
+  }
+}

@@ -1,0 +1,82 @@
+.Wrapper {
+  position: relative;
+  display: inline-block;
+  text-transform: uppercase;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 1px solid;
+  cursor: pointer;
+
+  .IconWrapper {
+    position: absolute;
+    width: 35px;
+    right: 0;
+    top: 5px;
+    bottom: 5px;
+    border: solid white;
+    border-width: 0 0 0 1px;
+
+    img {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  .ButtonLabel {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 120px;
+    display: inline-block;
+  }
+}
+
+.Rounded {
+  border-radius: 26px;
+}
+
+.Disabled {
+  cursor: not-allowed;
+}
+
+.XS {
+  padding: 4px 25px;
+}
+
+.FullWidth.XS {
+  width: calc(100% - 50px);
+}
+
+.XS.Dropdown {
+  padding: 4px 40px 4px 4px;
+}
+
+.SM {
+  padding: 10px 25px;
+}
+
+.FullWidth.SM {
+  width: calc(100% - 50px);
+}
+
+.SM.Dropdown {
+  padding: 10px 40px 10px 8px;
+}
+
+.MD {
+  padding: 15px 30px;
+}
+
+.MD.Dropdown {
+  padding: 15px 50px 15px 8px;
+}
+
+.FullWidth.MD {
+  width: calc(100% - 60px);
+}
+
+.LG {
+
+}

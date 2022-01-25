@@ -1,0 +1,69 @@
+{
+  "name": "kenzen-invite-v2",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.1",
+    "axios": "^0.21.1",
+    "clsx": "^1.1.1",
+    "formik": "^2.2.6",
+    "history": "^5.0.0",
+    "i": "^0.3.6",
+    "i18next": "^19.8.8",
+    "i18next-browser-languagedetector": "^6.0.1",
+    "i18next-xhr-backend": "^3.2.2",
+    "immer": "^7.0.9",
+    "libphonenumber-js": "^1.9.42",
+    "lodash": "^4.17.21",
+    "npm": "^7.5.4",
+    "prop-types": "^15.8.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-i18next": "^11.8.7",
+    "react-input-mask": "^2.0.4",
+    "react-microsoft-login": "^1.15.0",
+    "react-modal": "^3.14.3",
+    "react-modern-calendar-datepicker": "^3.1.6",
+    "react-phone-input-2": "^2.14.0",
+    "react-redux": "^7.2.2",
+    "react-redux-toastr": "^7.6.7",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "4.0.2",
+    "react-scroll": "^1.8.2",
+    "react-select": "^4.1.0",
+    "read-excel-file": "^5.2.6",
+    "redux": "^4.0.5",
+    "redux-saga": "^1.1.3",
+    "sass": "^1.49.0",
+    "spacetime": "^7.1.0",
+    "timezone-soft": "^1.3.1",
+    "web-vitals": "^1.1.0",
+    "yup": "^0.32.8"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+@import "../../../assets/scss/colors";
+
+.DropZone {
+  width: 100%;
+  max-width: 500px;
+
+  .FileInput {
+    display: none;
+  }
+
+  .DropZoneArea {
+    background-color: $app-tf;
+    padding: 40px 0;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    cursor: pointer;
+
+    .DropZoneLabel {
+      margin-left: 10px;
+    }
+  }
+
+  .Hover {
+    background-color: $app-ns;
+  }
+}

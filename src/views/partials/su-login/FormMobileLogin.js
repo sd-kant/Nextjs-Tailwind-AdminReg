@@ -1,0 +1,208 @@
+import React, {useEffect} from 'react';
+import {connect} from "react-redux";
+import {withTranslation} from "react-i18next";
+import * as Yup from 'yup';
+import {Form, withFormik} from "formik";
+import {bindActionCreators} from "redux";
+import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {loginAction, setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth";
+import {checkPasswordValidation} from "../../../utils";
+import {Link} from "react-router-dom";
+import MicrosoftLogin from "react-microsoft-login";
+import {microsoftAppClientID, productionApiBaseUrl} from "../../../config";
+import axios from "axios";
+import history from "../../../history";
+
+const formSchema = (t) => {
+  return Yup.object().shape({
+    username: Yup.string()
+      .required(t('username required'))
+      .min(6, t('username min error'))
+      .max(1024, t('username max error')),
+    password: Yup.string()
+      .required(t('your password required'))
+      .min(6, t('password min error'))
+      .max(1024, t('password max error'))
+      .test(
+        'is-valid',
+        t('password invalid'),
+        function (value) {
+          return checkPasswordValidation(value);
+        }
+      )
+  });
+};
+
+const FormMobileLogin = (props) => {
+  const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
+
+  useEffect(() => {
+    setClassName();
+    // todo get deviceId
+  }, []);
+
+  const changeFormField = (e) => {
+    const {value, name} = e.target;
+    setFieldValue(name, value);
+
+    setClassName();
+  }
+
+  const setClassName = () => {
+    let sum = 0;
+    sum += values["password"] ? 1 : 0;
+    sum += values["username"] ? 1 : 0;
+    setRestBarClass(`progress-${sum * 50}`);
+  }
+
+  const authHandler = (err, data) => {
+    console.log(err, data);
+  };
+
+  return (
+    <Form className='form-group mt-57'>
+      <div>
+        <div className='d-flex flex-column'>
+          <label className='font-input-label'>
+            {t("username")}
+          </label>
+
+          <input
+            className='input input-field mt-10 font-heading-small text-white'
+            name="username"
+            value={values["username"]}
+            type='text'
+            onChange={changeFormField}
+          />
+
+          {
+            errors.username && touched.username && (
+              <span className="font-helper-text text-error mt-10">{errors.username}</span>
+            )
+          }
+        </div>
+
+        <div className='mt-40 d-flex flex-column'>
+          <label className='font-input-label'>
+            {t("password")}
+          </label>
+
+          <input
+            className='input input-field mt-10 font-heading-small text-white'
+            name="password"
+            type='password'
+            value={values["password"]}
+            onChange={changeFormField}
+          />
+
+          {
+            errors.password && touched.password && (
+              <span className="font-helper-text text-error mt-10">{errors.password}</span>
+            )
+          }
+        </div>
+
+        <div className='mt-40 d-flex flex-column'>
+          {/*fixme update link before moving production version*/}
+          <a href="https://admin-kenzen.netlify.app/forgot-password" className="font-input-label text-orange no-underline">
+            {t("forgot password")}
+          </a>
+        </div>
+      </div>
+
+      <div className='mt-80'>
+        <div>
+          <button
+            className={`button ${values['username'] && values['password'] ? "active cursor-pointer" : "inactive cursor-default"}`}
+            type={values['username'] && values['password'] ? "submit" : "button"}
+          >
+          <span className='font-button-label text-white'>
+            {t("sign in")}
+          </span>
+          </button>
+        </div>
+
+        <div className="mt-40">
+          <span className="font-binary text-gray">
+            {t("or login with")}
+          </span>
+        </div>
+
+        <div className={"mt-15"}>
+          <MicrosoftLogin clientId={microsoftAppClientID} authCallback={authHandler} />
+        </div>
+      </div>
+    </Form>
+  )
+}
+
+const EnhancedForm = withFormik({
+  mapPropsToValues: () => ({
+    username: '',
+    password: '',
+  }),
+  validationSchema: ((props) => formSchema(props.t)),
+  handleSubmit: async (values, {props}) => {
+    const {t, showErrorNotification, setLoading, setBaseUri, setMobileToken} = props;
+    if (values.username?.includes("@")) {
+      showErrorNotification(t("use your username"));
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await axios.get(`${productionApiBaseUrl}/master/lookup/username/${values.username}`);
+      const {baseUri} = res.data;
+
+      const loginRes = await axios.post(`${baseUri}/auth/login`, values);
+      const {mfa, havePhone, accessToken, refreshToken} = loginRes.data;
+      if (!mfa) {
+        // deliver token to app
+        const payload = {
+          command: "login",
+          baseUri: baseUri,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        };
+
+        if (window.hasOwnProperty("kenzenAndroidClient")) {
+          window.kenzenAndroidClient.postMessage(JSON.stringify(payload));
+        } else if (window.hasOwnProperty("webkit")) {
+          window.webkit.messageHandlers.kenzenIosClient.postMessage(payload);
+        } else {
+          console.log("Oh shit. What do I do with the token");
+        }
+      } else {
+        setBaseUri(baseUri);
+        setMobileToken(accessToken);
+
+        if (havePhone) {
+          history.push('/mobile-phone-verification/1');
+        } else {
+          history.push('/mobile-phone-register');
+        }
+      }
+    } catch (e) {
+      showErrorNotification(e.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+})(FormMobileLogin);
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setRestBarClass: setRestBarClassAction,
+      loginAction: loginAction,
+      showErrorNotification: showErrorNotificationAction,
+      setBaseUri: setBaseUriAction,
+      setMobileToken: setMobileTokenAction,
+      setLoading: setLoadingAction,
+    },
+    dispatch
+  );
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(withTranslation()(EnhancedForm));

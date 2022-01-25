@@ -1,0 +1,25 @@
+@import "../../../assets/scss/colors";
+
+.Wrapper {
+  display: inline-block;
+  background: $app-toggle-bg;
+  border-radius: 38px;
+  padding: 3px;
+}
+
+.ToggleButtonWrapper {
+  display: inline-block;
+  color: white;
+  border-radius: 38px;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+
+.ToggleButtonWrapper.InActive {
+  background: $app-toggle-bg;
+}
+
+.ToggleButtonWrapper.Active {
+  background: $app-orange;
+  //box-shadow: 0 5px 15px rgba(255, 113, 0, 0.5);
+}
