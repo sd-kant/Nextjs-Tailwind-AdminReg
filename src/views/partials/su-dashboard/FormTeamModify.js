@@ -123,19 +123,17 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
     if (values?.name?.value) {
-      const {setLoading, showErrorNotification, match: {params: {organizationId}}} = props;
+      const {setLoading, showErrorNotification} = props;
       try {
         setLoading(true);
         const teamMembersResponse = await queryTeamMembers(values?.name?.value);
         let teamMembers = teamMembersResponse?.data?.members;
-        if (teamMembers?.length > 0) {
-          history.push(`/invite/${organizationId}/edit/modify/${values?.name?.value}`);
+        const {allTeams} = props;
+        const team = allTeams.find(it => it.id?.toString() === values?.name?.value?.toString());
+        if (teamMembers?.length > 0 && team) {
+          history.push(`/invite/${team.orgId}/edit/modify/${team.id}`);
         } else {
-          const {allTeams} = props;
-          const team = allTeams.find(it => it.id?.toString() === values?.name?.value?.toString());
-          if (team) {
-            history.push(`/invite/${team.orgId}/edit/manual/${team.id}`);
-          }
+          history.push(`/invite/${team.orgId}/edit/manual/${team.id}`);
         }
       } catch (e) {
         showErrorNotification(e.response?.data?.message);
