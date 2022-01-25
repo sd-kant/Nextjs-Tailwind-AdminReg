@@ -16,13 +16,27 @@ import PhoneRegister from "./views/pages/PhoneRegister";
 import MobileLogin from "./views/pages/MobileLogin";
 import MobilePhoneRegister from "./views/pages/MobilePhoneRegister";
 import MobilePhoneVerification from "./views/pages/MobilePhoneVerification";
+import CreateAccount from "./views/pages/CreateAccount";
 
 const Router = ({token, userType, loggedIn}) => {
+  const redirectPath = loggedIn ? (ableToLogin(userType) ? "/invite" : "/create-account") : "/login";
+
   return (
     <BrowserRouter basename="/" history={history}>
       {
         token ? (
           <Switch>
+            {/* registration side */}
+            <SignInRoute
+              path="/create-account"
+              loggedIn={loggedIn}
+              render={(props) => (
+                <CreateAccount
+                  {...props}
+                />
+              )}
+            />
+            {/* admin side*/}
             {
               ableToLogin(userType) &&
               loggedIn &&
@@ -53,7 +67,6 @@ const Router = ({token, userType, loggedIn}) => {
             }
 
             {
-              ableToLogin(userType) &&
               !loggedIn &&
               <SignInRoute
                 path="/phone-verification/:mode"
@@ -66,7 +79,6 @@ const Router = ({token, userType, loggedIn}) => {
             }
 
             {
-              ableToLogin(userType) &&
               !loggedIn &&
               <SignInRoute
                 path="/phone-register"
@@ -78,10 +90,20 @@ const Router = ({token, userType, loggedIn}) => {
               />
             }
 
-            <Redirect to={loggedIn ? "/invite" : "/"}/>
+            <Redirect to={redirectPath}/>
           </Switch>
         ) : (
           <Switch>
+            {/* registration side */}
+            <SignInRoute
+              path="/create-account"
+              render={(props) => (
+                <CreateAccount
+                  {...props}
+                />
+              )}
+            />
+
             <SignInRoute
               path="/login"
               render={(props) => (

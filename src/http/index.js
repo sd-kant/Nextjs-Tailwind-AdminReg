@@ -14,9 +14,12 @@ instance.interceptors.request.use(
     const token = localStorage.getItem('kop-v2-token');
 
     if (token) {
-      config.headers = {
-        ...config.headers,
-        'Authorization': `Bearer ${token}`,
+      // check if Authorization already set
+      if (!config.headers?.["Authorization"]) {
+        config.headers = {
+          ...config.headers,
+          'Authorization': `Bearer ${token}`,
+        }
       }
     }
     const lang = localStorage.getItem("kop-v2-lang") || 'en';
@@ -114,7 +117,8 @@ function patch(url, body, token) {
 }
 
 export const login = (body) => {
-  return new Promise((resolve, reject) => {
+  return post("/auth/login", body);
+  /*return new Promise((resolve, reject) => {
     instance.post("/auth/login", body)
       .then(res => {
         resolve(res);
@@ -122,11 +126,12 @@ export const login = (body) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const createCompany = (body) => {
-  return new Promise((resolve, reject) => {
+  return post("/organization", body);
+  /*return new Promise((resolve, reject) => {
     instance.post("/organization", body)
       .then(res => {
         resolve(res);
@@ -134,11 +139,12 @@ export const createCompany = (body) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const updateCompany = (id, body) => {
-  return new Promise((resolve, reject) => {
+  return patch(`/organization/${id}`, body);
+  /*return new Promise((resolve, reject) => {
     instance.patch(`/organization/${id}`, body)
       .then(res => {
         resolve(res);
@@ -146,11 +152,12 @@ export const updateCompany = (id, body) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const registerMultipleUsers = (body) => {
-  return new Promise((resolve, reject) => {
+  return post("/user/create/batch", body);
+  /*return new Promise((resolve, reject) => {
     instance.post("/user/create/batch", body)
       .then(res => {
         resolve(res);
@@ -158,11 +165,12 @@ export const registerMultipleUsers = (body) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const createTeam = (body) => {
-  return new Promise((resolve, reject) => {
+  return post("/team", body);
+  /*return new Promise((resolve, reject) => {
     instance.post("/team", body)
       .then(res => {
         resolve(res);
@@ -170,11 +178,12 @@ export const createTeam = (body) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const queryAllOrganizations = () => {
-  return new Promise((resolve, reject) => {
+  return get("organization");
+  /*return new Promise((resolve, reject) => {
     instance.get("organization")
       .then(res => {
         resolve(res);
@@ -182,11 +191,12 @@ export const queryAllOrganizations = () => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const queryTeams = () => {
-  return new Promise((resolve, reject) => {
+  return instance.get("team");
+  /*return new Promise((resolve, reject) => {
     instance.get("team")
       .then(res => {
         resolve(res);
@@ -194,11 +204,12 @@ export const queryTeams = () => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const sendRegistrationEmail = (data) => {
-  return new Promise((resolve, reject) => {
+  return post("email/reSend", data);
+  /*return new Promise((resolve, reject) => {
     instance.post("email/reSend", data)
       .then(res => {
         resolve(res);
@@ -206,11 +217,12 @@ export const sendRegistrationEmail = (data) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const queryTeamMembers = (teamId) => {
-  return new Promise((resolve, reject) => {
+  return get(`team/${teamId}/members`);
+  /*return new Promise((resolve, reject) => {
     instance.get(`team/${teamId}/members`)
       .then(res => {
         resolve(res);
@@ -218,11 +230,12 @@ export const queryTeamMembers = (teamId) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const searchMembers = keyword => {
-  return new Promise((resolve, reject) => {
+  return get(`user/find/${keyword}`);
+  /*return new Promise((resolve, reject) => {
     instance.get(`user/find/${keyword}`)
       .then(res => {
         resolve(res);
@@ -230,11 +243,12 @@ export const searchMembers = keyword => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const searchMembersUnderOrganization = ({keyword, organizationId}) => {
-  return new Promise((resolve, reject) => {
+  return get(`organization/${organizationId}/user/find/${keyword}`);
+  /*return new Promise((resolve, reject) => {
     instance.get(`organization/${organizationId}/user/find/${keyword}`)
       .then(res => {
         resolve(res);
@@ -242,11 +256,12 @@ export const searchMembersUnderOrganization = ({keyword, organizationId}) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const removeTeamMember = (userId) => {
-  return new Promise((resolve, reject) => {
+  return post(`team/remove/user/${userId}`, {});
+  /*return new Promise((resolve, reject) => {
     instance.post(`team/remove/user/${userId}`, {})
       .then(res => {
         resolve(res);
@@ -254,11 +269,12 @@ export const removeTeamMember = (userId) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const deleteUser = (userId) => {
-  return new Promise((resolve, reject) => {
+  return post(`user/remove/${userId}`, {});
+  /*return new Promise((resolve, reject) => {
     instance.post(`user/remove/${userId}`, {})
       .then(res => {
         resolve(res);
@@ -266,11 +282,12 @@ export const deleteUser = (userId) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 }
 
 export const createUserByAdmin = (orgId, user) => {
-  return new Promise((resolve, reject) => {
+  return post(`organization/${orgId}/user`, user);
+  /*return new Promise((resolve, reject) => {
     instance.post(`organization/${orgId}/user`, user)
       .then(res => {
         resolve(res);
@@ -278,11 +295,12 @@ export const createUserByAdmin = (orgId, user) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 };
 
 export const updateUserByAdmin = (orgId, userId, user) => {
-  return new Promise((resolve, reject) => {
+  return patch(`organization/${orgId}/user/${userId}`, user);
+  /*return new Promise((resolve, reject) => {
     instance.patch(`organization/${orgId}/user/${userId}`, user)
       .then(res => {
         resolve(res);
@@ -290,11 +308,12 @@ export const updateUserByAdmin = (orgId, userId, user) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 };
 
 export const inviteTeamMember = (teamId, payload) => {
-  return new Promise((resolve, reject) => {
+  return patch(`team/${teamId}/members`, payload);
+  /*return new Promise((resolve, reject) => {
     instance.patch(`team/${teamId}/members`, payload)
       .then(res => {
         resolve(res);
@@ -302,11 +321,12 @@ export const inviteTeamMember = (teamId, payload) => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 };
 
 export const requestResetPassword = username => {
-  return new Promise((resolve, reject) => {
+  return get(`/auth/forgot/${username}`);
+  /*return new Promise((resolve, reject) => {
     instance.get(`/auth/forgot/${username}`)
       .then(res => {
         resolve(res);
@@ -314,23 +334,12 @@ export const requestResetPassword = username => {
       .catch(e => {
         reject(e);
       })
-  });
-};
-
-export const resetPasswordV2 = payload => {
-  return new Promise((resolve, reject) => {
-    instance.patch(`/auth/token`, payload)
-      .then(res => {
-        resolve(res);
-      })
-      .catch(e => {
-        reject(e);
-      })
-  });
+  });*/
 };
 
 export const requestSmsCode = phoneNumber => {
-  return new Promise((resolve, reject) => {
+  return get(`/auth/loginCode/${phoneNumber}`);
+  /*return new Promise((resolve, reject) => {
     instance.get(`/auth/loginCode/${phoneNumber}`)
       .then(res => {
         resolve(res);
@@ -338,7 +347,7 @@ export const requestSmsCode = phoneNumber => {
       .catch(e => {
         reject(e);
       })
-  });
+  });*/
 };
 
 export const getMyProfileWithToken = token => {
@@ -347,4 +356,33 @@ export const getMyProfileWithToken = token => {
 
 export const setMyProfileWithToken = (body, token) => {
   return patch("/user", body, token);
+}
+
+
+export const updateProfile = (body, token) => {
+  return post("user/update/profile", body, token);
+}
+
+export const resetPasswordV2 = payload => {
+  return patch("auth/token", payload)
+}
+
+export const updateProfileV2 = (payload, token) => {
+  return patch("/user", payload, token);
+};
+
+export const getProfileV2 = token => {
+  return get("/user", token);
+};
+
+export const getMedicalQuestionsV2 = token => {
+  return get("/questionnaire/medical", token);
+};
+
+export const getMedicalResponsesV2 = token => {
+  return get("/questionnaire/medical/recent", token);
+};
+
+export const answerMedicalQuestionsV2 = (body, token) => {
+  return post("/questionnaire", body, token)
 }

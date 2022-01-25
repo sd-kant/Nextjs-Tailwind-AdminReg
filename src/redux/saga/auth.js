@@ -6,8 +6,8 @@ import {
 import {actionTypes} from '../type';
 import {login} from "../../http";
 import i18n from '../../i18nextInit';
-import {ableToLogin} from "../../utils";
 import history from "../../history";
+import {ableToLogin} from "../../utils";
 
 function* actionWatcher() {
   yield takeLatest(actionTypes.LOGIN, loginSaga);
@@ -18,6 +18,7 @@ function* loginSaga({payload: {
   password,
   phoneNumber,
   loginCode,
+  fromRegister = false,
 }}) {
   let mode = 1; // 1: username, 2: sms
   try {
@@ -51,28 +52,42 @@ function* loginSaga({payload: {
     } = responseData;
 
 
-    if (ableToLogin(userType)) {
-      yield put({
-        type: actionTypes.LOGIN_SUCCESS,
-        payload: {
-          token,
-          userType,
-          organizationId: orgId,
-        }
-      });
-      yield put({
-        type: actionTypes.LOGGED_IN,
-        payload: {
-          loggedIn: !mfa,
-        }
-      });
+    // if (ableToLogin(userType)) {
+    yield put({
+      type: fromRegister ? actionTypes.REGISTER_LOGIN_SUCCESS : actionTypes.LOGIN_SUCCESS,
+      payload: {
+        token,
+        userType,
+        organizationId: orgId,
+      }
+    });
+    yield put({
+      type: actionTypes.LOGGED_IN,
+      payload: {
+        loggedIn: !mfa,
+      }
+    });
+
+    if (fromRegister) {
+      localStorage.setItem("kop-v2-register-token", token);
+      if (!mfa) { // if multi-factor authentication off
+        history.push("/create-account/name");
+      } else {
+        history.push('/create-account/phone-register');
+      }
+    } else {
       localStorage.setItem("kop-v2-logged-in", !mfa ? "true" : "false");
 
       if (!mfa) { // if multi-factor authentication off
         localStorage.setItem("kop-v2-token", token);
+        localStorage.setItem("kop-v2-register-token", token);
         localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
         localStorage.setItem("kop-v2-picked-organization-id", orgId);
-        history.push("/invite");
+        if (ableToLogin(userType)) {
+          history.push("/invite");
+        } else {
+          history.push("/create-account/name");
+        }
       } else {
         if (havePhone) {
           history.push('/phone-verification/1');
@@ -80,14 +95,15 @@ function* loginSaga({payload: {
           history.push('/phone-register');
         }
       }
-    } else {
+    }
+    /*} else {
       yield put({
         type: actionTypes.ERROR_NOTIFICATION,
         payload: {
           msg: i18n.t("msg login not allowed"),
         }
       });
-    }
+    }*/
   } catch (e) {
     if (e.response?.data?.status?.toString() === "400" && mode === 2) {
       yield put({

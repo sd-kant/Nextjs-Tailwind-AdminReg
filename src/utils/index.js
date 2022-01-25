@@ -56,3 +56,65 @@ export const updateUrlParam = ({param: {key, value}, reload = false}) => {
     window.location.href = newUrl;
   }
 }
+
+export const convertImperialToMetric = (imperial) => {
+  if (!(imperial && imperial.includes("ft"))) {
+    return null;
+  }
+
+  const strArr = imperial.split("ft");
+  if (strArr && strArr.length > 1) {
+    const feet = strArr && strArr[0];
+    const inchArr = strArr && strArr[1] && strArr[1].split('in');
+    const inch = inchArr && inchArr[0];
+
+    const totalCm = parseFloat(feet) * 30.48 + parseFloat(inch) * 2.54;
+
+    const m = Math.floor(totalCm / 100);
+    const cm = Math.round(totalCm % 100);
+
+    return {
+      m,
+      cm: cm < 10 ? '0' + cm : cm
+    };
+  }
+  return null;
+}
+
+export const convertCmToImperial = value => {
+  const numericValue = parseInt(value);
+  if (!numericValue) {
+    return {
+      feet: 0,
+      inch: 0,
+    };
+  }
+
+  const feet = Math.floor(numericValue / 30.48);
+  const inch = Math.round((numericValue - feet * 30.48) / 2.54);
+
+  return {
+    feet,
+    inch,
+  };
+};
+
+export const convertCmToMetric = value => {
+  const numericValue = parseInt(value);
+  if (!numericValue) {
+    return {
+      m: 0,
+      cm: 0,
+    };
+  }
+  return {
+    m: Math.floor(numericValue / 100),
+    cm: (numericValue % 100),
+  }
+};
+
+export const format2Digits = (value) => {
+  if (!["", null, undefined].includes(value)) {
+    return String(value).padStart(2, '0');
+  } else return null;
+}

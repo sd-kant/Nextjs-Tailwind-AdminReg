@@ -188,3 +188,8 @@ export const passwordExpirationDaysOptions = [
     value: 0,
   },
 ];
+
+export const IMPERIAL = "Imperial";
+export const METRIC = "Metric";
+export const QUESTION_TYPE_RADIO = "radio";
+export const QUESTION_TYPE_BOOLEAN = "boolean";

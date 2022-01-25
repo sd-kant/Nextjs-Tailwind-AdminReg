@@ -38,6 +38,7 @@ const FormMobileLogin = (props) => {
 
   useEffect(() => {
     setClassName();
+    // todo get deviceId
   }, []);
 
   const changeFormField = (e) => {

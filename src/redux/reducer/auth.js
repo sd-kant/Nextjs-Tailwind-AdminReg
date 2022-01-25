@@ -4,6 +4,7 @@ import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
 const userType = localStorage.getItem("kop-v2-user-type") ? JSON.parse(localStorage.getItem("kop-v2-user-type")) : null;
 const initialState = {
   token: localStorage.getItem("kop-v2-token"),
+  registerToken: localStorage.getItem("kop-v2-register-token"),
   userType,
   loggedIn: localStorage.getItem("kop-v2-logged-in")?.toString() === "true",
   organizationId: localStorage.getItem("kop-v2-picked-organization-id"),
@@ -18,6 +19,7 @@ export default (state = initialState, action) => {
     case actionTypes.LOGIN_SUCCESS:
       return produce(state, draft => {
         draft.token = action.payload.token;
+        draft.registerToken = action.payload.token;
         draft.userType = action.payload.userType;
         draft.organizationId = action.payload.organizationId;
         draft.isAdmin = action.payload.userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it?.toString()));
@@ -40,6 +42,11 @@ export default (state = initialState, action) => {
     case actionTypes.LOGIN_FAILED:
       return produce(state, draft => {
         draft.smsAuthFailedCount++;
+      });
+
+    case actionTypes.REGISTER_LOGIN_SUCCESS:
+      return produce(state, draft => {
+        draft.registerToken = action.payload.token;
       });
 
     default:

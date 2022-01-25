@@ -118,7 +118,7 @@ const FormSULogin = (props) => {
           </button>
         </div>
 
-        <div className="mt-40">
+        {/*<div className="mt-40">
           <span className="font-binary text-gray">
             {t("or login with")}
           </span>
@@ -126,7 +126,7 @@ const FormSULogin = (props) => {
 
         <div className={"mt-15"}>
           <MicrosoftLogin clientId={microsoftAppClientID} authCallback={authHandler} />
-        </div>
+        </div>*/}
       </div>
     </Form>
   )

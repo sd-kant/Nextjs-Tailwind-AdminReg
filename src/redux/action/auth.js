@@ -1,18 +1,20 @@
 import {actionTypes} from "../type";
 
-export const loginAction = (username, password) => ({
+export const loginAction = (username, password, fromRegister = false) => ({
   type: actionTypes.LOGIN,
   payload: {
     username,
     password,
+    fromRegister,
   }
 });
 
-export const loginWithCodeAction = (phoneNumber, loginCode) => ({
+export const loginWithCodeAction = (phoneNumber, loginCode, fromRegister= false) => ({
   type: actionTypes.LOGIN,
   payload: {
     phoneNumber,
     loginCode,
+    fromRegister,
   }
 });
 
