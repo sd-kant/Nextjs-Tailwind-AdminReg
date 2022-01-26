@@ -35,7 +35,6 @@ import {
 import {
   deleteUserAction,
   queryAllTeamsAction,
-  removeTeamMemberAction,
 } from "../../../redux/action/base";
 import {queryTeamMembers as queryTeamMembersAPI} from "../../../http";
 import {get, isEqual} from "lodash";
@@ -1029,7 +1028,6 @@ const mapDispatchToProps = (dispatch) =>
       showErrorNotification: showErrorNotificationAction,
       showSuccessNotification: showSuccessNotificationAction,
       queryAllTeams: queryAllTeamsAction,
-      removeTeamMember: removeTeamMemberAction,
       deleteUser: deleteUserAction,
     },
     dispatch
