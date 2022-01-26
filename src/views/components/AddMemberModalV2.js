@@ -9,10 +9,8 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import removeIcon from "../../assets/images/remove.svg";
-import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
-import CustomPhoneInput from "./PhoneInput";
-import {checkPhoneNumberValidation} from "../../utils";
 import ResponsiveSelect from "./ResponsiveSelect";
+import {useMembersContext} from "../../providers/MembersProvider";
 
 const userSchema = (t) => {
   return Yup.object().shape({
@@ -71,7 +69,6 @@ const AddMemberModalV2 = (
     isOpen = false,
     onClose,
     permissionLevels,
-    sortedJobs,
     setFieldValue,
     values,
     resetForm,
@@ -81,6 +78,7 @@ const AddMemberModalV2 = (
     isAdmin,
   }) => {
   const {user} = values;
+  const {jobs} = useMembersContext();
   const options = useMemo(() => {
     if (isAdmin) {
       return permissionLevels.filter(it => ["1", "2"].includes(it.value?.toString()));
@@ -266,7 +264,7 @@ const AddMemberModalV2 = (
                         className='mt-10 font-heading-small text-black select-custom-class'
                         placeholder={t("select")}
                         styles={customStyles()}
-                        options={sortedJobs}
+                        options={jobs}
                         maxMenuHeight={190}
                         value={user.jobRole}
                         name={'user.jobRole'}

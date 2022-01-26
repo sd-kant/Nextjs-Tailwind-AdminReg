@@ -16,13 +16,16 @@ import {
   searchMembersUnderOrganization,
   updateUserByAdmin,
   inviteTeamMember,
+  queryTeamMembers as queryTeamMembersAPI,
 } from "../http";
 import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../views/components/ConfirmModalV2";
 import {withTranslation} from "react-i18next";
 import {setLoadingAction, showErrorNotificationAction} from "../redux/action/ui";
+import {updateUrlParam} from "../utils";
 
 const MembersContext = React.createContext(null);
+let searchTimeout = null;
 
 export const getPermissionLevelFromUserTypes = (userTypes) => {
   let permissionLevel;
@@ -62,12 +65,16 @@ const MembersProvider = (
     setLoading,
     showErrorNotification,
   }) => {
+  const [keyword, setKeyword] = React.useState('');
   const [members, setMembers] = React.useState([]);
   const [tempMembers, setTempMembers] = React.useState([]);
   const [users, setUsers] = React.useState([]);
+  const [admins, setAdmins] = React.useState([]);
   const [visibleDeleteModal, setVisibleDeleteModal] = React.useState(false);
   const [visibleRemoveModal, setVisibleRemoveModal] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState(null);
+  const [page, setPage] = React.useState('');
+  const [teamId, setTeamId] = React.useState('');
 
   React.useEffect(() => {
     loadAllTeams();
@@ -77,6 +84,24 @@ const MembersProvider = (
   const loadAllTeams = () => {
     queryAllTeams();
   };
+
+  React.useEffect(() => {
+    initializeMembers().then();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [teamId, page]);
+  const trimmedKeyword = React.useMemo(() => keyword.trim().toLowerCase(), [keyword]);
+  React.useEffect(() => {
+    if (page === "search") {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+      updateUrlParam({param: {key: 'keyword', value: trimmedKeyword}});
+      searchTimeout = setTimeout(() => {
+        initializeMembers().then();
+      }, 700);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trimmedKeyword]);
 
   const teams = React.useMemo(() => {
     const entities = [];
@@ -115,20 +140,34 @@ const MembersProvider = (
 
   React.useEffect(() => {
     let users = [];
+    let admins = [];
     tempMembers?.forEach((it, index) => {
-      const item = {
+      const memberItem = {
         ...formatForFormValue(it),
         originIndex: index,
       };
-      const updated = isUpdated(item);
-      users.push({
-        ...item,
-        updated,
-      });
+      memberItem["updated"] = isUpdated(memberItem);
+
+      if (page === "modify") {
+        if (
+          !trimmedKeyword ||
+          [it.email?.toLowerCase(), it.firstName?.toLowerCase(), it.lastName?.toLowerCase()].some(item => item?.includes(trimmedKeyword))
+        ) {
+          if ([USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN].some(ele => memberItem?.userTypes?.includes(ele))) { // if member has admin role
+            admins.push(memberItem);
+          } else {
+            users.push(memberItem);
+          }
+        }
+      } else if (page === "search") {
+        users.push(memberItem);
+      }
+
     });
     setUsers(users);
+    setAdmins(admins);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tempMembers, teams]);
+  }, [tempMembers, teams, trimmedKeyword]);
 
   const formatForFormValue = (it) => {
     return {
@@ -192,78 +231,77 @@ const MembersProvider = (
     }
   };
 
-  const initializeMembers = async (
-    {
-      keyword,
-      mode = "search",
-    }) => {
-    if (mode === "search") {
-      const trimmedKeyword = keyword?.trim()?.toLowerCase();
-      if (trimmedKeyword) {
-        try {
+  const initializeMembers = async () => {
+    try {
+      let teamMembers = [];
+      if (page === "search") {
+        if (trimmedKeyword) {
           let teamMembersResponse;
           if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {
             teamMembersResponse = await searchMembersAPI(trimmedKeyword);
           } else {
             teamMembersResponse = await searchMembersUnderOrganization({organizationId, keyword: trimmedKeyword});
           }
-          let teamMembers = teamMembersResponse?.data;
+          teamMembers = teamMembersResponse?.data;
+        }
+      } else if (page === "modify") {
+        const teamMembersResponse = await queryTeamMembersAPI(teamId);
+        teamMembers = teamMembersResponse?.data?.members;
+      }
 
-          teamMembers.forEach((it, index) => {
-            let accessibleTeams = [];
-            if (it.teamId) {
+      teamMembers.forEach((it, index) => {
+        let accessibleTeams = [];
+        if (it.teamId) {
+          accessibleTeams.push({
+            teamId: it.teamId,
+            userTypes: [USER_TYPE_OPERATOR],
+          });
+        }
+
+        let permissionLevel = getPermissionLevelFromUserTypes(it?.userTypes);
+        if (["1"].includes(permissionLevel?.value?.toString())) { // if this user is an team administrator
+          it["teams"]?.forEach(ele => {
+            const already = accessibleTeams?.findIndex(item => item.teamId?.toString() === ele.teamId?.toString());
+            if (already !== -1) {
+              if (accessibleTeams[already]?.userTypes?.length > 0) {
+                if (!(accessibleTeams[already]?.userTypes?.includes(USER_TYPE_TEAM_ADMIN))) {
+                  const newUserTypes = accessibleTeams[already].userTypes;
+                  newUserTypes.push(USER_TYPE_TEAM_ADMIN);
+                  accessibleTeams[already] = {
+                    teamId: ele.teamId,
+                    userTypes: newUserTypes?.sort(),
+                  };
+                }
+              } else {
+                accessibleTeams[already] = {
+                  teamId: ele.teamId,
+                  userTypes: [USER_TYPE_TEAM_ADMIN],
+                };
+              }
+            } else {
               accessibleTeams.push({
-                teamId: it.teamId,
-                userTypes: [USER_TYPE_OPERATOR],
+                teamId: ele.teamId,
+                userTypes: [USER_TYPE_TEAM_ADMIN],
               });
             }
-
-            let permissionLevel = getPermissionLevelFromUserTypes(it?.userTypes);
-            if (["1"].includes(permissionLevel?.value?.toString())) { // if this user is an team administrator
-              it["teams"]?.forEach(ele => {
-                const already = accessibleTeams?.findIndex(item => item.teamId?.toString() === ele.teamId?.toString());
-                if (already !== -1) {
-                  if (accessibleTeams[already]?.userTypes?.length > 0) {
-                    if (!(accessibleTeams[already]?.userTypes?.includes(USER_TYPE_TEAM_ADMIN))) {
-                      const newUserTypes = accessibleTeams[already].userTypes;
-                      newUserTypes.push(USER_TYPE_TEAM_ADMIN);
-                      accessibleTeams[already] = {
-                        teamId: ele.teamId,
-                        userTypes: newUserTypes?.sort(),
-                      };
-                    }
-                  } else {
-                    accessibleTeams[already] = {
-                      teamId: ele.teamId,
-                      userTypes: [USER_TYPE_TEAM_ADMIN],
-                    };
-                  }
-                } else {
-                  accessibleTeams.push({
-                    teamId: ele.teamId,
-                    userTypes: [USER_TYPE_TEAM_ADMIN],
-                  });
-                }
-              })
-            }
-
-            it['index'] = index;
-            it['action'] = 1;
-            it['accessibleTeams'] = accessibleTeams;
-            it['originalAccessibleTeams'] = accessibleTeams;
-            if (!it['teamId'] && it['teams']?.length > 0) {
-              it['teamId'] = it['teams'][0]?.teamId;
-            }
-          });
-          teamMembers?.sort((a, b) => {
-            return a?.lastName?.localeCompare(b?.lastName);
-          });
-          setMembers(teamMembers);
-          setTempMembers(teamMembers);
-        } catch (e) {
-          showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+          })
         }
-      }
+
+        it['index'] = index;
+        it['action'] = 1;
+        it['accessibleTeams'] = accessibleTeams;
+        it['originalAccessibleTeams'] = accessibleTeams;
+        if (!it['teamId'] && it['teams']?.length > 0) {
+          it['teamId'] = it['teams']?.some(ele => ele?.teamId?.toString() === teamId?.toString()) ? teamId : it['teams'][0]?.teamId;
+        }
+      });
+      teamMembers?.sort((a, b) => {
+        return a?.lastName?.localeCompare(b?.lastName);
+      });
+      setMembers(teamMembers);
+      setTempMembers(teamMembers);
+    } catch (e) {
+      showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
     }
   };
 
@@ -481,10 +519,17 @@ const MembersProvider = (
   const providerValue = {
     userType,
     users,
+    admins,
+    members,
     teams,
     jobs,
     doableActions,
     selectedUser,
+    keyword,
+    setKeyword,
+    page,
+    setTeamId,
+    setPage,
     setSelectedUser,
     initializeMembers,
     handleMemberInfoChange,

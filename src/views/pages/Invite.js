@@ -129,9 +129,13 @@ const Invite = (
           exact
           path='/invite/:organizationId/edit/modify/:id'
           render={matchProps => (
-            <FormInviteModify
-              {...matchProps}
-            />
+            <WrappedMembersProvider
+              organizationId={matchProps.match.params.organizationId}
+            >
+              <FormInviteModify
+                {...matchProps}
+              />
+            </WrappedMembersProvider>
           )}
         />
 

@@ -32,11 +32,9 @@ import {
 } from "../../../redux/action/base";
 import {get} from "lodash";
 import ConfirmModal from "../../components/ConfirmModal";
-import {getParamFromUrl, updateUrlParam} from "../../../utils";
+import {getParamFromUrl} from "../../../utils";
 import SearchUserItem from "./SearchUserItem";
 import {useMembersContext} from "../../../providers/MembersProvider";
-
-let searchTimeout = null;
 
 export const defaultTeamMember = {
   email: '',
@@ -46,7 +44,7 @@ export const defaultTeamMember = {
   action: 1,
 };
 
-const userSchema = (t) => {
+export const userSchema = (t) => {
   return Yup.object().shape({
     email: Yup.string()
       .required(t('email required'))
@@ -86,13 +84,13 @@ const FormSearch = (props) => {
     match: {params: {organizationId}},
     isAdmin,
   } = props;
-  const [keyword, setKeyword] = useState('');
   const [newChanges, setNewChanges] = useState(0);
-  const {initializeMembers, users} = useMembersContext();
+  const {users, setPage, keyword, setKeyword} = useMembersContext();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
     countChanges();
+    setPage("search");
     const keyword = getParamFromUrl('keyword');
     if (keyword) {
       setKeyword(keyword);
@@ -103,20 +101,6 @@ const FormSearch = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
-    updateUrlParam({param: {key: 'keyword', value: keyword}});
-    searchTimeout = setTimeout(() => {
-      initializeMembers({
-        mode: "search",
-        keyword,
-      });
-    }, 700);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [keyword]);
 
   /*useEffect(() => {
     if (!loading) {
@@ -199,7 +183,7 @@ const FormSearch = (props) => {
                 <SearchUserItem
                   user={user}
                   index={index}
-                  key={'user'}
+                  key={`user-${index}`}
                   errorField={errors?.users}
                   touchField={touched?.users}
                 />
@@ -225,14 +209,14 @@ const FormSearch = (props) => {
   )
 }
 
-const formatJob = (users) => {
+export const formatJob = (users) => {
   return users && users.map((user) => ({
     ...user,
     job: user?.job?.value,
   }));
 };
 
-const setUserType = (users) => {
+export const setUserType = (users) => {
   return users && users.map((user) => {
     const userTypes = user?.userTypes;
     let userType = "";
@@ -257,7 +241,7 @@ const EnhancedForm = withFormik({
     const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId}}} = props;
     // filter users that were modified to update
     let users = (values?.users ?? [])?.filter(it => it.updated);
-    // fixme optimize
+    // fixme optimize, mainly eliminate non-necessary calls(e.g. only call invitation api regarding invited team)
     try {
       setLoading(true);
       let usersToModify = [];

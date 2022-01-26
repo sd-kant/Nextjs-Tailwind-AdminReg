@@ -21,7 +21,6 @@ const SearchUserItem = (
   {
     user,
     index,
-    key,
     isAdmin,
     errorField,
     touchField,
@@ -93,7 +92,7 @@ const SearchUserItem = (
   const phoneNumberInputDisabled = !((user?.phoneNumber?.value) && isAdmin);
 
   return (
-    <div className={clsx(style.User)} key={`${key}-${index}`}>
+    <div className={clsx(style.User)}>
       <div className={clsx(style.RemoveIconWrapper)}>
         {
           user.updated &&
