@@ -39,7 +39,7 @@ const ConfirmModalV2 = (
           >
             <img src={yesIcon} alt="male icon"/>
 
-            <span className='font-binary mt-8'>
+            <span className='font-binary mt-8 text-uppercase'>
                 {t("yes")}
               </span>
           </div>
@@ -50,7 +50,7 @@ const ConfirmModalV2 = (
           >
             <img src={noIcon} alt="female icon"/>
 
-            <span className='font-binary mt-8 capitalize'>
+            <span className='font-binary mt-8 capitalize text-uppercase'>
                 {t("no")}
               </span>
           </div>
