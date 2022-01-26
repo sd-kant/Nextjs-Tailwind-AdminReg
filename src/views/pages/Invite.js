@@ -13,6 +13,7 @@ import FormReInvite from "../partials/su-dashboard/FormReInvite";
 import FormTeamModify from "../partials/su-dashboard/FormTeamModify";
 import FormInviteModify from "../partials/su-dashboard/FormInviteModify";
 import FormSearch from "../partials/su-dashboard/FormSearch";
+import {WrappedMembersProvider} from "../../providers/MembersProvider";
 
 const Invite = (
   {
@@ -128,9 +129,13 @@ const Invite = (
           exact
           path='/invite/:organizationId/edit/modify/:id'
           render={matchProps => (
-            <FormInviteModify
-              {...matchProps}
-            />
+            <WrappedMembersProvider
+              organizationId={matchProps.match.params.organizationId}
+            >
+              <FormInviteModify
+                {...matchProps}
+              />
+            </WrappedMembersProvider>
           )}
         />
 
@@ -138,9 +143,13 @@ const Invite = (
           exact
           path='/invite/:organizationId/search'
           render={matchProps => (
-            <FormSearch
-              {...matchProps}
-            />
+            <WrappedMembersProvider
+              organizationId={matchProps.match.params.organizationId}
+            >
+              <FormSearch
+                {...matchProps}
+              />
+            </WrappedMembersProvider>
           )}
         />
 
