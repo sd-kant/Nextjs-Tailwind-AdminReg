@@ -272,12 +272,15 @@ const FormInviteModify = (props) => {
           </div>
 
           <div className={clsx(style.FormBody, "mt-40 d-flex flex-column")}>
-            <div className={clsx(style.AddButton, "mt-28")} onClick={addAnother}>
-              <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
-              <span className="font-heading-small text-capitalize">
-                {t("add another member")}
-            </span>
-            </div>
+            {
+              !(["-1"].includes(id?.toString())) &&
+              <div className={clsx(style.AddButton, "mt-28")} onClick={addAnother}>
+                <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
+                <span className="font-heading-small text-capitalize">
+                  {t("add another member")}
+                </span>
+              </div>
+            }
 
             {
               values?.users?.length > 0 &&

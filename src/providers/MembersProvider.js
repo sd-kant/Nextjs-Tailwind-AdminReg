@@ -16,7 +16,7 @@ import {
   searchMembersUnderOrganization,
   updateUserByAdmin,
   inviteTeamMember,
-  queryTeamMembers as queryTeamMembersAPI,
+  queryTeamMembers as queryTeamMembersAPI, getUsersUnderOrganization,
 } from "../http";
 import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../views/components/ConfirmModalV2";
@@ -245,8 +245,14 @@ const MembersProvider = (
           teamMembers = teamMembersResponse?.data;
         }
       } else if (page === "modify") {
-        const teamMembersResponse = await queryTeamMembersAPI(teamId);
-        teamMembers = teamMembersResponse?.data?.members;
+        let teamMembersResponse;
+        if (teamId?.toString() === "-1") {
+          teamMembersResponse = await getUsersUnderOrganization({userType: 'unassigned', organizationId});
+          teamMembers = teamMembersResponse?.data?.filter(ele => ele?.userTypes?.length === 0);
+        } else {
+          teamMembersResponse = await queryTeamMembersAPI(teamId);
+          teamMembers = teamMembersResponse?.data?.members;
+        }
       }
 
       teamMembers.forEach((it, index) => {
@@ -291,6 +297,7 @@ const MembersProvider = (
         it['action'] = 1;
         it['accessibleTeams'] = accessibleTeams;
         it['originalAccessibleTeams'] = accessibleTeams;
+        it['job'] = (parseInt(it['job']) > 0 && parseInt(it['job']) <= 14) ? it['job'] : "14";
         if (!it['teamId'] && it['teams']?.length > 0) {
           it['teamId'] = it['teams']?.some(ele => ele?.teamId?.toString() === teamId?.toString()) ? teamId : it['teams'][0]?.teamId;
         }
