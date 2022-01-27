@@ -128,10 +128,6 @@ export const updateCompany = (id, body) => {
   return patch(`/organization/${id}`, body);
 }
 
-export const registerMultipleUsers = (body) => {
-  return post("/user/create/batch", body);
-}
-
 export const createTeam = (body) => {
   return post("/team", body);
 }
@@ -158,6 +154,10 @@ export const searchMembers = keyword => {
 
 export const searchMembersUnderOrganization = ({keyword, organizationId}) => {
   return get(`organization/${organizationId}/user/find/${keyword}`);
+}
+
+export const getUsersUnderOrganization = ({userType, organizationId}) => {
+  return get(`organization/${organizationId}/user?userType=${userType}`);
 }
 
 export const removeTeamMember = (userId) => {

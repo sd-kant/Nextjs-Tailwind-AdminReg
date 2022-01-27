@@ -217,6 +217,7 @@
   "reset": "リセット",
   "msg wrong code": "コードが間違っています。コードを確認してください",
   "logout kenzen": "ログアウト？",
+  "no team assigned": "チームは割り当てられていません",
 
   "create account": "アカウント作成",
   "medical questionnaire": "問診票",

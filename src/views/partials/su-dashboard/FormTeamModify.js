@@ -11,7 +11,7 @@ import {get} from "lodash";
 import {customStyles} from "./FormCompany";
 import backIcon from "../../../assets/images/back.svg";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
-import {queryTeamMembers} from "../../../http";
+import {getUsersUnderOrganization, queryTeamMembers} from "../../../http";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -26,16 +26,32 @@ const formSchema = (t) => {
 };
 
 const FormTeamModify = (props) => {
-  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams, match: {params: {organizationId}}, isAdmin,} = props;
+  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams, match: {params: {organizationId}}, isAdmin, showErrorNotification,} = props;
+  const [hasUnassignedMember, setHasUnassignedMember] = React.useState(false);
 
   useEffect(() => {
     setRestBarClass("progress-54 medical");
     queryAllTeams();
+    unAssignedUsersUnderOrganization();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeHandler = (key, value) => {
     setFieldValue(key, value);
+  }
+
+  const unAssignedUsersUnderOrganization = () => {
+    getUsersUnderOrganization({userType: 'unassigned', organizationId})
+      .then(res => {
+        const hasUnassignedMember = res.data?.some(ele => !(ele?.userTypes?.length > 0));
+        setHasUnassignedMember(hasUnassignedMember);
+      })
+      .catch(err => {
+        showErrorNotification(err?.response?.data?.message ?? t("msg something went wrong"));
+      })
+      .finally(() => {
+
+      });
   }
 
   const filteredTeams = React.useMemo(() => {
@@ -52,9 +68,13 @@ const FormTeamModify = (props) => {
         });
       }
     });
+    hasUnassignedMember && teams.push({
+      value: -1,
+      label: t("no team assigned")?.toUpperCase(),
+    });
     return teams;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allTeams]);
+  }, [allTeams, hasUnassignedMember]);
 
   const navigateTo = (path) => {
     history.push(path);
@@ -122,11 +142,15 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
-    if (values?.name?.value) {
+    const teamId = values?.name?.value;
+    if (teamId?.toString() === "-1") { // if selected "no team assigned"
+      const {match: {params: {organizationId}}} = props;
+      history.push(`/invite/${organizationId}/edit/modify/-1`);
+    } else {
       const {setLoading, showErrorNotification} = props;
       try {
         setLoading(true);
-        const teamMembersResponse = await queryTeamMembers(values?.name?.value);
+        const teamMembersResponse = await queryTeamMembers(teamId);
         let teamMembers = teamMembersResponse?.data?.members;
         const {allTeams} = props;
         const team = allTeams.find(it => it.id?.toString() === values?.name?.value?.toString());

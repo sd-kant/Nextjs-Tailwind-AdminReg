@@ -14,11 +14,10 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../../constant";
 import {get} from 'lodash';
 
 const FormTeamMode = (props) => {
-  const {t, setRestBarClass, userType, match: {params: {organizationId}}, myOrganizationId} = props;
+  const {t, setRestBarClass, match: {params: {organizationId}}, myOrganizationId} = props;
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -28,7 +27,6 @@ const FormTeamMode = (props) => {
   const navigateTo = (path) => {
     history.push(path);
   }
-  const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
   const orgId = ["undefined", "-1", "null", ""].includes(organizationId?.toString()) ? myOrganizationId : organizationId;
 
   return (
