@@ -86,6 +86,7 @@ const FormCompany = (props) => {
   useEffect(() => {
     setRestBarClass("progress-0 medical");
     queryAllOrganizations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [organizations, setOrganizations] = useState([]);
   const changeFormField = (e) => {
@@ -122,9 +123,12 @@ const FormCompany = (props) => {
   }, [allOrganizations]);
 
   useEffect(() => {
-    if (organizations?.length > 0 && isOrgAdmin) {
+    if (organizations?.length > 0 && values["companyName"]?.value) {
+      changeHandler("companyName", organizations.find(it => it.value?.toString() === values["companyName"]?.value?.toString()));
+    } else if (isOrgAdmin) {
       changeHandler("companyName", organizations[0]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organizations, isOrgAdmin]);
 
   const cancelEditing = () => {
@@ -138,12 +142,14 @@ const FormCompany = (props) => {
     setFieldValue('editingCompanyName', values.companyName?.label);
   };
 
+  const isEditing = useMemo(() => values.companyName?.__isNew__ || values["isEditing"], [values]);
+
   return (
     <Form className='form mt-57'>
       <div className={clsx(style.TopWrapper)}>
         <div className='grouped-form'>
           <label className="font-header-medium">
-            {isSuperAdmin ? t("create or select company") : t("select company")}
+            {isSuperAdmin ? t("create or select company") : t("welcome")}
           </label>
           {
             values.companyName?.created ?
@@ -188,7 +194,6 @@ const FormCompany = (props) => {
                   /> :
                   <ResponsiveSelect
                     className='mt-10 font-heading-small text-black input-field'
-                    isClearable
                     options={organizations}
                     value={values["companyName"]}
                     name="companyName"
@@ -211,82 +216,89 @@ const FormCompany = (props) => {
               )
           }
         </div>
+        {
+          (isEditing || values["companyName"]?.value) &&
+          <div className='mt-40 d-flex flex-column'>
+            <label className='font-input-label'>
+              {t("country")}
+            </label>
 
-        <div className='mt-40 d-flex flex-column'>
-          <label className='font-input-label'>
-            {t("country")}
-          </label>
-
-          <ResponsiveSelect
-            className='mt-10 font-heading-small text-black input-field'
-            options={options}
-            value={values["companyLocation"]}
-            name="companyLocation"
-            styles={customStyles()}
-            onChange={(value) => changeHandler("companyLocation", value)}
-            menuPortalTarget={document.body}
-            menuPosition={'fixed'}
-            placeholder={t("select")}
-          />
-
-          {
-            touched.companyLocation && errors.companyLocation && (
-              <span className="font-helper-text text-error mt-10">{errors.companyLocation}</span>
-            )
-          }
-        </div>
-
-        <div className='d-flex flex-column mt-40'>
-          <label className='font-input-label'>
-            {t("password min length")}
-          </label>
-
-          <div className='d-inline-block mt-10'>
-            <ButtonGroup
-              size={'sm'}
-              rounded={true}
-              disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-              options={passwordMinLengthOptions}
-              value={values["passwordMinimumLength"]}
-              id={'password-min-length-option'}
-              setValue={(v) => changeHandler("passwordMinimumLength", v)}
+            <ResponsiveSelect
+              className='mt-10 font-heading-small text-black input-field'
+              options={options}
+              value={values["companyLocation"]}
+              name="companyLocation"
+              styles={customStyles()}
+              onChange={(value) => changeHandler("companyLocation", value)}
+              menuPortalTarget={document.body}
+              menuPosition={'fixed'}
+              placeholder={t("select")}
             />
+
+            {
+              touched.companyLocation && errors.companyLocation && (
+                <span className="font-helper-text text-error mt-10">{errors.companyLocation}</span>
+              )
+            }
           </div>
-        </div>
+        }
 
-        <div className='d-flex flex-column mt-40'>
-          <label className='font-input-label'>
-            {t("Password Expiration (Days)")}
-          </label>
+        {
+          isEditing &&
+            <>
+              <div className='d-flex flex-column mt-40'>
+                <label className='font-input-label'>
+                  {t("password min length")}
+                </label>
 
-          <div className='d-inline-block mt-10'>
-            <ButtonGroup
-              size={'sm'}
-              rounded={true}
-              disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-              options={passwordExpirationDaysOptions}
-              value={values["passwordExpirationDays"]}
-              id={'password-expiration-days-option'}
-              setValue={(v) => changeHandler("passwordExpirationDays", v)}
-            />
-          </div>
-        </div>
+                <div className='d-inline-block mt-10'>
+                  <ButtonGroup
+                    size={'sm'}
+                    rounded={true}
+                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                    options={passwordMinLengthOptions}
+                    value={values["passwordMinimumLength"]}
+                    id={'password-min-length-option'}
+                    setValue={(v) => changeHandler("passwordMinimumLength", v)}
+                  />
+                </div>
+              </div>
 
-        <div className='d-flex flex-column mt-40'>
-          <label className='font-input-label'>
-            {t("2fa")}
-          </label>
+              <div className='d-flex flex-column mt-40'>
+                <label className='font-input-label'>
+                  {t("Password Expiration (Days)")}
+                </label>
 
-          <div className='d-inline-block mt-10'>
-            <ButtonGroup
-              options={twoFAOptions}
-              disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-              value={values["twoFA"]}
-              id={'2fa-option'}
-              setValue={(v) => changeHandler("twoFA", v)}
-            />
-          </div>
-        </div>
+                <div className='d-inline-block mt-10'>
+                  <ButtonGroup
+                    size={'sm'}
+                    rounded={true}
+                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                    options={passwordExpirationDaysOptions}
+                    value={values["passwordExpirationDays"]}
+                    id={'password-expiration-days-option'}
+                    setValue={(v) => changeHandler("passwordExpirationDays", v)}
+                  />
+                </div>
+              </div>
+
+              <div className='d-flex flex-column mt-40'>
+                <label className='font-input-label'>
+                  {t("2fa")}
+                </label>
+
+                <div className='d-inline-block mt-10'>
+                  <ButtonGroup
+                    options={twoFAOptions}
+                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                    value={values["twoFA"]}
+                    id={'2fa-option'}
+                    setValue={(v) => changeHandler("twoFA", v)}
+                  />
+                </div>
+              </div>
+            </>
+        }
       </div>
 
       <div className='mt-80'>
