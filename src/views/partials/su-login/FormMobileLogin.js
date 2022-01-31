@@ -5,7 +5,6 @@ import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {loginAction, setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth";
-import {checkPasswordValidation} from "../../../utils";
 // import MicrosoftLogin from "react-microsoft-login";
 import {/*microsoftAppClientID, */productionApiBaseUrl} from "../../../config";
 import axios from "axios";
