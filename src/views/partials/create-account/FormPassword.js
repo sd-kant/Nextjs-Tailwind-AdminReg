@@ -4,7 +4,7 @@ import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
-import {checkPasswordValidation, getTokenFromUrl} from "../../../utils";
+import {checkAlphaNumeric, checkPasswordValidation, getTokenFromUrl} from "../../../utils";
 import {resetPasswordV2} from "../../../http";
 import {
   setLoadingAction,
@@ -20,7 +20,14 @@ const formSchema = (t) => {
     username: Yup.string()
       .required(t('username required'))
       .min(6, t('username min error'))
-      .max(1024, t('username max error')),
+      .max(1024, t('username max error'))
+      .test(
+        'is-valid',
+        t('username invalid'),
+        function (value) {
+          return checkAlphaNumeric(value);
+        }
+      ),
     password: Yup.string()
       .required(t('your password required'))
       .min(6, t('password min error'))

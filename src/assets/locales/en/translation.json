@@ -219,6 +219,7 @@
   "logout kenzen": "Log Out?",
   "no team assigned": "no team assigned",
   "welcome": "Welcome!",
+  "username invalid": "Username must contain only letters and numbers.",
 
   "create account": "Create Account",
   "medical questionnaire": "Medical Questionnaire",
