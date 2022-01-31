@@ -7,8 +7,8 @@ import {bindActionCreators} from "redux";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {loginAction, setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth";
 import {checkPasswordValidation} from "../../../utils";
-import MicrosoftLogin from "react-microsoft-login";
-import {microsoftAppClientID, productionApiBaseUrl} from "../../../config";
+// import MicrosoftLogin from "react-microsoft-login";
+import {/*microsoftAppClientID, */productionApiBaseUrl} from "../../../config";
 import axios from "axios";
 import history from "../../../history";
 
@@ -55,9 +55,9 @@ const FormMobileLogin = (props) => {
     setRestBarClass(`progress-${sum * 50}`);
   }
 
-  const authHandler = (err, data) => {
+  /*const authHandler = (err, data) => {
     console.log(err, data);
-  };
+  };*/
 
   return (
     <Form className='form-group mt-57'>
@@ -122,7 +122,7 @@ const FormMobileLogin = (props) => {
           </button>
         </div>
 
-        <div className="mt-40">
+        {/*<div className="mt-40">
           <span className="font-binary text-gray">
             {t("or login with")}
           </span>
@@ -130,7 +130,7 @@ const FormMobileLogin = (props) => {
 
         <div className={"mt-15"}>
           <MicrosoftLogin clientId={microsoftAppClientID} authCallback={authHandler} />
-        </div>
+        </div>*/}
       </div>
     </Form>
   )
