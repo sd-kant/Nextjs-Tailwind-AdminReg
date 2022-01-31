@@ -96,6 +96,7 @@ const AddMemberModalV2 = (
         },
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   return (

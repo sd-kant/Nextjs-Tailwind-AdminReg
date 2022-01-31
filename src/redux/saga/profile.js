@@ -79,10 +79,7 @@ function* updateProfileSaga(
   }
 }
 
-function* getProfileSaga(
-  {
-    payload: {}
-  }) {
+function* getProfileSaga() {
   try {
     yield put({
       type: actionTypes.LOADING,
@@ -120,10 +117,7 @@ function* getProfileSaga(
   }
 }
 
-function* getMedicalQuestionsSaga(
-  {
-    payload: {}
-  }) {
+function* getMedicalQuestionsSaga() {
   try {
     yield put({
       type: actionTypes.LOADING,
@@ -161,10 +155,7 @@ function* getMedicalQuestionsSaga(
   }
 }
 
-function* getMedicalResponsesSaga(
-  {
-    payload: {}
-  }) {
+function* getMedicalResponsesSaga() {
   try {
     yield put({
       type: actionTypes.LOADING,

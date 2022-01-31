@@ -13,6 +13,7 @@ const PhoneVerification = (props) => {
       <div className='form-header'>
         <img className='form-header-logo' src={logo} alt='kenzen logo'/>
         &nbsp;&nbsp;
+        {/* eslint-disable-next-line react/jsx-no-comment-textnodes */}
         <span className='form-header-text text-capitalize'>
           //&nbsp;&nbsp;{t("admin sign in")}
         </span>

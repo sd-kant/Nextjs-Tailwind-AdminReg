@@ -54,6 +54,7 @@ const FormStartWork = (props) => {
     setHourOptions(options);
     options = ["00", "15", "30", "45"];
     setMinuteOptions(options);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ const FormStartWork = (props) => {
         setFieldValue("minute", minute);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
   const options = [
     {
@@ -174,9 +176,9 @@ const FormStartWork = (props) => {
           </div>
 
           {
-            (errors.hour && touched.hour) || (errors.minute && touched.minute)/* || (errors.startTimeOption && touched.startTimeOption)*/ && (
+            (errors.hour && touched.hour) || (errors.minute && touched.minute) ? (
               <span className="font-helper-text text-error mt-10">{t('start work invalid')}</span>
-            )
+            ) : null
           }
         </div>
       </div>

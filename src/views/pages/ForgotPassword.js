@@ -1,12 +1,9 @@
 import React from 'react';
 import logo from "../../assets/images/logo_light.svg";
-import {useTranslation} from "react-i18next";
 import FormForgotPassword from "../partials/su-login/FormForgotPassword";
 
 
-const ForgotPassword = (props) => {
-  const {t} = useTranslation();
-
+const ForgotPassword = () => {
   return (
     <div className='form-main'>
       <div className='form-header'>

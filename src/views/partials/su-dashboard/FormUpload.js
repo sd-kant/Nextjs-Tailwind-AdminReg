@@ -134,6 +134,7 @@ const FormUpload = (props) => {
                   className="text-orange no-underline cursor-pointer"
                   href="https://kenzen0.sharepoint.com/:x:/s/Marketing/EWMoBTc5y85Bp_nkLy7CM54BpfGha7tGsbFox_axLVmQpA"
                   target="_blank"
+                  rel="noreferrer"
                 />
               }}
             />

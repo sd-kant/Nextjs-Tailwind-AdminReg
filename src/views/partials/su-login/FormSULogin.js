@@ -8,8 +8,8 @@ import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux
 import {loginAction} from "../../../redux/action/auth";
 import {checkPasswordValidation} from "../../../utils";
 import {Link} from "react-router-dom";
-import MicrosoftLogin from "react-microsoft-login";
-import {microsoftAppClientID} from "../../../config";
+// import MicrosoftLogin from "react-microsoft-login";
+// import {microsoftAppClientID} from "../../../config";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -36,6 +36,7 @@ const FormSULogin = (props) => {
 
   useEffect(() => {
     setClassName();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeFormField = (e) => {
@@ -52,6 +53,7 @@ const FormSULogin = (props) => {
     setRestBarClass(`progress-${sum * 50}`);
   }
 
+  // eslint-disable-next-line no-unused-vars
   const authHandler = (err, data) => {
     console.log(err, data);
   };

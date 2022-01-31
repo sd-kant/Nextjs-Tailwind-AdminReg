@@ -18,7 +18,7 @@ const ConfirmModalV2 = (
 
   return (
     <div className={clsx(style.Modal, `z-index-2 ${show ? "d-block" : "d-none"}`)}>
-      <img src={closeIcon} className={clsx(style.CloseIcon)} onClick={onCancel}/>
+      <img src={closeIcon} className={clsx(style.CloseIcon)} alt="close icon" onClick={onCancel}/>
       <div className={clsx(style.ModalHeader, "text-center")}>
         <span className={"font-modal-header text-white"}>
           {header}

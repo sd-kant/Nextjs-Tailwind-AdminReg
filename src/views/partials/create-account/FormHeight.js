@@ -71,6 +71,7 @@ const FormHeight = (props) => {
 
   useEffect(() => {
     setRestBarClass('progress-54');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -89,6 +90,7 @@ const FormHeight = (props) => {
         history.push("/create-account/unit");
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   const ftOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -225,7 +227,7 @@ const EnhancedForm = withFormik({
       };
       if (payload.measure === IMPERIAL) {
         const {m, cm} = convertImperialToMetric(`${values["feet"]}ft${values["inch"]}in`);
-        payload["height"] = m * 100 + cm;
+        payload["height"] = (m * 100) + cm;
       } else {
         payload["height"] = values["height"].replaceAll('m', '').replaceAll('c', '');
       }

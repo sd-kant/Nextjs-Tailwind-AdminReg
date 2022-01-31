@@ -23,12 +23,14 @@ const FormWorkLength = (props) => {
   const {t, values, errors, touched, setFieldValue, setRestBarClass, profile} = props;
   useEffect(() => {
     setRestBarClass('progress-90');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (profile) {
       setFieldValue("workLength", profile.workDayLength);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   const navigateTo = (path) => {

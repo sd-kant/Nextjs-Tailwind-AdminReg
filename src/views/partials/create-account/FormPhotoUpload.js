@@ -11,7 +11,9 @@ import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAc
 
 const FormPhotoUpload = (props) => {
   const {t, setRestBarClass} = props;
+  // eslint-disable-next-line no-unused-vars
   const [photo, setPhoto] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [token, setToken] = useState("");
 
   useEffect(() => {
@@ -22,6 +24,7 @@ const FormPhotoUpload = (props) => {
       setToken(token);
     }
     setRestBarClass('progress-100');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const navigateTo = (path) => {
@@ -31,6 +34,7 @@ const FormPhotoUpload = (props) => {
   const submit = async () => {
   }
 
+  // eslint-disable-next-line no-unused-vars
   const selectPhoto = async (e) => {
     const originName = (e.target['files']?.[0]?.name);
     setPhoto(originName);

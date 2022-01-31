@@ -236,7 +236,7 @@ const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     users: [defaultTeamMember],
   }),
-  validationSchema: ((props) => Yup.lazy(values => formSchema(props.t))),
+  validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {
     const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId}}} = props;
     // filter users that were modified to update
@@ -246,7 +246,7 @@ const EnhancedForm = withFormik({
       setLoading(true);
       let usersToModify = [];
       users?.forEach(it => {
-        if (!!it.userId) {
+        if (it.userId) {
           usersToModify.push(it);
         }
       });
@@ -365,7 +365,6 @@ const EnhancedForm = withFormik({
       }
     } catch (e) {
       console.log('_handleSubmit error', e);
-    } finally {
     }
   },
   enableReinitialize: true,

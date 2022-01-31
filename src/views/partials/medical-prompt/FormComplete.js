@@ -30,6 +30,7 @@ const FormComplete = (props) => {
           <a
             href="https://apps.apple.com/us/app/kenzen/id1512544065"
             target="_blank"
+            rel="noreferrer"
           >
             <img
               className="cursor-pointer"
@@ -40,6 +41,7 @@ const FormComplete = (props) => {
           <a
             href="https://play.google.com/store/apps/details?id=com.kenzen.patch"
             target="_blank"
+            rel="noreferrer"
           >
             <img
               className="cursor-pointer"
@@ -56,8 +58,8 @@ const FormComplete = (props) => {
             i18nKey={"medical complete support"}
             values={{supportEmail: "support@kenzen.com"}}
             components={{
-              a1: <a href="https://kenzen.com/support" className="text-orange no-underline" target="_blank"/>,
-              a2: <a className="text-orange no-underline" href="mailto: support@kenzen.com"/>
+              a1: <a href="https://kenzen.com/support" rel="noreferrer" className="text-orange no-underline" target="_blank"/>,
+              a2: <a className="text-orange no-underline" rel="noreferrer" href="mailto: support@kenzen.com"/>
             }}
           />
         </span>

@@ -7,7 +7,7 @@ const initialState = {
   profile: null,
 };
 
-export default (state = initialState, action) => {
+const profileReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_MEDICAL_QUESTIONS:
       return produce(state, draft => {
@@ -28,3 +28,5 @@ export default (state = initialState, action) => {
       return state;
   }
 }
+
+export default profileReducer;

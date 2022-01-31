@@ -25,7 +25,6 @@ import {
 import FormMedical from "../partials/medical-prompt/FormMedical";
 import {setRestBarClassAction, showErrorNotificationAction} from "../../redux/action/ui";
 import FormUnit from "../partials/create-account/FormUnit";
-import FormResend from "../partials/create-account/FormResend";
 import FormTimezone from "../partials/create-account/FormTimezone";
 import FormPhoneRegister from "../partials/create-account/FormPhoneRegister";
 import FormPhoneVerification from "../partials/create-account/FormPhoneVerification";
@@ -56,6 +55,7 @@ const CreateAccount = (
       <div className='form-header'>
         <img className='form-header-logo' src={logo} alt='kenzen logo'/>
         &nbsp;&nbsp;
+        {/* eslint-disable-next-line react/jsx-no-comment-textnodes */}
         <span className='form-header-text'>
           //&nbsp;&nbsp;{isMedical ? t("medical questionnaire") : t("create account")}
         </span>

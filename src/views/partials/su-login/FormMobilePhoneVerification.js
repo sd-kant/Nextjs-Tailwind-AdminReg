@@ -83,8 +83,10 @@ const FormMobilePhoneVerification = (props) => {
           refreshToken: refreshToken,
         };
         console.log("mobile login success!");
+        // eslint-disable-next-line no-prototype-builtins
         if (window.hasOwnProperty("kenzenAndroidClient")) {
           window.kenzenAndroidClient.postMessage(JSON.stringify(payload));
+          // eslint-disable-next-line no-prototype-builtins
         } else if (window.hasOwnProperty("webkit")) {
           window.webkit.messageHandlers.kenzenIosClient.postMessage(payload);
         } else {

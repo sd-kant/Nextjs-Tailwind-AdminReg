@@ -7,7 +7,7 @@ const initialState = {
   visibleSuccessModal: false,
 };
 
-export default (state = initialState, action) => {
+const uiReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.SET_REST_BAR_CLASS:
       return produce(state, draft => {
@@ -26,3 +26,5 @@ export default (state = initialState, action) => {
       return state;
   }
 }
+
+export default uiReducer;

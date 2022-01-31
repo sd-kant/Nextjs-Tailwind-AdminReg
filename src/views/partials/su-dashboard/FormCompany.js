@@ -21,7 +21,7 @@ import clsx from "clsx";
 import style from "./FormCompany.module.scss";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 
-export const customStyles = (disabled = false) => ({
+export const customStyles = () => ({
   option: (provided, state) => ({
     ...provided,
     backgroundColor: state.isSelected ? '#DE7D2C' : (state.isFocused ? '#5BAEB6': 'white'),

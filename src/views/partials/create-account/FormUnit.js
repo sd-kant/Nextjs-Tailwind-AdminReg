@@ -27,12 +27,14 @@ const FormUnit = (props) => {
   const {t, values, setFieldValue, setRestBarClass, profile} = props;
   useEffect(() => {
     setRestBarClass("progress-45");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (profile) {
       setFieldValue("measureType", profile.measure);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   const navigateTo = (path) => {

@@ -20,7 +20,7 @@ const formSchema = (t) => {
 };
 
 const FormForgotPassword = (props) => {
-  const {values, errors, touched, t, setFieldValue, setRestBarClass, status, setStatus} = props;
+  const {values, errors, touched, t, setFieldValue, status, setStatus} = props;
 
   const changeFormField = (e) => {
     const {value, name} = e.target;
@@ -87,7 +87,6 @@ const FormForgotPassword = (props) => {
             e.preventDefault();
             setStatus({visibleModal: false});
             history.push("/login");
-            return;
           }}
         />
       }
@@ -100,7 +99,7 @@ const EnhancedForm = withFormik({
     username: '',
   }),
   validationSchema: ((props) => formSchema(props.t)),
-  handleSubmit: async (values, {props, setSubmitting, setStatus}) => {
+  handleSubmit: async (values, {props, setStatus}) => {
     try {
       props.setLoading(true);
       await requestResetPassword(values?.username);
