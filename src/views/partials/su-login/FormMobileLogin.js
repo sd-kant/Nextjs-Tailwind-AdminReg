@@ -7,7 +7,6 @@ import {bindActionCreators} from "redux";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {loginAction, setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth";
 import {checkPasswordValidation} from "../../../utils";
-import {Link} from "react-router-dom";
 import MicrosoftLogin from "react-microsoft-login";
 import {microsoftAppClientID, productionApiBaseUrl} from "../../../config";
 import axios from "axios";
@@ -39,6 +38,7 @@ const FormMobileLogin = (props) => {
   useEffect(() => {
     setClassName();
     // todo get deviceId
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeFormField = (e) => {
@@ -164,8 +164,10 @@ const EnhancedForm = withFormik({
           refreshToken: refreshToken,
         };
 
+        // eslint-disable-next-line no-prototype-builtins
         if (window.hasOwnProperty("kenzenAndroidClient")) {
           window.kenzenAndroidClient.postMessage(JSON.stringify(payload));
+          // eslint-disable-next-line no-prototype-builtins
         } else if (window.hasOwnProperty("webkit")) {
           window.webkit.messageHandlers.kenzenIosClient.postMessage(payload);
         } else {

@@ -7,7 +7,7 @@ const initialState = {
   teamMembers: [],
 };
 
-export default (state = initialState, action) => {
+const baseReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ALL_ORGANIZATIONS:
       return produce(state, draft => {
@@ -28,3 +28,5 @@ export default (state = initialState, action) => {
       return state;
   }
 }
+
+export default baseReducer;

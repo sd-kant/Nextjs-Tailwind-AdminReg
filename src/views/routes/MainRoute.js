@@ -5,7 +5,7 @@ import { Route } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import {clean} from "react-redux-toastr/lib/actions";
 
-const MainRoute = ({ render, cleanToastr, location, ...rest }) => {
+const MainRoute = ({ render, ...rest }) => {
 
   return (
     <Route

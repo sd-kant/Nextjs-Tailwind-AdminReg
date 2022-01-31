@@ -19,7 +19,7 @@ const ConfirmModal = (
     subheader,
     cancelText,
     okText,
-    children = <Children/>,
+    content = <Children/>,
   }) => {
   const {t} = useTranslation();
 
@@ -39,7 +39,7 @@ const ConfirmModal = (
 
       <div className={clsx(style.ModalBody, "mt-25")}>
         {
-          children
+          content
         }
       </div>
 
@@ -54,7 +54,7 @@ const ConfirmModal = (
                 onClick={onCancel}
               >
                   <span style={{textTransform: "uppercase"}}>
-                    {!!cancelText ? cancelText : t("create another team")}
+                    {cancelText ? cancelText : t("create another team")}
                   </span>
               </label>
               <br/>
@@ -67,7 +67,7 @@ const ConfirmModal = (
               onClick={onOk}
             >
               <span className='font-button-label text-white text-uppercase'>
-                {!!okText ? okText : t("done")}
+                {okText ? okText : t("done")}
               </span>
             </button>
           }

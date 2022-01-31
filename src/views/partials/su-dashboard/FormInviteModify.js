@@ -349,7 +349,7 @@ const EnhancedForm = withFormik({
     users: [defaultTeamMember],
   }),
   validationSchema: ((props) => formSchema(props.t)),
-  handleSubmit: async (values, {props, setStatus, setFieldValue}) => {
+  handleSubmit: async (values, {props, setStatus}) => {
     const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId}}} = props;
     // filter users that were modified to update
     let users = ([...(values?.users ?? []), ...(values?.admins ?? [])])?.filter(it => it.updated);
@@ -358,7 +358,7 @@ const EnhancedForm = withFormik({
       setLoading(true);
       let usersToModify = [];
       users?.forEach(it => {
-        if (!!it.userId) {
+        if (it.userId) {
           usersToModify.push(it);
         }
       });
@@ -477,7 +477,6 @@ const EnhancedForm = withFormik({
       }
     } catch (e) {
       console.log('_handleSubmit error', e);
-    } finally {
     }
   }
 })(FormInviteModify);

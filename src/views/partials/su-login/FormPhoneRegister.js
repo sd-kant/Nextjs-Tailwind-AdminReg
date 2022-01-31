@@ -34,6 +34,7 @@ const FormPhoneRegister = (props) => {
 
   useEffect(() => {
     setClassName();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setClassName = () => {

@@ -20,6 +20,7 @@ const FormResend = (props) => {
 
   useEffect(() => {
     setRestBarClass('progress-0');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeFormField = (e) => {
@@ -91,7 +92,7 @@ const EnhancedForm = withFormik({
     email: '',
   }),
   validationSchema: ((props) => formSchema(props.t)),
-  handleSubmit: (values) => {
+  handleSubmit: () => {
 
   }
 })(FormResend);

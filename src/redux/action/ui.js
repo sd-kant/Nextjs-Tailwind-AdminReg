@@ -1,5 +1,4 @@
 import {actionTypes} from "../type";
-import {CLEAN_TOASTR} from "react-redux-toastr/lib/constants";
 
 export const setRestBarClassAction = (restBarClass) => ({
   type: actionTypes.SET_REST_BAR_CLASS,

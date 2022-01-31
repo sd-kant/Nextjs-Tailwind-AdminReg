@@ -15,7 +15,6 @@ import {
   searchMembers as searchMembersAPI,
   searchMembersUnderOrganization,
   updateUserByAdmin,
-  inviteTeamMember,
   queryTeamMembers as queryTeamMembersAPI, getUsersUnderOrganization,
 } from "../http";
 import {get, isEqual} from "lodash";
@@ -472,9 +471,8 @@ const MembersProvider = (
     if (selectedUser?.teamId && selectedUser?.email) {
       try {
         alert("todo remove from team");
-        return;
         // todo if organization admin user is selected
-        setLoading(true);
+        /*setLoading(true);
         await inviteTeamMember(selectedUser?.teamId, {
           remove: [selectedUser.email],
         });
@@ -483,7 +481,7 @@ const MembersProvider = (
         temp = members?.filter(it => it.email !== selectedUser.email);
         setMembers(temp);
 
-        setVisibleRemoveModal(false);
+        setVisibleRemoveModal(false);*/
       } catch (e) {
         showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
       } finally {

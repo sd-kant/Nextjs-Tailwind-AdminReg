@@ -20,7 +20,7 @@ function* actionWatcher() {
   yield takeLatest(actionTypes.DELETE_USER, deleteUserSaga);
 }
 
-function* queryAllOrganizationsSaga({payload: {}}) {
+function* queryAllOrganizationsSaga() {
   try {
     yield put({
       type: actionTypes.LOADING,
@@ -59,7 +59,7 @@ function* queryAllOrganizationsSaga({payload: {}}) {
   }
 }
 
-function* queryAllTeamsSaga({payload: {}}) {
+function* queryAllTeamsSaga() {
   try {
     yield put({
       type: actionTypes.LOADING,

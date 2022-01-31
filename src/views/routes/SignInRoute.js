@@ -5,7 +5,7 @@ import { Route } from "react-router-dom";
 import SignInLayout from "../layouts/SignInLayout";
 import {clean} from "react-redux-toastr/lib/actions";
 
-const SignInRoute = ({ render, cleanToastr, location, ...rest }) => {
+const SignInRoute = ({ render, ...rest }) => {
 
   return (
     <Route

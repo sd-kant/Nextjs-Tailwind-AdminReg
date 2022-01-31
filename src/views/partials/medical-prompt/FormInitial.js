@@ -48,7 +48,7 @@ const FormInitial = (props) => {
               i18nKey={"medical initial description"}
               components={{
                 a: <a className="text-orange no-underline" href="https://kenzen.com/kenzen-solution-privacy-policy"
-                      target="_blank"/>
+                      target="_blank" rel="noreferrer"/>
               }}
             />
           </span>
@@ -68,9 +68,9 @@ const FormInitial = (props) => {
               i18nKey={"medical terms agree"}
               components={{
                 a1: <a className="text-orange no-underline" href="https://kenzen.com/terms-of-use"
-                       target="_blank"/>,
+                       target="_blank" rel="noreferrer"/>,
                 a2: <a className="text-orange no-underline" href="https://kenzen.com/kenzen-solution-privacy-policy"
-                       target="_blank"/>
+                       target="_blank" rel="noreferrer"/>
               }}
             />
             <input type="checkbox" checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)}/>

@@ -4,7 +4,7 @@ import noIcon from "../../assets/images/no.svg";
 import {withTranslation} from "react-i18next";
 
 const MedicalTrueFalse = (props) => {
-  const {t, answer, options, onChange} = props;
+  const {answer, options, onChange} = props;
 
   return (
     <>

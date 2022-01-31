@@ -14,7 +14,7 @@ const initialState = {
   smsAuthFailedCount: 0,
 };
 
-export default (state = initialState, action) => {
+const authReducer =  (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.LOGIN_SUCCESS:
       return produce(state, draft => {
@@ -53,3 +53,5 @@ export default (state = initialState, action) => {
       return state;
   }
 }
+
+export default authReducer;

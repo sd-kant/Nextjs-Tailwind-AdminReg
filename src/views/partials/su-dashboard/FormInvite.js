@@ -82,7 +82,7 @@ const formSchema = (t) => {
 };
 
 export const customStyles = (disabled = false) => ({
-  menu: (provided, state) => {
+  menu: (provided) => {
     return {
       ...provided,
       zIndex: 2,
@@ -394,7 +394,7 @@ const FormInvite = (props) => {
           }
         }}
         okText={t('ok')}
-        children={(
+        content={(
           <div style={{maxHeight: '160px', overflowY: 'auto'}}>
             {
               status?.alreadyRegisteredUsers?.map(it => (
@@ -527,6 +527,7 @@ const onFinish = (setVisibleSuccessModal) => {
   history.push("/dashboard");
 }
 
+// eslint-disable-next-line no-unused-vars
 const onTryAgain = (failedEmails, setFieldValue, values) => {
   const users = values["users"];
   const failedUsers = users && users.filter(entity => failedEmails.includes(entity.email));
@@ -543,7 +544,7 @@ export const _handleSubmit = (
     t,
   }
 ) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setLoading(true);
     const users = formatUserType(formatPhoneNumber(formatJob(lowercaseEmail(unFormattedUsers))));
     const promises = [];
@@ -556,7 +557,7 @@ export const _handleSubmit = (
     });
 
     const alreadyRegisteredUsers = [];
-    let totalSuccessForInvite = 0;
+    // let totalSuccessForInvite = 0;
     let inviteBody = {add: []};
 
     Promise.allSettled(promises)
@@ -564,7 +565,7 @@ export const _handleSubmit = (
         items.forEach((item, index) => {
           let addToPayload = false;
           if (item.status === "fulfilled") {
-            totalSuccessForInvite++;
+            // totalSuccessForInvite++;
             addToPayload = true;
           } else {
             console.error("creating user failed", item.reason?.response?.data);
@@ -614,7 +615,7 @@ const EnhancedForm = withFormik({
     users: [defaultTeamMember],
   }),
   validationSchema: ((props) => formSchema(props.t)),
-  handleSubmit: async (values, {props, setFieldValue, setStatus}) => {
+  handleSubmit: async (values, {props, setStatus}) => {
     const {showErrorNotification, showSuccessNotification, setLoading, setVisibleSuccessModal, t, match: {params: {organizationId, id: teamId}}} = props;
     let users = values?.users;
     if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {

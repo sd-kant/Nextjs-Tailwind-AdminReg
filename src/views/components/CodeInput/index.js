@@ -48,7 +48,7 @@ const CodeInput = ({
   value,
   onChange,
 }) => {
-  const [width, height] = useWindowSize();
+  const [width] = useWindowSize();
   const [inputCodeStyle, setInputCodeStyle] = React.useState({
     inputStyle,
     inputStyleInvalid,

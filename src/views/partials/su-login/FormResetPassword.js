@@ -61,6 +61,7 @@ const FormResetPassword = (props) => {
     }
 
     setRestBarClass("progress-0");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeFormField = (e) => {
@@ -79,7 +80,6 @@ const FormResetPassword = (props) => {
           e.preventDefault();
           setStatus({visibleModal: false});
           history.push("/login");
-          return;
         }}
       />
       <div>

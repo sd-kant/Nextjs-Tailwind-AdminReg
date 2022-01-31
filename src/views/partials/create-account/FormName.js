@@ -23,13 +23,13 @@ const FormName = (props) => {
     profile,
     values, errors, touched,
     t,
-    token,
     setFieldValue,
     setRestBarClass,
   } = props;
 
   useEffect(() => {
     setRestBarClass('progress-18');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -37,16 +37,13 @@ const FormName = (props) => {
       setFieldValue("firstName", profile.firstName);
       setFieldValue("lastName", profile.lastName);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   const changeFormField = (e) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
-
-  const navigateTo = (path) => {
-    history.push(path);
   }
 
   const goBack = () => {
@@ -150,7 +147,7 @@ const EnhancedForm = withFormik({
   }
 })(FormName);
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = () => ({
 });
 
 const mapDispatchToProps = (dispatch) =>

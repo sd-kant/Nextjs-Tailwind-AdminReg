@@ -6,7 +6,6 @@ import * as Yup from "yup";
 import {Form, withFormik} from "formik";
 import Select from 'react-select';
 import {customStyles} from "./FormCountry";
-// import 'react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker.min.css';
 import spacetime from "spacetime";
 import soft from "timezone-soft";
 import timezoneList from '../../../constant/timezone-list';
@@ -59,6 +58,7 @@ const FormTimezone = (props) => {
 
   useEffect(() => {
     setRestBarClass('progress-81');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -66,6 +66,7 @@ const FormTimezone = (props) => {
       const option = options?.find(it => it.gmtTz === profile.gmt);
       setFieldValue("timezone", option);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile, options]);
 
   const navigateTo = (path) => {

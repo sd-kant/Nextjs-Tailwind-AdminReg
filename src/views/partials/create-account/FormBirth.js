@@ -57,6 +57,7 @@ const FormBirth = (props) => {
   const [selectedDay, setSelectedDay] = React.useState(null);
   useEffect(() => {
     setRestBarClass('progress-36');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     if (profile) {
@@ -76,6 +77,7 @@ const FormBirth = (props) => {
   }
   useEffect(() => {
     setFieldValue("dob", selectedDay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDay]);
 
   const renderCustomInput = ({ref}) => (

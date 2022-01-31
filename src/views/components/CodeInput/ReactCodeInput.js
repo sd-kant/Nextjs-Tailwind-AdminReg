@@ -38,6 +38,7 @@ class ReactCodeInput extends Component {
     this.uuid = uuidv4();
   }
 
+  // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.value === null || this.props.value === prevProps.value) {
       return;
@@ -252,7 +253,7 @@ class ReactCodeInput extends Component {
               }}
               id={`${this.uuid}-${i}`}
               data-id={i}
-              autoFocus={autoFocus && (i === 0) ? 'autoFocus' : ''}
+              autoFocus={autoFocus && (i === 0) ? 'true' : ''}
               value={value}
               key={`input_${i}`}
               type={type}

@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
-import {withTranslation, Trans} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
@@ -52,8 +52,10 @@ const FormReInvite = (props) => {
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // eslint-disable-next-line no-unused-vars
   const navigateTo = (path) => {
     history.push(path);
   };
@@ -203,7 +205,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue}) => {
-    const {showErrorNotification, showSuccessNotification, setLoading, setVisibleSuccessModal, t} = props;
+    const {showErrorNotification, showSuccessNotification, setLoading, t} = props;
     let users = formatUserType(lowercaseEmail(values?.users));
     const calls = users?.map(user => sendRegistrationEmail({
       email: user.email.toLowerCase(),
@@ -214,7 +216,7 @@ const EnhancedForm = withFormik({
     let successUserEmails = [];
     setLoading(true);
     Promise.allSettled(calls).then((list => {
-      list.map((item, index) => {
+      list.forEach((item, index) => {
         if ((item?.status === "fulfilled") && (item?.value?.data?.status === 200)) {
           i++;
           successUserEmails.push(users?.[index]?.email);
@@ -235,12 +237,12 @@ const EnhancedForm = withFormik({
             numberOfSuccess: i
           }));
 
-        const updatedUsers = values?.users.filter((it, index) => !successUserEmails.includes(it?.email));
+        const updatedUsers = values?.users.filter((it) => !successUserEmails.includes(it?.email));
         setFieldValue("users", updatedUsers);
       }
 
       if (errors.length > 0) {
-        errors.map(error => {
+        errors.forEach(error => {
           showErrorNotification(
             error.message,
             error.title,

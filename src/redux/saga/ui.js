@@ -8,14 +8,14 @@ function* actionWatcher() {
   yield takeLatest(actionTypes.ERROR_NOTIFICATION, showErrorNotificationSaga);
 }
 
-function* showSuccessNotificationSaga({payload: {msg = i18n.t("msg something went wrong"), title = ""}}) {
+function showSuccessNotificationSaga({payload: {msg = i18n.t("msg something went wrong"), title = ""}}) {
   toastr.success(
     title, // title
     msg,
   );
 }
 
-function* showErrorNotificationSaga({payload: {msg = i18n.t("msg something went wrong"), title = ""}}) {
+function showErrorNotificationSaga({payload: {msg = i18n.t("msg something went wrong"), title = ""}}) {
   toastr.error(
     title, // title
     msg,

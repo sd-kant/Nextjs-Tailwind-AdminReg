@@ -68,7 +68,7 @@ export const convertImperialToMetric = (imperial) => {
     const inchArr = strArr && strArr[1] && strArr[1].split('in');
     const inch = inchArr && inchArr[0];
 
-    const totalCm = parseFloat(feet) * 30.48 + parseFloat(inch) * 2.54;
+    const totalCm = (parseFloat(feet) * 30.48) + (parseFloat(inch) * 2.54);
 
     const m = Math.floor(totalCm / 100);
     const cm = Math.round(totalCm % 100);
@@ -91,7 +91,7 @@ export const convertCmToImperial = value => {
   }
 
   const feet = Math.floor(numericValue / 30.48);
-  const inch = Math.round((numericValue - feet * 30.48) / 2.54);
+  const inch = Math.round((numericValue - (feet * 30.48)) / 2.54);
 
   return {
     feet,

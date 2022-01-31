@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import FormMobilePhoneRegister from "../partials/su-login/FormMobilePhoneRegister";
 
 
-const MobilePhoneRegister = (props) => {
+const MobilePhoneRegister = () => {
   const {t} = useTranslation();
 
   return (
@@ -12,6 +12,7 @@ const MobilePhoneRegister = (props) => {
       <div className='form-header'>
         <img className='form-header-logo' src={logo} alt='kenzen logo'/>
         &nbsp;&nbsp;
+        {/* eslint-disable-next-line react/jsx-no-comment-textnodes */}
         <span className='form-header-text text-capitalize'>
           //&nbsp;&nbsp;{t("sign in")}
         </span>

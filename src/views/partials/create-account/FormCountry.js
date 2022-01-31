@@ -32,6 +32,7 @@ const FormCountry = (props) => {
 
   useEffect(() => {
     setRestBarClass('progress-72');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const FormCountry = (props) => {
         country && setFieldValue("country", country);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   const navigateTo = (path) => {
