@@ -32,7 +32,11 @@ const FormTeamModify = (props) => {
   useEffect(() => {
     setRestBarClass("progress-54 medical");
     queryAllTeams();
-    unAssignedUsersUnderOrganization();
+    if (isAdmin) {
+      unAssignedUsersUnderOrganization();
+    } else {
+      setHasUnassignedMember(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
