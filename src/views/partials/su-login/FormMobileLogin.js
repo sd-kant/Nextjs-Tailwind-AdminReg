@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
-import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
@@ -11,26 +10,7 @@ import {checkPasswordValidation} from "../../../utils";
 import {/*microsoftAppClientID, */productionApiBaseUrl} from "../../../config";
 import axios from "axios";
 import history from "../../../history";
-
-const formSchema = (t) => {
-  return Yup.object().shape({
-    username: Yup.string()
-      .required(t('username required'))
-      .min(6, t('username min error'))
-      .max(1024, t('username max error')),
-    password: Yup.string()
-      .required(t('your password required'))
-      .min(6, t('password min error'))
-      .max(1024, t('password max error'))
-      .test(
-        'is-valid',
-        t('password invalid'),
-        function (value) {
-          return checkPasswordValidation(value);
-        }
-      )
-  });
-};
+import {formSchema} from "./FormSULogin";
 
 const FormMobileLogin = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;

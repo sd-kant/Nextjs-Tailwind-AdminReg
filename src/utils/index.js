@@ -21,6 +21,11 @@ export const checkPasswordValidation = (password) => {
   return password && password.match(regex);
 }
 
+export const checkAlphaNumeric = str => {
+  const regex=  /^[a-z0-9]+$/i;
+  return str?.match(regex);
+}
+
 export const checkPhoneNumberValidation = (value, country) => {
   if (!value) {
     return false;

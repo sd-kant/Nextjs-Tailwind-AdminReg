@@ -6,17 +6,25 @@ import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {loginAction} from "../../../redux/action/auth";
-import {checkPasswordValidation} from "../../../utils";
+import {checkAlphaNumeric, checkPasswordValidation} from "../../../utils";
 import {Link} from "react-router-dom";
 // import MicrosoftLogin from "react-microsoft-login";
 // import {microsoftAppClientID} from "../../../config";
 
-const formSchema = (t) => {
+export const formSchema = (t) => {
   return Yup.object().shape({
     username: Yup.string()
       .required(t('username required'))
       .min(6, t('username min error'))
-      .max(1024, t('username max error')),
+      .max(1024, t('username max error'))
+      .test(
+        'is-valid',
+        t('username invalid'),
+        function (value) {
+          return checkAlphaNumeric(value);
+        }
+      )
+    ,
     password: Yup.string()
       .required(t('your password required'))
       .min(6, t('password min error'))

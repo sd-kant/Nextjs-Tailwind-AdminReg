@@ -9,13 +9,21 @@ import ConfirmModal from "../../components/ConfirmModal";
 import {requestResetPassword} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
 import history from "../../../history";
+import {checkAlphaNumeric} from "../../../utils";
 
 const formSchema = (t) => {
   return Yup.object().shape({
     username: Yup.string()
       .required(t('username required'))
       .min(6, t('username min error'))
-      .max(1024, t('username max error')),
+      .max(1024, t('username max error'))
+      .test(
+        'is-valid',
+        t('username invalid'),
+        function (value) {
+          return checkAlphaNumeric(value);
+        }
+      ),
   });
 };
 
