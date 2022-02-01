@@ -302,7 +302,13 @@ const MembersProvider = (
         }
       });
       teamMembers?.sort((a, b) => {
-        return a?.lastName?.localeCompare(b?.lastName);
+        if (a?.lastName?.localeCompare(b?.lastName) !== 0) {
+          return a?.lastName?.localeCompare(b?.lastName);
+        } else if (a?.firstName?.localeCompare(b?.firstName) !== 0) {
+          return a?.firstName?.localeCompare(b?.firstName);
+        } else {
+          return a?.email?.localeCompare(b?.email);
+        }
       });
       setMembers(teamMembers);
       setTempMembers(teamMembers);

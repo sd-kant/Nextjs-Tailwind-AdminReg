@@ -41,10 +41,7 @@ const SearchUserItem = (
   const approvalGreen = '#35EA6C';
   const userPermissionLevel = getPermissionLevelFromUserTypes(user?.userTypes);
   const hasRightToEdit = !checkIfHigherThanMe(userType, userPermissionLevel);
-  let selectedTeam = null;
-  if (user?.accessibleTeams?.length > 0) {
-    selectedTeam = teams?.find(it => it.value?.toString() === user?.teamId?.toString());
-  }
+  const selectedTeam = teams?.find(it => it.value?.toString() === user?.teamId?.toString());
   let selectedPermissionLevel = null;
   const entity = user?.accessibleTeams?.find(ele => ele.teamId?.toString() === selectedTeam?.value?.toString());
   if (["3"].includes(userPermissionLevel?.value?.toString())) { // if super admin
