@@ -30,7 +30,7 @@ import {
 import {
   queryAllTeamsAction,
 } from "../../../redux/action/base";
-import {get} from "lodash";
+import {get, isEqual} from "lodash";
 import ConfirmModal from "../../components/ConfirmModal";
 import {getParamFromUrl} from "../../../utils";
 import SearchUserItem from "./SearchUserItem";
@@ -238,10 +238,17 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {
-    const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId}}} = props;
+    const {
+      showErrorNotification,
+      showSuccessNotification,
+      setLoading,
+      t,
+      match: {params: {organizationId}},
+      isAdmin,
+    } = props;
     // filter users that were modified to update
     let users = (values?.users ?? [])?.filter(it => it.updated);
-    // fixme optimize, mainly eliminate non-necessary calls(e.g. only call invitation api regarding invited team)
+    // fixme optimize
     try {
       setLoading(true);
       let usersToModify = [];
@@ -262,30 +269,29 @@ const EnhancedForm = withFormik({
         originalAccessibleTeams: it.originalAccessibleTeams,
       }));
 
-      const {userType} = props;
-
       if (usersToModify?.length > 0) {
         const updatePromises = [];
         let inviteBody = {};
         usersToModify?.forEach(userToModify => {
           if (!(["undefined", "-1", "null", ""].includes(organizationId?.toString()))) {
-            const isAdmin = [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].some(it => userType?.includes(it));
             if (isAdmin) {
               updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
             }
-            if (!([USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(userToModify.userType))) { // if not super admin or org admin
-              userToModify?.originalAccessibleTeams?.forEach(originalAccessibleTeam => {
-                const isRemoved = !(userToModify?.accessibleTeams?.some(accessibleTeam => accessibleTeam.teamId?.toString() === originalAccessibleTeam.teamId?.toString()));
-                if (isRemoved) {
-                  if (inviteBody[originalAccessibleTeam.teamId]?.remove) {
-                    inviteBody[originalAccessibleTeam.teamId].remove.push(userToModify?.email);
-                  } else {
-                    inviteBody[originalAccessibleTeam.teamId] = {remove: [userToModify?.email]};
-                  }
+            userToModify?.originalAccessibleTeams?.forEach(originalAccessibleTeam => {
+              const isRemoved = !(userToModify?.accessibleTeams?.some(accessibleTeam => accessibleTeam.teamId?.toString() === originalAccessibleTeam.teamId?.toString()));
+              if (isRemoved) {
+                if (inviteBody[originalAccessibleTeam.teamId]?.remove) {
+                  inviteBody[originalAccessibleTeam.teamId].remove.push(userToModify?.email);
+                } else {
+                  inviteBody[originalAccessibleTeam.teamId] = {remove: [userToModify?.email]};
                 }
-              });
-              userToModify?.accessibleTeams?.forEach(accessibleTeam => {
-                if (accessibleTeam.teamId && accessibleTeam.userTypes?.length > 0) {
+              }
+            });
+            userToModify?.accessibleTeams?.forEach(accessibleTeam => {
+              if (accessibleTeam.teamId && accessibleTeam.userTypes?.length > 0) {
+                // check if this is new change
+                const origin = userToModify?.originalAccessibleTeams?.find(item => item.teamId?.toString() === accessibleTeam?.teamId?.toString());
+                if (!isEqual(origin?.userTypes?.sort(), accessibleTeam?.userTypes?.sort())) {
                   if (inviteBody[accessibleTeam.teamId]?.add) {
                     inviteBody[accessibleTeam.teamId].add.push({
                       email: userToModify?.email,
@@ -302,8 +308,8 @@ const EnhancedForm = withFormik({
                     };
                   }
                 }
-              });
-            }
+              }
+            });
           }
         });
         const failedEmails = [];
