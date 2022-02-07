@@ -155,7 +155,7 @@ const MembersProvider = (
           !trimmedKeyword ||
           [it.email?.toLowerCase(), it.firstName?.toLowerCase(), it.lastName?.toLowerCase()].some(item => item?.includes(trimmedKeyword))
         ) {
-          if ([USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN].some(ele => memberItem?.userTypes?.includes(ele))) { // if member has admin role
+          if ([USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN].some(ele => memberItem?.userTypesOrigin?.includes(ele))) { // if member has admin role
             admins.push(memberItem);
           } else {
             users.push(memberItem);
@@ -181,6 +181,7 @@ const MembersProvider = (
       email: it.email,
       job: jobs?.find(ele => ele.value?.toString() === (it?.job?.toString() ?? "14")),
       userTypes: it.userTypes,
+      userTypesOrigin: it.userTypesOrigin,
       accessibleTeams: it.accessibleTeams,
       originalAccessibleTeams: it.originalAccessibleTeams,
       action: it.action,
@@ -303,6 +304,7 @@ const MembersProvider = (
         it['accessibleTeams'] = accessibleTeams;
         it['originalAccessibleTeams'] = accessibleTeams;
         it['job'] = (parseInt(it['job']) > 0 && parseInt(it['job']) <= 14) ? it['job'] : "14";
+        it['userTypesOrigin'] = it.userTypes;
         if (teamId) {
           it['teamId'] = teamId;
         } else if (!it['teamId'] && it['teams']?.length > 0) {
