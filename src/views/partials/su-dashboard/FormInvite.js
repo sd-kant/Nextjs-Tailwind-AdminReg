@@ -495,6 +495,7 @@ const formatUserType = (users) => {
   return users && users.map((user) => ({
     ...user,
     userTypes: [user?.userType?.value?.toString() === "1" ? "TeamAdmin" : "Operator"],
+    userType: user?.userType?.value?.toString() === "1" ? "TeamAdmin" : null,
   }));
 }
 
@@ -546,63 +547,55 @@ export const _handleSubmit = (
 ) => {
   return new Promise((resolve) => {
     setLoading(true);
-    const users = formatUserType(formatPhoneNumber(formatJob(lowercaseEmail(unFormattedUsers))));
+    const users = setTeamIdToUsers(formatUserType(formatPhoneNumber(formatJob(lowercaseEmail(unFormattedUsers)))), teamId);
     const promises = [];
     users?.forEach(it => {
-      // it["emailAddress"] = it.email;
-      // delete it.email;
-      delete it.userType;
-
       promises.push(createUserByAdmin(organizationId, it));
     });
 
     const alreadyRegisteredUsers = [];
-    // let totalSuccessForInvite = 0;
+    let totalSuccessForInvite = 0;
     let inviteBody = {add: []};
 
     Promise.allSettled(promises)
       .then(items => {
         items.forEach((item, index) => {
-          let addToPayload = false;
           if (item.status === "fulfilled") {
-            // totalSuccessForInvite++;
-            addToPayload = true;
+            totalSuccessForInvite++;
           } else {
             console.error("creating user failed", item.reason?.response?.data);
             // fixme be sure if 409 is for already registered error
             if (item?.reason?.response?.data?.status?.toString() === "409") {
-              addToPayload = true;
               alreadyRegisteredUsers.push({
                 email: users[index]?.email,
               });
+              inviteBody.add.push({
+                email: users?.[index]?.email,
+                userTypes: users?.[index]?.userTypes,
+              });
             }
-          }
-          if (addToPayload) {
-            inviteBody.add.push({
-              email: users?.[index]?.email,
-              userTypes: users?.[index]?.userTypes,
-            });
           }
         });
       })
       .finally(async () => {
         if (inviteBody.add?.length > 0) {
           const inviteResponse = await inviteTeamMember(teamId, inviteBody);
-          const numberOfSuccess = inviteResponse?.data?.added?.length;
+          const numberOfSuccess = (inviteResponse?.data?.added?.length) ?? 0;
+          totalSuccessForInvite += numberOfSuccess;
           showSuccessNotification(t(
-            numberOfSuccess > 1 ?
+            totalSuccessForInvite > 1 ?
               'msg users invited success' : 'msg user invited success', {
-              numberOfSuccess: numberOfSuccess,
+              numberOfSuccess: totalSuccessForInvite,
             }));
 
           resolve({
             alreadyRegisteredUsers,
-            numberOfSuccess,
+            numberOfSuccess: totalSuccessForInvite,
           });
         } else {
           resolve({
             alreadyRegisteredUsers,
-            numberOfSuccess: 0,
+            numberOfSuccess: totalSuccessForInvite,
           });
         }
         setLoading(false);
