@@ -86,6 +86,9 @@ const MembersProvider = (
 
   React.useEffect(() => {
     initializeMembers().then();
+    return () => {
+      setTeamId('');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teamId, page]);
   const trimmedKeyword = React.useMemo(() => keyword.trim().toLowerCase(), [keyword]);
@@ -245,6 +248,9 @@ const MembersProvider = (
         }
       } else if (page === "modify") {
         let teamMembersResponse;
+        if (["", "null", "undefined"].includes(teamId?.toString())) {
+          return;
+        }
         if (teamId?.toString() === "-1") {
           teamMembersResponse = await getUsersUnderOrganization({userType: 'unassigned', organizationId});
           teamMembers = teamMembersResponse?.data?.filter(ele => ele?.userTypes?.length === 0);
@@ -297,7 +303,9 @@ const MembersProvider = (
         it['accessibleTeams'] = accessibleTeams;
         it['originalAccessibleTeams'] = accessibleTeams;
         it['job'] = (parseInt(it['job']) > 0 && parseInt(it['job']) <= 14) ? it['job'] : "14";
-        if (!it['teamId'] && it['teams']?.length > 0) {
+        if (teamId) {
+          it['teamId'] = teamId;
+        } else if (!it['teamId'] && it['teams']?.length > 0) {
           it['teamId'] = it['teams']?.some(ele => ele?.teamId?.toString() === teamId?.toString()) ? teamId : it['teams'][0]?.teamId;
         }
       });
