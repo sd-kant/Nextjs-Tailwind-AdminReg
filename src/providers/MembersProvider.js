@@ -254,7 +254,7 @@ const MembersProvider = (
         }
         if (teamId?.toString() === "-1") {
           teamMembersResponse = await getUsersUnderOrganization({userType: 'unassigned', organizationId});
-          teamMembers = teamMembersResponse?.data?.filter(ele => ele?.userTypes?.length === 0);
+          teamMembers = teamMembersResponse?.data?.filter(ele => !(ele.teamId || ele?.teams?.length > 0));
         } else {
           teamMembersResponse = await queryTeamMembersAPI(teamId);
           teamMembers = teamMembersResponse?.data?.members;

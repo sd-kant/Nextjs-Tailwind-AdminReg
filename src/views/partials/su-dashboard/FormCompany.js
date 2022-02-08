@@ -337,6 +337,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue}) => {
+    const {isSuperAdmin} = props;
     const data = {
       name: values.isEditing ? values?.editingCompanyName : values?.companyName?.label,
       country: values?.companyLocation?.label,
@@ -364,13 +365,13 @@ const EnhancedForm = withFormik({
       }
     } else {
       if (values?.companyName?.created) { // if selected already created company
-        history.push(`/invite/${values?.companyName?.value}/team-mode`);
+        isSuperAdmin ? history.push(`/invite/${values?.companyName?.value}/representative`) : history.push(`/invite/${values?.companyName?.value}/team-mode`);
       } else {
         try {
           props.setLoading(true);
           const apiRes = await createCompany(data);
           const companyData = apiRes.data;
-          history.push(`/invite/${companyData?.id}/representative`);
+          isSuperAdmin ? history.push(`/invite/${companyData?.id}/representative`) : history.push(`/invite/${companyData?.id}/team-mode`);
         } catch (e) {
           console.log("creating company error", e);
           props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));

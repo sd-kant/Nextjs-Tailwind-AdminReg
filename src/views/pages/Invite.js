@@ -14,6 +14,7 @@ import FormTeamModify from "../partials/su-dashboard/FormTeamModify";
 import FormInviteModify from "../partials/su-dashboard/FormInviteModify";
 import FormSearch from "../partials/su-dashboard/FormSearch";
 import {WrappedMembersProvider} from "../../providers/MembersProvider";
+import {WrappedOrganizationProvider} from "../../providers/OrganizationProvider";
 
 const Invite = (
   {
@@ -44,14 +45,18 @@ const Invite = (
           </Route>
         }
         {
-          isSuperAdmin &&
+          (isSuperAdmin || isOrgAdmin) &&
           <Route
             exact
             path='/invite/:organizationId/representative'
             render={matchProps => (
-              <FormRepresentative
-                {...matchProps}
-              />
+              <WrappedOrganizationProvider
+                organizationId={matchProps.match.params.organizationId}
+              >
+                <FormRepresentative
+                  {...matchProps}
+                />
+              </WrappedOrganizationProvider>
             )}
           />
         }

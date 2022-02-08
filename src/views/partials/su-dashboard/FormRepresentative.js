@@ -12,12 +12,13 @@ import {
   setLoadingAction,
   setRestBarClassAction,
   showErrorNotificationAction,
-  showSuccessNotificationAction
+  showSuccessNotificationAction,
 } from "../../../redux/action/ui";
 import {createUserByAdmin} from "../../../http";
 import {USER_TYPE_ORG_ADMIN} from "../../../constant";
 import clsx from "clsx";
 import style from "./FormRepresentative.module.scss";
+import {useOrganizationContext} from "../../../providers/OrganizationProvider";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -45,6 +46,7 @@ export const defaultMember = {
 };
 
 const FormRepresentative = (props) => {
+  const {orgAdmins} = useOrganizationContext();
   const {values, errors, touched, t, setFieldValue, setRestBarClass, match: {params: {organizationId}}} = props;
 
   useEffect(() => {
@@ -90,27 +92,91 @@ const FormRepresentative = (props) => {
 
         <div className='grouped-form mt-40'>
           <label className="font-header-medium">
-            {t("team representative")}
+            {t("company administrator")}
           </label>
 
           <label className="font-binary d-block mt-8">
-            {t("team representative description")}
+            {t("company administrator description1")}
+          </label>
+
+          <label className="font-binary d-block mt-8">
+            {t("company administrator description2")}
           </label>
         </div>
 
-        <div className='grouped-form mt-40' style={{maxWidth: '700px', minHeight: '300px', maxHeight: '400px', overFlowY: 'auto'}}>
+        <div className='grouped-form mt-40'
+             style={{maxWidth: '700px', minHeight: '300px', maxHeight: '400px', overFlowY: 'auto'}}>
+          {
+            orgAdmins?.map((user, index) => (
+              <div
+                className={`team-representative-wrapper d-flex ${index !== 0 ? "mt-25" : ""}`}
+                key={`already-registered-member-${index}`}
+              >
+                <div className="d-flex flex-column">
+                  {
+                    index === 0 &&
+                    <label className="font-input-label text-white">
+                      {t("administrator email")}
+                    </label>
+                  }
+
+                  <input
+                    className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
+                    defaultValue={user?.email}
+                    disabled
+                    type="text"
+                    style={{width: "195px"}}
+                  />
+                </div>
+
+                <div className="d-flex flex-column ml-25">
+                  {
+                    index === 0 &&
+                    <label className="font-input-label text-white">
+                      {t("firstName")}
+                    </label>
+                  }
+
+                  <input
+                    className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
+                    defaultValue={user?.firstName}
+                    disabled
+                    type="text"
+                    style={{width: "145px"}}
+                  />
+                </div>
+
+                <div className="d-flex flex-column ml-25">
+                  {
+                    index === 0 &&
+                    <label className="font-input-label text-white">
+                      {t("lastName")}
+                    </label>
+                  }
+
+                  <input
+                    className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
+                    defaultValue={user?.lastName}
+                    disabled
+                    type="text"
+                    style={{width: "145px"}}
+                  />
+                </div>
+              </div>
+            ))
+          }
           {
             values && values["users"] && values["users"].map((user, index) => {
               return (
                 <div
-                  className={`team-representative-wrapper d-flex ${index !== 0 ? "mt-25" : ""}`}
+                  className={`team-representative-wrapper d-flex ${orgAdmins.length !== 0 || index !== 0 ? "mt-25" : ""}`}
                   key={`member-${index}`}
                 >
                   <div className="d-flex flex-column">
                     {
-                      index === 0 &&
+                      (orgAdmins?.length === 0 && index === 0) &&
                       <label className="font-input-label text-white">
-                        {t("team representative email")}
+                        {t("administrator email")}
                       </label>
                     }
 
@@ -133,7 +199,7 @@ const FormRepresentative = (props) => {
 
                   <div className="d-flex flex-column ml-25">
                     {
-                      index === 0 &&
+                      (orgAdmins?.length === 0 && index === 0) &&
                       <label className="font-input-label text-white">
                         {t("firstName")}
                       </label>
@@ -158,7 +224,7 @@ const FormRepresentative = (props) => {
 
                   <div className="d-flex flex-column ml-25">
                     {
-                      index === 0 &&
+                      (orgAdmins?.length === 0 && index === 0) &&
                       <label className="font-input-label text-white">
                         {t("lastName")}
                       </label>
@@ -186,7 +252,7 @@ const FormRepresentative = (props) => {
                     values["users"]?.length > 1 &&
                     <div className="d-flex align-center ml-25" style={{height: '45px'}}>
                       <img
-                        className={`${index === 0 ? 'mt-57' : 'mt-25'} cursor-pointer`}
+                        className={`${(orgAdmins?.length === 0 && index === 0) ? 'mt-57' : 'mt-25'} cursor-pointer`}
                         style={{zIndex: 1}}
                         src={removeIcon}
                         width={30}
@@ -212,7 +278,7 @@ const FormRepresentative = (props) => {
             className="font-binary cursor-pointer"
             onClick={addAnother}
           >
-          &nbsp;&nbsp;{t("team representative add another")}
+          &nbsp;&nbsp;{t("add another company admin")}
         </span>
         </div>
       </div>
@@ -226,8 +292,11 @@ const FormRepresentative = (props) => {
             {t("next")}
           </span>
         </button>
-
-        <span className={clsx(style.Skip, 'font-binary')} onClick={() => history.push(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
+        {
+          orgAdmins?.length > 0 &&
+          <span className={clsx(style.Skip, 'font-binary')}
+                onClick={() => history.push(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
+        }
       </div>
     </Form>
   )
@@ -260,7 +329,6 @@ const EnhancedForm = withFormik({
     } else {
       users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
     }
-
     try {
       const promises = [];
       let totalSuccessForInvite = 0;
@@ -274,22 +342,19 @@ const EnhancedForm = withFormik({
         Promise.allSettled(promises)
           .then(items => {
             items.forEach((item, index) => {
-              let addToPayload = false;
               if (item.status === "fulfilled") {
                 totalSuccessForInvite++;
-                addToPayload = true;
               } else {
                 console.error("creating user failed", item.reason?.response?.data);
-                // fixme be sure if 409 is for already registered error
                 if (item?.reason?.response?.data?.status?.toString() === "409") {
-                  addToPayload = true;
                   alreadyRegisteredUsers.push({
                     email: users[index]?.email,
                   });
+                  props.showErrorNotification(props.t(
+                    'msg user email conflicts', {
+                      email: users[index]?.email,
+                    }));
                 }
-              }
-              if (addToPayload) {
-                // todo add to invite promises
               }
             });
           })
@@ -302,7 +367,9 @@ const EnhancedForm = withFormik({
                 }));
             }
             props.setLoading(false);
-            history.push(`/invite/${organizationId}/team-mode`);
+            if (alreadyRegisteredUsers?.length === 0) {
+              history.push(`/invite/${organizationId}/team-mode`);
+            }
           });
       }
     } catch (e) {
