@@ -47,7 +47,7 @@ const FormTeamModify = (props) => {
   const unAssignedUsersUnderOrganization = () => {
     getUsersUnderOrganization({userType: 'unassigned', organizationId})
       .then(res => {
-        const hasUnassignedMember = res.data?.some(ele => !(ele?.userTypes?.length > 0));
+        const hasUnassignedMember = res.data?.some(ele => !(ele.teamId || ele?.teams?.length > 0));
         setHasUnassignedMember(hasUnassignedMember);
       })
       .catch(err => {
