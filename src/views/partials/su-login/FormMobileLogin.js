@@ -10,6 +10,7 @@ import {/*microsoftAppClientID, */productionApiBaseUrl} from "../../../config";
 import axios from "axios";
 import history from "../../../history";
 import {formSchema} from "./FormSULogin";
+import {domain} from "../../../constant";
 
 const FormMobileLogin = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
@@ -83,7 +84,7 @@ const FormMobileLogin = (props) => {
 
         <div className='mt-40 d-flex flex-column'>
           {/*fixme update link before moving production version*/}
-          <a href="https://admin-kenzen.netlify.app/forgot-password" className="font-input-label text-orange no-underline">
+          <a href={`${domain}/forgot-password`} target="_blank" className="font-input-label text-orange no-underline">
             {t("forgot password")}
           </a>
         </div>
