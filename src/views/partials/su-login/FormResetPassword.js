@@ -72,16 +72,6 @@ const FormResetPassword = (props) => {
 
   return (
     <Form className='form-group mt-57'>
-      <ConfirmModal
-        show={status?.visibleModal}
-        header={t("reset password confirm header")}
-        subheader={t("reset password confirm subheader")}
-        onOk={(e) => {
-          e.preventDefault();
-          setStatus({visibleModal: false});
-          history.push("/login");
-        }}
-      />
       <div>
         <div className='d-flex flex-column'>
           <label className='font-input-label'>
@@ -91,6 +81,7 @@ const FormResetPassword = (props) => {
           <input
             className='input input-field mt-10 font-heading-small text-white'
             name="password"
+            autoFocus={true}
             value={values["password"]}
             type='password'
             onChange={changeFormField}
@@ -140,6 +131,16 @@ const FormResetPassword = (props) => {
               </span>
         </button>
       </div>
+      <ConfirmModal
+        show={status?.visibleModal}
+        header={t("reset password confirm header")}
+        subheader={t("reset password confirm subheader")}
+        onOk={(e) => {
+          e.preventDefault();
+          setStatus({visibleModal: false});
+          history.push("/login");
+        }}
+      />
     </Form>
   )
 }
