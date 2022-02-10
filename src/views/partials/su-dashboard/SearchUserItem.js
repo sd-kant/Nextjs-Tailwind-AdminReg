@@ -33,6 +33,7 @@ const SearchUserItem = (
     doableActions,
     handleActionButtonClick,
     handleMemberInfoChange,
+    handleMemberTeamChange,
     handleMemberTeamUserTypeChange,
     handleResetPhoneNumber,
     handleResetUpdates,
@@ -183,7 +184,8 @@ const SearchUserItem = (
             menuPortalTarget={document.body}
             menuPosition={'fixed'}
             isDisabled={!hasRightToEdit}
-            onChange={(e) => handleMemberInfoChange(e?.value, user?.originIndex, 'teamId')}
+            onChange={(e) => handleMemberTeamChange(e?.value, user?.originIndex, selectedPermissionLevel)}
+            // onChange={(e) => handleMemberInfoChange(e?.value, user?.originIndex, 'teamId')}
           />
           {/*fixme fix validation rule */}
         </div>
@@ -229,7 +231,7 @@ const SearchUserItem = (
             isDisabled={!isAdmin || !hasRightToEdit}
             menuPortalTarget={document.body}
             menuPosition={'fixed'}
-            onChange={(e) => handleMemberTeamUserTypeChange(e, user?.originIndex, false)}
+            onChange={(e) => handleMemberTeamUserTypeChange(e, user?.originIndex, false, user?.teamId)}
           />
           {/* fixme fix validation rule */}
         </div>
@@ -278,7 +280,7 @@ const SearchUserItem = (
               isDisabled={wearingDeviceDisabled}
               menuPortalTarget={document.body}
               menuPosition={'fixed'}
-              onChange={(e) => handleMemberTeamUserTypeChange(e, user?.originIndex, true)}
+              onChange={(e) => handleMemberTeamUserTypeChange(e, user?.originIndex, true, user?.teamId)}
             />
           </div>
 

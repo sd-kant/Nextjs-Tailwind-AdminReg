@@ -333,7 +333,21 @@ const MembersProvider = (
     setTempMembers(temp);
   };
 
-  const handleMemberTeamUserTypeChange = (optionValue, index, fromWearingDevice) => {
+  const handleMemberTeamChange = (value, index, permissionLevel) => {
+    const temp = JSON.parse(JSON.stringify(tempMembers ?? []));
+    if (!temp[index])
+      return;
+    temp[index]["teamId"] = value;
+    setTempMembers(temp);
+
+    if (permissionLevel?.value?.toString() === "1") { // if team admin
+      handleMemberTeamUserTypeChange(permissionLevels.find(it => it.value?.toString() === "1"), index, false, value);
+    } else if (permissionLevel?.value?.toString() === "2") { // if operator
+      handleMemberTeamUserTypeChange(permissionLevels.find(it => it.value?.toString() === "2"), index, false, value);
+    }
+  };
+
+  const handleMemberTeamUserTypeChange = (optionValue, index, fromWearingDevice, currentSelectedTeamId) => {
     // todo if permission level null
     const temp = (tempMembers && JSON.parse(JSON.stringify(tempMembers))) ?? [];
     let roleToAdd = null;
@@ -372,7 +386,6 @@ const MembersProvider = (
       // todo optimize this code part
       // update accessibleTeams of tempTeamUsers
       let newAccessibleTeams = temp[index]?.accessibleTeams;
-      const currentSelectedTeamId = temp[index]?.teamId;
       const alreadyIndex = temp[index]?.accessibleTeams?.findIndex(it => it.teamId?.toString() === currentSelectedTeamId?.toString());
       if (alreadyIndex !== -1) {
         if (roleToAdd) {
@@ -439,7 +452,8 @@ const MembersProvider = (
     if (roleToAdd && !temp[index]["userTypes"]?.includes(roleToAdd)) {
       temp[index]["userTypes"].push(roleToAdd);
     }
-
+    // don't delete, this is important
+    temp[index]["teamId"] = currentSelectedTeamId;
     setTempMembers(temp);
   };
 
@@ -555,6 +569,7 @@ const MembersProvider = (
     initializeMembers,
     handleMemberInfoChange,
     handleMemberTeamUserTypeChange,
+    handleMemberTeamChange,
     handleResetUpdates,
     handleResetPhoneNumber,
     handleReInvite,

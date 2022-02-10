@@ -253,7 +253,7 @@ class ReactCodeInput extends Component {
               }}
               id={`${this.uuid}-${i}`}
               data-id={i}
-              autoFocus={autoFocus && (i === 0) ? 'true' : ''}
+              autoFocus={autoFocus && (i === 0)}
               value={value}
               key={`input_${i}`}
               type={type}
