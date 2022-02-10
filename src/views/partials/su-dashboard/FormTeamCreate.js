@@ -128,7 +128,7 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
     const { match: {params: {organizationId: orgId}}} = props;
-    if (["undefined", "-1", "null", ""].includes(orgId?.toString())) {
+    if ([undefined, "-1", null, ""].includes(orgId?.toString())) {
       history.push("/invite/company");
       return;
     }

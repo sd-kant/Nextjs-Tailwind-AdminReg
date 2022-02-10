@@ -324,7 +324,7 @@ const EnhancedForm = withFormik({
   handleSubmit: async (values, {props}) => {
     const {match: {params: {organizationId}}} = props;
     let users = values?.users;
-    if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {
+    if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
       history.push("/invite/company");
     } else {
       users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);

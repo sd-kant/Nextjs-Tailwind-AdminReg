@@ -79,11 +79,10 @@ const FormInviteModify = (props) => {
   const [visibleAddModal, setVisibleAddModal] = useState(false);
   const [inviteMode, setInviteMode] = useState("invite-only"); // invite-only, register-invite
   const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
-  const {setTeamId, setPage, users, admins, keyword, setKeyword, members, initializeMembers} = useMembersContext();
+  const {setPage, users, admins, keyword, setKeyword, members, initializeMembers} = useMembersContext();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
-    setTeamId(id);
     setPage("modify");
     countChanges();
 
@@ -92,11 +91,6 @@ const FormInviteModify = (props) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    setTeamId(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
 
   const countChanges = () => {
     intervalForChangesDetect = setInterval(() => {
@@ -168,7 +162,7 @@ const FormInviteModify = (props) => {
           job: user.jobRole,
           userType: user.permissionLevel,
         }];
-        if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {
+        if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
           history.push("/invite/company");
           return;
         }
@@ -383,7 +377,7 @@ const EnhancedForm = withFormik({
         const updatePromises = [];
         let inviteBody = {};
         usersToModify?.forEach(userToModify => {
-          if (!(["undefined", "-1", "null", ""].includes(organizationId?.toString()))) {
+          if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
             if (isAdmin) {
               updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
             }

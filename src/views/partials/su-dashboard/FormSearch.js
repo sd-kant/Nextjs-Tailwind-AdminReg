@@ -273,7 +273,7 @@ const EnhancedForm = withFormik({
         const updatePromises = [];
         let inviteBody = {};
         usersToModify?.forEach(userToModify => {
-          if (!(["undefined", "-1", "null", ""].includes(organizationId?.toString()))) {
+          if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
             if (isAdmin) {
               updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
             }

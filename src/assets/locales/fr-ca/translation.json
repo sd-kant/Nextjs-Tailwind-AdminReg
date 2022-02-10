@@ -188,6 +188,7 @@
   "msg user removed success": "{{user}} a été retiré de l'équipe",
   "msg user deleted success": "{{user}} a été supprimé de la base de données",
   "msg user email conflicts": "Il y a un utilisateur dont l'e-mail est le même que {{email}}",
+  "msg user invite success": "{{user}} devrait avoir reçu l'e-mail d'invitation avec succès !",
   "australia": "Australie",
   "canada": "Canada",
   "france": "France",

@@ -27,7 +27,7 @@ const FormTeamMode = (props) => {
   const navigateTo = (path) => {
     history.push(path);
   }
-  const orgId = ["undefined", "-1", "null", ""].includes(organizationId?.toString()) ? myOrganizationId : organizationId;
+  const orgId = [undefined, "-1", null, ""].includes(organizationId?.toString()) ? myOrganizationId : organizationId;
 
   return (
     <div className='form-group mt-57'>

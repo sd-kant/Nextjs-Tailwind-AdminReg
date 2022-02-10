@@ -191,7 +191,7 @@ const FormInvite = (props) => {
     history.back();
   };
 
-  const isAdmin = userType?.includes(USER_TYPE_ADMIN) || userType?.includes(USER_TYPE_ORG_ADMIN);
+  const isAdmin = userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
 
   const options = useMemo(() => {
     if (isAdmin) {
@@ -611,7 +611,7 @@ const EnhancedForm = withFormik({
   handleSubmit: async (values, {props, setStatus}) => {
     const {showErrorNotification, showSuccessNotification, setLoading, setVisibleSuccessModal, t, match: {params: {organizationId, id: teamId}}} = props;
     let users = values?.users;
-    if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {
+    if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
       showErrorNotification(
         t("msg create organization before inviting users"),
       );

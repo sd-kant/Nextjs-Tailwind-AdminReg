@@ -15,12 +15,16 @@ import {
   searchMembers as searchMembersAPI,
   searchMembersUnderOrganization,
   updateUserByAdmin,
-  queryTeamMembers as queryTeamMembersAPI, getUsersUnderOrganization,
+  queryTeamMembers as queryTeamMembersAPI,
+  getUsersUnderOrganization,
+  deleteUser,
+  reInviteOrganizationUser,
+  reInviteTeamUser, inviteTeamMember,
 } from "../http";
 import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../views/components/ConfirmModalV2";
 import {withTranslation} from "react-i18next";
-import {setLoadingAction, showErrorNotificationAction} from "../redux/action/ui";
+import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAction} from "../redux/action/ui";
 import {updateUrlParam} from "../utils";
 
 const MembersContext = React.createContext(null);
@@ -57,12 +61,14 @@ const MembersProvider = (
   {
     children,
     organizationId,
+    id,
     userType,
     allTeams,
     queryAllTeams,
     t,
     setLoading,
     showErrorNotification,
+    showSuccessNotification,
   }) => {
   const [keyword, setKeyword] = React.useState('');
   const [members, setMembers] = React.useState([]);
@@ -73,10 +79,13 @@ const MembersProvider = (
   const [visibleRemoveModal, setVisibleRemoveModal] = React.useState(false);
   const [selectedUser, setSelectedUser] = React.useState(null);
   const [page, setPage] = React.useState('');
-  const [teamId, setTeamId] = React.useState('');
+  const [teamId, setTeamId] = React.useState(id);
 
   React.useEffect(() => {
     loadAllTeams();
+    return () => {
+      setTeamId(null);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -86,9 +95,6 @@ const MembersProvider = (
 
   React.useEffect(() => {
     initializeMembers().then();
-    return () => {
-      setTeamId('');
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teamId, page]);
   const trimmedKeyword = React.useMemo(() => keyword.trim().toLowerCase(), [keyword]);
@@ -109,7 +115,7 @@ const MembersProvider = (
     const entities = [];
     allTeams?.forEach(team => {
       if (
-        ["undefined", "-1", "null", ""].includes(organizationId?.toString()) ||
+        [undefined, "-1", null, ""].includes(organizationId?.toString()) ||
         team?.orgId?.toString() === organizationId?.toString()
       ) {
         entities.push({
@@ -240,7 +246,7 @@ const MembersProvider = (
       if (page === "search") {
         if (trimmedKeyword) {
           let teamMembersResponse;
-          if (["undefined", "-1", "null", ""].includes(organizationId?.toString())) {
+          if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
             teamMembersResponse = await searchMembersAPI(trimmedKeyword);
           } else {
             teamMembersResponse = await searchMembersUnderOrganization({organizationId, keyword: trimmedKeyword});
@@ -249,7 +255,7 @@ const MembersProvider = (
         }
       } else if (page === "modify") {
         let teamMembersResponse;
-        if (["", "null", "undefined"].includes(teamId?.toString())) {
+        if (["", null, undefined].includes(teamId?.toString())) {
           return;
         }
         if (teamId?.toString() === "-1") {
@@ -500,18 +506,18 @@ const MembersProvider = (
   const handleRemoveFromTeam = async () => {
     if (selectedUser?.teamId && selectedUser?.email) {
       try {
-        alert("todo remove from team");
-        // todo if organization admin user is selected
-        /*setLoading(true);
+        setLoading(true);
         await inviteTeamMember(selectedUser?.teamId, {
           remove: [selectedUser.email],
         });
-        let temp = tempMembers?.filter(it => it.email !== selectedUser.email);
-        setTempMembers(temp);
-        temp = members?.filter(it => it.email !== selectedUser.email);
-        setMembers(temp);
-
-        setVisibleRemoveModal(false);*/
+        setVisibleRemoveModal(false);
+        showSuccessNotification(t('msg user removed success', {
+          user: `${selectedUser?.firstName} ${selectedUser?.firstName}`,
+        }));
+        if (selectedUser?.teamId?.toString() === teamId?.toString()) {
+          setMembers(prev => prev?.filter(it => it.userId?.toString() !== selectedUser.userId?.toString()));
+          setTempMembers(prev => prev?.filter(it => it.userId?.toString() !== selectedUser.userId?.toString()));
+        }
       } catch (e) {
         showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
       } finally {
@@ -521,22 +527,81 @@ const MembersProvider = (
   };
 
   const handleDeleteUser = () => {
-    if (selectedUser?.userId) {
-      alert('todo delete user');
-      // todo delete user
+    // only super or org admin can do this
+    if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) {
+      if (!(["-1", "", null, undefined].includes(organizationId?.toString())) && selectedUser?.userId) {
+        setLoading(true);
+        deleteUser({
+          organizationId,
+          userId: selectedUser?.userId,
+        })
+          .then(() => {
+            setVisibleDeleteModal(false);
+            setMembers(prev => prev.filter(it => it.userId?.toString() !== selectedUser.userId.toString()));
+            setTempMembers(prev => prev.filter(it => it.userId?.toString() !== selectedUser.userId.toString()));
+            showSuccessNotification(t("msg user deleted success", {
+              user: `${selectedUser?.firstName} ${selectedUser?.lastName}`,
+            }));
+          })
+          .catch(e => {
+            showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
     }
   };
 
-  const handleReInvite = () => {
-    alert('todo re-invite user');
-    // todo if organization admin will receive invitation?
+  const handleReInvite = (user) => {
+    let requestHttp = null; let payload = null;
+    if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) { // super or org admin
+      if (!["-1", "", null, undefined].includes(organizationId?.toString()) && user?.userId) {
+        requestHttp = reInviteOrganizationUser;
+        payload = {
+          organizationId: organizationId,
+          userId: user.userId,
+        };
+      }
+    } else if (userType?.includes(USER_TYPE_TEAM_ADMIN)) { // team admin
+      if (user?.userId) {
+        const originUser = members.find(it => it.userId?.toString() === user?.userId?.toString());
+        let teamId = allTeams?.some(it => it.id?.toString() === originUser?.teamId?.toString()) ?
+          originUser?.teamId : null;
+        if (!teamId) {
+          teamId = originUser?.accessibleTeams.find(it => (allTeams?.some(ele => ele.id?.toString() === it.teamId?.toString())))?.teamId;
+        }
+        if (teamId) {
+          requestHttp = reInviteTeamUser;
+          payload = {
+            teamId: teamId,
+            userId: user.userId,
+          };
+        }
+      }
+    }
+
+    if (requestHttp) {
+      setLoading(true);
+      requestHttp(payload)
+        .then(() => {
+          showSuccessNotification(t("msg user invite success", {
+            user: `${user?.firstName} ${user?.lastName}`,
+          }));
+        })
+        .catch(e => {
+          showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
 
   const handleActionButtonClick = user => {
     switch (user?.action) {
       case 1: // re-invite
-        setSelectedUser(user);
-        handleReInvite();
+        handleReInvite(user);
         break;
       case 2: // remove from team
         setSelectedUser(user);
@@ -601,6 +666,7 @@ const MembersProvider = (
 const mapStateToProps = (state) => ({
   allTeams: get(state, 'base.allTeams'),
   userType: get(state, 'auth.userType'),
+  myOrganizationId: get(state, 'auth.organizationId'),
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -609,6 +675,7 @@ const mapDispatchToProps = (dispatch) =>
       queryAllTeams: queryAllTeamsAction,
       setLoading: setLoadingAction,
       showErrorNotification: showErrorNotificationAction,
+      showSuccessNotification: showSuccessNotificationAction,
     },
     dispatch
   );
