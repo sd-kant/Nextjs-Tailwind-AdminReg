@@ -193,3 +193,4 @@ export const IMPERIAL = "Imperial";
 export const METRIC = "Metric";
 export const QUESTION_TYPE_RADIO = "radio";
 export const QUESTION_TYPE_BOOLEAN = "boolean";
+export const domain = "https://nice-coast-05ab11b10.azurestaticapps.net";
