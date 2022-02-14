@@ -136,6 +136,7 @@ const Invite = (
           render={matchProps => (
             <WrappedMembersProvider
               organizationId={matchProps.match.params.organizationId}
+              id={matchProps.match.params.id}
             >
               <FormInviteModify
                 {...matchProps}
@@ -150,6 +151,7 @@ const Invite = (
           render={matchProps => (
             <WrappedMembersProvider
               organizationId={matchProps.match.params.organizationId}
+              id={null}
             >
               <FormSearch
                 {...matchProps}

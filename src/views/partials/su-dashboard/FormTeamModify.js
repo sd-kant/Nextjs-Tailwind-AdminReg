@@ -62,7 +62,7 @@ const FormTeamModify = (props) => {
     let teams = [];
     allTeams?.forEach(team => {
       if (
-        ["undefined", "-1", "null", ""].includes(organizationId?.toString()) ||
+        [undefined, "-1", null, ""].includes(organizationId?.toString()) ||
         team.orgId?.toString() === organizationId?.toString()
       ) {
         teams.push({

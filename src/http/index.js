@@ -116,6 +116,26 @@ function patch(url, body, token) {
   });
 }
 
+function deleteRequest(url, token) {
+  let headers = {};
+  if (token) {
+    headers = {
+      "Authorization": `Bearer ${token}`,
+    };
+  }
+  return new Promise((resolve, reject) => {
+    instance.delete(url, {
+      headers: headers,
+    })
+      .then(res => {
+        resolve(res);
+      })
+      .catch(e => {
+        reject(e);
+      })
+  });
+}
+
 export const login = (body) => {
   return post("/auth/login", body);
 }
@@ -164,8 +184,16 @@ export const removeTeamMember = (userId) => {
   return post(`team/remove/user/${userId}`, {});
 }
 
-export const deleteUser = (userId) => {
-  return post(`user/remove/${userId}`, {});
+export const deleteUser = ({organizationId, userId}) => {
+  return deleteRequest(`organization/${organizationId}/user/${userId}`);
+}
+
+export const reInviteOrganizationUser = ({organizationId, userId}) => {
+  return get(`organization/${organizationId}/user/${userId}/invite`);
+}
+
+export const reInviteTeamUser = ({teamId, userId}) => {
+  return get(`team/${teamId}/invite/${userId}`);
 }
 
 export const createUserByAdmin = (orgId, user) => {

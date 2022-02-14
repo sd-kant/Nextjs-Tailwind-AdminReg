@@ -188,6 +188,7 @@
   "msg user removed success": "{{user}}はチームから削除されました",
   "msg user deleted success": "{{user}}がDBから削除されました",
   "msg user email conflicts": "メールアドレスが{{email}}と同じユーザーがいます",
+  "msg user invite success": "{{user}}は招待メールを正常に受信しているはずです。",
   "australia": "オーストラリア",
   "canada": "カナダ",
   "france": "フランス",
