@@ -311,7 +311,7 @@ const MembersProvider = (
         it['originalAccessibleTeams'] = accessibleTeams;
         it['job'] = (parseInt(it['job']) > 0 && parseInt(it['job']) <= 14) ? it['job'] : "14";
         it['userTypesOrigin'] = it.userTypes;
-        if (teamId) {
+        if (!(["", "-1", null, undefined].includes(teamId))) {
           it['teamId'] = teamId;
         } else if (!it['teamId'] && it['teams']?.length > 0) {
           it['teamId'] = it['teams']?.some(ele => ele?.teamId?.toString() === teamId?.toString()) ? teamId : it['teams'][0]?.teamId;
