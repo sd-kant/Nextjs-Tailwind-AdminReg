@@ -46,7 +46,7 @@ function* queryAllOrganizationsSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t("msg something went wrong"),
+        msg: e.response?.data?.message ?? i18n.t("msg something went wrong"),
       }
     });
   } finally {
@@ -84,7 +84,7 @@ function* queryAllTeamsSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t("msg something went wrong"),
+        msg: e.response?.data?.message ?? i18n.t("msg something went wrong"),
       }
     });
   } finally {
@@ -130,7 +130,7 @@ function* queryTeamMembersSaga({payload: {teamId}}) {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t("msg something went wrong"),
+        msg: e.response?.data?.message ?? i18n.t("msg something went wrong"),
       }
     });
   } finally {
@@ -189,7 +189,7 @@ function* removeTeamMemberSaga({payload: {userId}}) {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t("msg something went wrong"),
+        msg: e.response?.data?.message ?? i18n.t("msg something went wrong"),
       }
     });
   } finally {
@@ -248,7 +248,7 @@ function* deleteUserSaga({payload: {userId}}) {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t("msg something went wrong"),
+        msg: e.response?.data?.message ?? i18n.t("msg something went wrong"),
       }
     });
   } finally {
