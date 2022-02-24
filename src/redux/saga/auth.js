@@ -45,6 +45,7 @@ function* loginSaga({payload: {
     const responseData = apiRes.data;
     const {
       accessToken: token,
+      refreshToken,
       userType,
       orgId,
       mfa,
@@ -80,6 +81,7 @@ function* loginSaga({payload: {
 
       if (!mfa) { // if multi-factor authentication off
         localStorage.setItem("kop-v2-token", token);
+        localStorage.setItem("kop-v2-refresh-token", refreshToken);
         localStorage.setItem("kop-v2-register-token", token);
         localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
         localStorage.setItem("kop-v2-picked-organization-id", orgId);

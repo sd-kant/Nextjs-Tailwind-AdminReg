@@ -37,22 +37,37 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(function (response) {
   // Any status code that lie within the range of 2xx cause this function to trigger
   // Do something with response data
-  if (response?.data?.status === 401) { // if token expired
-    toastr.error(
-      i18n.t("msg token expired"),
-      i18n.t("msg login again"),
-    );
-    // TODO uncomment before deploying
-    // setTimeout(() => {
-    //   localStorage.clear();
-    //   window.location.href = "/";
-    // }, 1000);
-  } else {
-    return response;
-  }
-}, function (error) {
+  return response;
+}, async function (error) {
+  const originalRequest = error.config;
   // Any status codes that falls outside the range of 2xx cause this function to trigger
   // Do something with response error
+  if (["401"].includes(error.response?.status?.toString()) && !originalRequest._retry) { // if token expired
+    const refreshToken = localStorage.getItem("kop-v2-refresh-token");
+    if (refreshToken) {
+      try {
+        const res = await post("/auth/refresh", {
+          refreshToken,
+        });
+        if (res.data?.accessToken) {
+          localStorage.setItem("kop-v2-token", res.data?.accessToken);
+          localStorage.setItem("kop-v2-refresh-token", res.data?.refreshToken);
+          originalRequest._retry = true;
+          return instance(originalRequest);
+        }
+      } catch (e) {
+        toastr.error(
+          i18n.t("msg token expired"),
+          i18n.t("msg login again"),
+        );
+      }
+    } else {
+      toastr.error(
+        i18n.t("msg token expired"),
+        i18n.t("msg login again"),
+      );
+    }
+  }
   return Promise.reject(error);
 });
 
