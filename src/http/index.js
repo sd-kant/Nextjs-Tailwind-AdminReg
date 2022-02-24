@@ -48,10 +48,12 @@ instance.interceptors.response.use(function (response) {
       try {
         const res = await post("/auth/refresh", {
           refreshToken,
+          deviceId: "",
         });
         if (res.data?.accessToken) {
           localStorage.setItem("kop-v2-token", res.data?.accessToken);
           localStorage.setItem("kop-v2-refresh-token", res.data?.refreshToken);
+          originalRequest.headers["Authorization"] = `Bearer ${res.data?.accessToken}`;
           originalRequest._retry = true;
           return instance(originalRequest);
         }
