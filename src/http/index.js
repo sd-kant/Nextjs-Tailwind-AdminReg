@@ -2,6 +2,17 @@ import axios from "axios";
 import {productionApiBaseUrl as baseUrl} from "../config";
 import {toastr} from 'react-redux-toastr'
 import i18n from '../i18nextInit';
+import {logout} from "../views/layouts/MainLayout";
+
+const showErrorAndLogout = () => {
+  toastr.error(
+    i18n.t("msg token expired"),
+    i18n.t("msg login again"),
+  );
+  setTimeout(() => {
+    logout();
+  }, 1500);
+}
 
 export const instance = axios.create({
   baseURL: baseUrl,
@@ -42,32 +53,30 @@ instance.interceptors.response.use(function (response) {
   const originalRequest = error.config;
   // Any status codes that falls outside the range of 2xx cause this function to trigger
   // Do something with response error
-  if (["401"].includes(error.response?.status?.toString()) && !originalRequest._retry) { // if token expired
-    const refreshToken = localStorage.getItem("kop-v2-refresh-token");
-    if (refreshToken) {
-      try {
-        const res = await post("/auth/refresh", {
-          refreshToken,
-          deviceId: "",
-        });
-        if (res.data?.accessToken) {
-          localStorage.setItem("kop-v2-token", res.data?.accessToken);
-          localStorage.setItem("kop-v2-refresh-token", res.data?.refreshToken);
-          originalRequest.headers["Authorization"] = `Bearer ${res.data?.accessToken}`;
-          originalRequest._retry = true;
-          return instance(originalRequest);
+  if (["401"].includes(error.response?.status?.toString())) { // if token expired
+    if (!originalRequest._retry) {
+      const refreshToken = localStorage.getItem("kop-v2-refresh-token");
+      if (refreshToken) {
+        try {
+          const res = await post("/auth/refresh", {
+            refreshToken,
+            deviceId: "",
+          });
+          if (res.data?.accessToken) {
+            localStorage.setItem("kop-v2-token", res.data?.accessToken);
+            localStorage.setItem("kop-v2-refresh-token", res.data?.refreshToken);
+            originalRequest.headers["Authorization"] = `Bearer ${res.data?.accessToken}`;
+            originalRequest._retry = true;
+            return instance(originalRequest);
+          }
+        } catch (e) {
+          showErrorAndLogout();
         }
-      } catch (e) {
-        toastr.error(
-          i18n.t("msg token expired"),
-          i18n.t("msg login again"),
-        );
+      } else {
+        showErrorAndLogout();
       }
     } else {
-      toastr.error(
-        i18n.t("msg token expired"),
-        i18n.t("msg login again"),
-      );
+      showErrorAndLogout();
     }
   }
   return Promise.reject(error);
