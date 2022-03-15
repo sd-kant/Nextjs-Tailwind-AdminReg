@@ -4,8 +4,10 @@ import DashLogoutButton from "../components/DashLogoutButton";
 
 export const logout = () => {
   const lang = localStorage.getItem("kop-v2-lang");
+  const params = localStorage.getItem("kop-params");
   localStorage.clear();
   localStorage.setItem("kop-v2-lang", lang);
+  localStorage.setItem("kop-params", params);
   window.location.href = "/";
 }
 

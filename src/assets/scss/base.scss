@@ -31,10 +31,22 @@
   line-height: 18.38px;
 }
 
+.font-heading {
+  font-family: Ubuntu-Regular;
+  font-size: 34px;
+  line-height: 39.07px;
+}
+
 .font-input-label-italic {
   font-family: Ubuntu-Medium-Italic;
   font-size: 16px;
   line-height: 18.38px;
+}
+
+.font-big-number {
+  font-family: Ubuntu-Regular;
+  font-size: 44px;
+  line-height: 50.56px;
 }
 
 .font-helper-text {
@@ -60,6 +72,18 @@
   font-family: Ubuntu-Regular;
   font-size: 1.5em;
   line-height: 39px;
+}
+
+.font-small {
+  font-family: Ubuntu-Medium;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.font-big {
+  font-family: Ubuntu-Bold;
+  font-size: 24px;
+  line-height: 27.58px;
 }
 
 .text-center {
@@ -89,6 +113,79 @@
 .text-gray {
   color: $app-gray;
 }
+
+.text-gray-2 {
+  color: $app-ns;
+}
+
+.text-success {
+  color: $app-success;
+}
+
+.text-danger {
+  color: $app-danger;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+.d-block {
+  display: block;
+}
+
+.d-inline-block {
+  display: inline-block;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.align-center  {
+  align-items: center;
+}
+
+.align-end {
+  align-items: flex-end;
+}
+
+.align-start {
+  align-items: start;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-default {
+  cursor: default;
+}
+
 
 .mt-10 {
   margin-top: 10px;

@@ -1,0 +1,35 @@
+@import "src/assets/scss/colors";
+
+.Wrapper {
+  position: fixed;
+  left: 50%;
+  width: calc(100% - 90px);
+  transform: translateX(-50%);
+  bottom: 10px;
+  z-index: 10;
+
+  .Notification {
+    padding: 25px;
+    background: $app-white;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+}
+
+.Show {
+  display: block;
+}
+
+.Hide {
+  display: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .Wrapper {
+    max-width: 892px;
+    justify-content: space-around;
+  }
+}

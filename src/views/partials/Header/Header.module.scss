@@ -1,0 +1,118 @@
+@import "src/assets/scss/colors";
+
+.Header {
+  position: sticky;
+  top: 74px;
+  background: $app-bg;
+  opacity: 1;
+  z-index: 5;
+  padding: 10px 0;
+
+  .First {
+    display: flex;
+    flex-direction: column;
+
+    .DropdownWrapper {
+      display: flex;
+      flex-direction: column;
+
+      .OrganizationLabel {
+        display: flex;
+        align-items: center;
+        background-color: $app-ts;
+        height: 45px;
+        z-index: 5;
+        border-radius: 4px;
+        padding: 0 10px;
+
+        // fixme ellipsis not working
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      & > div:nth-child(2) {
+        margin-top: 10px;
+      }
+    }
+
+    .ModifyButton {
+      display: none;
+    }
+
+    .Additional {
+      margin-top: 5px;
+
+      .Separator {
+        display: inline-block;
+        width: 3px;
+      }
+    }
+  }
+
+  .Second {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .PaginationWrapper {
+      margin-top: 5px;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .Header {
+    top: 89px;
+
+    .First {
+      .DropdownWrapper {
+        width: 600px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-column-gap: 20px;
+
+        & > div:nth-child(2) {
+          margin-top: 0;
+        }
+      }
+
+      .Separator {
+        width: 20px !important;
+      }
+
+      .ModifyButton {
+        display: block;
+      }
+    }
+
+    .Second {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-column-gap: 25px;
+
+      .PaginationWrapper {
+        margin-top: 10px;
+      }
+    }
+  }
+}
+
+
+@media only screen and (min-width: 1024px) {
+  .Header {
+    .First {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      grid-column-gap: 25px;
+
+      .Additional {
+        margin-top: 0;
+      }
+    }
+
+    .Second {
+
+    }
+  }
+}

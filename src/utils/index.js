@@ -2,12 +2,18 @@ import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN} from "../con
 import {
   isValidPhoneNumber,
 } from 'libphonenumber-js';
+import queryString from "query-string";
 
 export const getTokenFromUrl = () => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   // replace space because + was replaced with space
   return urlParams.get('token')?.replace(/ /g, '+');
+}
+
+export const checkAlphaNumeric = str => {
+  const regex=  /^[a-z0-9]+$/i;
+  return str?.match(regex);
 }
 
 export const getParamFromUrl = key => {
@@ -19,11 +25,6 @@ export const getParamFromUrl = key => {
 export const checkPasswordValidation = (password) => {
   const regex=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{6,1024}$/;
   return password && password.match(regex);
-}
-
-export const checkAlphaNumeric = str => {
-  const regex=  /^[a-z0-9]+$/i;
-  return str?.match(regex);
 }
 
 export const checkPhoneNumberValidation = (value, country) => {
@@ -52,15 +53,6 @@ export const uuidv4 = () => {
     return v.toString(16);
   });
 };
-
-export const updateUrlParam = ({param: {key, value}, reload = false}) => {
-  const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?${key}=${value}`;
-  if (!reload) {
-    window.history.pushState({path: newUrl},'', newUrl);
-  } else {
-    window.location.href = newUrl;
-  }
-}
 
 export const convertImperialToMetric = (imperial) => {
   if (!(imperial && imperial.includes("ft"))) {
@@ -122,4 +114,61 @@ export const format2Digits = (value) => {
   if (!["", null, undefined].includes(value)) {
     return String(value).padStart(2, '0');
   } else return null;
+}
+
+export const numMinutesBetween = (d1 = new Date(), d2 = new Date(1900, 1, 1)) => {
+  const diff = (d1.getTime() - d2.getTime());
+  // const diff = Math.abs(d1.getTime() - d2.getTime());
+  return Math.ceil(diff / (1000 * 60));
+};
+
+export const minutesToDaysHoursMinutes = minutes => {
+  if (!minutes) {
+    return {
+      days: null,
+      hours: null,
+      minutes: null,
+    };
+  }
+  return {
+    days: Math.floor(minutes / 24 /60),
+    hours: Math.floor(minutes / 60 % 24),
+    minutes: Math.ceil(minutes % 60),
+  };
+}
+
+export const celsiusToFahrenheit = t => {
+  return ((t * 9 / 5) + 32).toFixed(1);
+};
+
+export const getLatestDate = (d1, d2) => {
+  if (!d1) return d2;
+  if (!d2) return d1;
+  if (d2?.getTime() <= d1?.getTime()) {
+    return d1;
+  }
+
+  return d2;
+}
+
+export const concatAsUrlParam = q => {
+  let str = '';
+  Object.keys(q)?.forEach((it, index) => {
+    str += index !== 0 ? `&${it}=${q[it]}` : `${it}=${q[it]}`;
+  });
+
+  return str;
+}
+
+export const updateUrlParam = ({param: {key, value}, reload = false}) => {
+  // parse the query string into an object
+  const q = queryString.parse(location.search);
+  q[key] = value;
+  const str = concatAsUrlParam(q);
+  const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?${str}`;
+  if (!reload) {
+    window.history.pushState({path: newUrl},'', newUrl);
+  } else {
+    window.location.href = newUrl;
+  }
 }

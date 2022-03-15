@@ -86,7 +86,7 @@ function* loginSaga({payload: {
         localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
         localStorage.setItem("kop-v2-picked-organization-id", orgId);
         if (ableToLogin(userType)) {
-          history.push("/invite");
+          history.push("/select-mode");
         } else {
           history.push("/create-account/name");
         }

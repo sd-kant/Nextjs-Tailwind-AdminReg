@@ -1,0 +1,27 @@
+.Wrapper {
+  display: inline-flex;
+
+  .Label {
+    margin-right: 30px;
+  }
+
+  .Icons {
+    .Icon {
+      width: 25px;
+    }
+    .Reverse {
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
+    }
+    .GoNextIcon {
+    }
+    .GoEndIcon {
+    }
+    .Active {
+      cursor: pointer;
+    }
+    .Disabled {
+      cursor: default;
+    }
+  }
+}

@@ -1,0 +1,22 @@
+@import "src/assets/scss/colors";
+
+.Wrapper {
+  .Header {
+    padding: 0 15px;
+  }
+
+  .Body {
+    height: 200px;
+    overflow-y: auto;
+    margin-top: 20px;
+
+    .Item {
+      border-radius: 10px;
+      padding: 10px 15px;
+    }
+
+    .Selected {
+      background: $app-tf;
+    }
+  }
+}

@@ -1,0 +1,41 @@
+.Wrapper {
+  position: relative;
+  display: inline-block;
+
+  .CenteredLevel {
+    position: absolute;
+    top: 4px;
+    left: calc(50% - 2px);
+    transform: translateX(-14px);
+    height: 11px;
+    border-radius: 1px;
+  }
+
+  .Level {
+    position: absolute;
+    top: 3px;
+    left: 2px;
+    height: 12px;
+    border-radius: 1px;
+  }
+
+  .High {
+    background: linear-gradient(89.61deg, #6EC492 0.31%, #47FE7A 99.66%);
+  }
+
+  .Normal {
+    background: linear-gradient(89.61deg, #FFD600 0.31%, #FFF363 99.66%);
+  }
+
+  .Low {
+    background: linear-gradient(89.61deg, #FF0000 0.31%, #FF6666 99.66%);
+  }
+
+  .Bolt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+}

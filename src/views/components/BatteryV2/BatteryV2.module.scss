@@ -1,0 +1,58 @@
+.TopWrapper {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.Wrapper {
+  position: relative;
+  display: inline-flex;
+
+  .Piece {
+    position: absolute;
+    width: 16%;
+    height: calc(100% - 6px);
+    top: 3px;
+    background-color: greenyellow;
+  }
+
+  .Piece1 {
+    left: 3px;
+  }
+
+  .Piece2 {
+    left: calc(16% + 4px);
+  }
+
+  .Piece3 {
+    left: calc(32% + 5px);
+  }
+
+  .Piece4 {
+    left: calc(48% + 6px);
+  }
+
+  .Blue {
+    background-color: #35EA6C;
+  }
+
+  .White {
+    background-color: white;
+  }
+
+  .Yellow {
+    background-color: #FFE86F;
+  }
+
+  .Red {
+    background-color: #F1374E;
+  }
+
+  .Bolt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+}

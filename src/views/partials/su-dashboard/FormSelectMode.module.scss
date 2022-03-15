@@ -1,0 +1,80 @@
+@import "src/assets/scss/colors";
+
+.Row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .OptionWrapper {
+    width: calc(200px - 56px);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background: $app-tf;
+    padding: 12px 28px;
+    border-radius: 20px;
+    cursor: pointer;
+
+    .ImageWrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+
+      .WorkerOrangeImage {
+        width: 83px;
+      }
+
+      .SettingsImage {
+        position: absolute;
+        width: 26px;
+        right: -15px;
+      }
+    }
+
+    .ImageWrapper2 {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+      padding: 15px 0;
+
+      .WorkerOrangeImage {
+        width: 83px;
+        z-index: 2;
+      }
+      .WorkerWhiteImage1 {
+        position: absolute;
+        left: 0;
+        top: 13px;
+        width: 59px;
+      }
+      .WorkerWhiteImage2 {
+        position: absolute;
+        width: 59px;
+        right: 0;
+        top: 13px;
+      }
+    }
+
+    &:nth-child(2) {
+      margin-top: 30px;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .Row {
+    display: grid;
+    grid-template-columns: 200px 200px;
+    grid-column-gap: 54px;
+
+    .OptionWrapper {
+      width: auto;
+
+      &:nth-child(2) {
+        margin-top: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,50 @@
+@import "src/assets/scss/colors";
+
+.Popup {
+  color: black;
+
+  .UserInfo {
+    display: flex;
+    align-items: center;
+
+    .Avatar {
+      width: 59px;
+      height: 59px;
+      margin-right: 15px;
+    }
+  }
+}
+
+.Divider {
+  height: 1px;
+  background: $app-divider;
+  margin-top: 8px;
+}
+
+.MenuItemWrapper {
+  .MenuItem {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: $app-black;
+    padding: 0 10px;
+    border-radius: 5px;
+
+    &.HighLight {
+      background-color: $app-orange;
+    }
+  }
+}
+
+.MenuHeaderItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: $app-gray;
+  padding: 0 15px;
+}
+
+.PopupContent {
+  padding: 25px;
+}

@@ -1,0 +1,12 @@
+<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M22 44C34.1503 44 44 34.1503 44 22C44 9.84974 34.1503 0 22 0C9.84974 0 0 9.84974 0 22C0 34.1503 9.84974 44 22 44Z" fill="#212121"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M21.9989 27.3786C24.9689 27.3786 27.3766 24.9709 27.3766 22.0008C27.3766 19.0308 24.9689 16.623 21.9989 16.623C19.0288 16.623 16.6211 19.0308 16.6211 22.0008C16.6211 24.9709 19.0288 27.3786 21.9989 27.3786Z" fill="white"/>
+<rect x="21.5117" y="28.3564" width="0.977778" height="5.86667" rx="0.488889" fill="white"/>
+<rect x="21.5117" y="9.77832" width="0.977778" height="5.86667" rx="0.488889" fill="white"/>
+<rect x="15.6445" y="21.5117" width="0.977778" height="5.86667" rx="0.488889" transform="rotate(90 15.6445 21.5117)" fill="white"/>
+<rect x="34.2227" y="21.5117" width="0.977778" height="5.86667" rx="0.488889" transform="rotate(90 34.2227 21.5117)" fill="white"/>
+<rect x="17.8516" y="17.1621" width="0.977778" height="3.91111" rx="0.488889" transform="rotate(135 17.8516 17.1621)" fill="white"/>
+<rect x="29.6055" y="28.915" width="0.977778" height="3.91111" rx="0.488889" transform="rotate(135 29.6055 28.915)" fill="white"/>
+<rect x="26.8398" y="17.8525" width="0.977778" height="3.91111" rx="0.488889" transform="rotate(-135 26.8398 17.8525)" fill="white"/>
+<rect x="15.0859" y="29.6064" width="0.977778" height="3.91111" rx="0.488889" transform="rotate(-135 15.0859 29.6064)" fill="white"/>
+</svg>
