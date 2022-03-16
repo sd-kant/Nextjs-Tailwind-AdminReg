@@ -263,6 +263,27 @@ const MemberDetail = (
           </div>
 
           <div className={clsx(style.HeartRiskCard)}>
+            <div className={clsx(style.RiskCard, style.Card)}>
+              <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
+                <span className={clsx('font-input-label')}>
+                  {t("cbt avg")}
+                </span>
+                <span className={'font-input-label text-uppercase'}>{metric ? '(°C)' : '(°F)'}</span>
+              </div>
+
+              <div className={clsx(style.InformationContent)}
+                   style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
+                <img src={thermometer} alt="thermometer" width={15}/>
+                <span className={'font-big-number'}>
+                  {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
+                </span>
+              </div>
+
+              <div style={{display: 'flex', justifyContent: 'center'}}>
+                <span className={clsx('font-binary text-danger')}/>
+              </div>
+            </div>
+
             <div className={clsx(style.HeartCard, style.Card)}>
               <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
                 <span className={clsx('font-input-label')}>
@@ -286,27 +307,6 @@ const MemberDetail = (
                 </span>
                 </div>
               }
-            </div>
-
-            <div className={clsx(style.RiskCard, style.Card)}>
-              <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
-                <span className={clsx('font-input-label')}>
-                  {t("cbt avg")}
-                </span>
-                <span className={'font-input-label text-uppercase'}>{metric ? '(°C)' : '(°F)'}</span>
-              </div>
-
-              <div className={clsx(style.InformationContent)}
-                   style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
-                <img src={thermometer} alt="thermometer" width={15}/>
-                <span className={'font-big-number'}>
-                  {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
-                </span>
-              </div>
-
-              <div style={{display: 'flex', justifyContent: 'center'}}>
-                <span className={clsx('font-binary text-danger')}/>
-              </div>
             </div>
           </div>
         </div>
@@ -342,7 +342,7 @@ const MemberDetail = (
                     <span className={clsx('font-binary', style.Padding)}>{t("details")}</span>
                     <div>
                       <span className={clsx('font-binary', style.Padding)}>{t("cbt")}</span>
-                      <span className={clsx('font-binary', style.Padding, 'ml-15')}>{t("hr")}</span>
+                      <span className={clsx('font-binary', style.Padding, 'ml-20')}>{t("hr")}</span>
                     </div>
                     <span className={clsx('font-binary', style.Padding)}>{t("datetime")}</span>
                   </div> :
