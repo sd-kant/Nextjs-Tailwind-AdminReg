@@ -17,9 +17,23 @@ import MobileLogin from "./views/pages/MobileLogin";
 import MobilePhoneRegister from "./views/pages/MobilePhoneRegister";
 import MobilePhoneVerification from "./views/pages/MobilePhoneVerification";
 import CreateAccount from "./views/pages/CreateAccount";
+import {bindActionCreators} from "redux";
+import {setLoadingAction} from "./redux/action/ui";
+import {StickyComponentsProvider} from "./providers/StickyComponentsProvider";
+import {DashboardProvider} from "./providers/DashboardProvider";
+import MainRouteV2 from "./views/routes/MainRouteV2";
+import DashboardV2 from "./views/pages/DashboardV2";
+import SelectMode from "./views/pages/SelectMode";
 
-const Router = ({token, userType, loggedIn}) => {
-  const redirectPath = loggedIn ? (ableToLogin(userType) ? "/invite" : "/create-account") : "/login";
+const Router = (
+  {
+    token,
+    userType,
+    loggedIn,
+    metric,
+    setLoading,
+  }) => {
+  const redirectPath = loggedIn ? (ableToLogin(userType) ? "/select-mode" : "/create-account") : "/login";
 
   return (
     <BrowserRouter basename="/" history={history}>
@@ -37,6 +51,19 @@ const Router = ({token, userType, loggedIn}) => {
               )}
             />
             {/* admin side*/}
+            {
+              ableToLogin(userType) &&
+              loggedIn &&
+              <SignInRoute
+                loggedIn={true}
+                path="/select-mode"
+                render={(props) => (
+                  <SelectMode
+                    {...props}
+                  />
+                )}
+              />
+            }
             {
               ableToLogin(userType) &&
               loggedIn &&
@@ -86,6 +113,27 @@ const Router = ({token, userType, loggedIn}) => {
                   <PhoneRegister
                     {...props}
                   />
+                )}
+              />
+            }
+
+            {
+              loggedIn &&
+              <MainRouteV2
+                exact
+                path="/dashboard/multi"
+                render={(props) => (
+                  <StickyComponentsProvider>
+                    <DashboardProvider
+                      setLoading={setLoading}
+                      metric={metric}
+                    >
+                      <DashboardV2
+                        multi={true}
+                        {...props}
+                      />
+                    </DashboardProvider>
+                  </StickyComponentsProvider>
                 )}
               />
             }
@@ -170,6 +218,15 @@ const mapStateToProps = (state) => ({
   token: get(state, 'auth.token'),
   userType: get(state, 'auth.userType'),
   loggedIn: get(state, 'auth.loggedIn'),
+  metric: get(state, 'ui.metric'),
 });
 
-export default connect(mapStateToProps, null)(Router);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setLoading: setLoadingAction,
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(Router);

@@ -1,0 +1,27 @@
+@import "src/assets/scss/colors";
+
+.Wrapper {
+  display: inline-flex;
+  background: $app-ts;
+  padding: 8px 16px;
+  border-radius: 5px;
+  align-items: center;
+  width: 258px;
+  max-width: calc(100% - 32px);
+
+  .SearchIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .Input {
+    background: $app-ts;
+    color: white;
+    outline: none;
+    border: none;
+    font-size: 21px;
+    line-height: 24.13px;
+    margin-left: 10px;
+    width: calc(100% - 32px);
+  }
+}

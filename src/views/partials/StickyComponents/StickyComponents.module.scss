@@ -1,0 +1,30 @@
+.Wrapper {
+  width: calc(100% - 40px);
+  position: fixed;
+  top: 200px;
+}
+
+.StatisticsWrapper {
+}
+
+.WorkRestBarWrapper {
+}
+
+@media only screen and (min-width: 768px) {
+  .Wrapper {
+    top: 220px;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .Wrapper {
+    width: calc(100% - 50px);
+    top: 170px;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .Wrapper {
+    width: calc(100% - 80px);
+  }
+}

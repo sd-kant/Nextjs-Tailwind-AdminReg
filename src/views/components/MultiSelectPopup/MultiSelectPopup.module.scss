@@ -1,0 +1,105 @@
+@import "src/assets/scss/colors";
+
+.ModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  backdrop-filter: blur(2px);
+  z-index: 100;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.Modal {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 1;
+  background: #313131;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  outline: none;
+  width: calc(100% - 30px);
+  max-width: 400px;
+
+  border-radius: 10px;
+}
+
+.Control {
+  display: flex;
+  align-items: center;
+  background-color: $app-ts;
+  height: 45px;
+  z-index: 5;
+  border-radius: 4px;
+  padding: 0 10px;
+  cursor: pointer;
+
+  // fixme ellipsis not working
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.No {
+  color: hsl(0, 0%, 50%);
+}
+
+.Yes {
+  color: white;
+}
+
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  min-height: 240px;
+
+  .Footer {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .CloseIcon {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 25px;
+    cursor: pointer;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .Modal {
+    border-radius: 20px;
+  }
+
+  .Wrapper {
+
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .Modal {
+    border-radius: 30px;
+  }
+
+  .Wrapper {
+    padding: 40px;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .Modal {
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .Wrapper {
+    padding: 40px;
+  }
+}

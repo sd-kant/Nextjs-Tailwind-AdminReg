@@ -1,0 +1,127 @@
+@import "src/assets/scss/colors";
+
+.Wrapper {
+  padding: 24px 12px;
+  background: $app-ts;
+  border-radius: 20px;
+  max-width: 100%;
+
+  .LeftWrapper {
+    display: flex;
+    flex-direction: column;
+
+    .StressRisk {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .Schedule {
+      margin-top: 15px;
+    }
+  }
+
+  .RightWrapper {
+    .TopWrapper {
+      margin-top: 25px;
+
+      .SettingWrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .Setting {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .Update {
+          display: none;
+          cursor: pointer;
+        }
+      }
+
+      .IconsWrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+
+        .Update {
+          cursor: pointer;
+        }
+      }
+    }
+
+    .MiddleWrapper {
+      margin-top: 20px;
+    }
+
+    .BottomWrapper {
+      text-align: center;
+      margin-top: 20px;
+    }
+  }
+}
+
+.BoxShadow {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+@media only screen and (min-width: 1024px) {
+  .Wrapper {
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+
+    .RightWrapper {
+      .TopWrapper {
+        margin-top: 0;
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+
+        .SettingWrapper {
+          margin-left: 25px;
+
+          .Update {
+            display: block;
+            margin-left: 25px;
+          }
+        }
+
+        .IconsWrapper {
+          margin-top: 0;
+
+          .Update {
+            display: none;
+          }
+        }
+      }
+
+      .BottomWrapper {
+        text-align: right;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .Wrapper {
+    .LeftWrapper {
+      flex-direction: row !important;
+      align-items: center;
+
+      .Schedule {
+        margin-top: 0;
+        margin-left: 25px;
+      }
+    }
+
+    .RightWrapper {
+      .BottomWrapper {
+        display: none;
+      }
+    }
+  }
+}

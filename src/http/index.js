@@ -16,7 +16,7 @@ const showErrorAndLogout = () => {
 
 export const instance = axios.create({
   baseURL: baseUrl,
-  timeout: 30000,
+  timeout: 60000, // set 60s for long-polling
 });
 
 // Request interceptor for API calls
@@ -82,10 +82,14 @@ instance.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
-function get(url, token) {
+function get(url, token, customHeaders) {
   let headers = {};
+  if (customHeaders) {
+    headers = customHeaders;
+  }
   if (token) {
     headers = {
+      ...headers,
       "Authorization": `Bearer ${token}`,
     };
   }
@@ -102,16 +106,21 @@ function get(url, token) {
   });
 }
 
-function post(url, body, token) {
+function post(url, body, token, customHeaders, cancelToken) {
   let headers = {};
+  if (customHeaders) {
+    headers = customHeaders;
+  }
   if (token) {
     headers = {
+      ...headers,
       "Authorization": `Bearer ${token}`,
     };
   }
   return new Promise((resolve, reject) => {
     instance.post(url, body, {
       headers: headers,
+      cancelToken: cancelToken,
     })
       .then(res => {
         resolve(res);
@@ -170,6 +179,10 @@ export const createCompany = (body) => {
   return post("/organization", body);
 }
 
+export const getCompanyById = id => {
+  return get(`/organization/${id}`);
+}
+
 export const updateCompany = (id, body) => {
   return patch(`/organization/${id}`, body);
 }
@@ -183,7 +196,7 @@ export const queryAllOrganizations = () => {
 }
 
 export const queryTeams = () => {
-  return instance.get("team");
+  return get("team");
 }
 
 export const sendRegistrationEmail = (data) => {
@@ -192,6 +205,20 @@ export const sendRegistrationEmail = (data) => {
 
 export const queryTeamMembers = (teamId) => {
   return get(`team/${teamId}/members`);
+}
+
+export const getTeamStats = teamId => {
+  return get(`team/${teamId}/stats`);
+}
+
+export const getTeamDevices = teamId => {
+  return get(`team/${teamId}/devices`);
+}
+
+export const getTeamAlerts = (teamId, since) => {
+  return get(`team/${teamId}/alerts`, null, {
+    "If-None-Match": since,
+  });
 }
 
 export const searchMembers = keyword => {
@@ -250,6 +277,15 @@ export const setMyProfileWithToken = (body, token) => {
   return patch("/user", body, token);
 }
 
+export const subscribeDataEvents = (
+  {
+    filter,
+    orgId,
+    horizon,
+    cancelToken,
+  }) => {
+  return post(`/organization/${orgId}/subscribe/${horizon}`, filter, null, null, cancelToken);
+}
 
 export const updateProfile = (body, token) => {
   return post("user/update/profile", body, token);

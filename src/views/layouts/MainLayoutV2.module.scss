@@ -1,0 +1,93 @@
+@import "src/assets/scss/colors";
+
+.Wrapper {
+  .Navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: calc(100% - 46px);
+    background: $app-ts;
+    padding: 22px;
+    z-index: 7;
+
+    .NavbarMain {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .MenuDropdown {
+      margin-top: 25px;
+    }
+
+    .RightArea {
+      .MenuIcon {
+        width: 24px;
+        color: white;
+        cursor: pointer;
+      }
+    }
+
+    .RightAreaContent {
+      display: none;
+    }
+
+    .MenuContent {
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
+  .Content {
+    margin-top: 74px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .Wrapper {
+    .Navbar {
+      .NavbarMain {
+
+      }
+
+      .MenuDropdown {
+        display: none !important;
+      }
+
+      .RightArea {
+        .MenuIcon {
+          display: none;
+        }
+      }
+
+      .RightAreaContent {
+        display: inline-flex !important;
+        align-items: center;
+      }
+
+      .MenuContent {
+
+      }
+    }
+
+    .Content {
+      margin-top: 89px;
+    }
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .Wrapper {
+    .Navbar {
+      padding: 22px 25px;
+    }
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .Wrapper {
+    .Navbar {
+      padding: 22px 40px;
+    }
+  }
+}

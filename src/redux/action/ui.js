@@ -36,3 +36,10 @@ export const setVisibleSuccessModalAction = (visible) => ({
     visible,
   }
 });
+
+export const setMetricAction = metric => ({
+  type: actionTypes.SET_METRIC,
+  payload: {
+    metric,
+  }
+});

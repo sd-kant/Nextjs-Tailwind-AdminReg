@@ -1,0 +1,483 @@
+@import "src/assets/scss/colors";
+
+.ModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  backdrop-filter: blur(2px);
+  z-index: 100;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.Modal {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 1;
+  background: #313131;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  outline: none;
+  width: calc(100% - 30px);
+  max-width: 800px;
+
+  border-radius: 30px;
+}
+
+.Wrapper {
+  padding: 8px;
+
+  .LeftCard {
+    .UserActionCard {
+      .UserCard {
+        .UserMain {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: 130px;
+
+          .AvatarArea {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: space-between;
+
+            .Avatar {
+              width: 100px;
+              height: 100px;
+            }
+          }
+
+          .NameDevice {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+          }
+
+          .Refresh_Battery {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+
+            .Content {
+              display: flex;
+              flex-direction: column;
+            }
+          }
+
+          /*.MessageIconWrapper {
+            display: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: white;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+          }*/
+        }
+
+        .Divider {
+          height: 1px;
+          background: $app-white;
+          opacity: 0.25;
+          margin-top: 20px;
+        }
+
+        .InformationArea {
+          .InformationEntity {
+            margin-top: 10px;
+
+            .StatusCell {
+              display: grid;
+              grid-template-columns: 10px 1fr;
+              grid-column-gap: 20px;
+
+              .BadgeWrapper {
+                display: flex;
+                align-items: center;
+
+                .StatusBadge {
+                  width: 10px;
+                  height: 10px;
+                  border-radius: 50%;
+
+                  &.Red {
+                    background-color: $app-status-at-risk;
+                  }
+
+                  &.Green {
+                    background-color: $app-status-safe;
+                  }
+
+                  &.Yellow {
+                    background-color: $app-status-sleep;
+                  }
+
+                  &.Off {
+                    background-color: $app-status-off;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .FirstRolesCard {
+        display: none;
+      }
+    }
+
+    .HeartRiskCard {
+      .HeartCard {
+        margin-top: 15px;
+
+        .VeryLight {
+          color: #0DAAEE;
+        }
+        .Light {
+          color: #35EA6C;
+        }
+        .Moderate {
+          color: #FFD600;
+        }
+        .High {
+          color: #F1374E;
+        }
+      }
+
+      .RiskCard {
+        margin-top: 15px;
+      }
+
+      .InformationContent {
+        display: flex;
+        align-items: center;
+
+        & > span {
+          margin-left: 10px;
+        }
+
+        & > span:nth-child(1) {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+
+  .RightCard {
+    .AlertsCard {
+      margin-top: 15px;
+
+      .CardTop {
+
+      }
+
+      .AlertCardContent {
+        max-height: 205px;
+        overflow-y: auto;
+        margin-top: 10px;
+      }
+
+      .FilterArea {
+        //display: grid;
+        //grid-template-columns: auto minmax(min-content, 300px);
+        //grid-column-gap: 10px;
+        margin: 10px 0;
+
+        .Dropdown {
+          width: 250px;
+        }
+      }
+    }
+
+    .ActivityRoleCard {
+      .ActivityCard {
+        margin-top: 15px;
+      }
+
+      .SecondRoleCard {
+        display: block;
+      }
+    }
+
+    .AlertsCard {
+      .AlertCardContent {
+        .DataRow {
+          display: grid;
+          grid-template-columns: 1fr;
+          margin-top: 8px;
+
+          .DataLabel {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+
+          .Padding {
+            display: inline-block;
+            padding: 0 15px;
+          }
+
+          .Rounded {
+            display: inline-flex;
+            background-color: $app-ts;
+            padding: 8px 15px;
+            border-radius: 10px;
+
+            .HeartCBTSpan {
+              width: 31px;
+              text-align: center;
+            }
+          }
+
+          & > div {
+            margin-bottom: 8px;
+          }
+        }
+
+        .Header {
+          display: none;
+        }
+      }
+    }
+
+    .ActivityRoleCard {
+      .DataRow {
+        display: grid;
+        grid-template-columns: 1fr 180px;
+        margin-top: 8px;
+
+        .DataLabel {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .DataInfo {
+          //text-align: right;
+        }
+      }
+    }
+  }
+}
+
+.HelperText {
+  color: $app-ns;
+}
+
+.Card {
+  background: $app-bg;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 24px;
+  padding: 25px;
+
+  .CardHeader {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.Card_No_Back {
+  padding: 25px;
+
+  .CardHeader {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.FirstRolesCard, .SecondRoleCard {
+  .Control {
+    margin-top: 20px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    .ControlLabel {
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .Modal {
+  }
+
+  .Wrapper {
+    padding: 20px;
+
+    .RightCard {
+      .AlertsCard {
+        .AlertCardContent {
+          .DataRow {
+            display: grid;
+            grid-template-columns: 1fr 150px 200px;
+            margin-top: 8px;
+          }
+
+          .Header {
+            display: grid;
+          }
+        }
+      }
+
+      .ActivityRoleCard {
+        .SecondRoleCard {
+          display: flex;
+          justify-content: space-around;
+
+          .Control {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .MobileOnly {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .Modal {
+
+  }
+
+  .Wrapper {
+    padding: 40px;
+
+    .LeftCard {
+      .UserActionCard {
+        display: grid;
+        grid-template-columns: 1fr 190px;
+        grid-column-gap: 10px;
+
+        .UserCard {
+          .UserMain {
+            /*.MessageIconWrapper {
+              display: inline-flex;
+            }*/
+          }
+
+          .InformationArea {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-column-gap: 32px;
+          }
+        }
+
+        .FirstRolesCard {
+          display: block;
+          margin-top: 20px;
+        }
+      }
+
+      .HeartRiskCard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-column-gap: 32px;
+      }
+    }
+
+    .RightCard {
+      .AlertsCard {
+        .CardTop {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .FilterArea {
+          margin: 0;
+        }
+      }
+
+      .ActivityRoleCard {
+        .SecondRoleCard {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .Modal {
+    max-width: 1300px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .Wrapper {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 407px 1fr;
+    grid-column-gap: 40px;
+
+    .LeftCard {
+      .UserActionCard {
+        display: block;
+
+        .UserCard {
+          .InformationArea {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-column-gap: 32px;
+
+            .InformationEntity {
+              .Cell {
+                width: 170px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+          }
+        }
+
+        .FirstRolesCard {
+          display: none;
+        }
+      }
+    }
+
+    .RightCard {
+      .AlertsCard {
+        margin-top: 0;
+
+        .AlertCardContent {
+          height: 205px;
+        }
+      }
+
+      .ActivityRoleCard {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        grid-column-gap: 10px;
+
+        .ActivityCard {
+
+        }
+
+        .SecondRoleCard {
+          display: block;
+
+          .Control {
+            margin-top: 20px;
+          }
+        }
+      }
+    }
+  }
+}

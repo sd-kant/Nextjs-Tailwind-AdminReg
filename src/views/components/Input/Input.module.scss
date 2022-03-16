@@ -1,0 +1,28 @@
+@import "src/assets/scss/colors";
+@import "src/assets/scss/fonts";
+
+.Wrapper {
+  position: relative;
+  background: $app-ts;
+  display: inline-block;
+  padding: 10px 10px 10px 30px;
+  border-radius: 10px;
+
+  .Prefix {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .Input {
+    background: $app-ts;
+    color: $app-white;
+    border: none;
+    outline: none;
+    font-family: Ubuntu-Regular;
+    font-size: 21px;
+    line-height: 24.13px;
+    letter-spacing: 1px;
+  }
+}

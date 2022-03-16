@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { useTranslation } from 'react-i18next'
-import globeIcon from "../../assets/images/globe.svg";
+import globeIcon from "../../../assets/images/globe.svg";
 import clsx from "clsx";
 import style from "./LanguagePicker.module.scss";
 

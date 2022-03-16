@@ -7,6 +7,7 @@ export const WidthProvider = (
     children,
   }) => {
   const [width, setWidth] = React.useState(null);
+  const [tableWidth, setTableWidth] = React.useState(null);
   React.useEffect(() => {
     handleResize();
     window.addEventListener('resize', handleResize);
@@ -21,6 +22,8 @@ export const WidthProvider = (
 
   const providerValue = {
     width,
+    tableWidth,
+    setTableWidth,
   };
 
   return (

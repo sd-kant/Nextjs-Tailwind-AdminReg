@@ -1,0 +1,57 @@
+@import "../../assets/scss/colors";
+
+.Wrapper {
+  padding: 22px 20px;
+
+  .StripeWrapper {
+    display: none;
+  }
+
+  .Content {
+    height: calc(100vh - 233px);
+
+    .InformationalBoard {
+      margin-top: 25px;
+    }
+
+    .RestBar {
+      margin-top: 25px;
+    }
+
+    .Table {
+      height: 100%;
+      overflow-x: auto;
+      display: inline-block;
+      max-width: 100%;
+    }
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .Wrapper {
+    padding: 15px 25px;
+
+    .Content {
+      .InformationalBoard {
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .Wrapper {
+    padding: 30px 40px;
+
+    .StripeWrapper {
+      display: block;
+      position: fixed;
+      right: 0;
+      top: 160px;
+      background-image: url("../../assets/images/stripes.svg");
+      background-size: contain;
+      background-repeat: repeat-y;
+      background-position: right top;
+      height: calc(100vh - 160px);
+    }
+  }
+}

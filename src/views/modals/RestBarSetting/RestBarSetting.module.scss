@@ -1,0 +1,119 @@
+@import "src/assets/scss/colors";
+
+.ModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  backdrop-filter: blur(2px);
+  z-index: 100;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.Modal {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 1;
+  background: #313131;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  outline: none;
+  width: 375px;
+  max-width: calc(100% - 30px);
+
+  border-radius: 30px;
+}
+
+.Wrapper {
+  padding: 25px;
+
+  .Body {
+    margin-top: 25px;
+
+    .Left {
+      .ToggleWrapper {
+        margin-top: 30px;
+
+        .ToggleLabel {
+          display: inline-block;
+          margin-bottom: 5px;
+          margin-right: 10px;
+        }
+      }
+    }
+
+    .Right {
+      margin-top: 40px;
+
+      .Row {
+        margin-top: 30px;
+
+        .RowHeader {
+
+        }
+
+        .RowContent {
+          margin-top: 20px;
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          max-width: 400px;
+        }
+
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+
+      .Footer {
+        margin-top: 30px;
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .Modal {
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 30px);
+    max-width: 800px;
+  }
+
+  .Wrapper {
+    padding: 40px;
+
+    .Body {
+      display: grid;
+      grid-template-columns: auto auto;
+
+      .Right {
+        margin-top: 0;
+
+        .Row {
+          display: grid;
+          grid-template-columns: 150px auto;
+
+          .RowHeader {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .RowContent {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+
+}
