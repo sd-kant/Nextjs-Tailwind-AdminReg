@@ -106,7 +106,7 @@ const Header = (
         return formattedTeams?.find(it => it.value?.toString() === pickedTeams?.[0]?.toString())?.label;
       }
     } else {
-      return t("select");
+      return t("select team");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickedTeams, formattedTeams]);
@@ -119,7 +119,7 @@ const Header = (
             isAdmin ?
               <ResponsiveSelect
                 className='font-heading-small text-black'
-                placeholder={t("select")}
+                placeholder={t("select company")}
                 styles={customStyles()}
                 options={formattedOrganizations}
                 maxMenuHeight={190}
