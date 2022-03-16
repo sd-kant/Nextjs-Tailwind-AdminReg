@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import style from './Settings.module.scss';
 import settingIcon from '../../../assets/images/settings.svg';
 import Popup from 'reactjs-popup';
-import defaultAvatar from '../../../assets/images/default-avatar.png';
+import defaultAvatar from '../../../assets/images/logo_round.png';
 import Toggle from "../Toggle";
 import closeIcon from '../../../assets/images/close2.svg';
 import {get} from "lodash";
@@ -16,6 +16,7 @@ import {useWidthContext} from "../../../providers/WidthProvider";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERSION} from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
 import history from "../../../history";
+import {getMyProfileAction} from "../../../redux/action/profile";
 
 const popupContentStyle = {
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
@@ -32,11 +33,18 @@ const Settings = (
     t,
     metric,
     setMetric,
+    getMyProfile,
+    profile,
   }
 ) => {
+  const ref = React.useRef();
   const [visiblePopup, setVisiblePopup] = React.useState(false);
   const [visibleLeavePopup, setVisibleLeavePopup] = React.useState(false);
   const {width} = useWidthContext();
+  React.useEffect(() => {
+    getMyProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const role = React.useMemo(() => {
     if (userType?.includes(USER_TYPE_ADMIN)) {
       return t("administrator super");
@@ -66,6 +74,11 @@ const Settings = (
   const direction = React.useMemo(() => {
     return width < 768 ? 'bottom left' : 'bottom right';
   }, [width]);
+  React.useEffect(() => {
+    if (visiblePopup || visibleLeavePopup) {
+      ref.current.close();
+    }
+  }, [visiblePopup, visibleLeavePopup]);
 
   return (
     <>
@@ -77,6 +90,7 @@ const Settings = (
             style={{cursor: 'pointer', marginLeft: open ? '25px' : '15px'}}
           />
         )}
+        ref={ref}
         position={direction}
         arrow={false}
         closeOnEscape
@@ -93,7 +107,7 @@ const Settings = (
             <div>
               <div>
                 <span className={clsx('font-binary')}>
-                  Kristina Duran
+                  {`${profile?.firstName} ${profile?.lastName}`}
                 </span>
               </div>
               <div>
@@ -113,8 +127,7 @@ const Settings = (
               <div
                 key={`menu-item-${index}`}
                 className={clsx(style.MenuItem, 'cursor-pointer')}
-                onClick={() => it.handleClick ? it.handleClick() : () => {
-                }}
+                onClick={it.handleClick ? () => it.handleClick() : () => {}}
               >
               <span className={clsx('font-binary')}>
                 {it.title}
@@ -140,9 +153,9 @@ const Settings = (
             className={clsx(style.MenuItem, 'cursor-pointer')}
             onClick={() => setVisiblePopup(true)}
           >
-          <span className={clsx('font-binary')}>
-            {t('log out')}
-          </span>
+            <span className={clsx('font-binary')}>
+              {t('log out')}
+            </span>
           </div>
 
           <div className={clsx(style.VersionWrapper)}>
@@ -183,12 +196,14 @@ const Settings = (
 const mapStateToProps = (state) => ({
   metric: get(state, "ui.metric"),
   userType: get(state, 'auth.userType'),
+  profile: get(state, 'profile.profile'),
 });
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       setMetric: setMetricAction,
+      getMyProfile: getMyProfileAction,
     },
     dispatch
   );
