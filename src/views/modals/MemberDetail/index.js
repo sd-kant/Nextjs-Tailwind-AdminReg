@@ -7,7 +7,6 @@ import style from './MemberDetail.module.scss';
 import Modal from "react-modal";
 import avatar from '../../../assets/images/logo_round.png';
 import alertsIcon from '../../../assets/images/alerts-icon.svg';
-import refreshIcon from '../../../assets/images/refresh.svg';
 import closeIcon from '../../../assets/images/close-orange.svg';
 import Button from "../../components/Button";
 import {useDashboardContext} from "../../../providers/DashboardProvider";
@@ -158,21 +157,25 @@ const MemberDetail = (
                 <div className={clsx(style.NameDevice)}>
                   <div title={data?.firstName + ' ' + data?.lastName}>
                     <span className={clsx('font-heading-small')}>
-                      {`${textEllipsis(data?.firstName + ' ' + data?.lastName, 15)}`}
+                      {`${textEllipsis(data?.firstName + ' ' + data?.lastName, 20)}`}
                     </span>
                   </div>
 
                   <div title={data?.email}>
                       <span className={clsx('font-binary')}>
-                        {textEllipsis(data?.email, 21)}
+                        {textEllipsis(data?.email, 30)}
                       </span>
                   </div>
 
                   <div>
-                    <div>
-                    <span className={clsx('font-binary')}>
-                      {stat?.deviceId ?? "N/A"}
-                    </span>
+                    <div className={clsx(style.Mac_Battery)}>
+                      <span className={clsx('font-binary')}>
+                        {stat?.deviceId ?? "N/A"}
+                      </span>&nbsp;&nbsp;
+                      <BatteryV3
+                        charging={stat?.chargingFlag}
+                        percent={stat?.batteryPercent}
+                      />
                     </div>
                     {
                       kenzenDevice &&
@@ -199,19 +202,6 @@ const MemberDetail = (
                       </div>
                     }
                   </div>
-                </div>
-
-                <div className={clsx(style.Refresh_Battery)}>
-                  <div className={clsx(style.Content)}>
-                    <img src={refreshIcon} alt="refresh icon" style={{marginBottom: '13px'}} width={25}/>
-
-                    <BatteryV3
-                      charging={stat?.chargingFlag}
-                      percent={stat?.batteryPercent}
-                    />
-                  </div>
-
-                  <div/>
                 </div>
               </div>
 
