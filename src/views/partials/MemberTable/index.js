@@ -12,8 +12,8 @@ import {useMembersContextV2} from "../../../providers/MembersProviderV2";
 import Checkbox from "../../components/Checkbox";
 import {useDashboardContext} from "../../../providers/DashboardProvider";
 import {get} from "lodash";
-import BatteryV2 from "../../components/BatteryV2";
 import {useWidthContext} from "../../../providers/WidthProvider";
+import BatteryV3 from "../../components/BatteryV3";
 
 const MemberTable = (
   {
@@ -98,7 +98,7 @@ const MemberTable = (
               </span>
               {
                 !invisibleBattery ?
-                  <BatteryV2
+                  <BatteryV3
                     percent={stat?.batteryPercent}
                     charging={stat?.chargingFlag}
                   /> : null

@@ -10,13 +10,13 @@ import alertsIcon from '../../../assets/images/alerts-icon.svg';
 import refreshIcon from '../../../assets/images/refresh.svg';
 import Button from "../../components/Button";
 import {useDashboardContext} from "../../../providers/DashboardProvider";
-import BatteryV2 from "../../components/BatteryV2";
 import thermometer from '../../../assets/images/thermometer-orange.svg';
 import heart from '../../../assets/images/heart.svg';
 import {get} from "lodash";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import {customStyles} from "../../pages/DashboardV2";
 import {numMinutesBetween} from "../../../utils";
+import BatteryV3 from "../../components/BatteryV3";
 
 export const filters = [
   {
@@ -197,7 +197,7 @@ const MemberDetail = (
                   <div className={clsx(style.Content)}>
                     <img src={refreshIcon} alt="refresh icon" style={{marginBottom: '13px'}} width={25}/>
 
-                    <BatteryV2
+                    <BatteryV3
                       charging={stat?.chargingFlag}
                       percent={stat?.batteryPercent}
                     />
