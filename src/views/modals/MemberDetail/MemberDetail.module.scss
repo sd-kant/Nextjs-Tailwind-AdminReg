@@ -29,7 +29,16 @@
 }
 
 .Wrapper {
-  padding: 8px;
+  padding: 30px 8px 8px 8px;
+  position: relative;
+
+  .CloseIcon {
+    position: absolute;
+    width: 20px;
+    top: 5px;
+    right: 15px;
+    cursor: pointer;
+  }
 
   .LeftCard {
     .UserActionCard {
@@ -315,7 +324,13 @@
   }
 
   .Wrapper {
-    padding: 20px;
+    padding: 30px 20px 20px 20px;
+
+    .CloseIcon {
+      width: 20px;
+      right: 10px;
+      top: 10px;
+    }
 
     .RightCard {
       .AlertsCard {
@@ -357,6 +372,12 @@
 
   .Wrapper {
     padding: 40px;
+
+    .CloseIcon {
+      width: 25px;
+      right: 15px;
+      top: 15px;
+    }
 
     .LeftCard {
       .UserActionCard {
@@ -424,6 +445,12 @@
     display: grid;
     grid-template-columns: 407px 1fr;
     grid-column-gap: 40px;
+
+    .CloseIcon {
+      width: 27px;
+      right: 15px;
+      top: 15px;
+    }
 
     .LeftCard {
       .UserActionCard {
