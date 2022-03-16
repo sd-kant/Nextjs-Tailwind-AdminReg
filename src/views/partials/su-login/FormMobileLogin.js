@@ -6,7 +6,7 @@ import {bindActionCreators} from "redux";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {loginAction, setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth";
 // import MicrosoftLogin from "react-microsoft-login";
-import {/*microsoftAppClientID, */productionApiBaseUrl} from "../../../config";
+import {apiBaseUrl} from "../../../config";
 import axios from "axios";
 import history from "../../../history";
 import {formSchema} from "./FormSULogin";
@@ -130,7 +130,7 @@ const EnhancedForm = withFormik({
     }
     try {
       setLoading(true);
-      const res = await axios.get(`${productionApiBaseUrl}/master/lookup/username/${values.username}`);
+      const res = await axios.get(`${apiBaseUrl}/master/lookup/username/${values.username}`);
       const {baseUri} = res.data;
 
       const loginRes = await axios.post(`${baseUri}/auth/login`, values);

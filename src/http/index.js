@@ -1,5 +1,5 @@
 import axios from "axios";
-import {productionApiBaseUrl as baseUrl} from "../config";
+import {apiBaseUrl as baseUrl} from "../config";
 import {toastr} from 'react-redux-toastr'
 import i18n from '../i18nextInit';
 import {logout} from "../views/layouts/MainLayout";
