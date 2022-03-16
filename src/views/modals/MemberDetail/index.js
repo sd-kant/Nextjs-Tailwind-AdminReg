@@ -329,6 +329,7 @@ const MemberDetail = (
                   styles={customStyles()}
                   options={activitiesSorts}
                   maxMenuHeight={190}
+                  writable={false}
                 />
               </div>
             </div>

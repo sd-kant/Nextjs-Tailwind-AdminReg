@@ -4,6 +4,7 @@ import {useWidthContext} from "../../../providers/WidthProvider";
 
 const ResponsiveSelect = (
   {
+    writable = true,
     className,
     isClearable = false,
     options = [],
@@ -22,9 +23,9 @@ const ResponsiveSelect = (
     if (width < 768) {
       setSearchable(false);
     } else {
-      setSearchable(true);
+      setSearchable(writable && true);
     }
-  }, [width]);
+  }, [width, writable]);
 
   return (
     <Select
