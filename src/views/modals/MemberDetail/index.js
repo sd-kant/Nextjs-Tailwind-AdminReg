@@ -8,6 +8,7 @@ import Modal from "react-modal";
 import avatar from '../../../assets/images/logo_round.png';
 import alertsIcon from '../../../assets/images/alerts-icon.svg';
 import refreshIcon from '../../../assets/images/refresh.svg';
+import closeIcon from '../../../assets/images/close-orange.svg';
 import Button from "../../components/Button";
 import {useDashboardContext} from "../../../providers/DashboardProvider";
 import BatteryV2 from "../../components/BatteryV2";
@@ -132,6 +133,13 @@ const MemberDetail = (
       appElement={document.getElementsByTagName("body")}
     >
       <div className={clsx(style.Wrapper)}>
+        <img
+          className={clsx(style.CloseIcon)}
+          src={closeIcon}
+          alt="close icon"
+          onClick={closeModal}
+        />
+
         <div className={clsx(style.LeftCard)}>
           <div className={clsx(style.UserActionCard)}>
             <div className={clsx(style.UserCard, style.Card)}>
