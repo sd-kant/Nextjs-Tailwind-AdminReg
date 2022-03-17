@@ -4,7 +4,7 @@ import {
   call,
 } from 'redux-saga/effects';
 import {actionTypes} from '../type';
-import {login} from "../../http";
+import {instance, login, lookupByUsername} from "../../http";
 import i18n from '../../i18nextInit';
 import history from "../../history";
 import {ableToLogin} from "../../utils";
@@ -34,6 +34,10 @@ function* loginSaga({payload: {
         username,
         password,
       };
+      const lookupRes = yield call(lookupByUsername, username);
+      if (lookupRes.data?.baseUri) {
+        instance.defaults.baseURL = lookupRes.data?.baseUri;
+      }
     } else if (phoneNumber && loginCode) {
       body = {
         phoneNumber,
@@ -51,7 +55,6 @@ function* loginSaga({payload: {
       mfa,
       havePhone,
     } = responseData;
-
 
     // if (ableToLogin(userType)) {
     yield put({
@@ -90,6 +93,8 @@ function* loginSaga({payload: {
         } else {
           history.push("/create-account/name");
         }
+
+        localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
       } else {
         if (havePhone) {
           history.push('/phone-verification/1');
@@ -98,15 +103,8 @@ function* loginSaga({payload: {
         }
       }
     }
-    /*} else {
-      yield put({
-        type: actionTypes.ERROR_NOTIFICATION,
-        payload: {
-          msg: i18n.t("msg login not allowed"),
-        }
-      });
-    }*/
   } catch (e) {
+    console.log("login error", e);
     if (e.response?.data?.status?.toString() === "400" && mode === 2) {
       yield put({
         type: actionTypes.LOGIN_FAILED,

@@ -14,8 +14,10 @@ const showErrorAndLogout = () => {
   }, 1500);
 }
 
+const cachedBaseUrl = localStorage.getItem("kop-v2-base-url");
+
 export const instance = axios.create({
-  baseURL: baseUrl,
+  baseURL: cachedBaseUrl ?? baseUrl,
   timeout: 60000, // set 60s for long-polling
 });
 
@@ -317,4 +319,16 @@ export const answerMedicalQuestionsV2 = (body, token) => {
 
 export const recoverUsername = email => {
   return get(`/auth/forgot/username/${email}`);
+};
+
+export const lookupByUsername = username => {
+  return get(`/master/lookup/username/${username}`);
+};
+
+export const lookupByPhone = phone => {
+  return get(`/master/lookup/phone/${phone}`);
+};
+
+export const lookupByEmail = email => {
+  return get(`/master/lookup/email/${email}`);
 };
