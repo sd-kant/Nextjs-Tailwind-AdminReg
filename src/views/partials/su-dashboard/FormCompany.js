@@ -105,11 +105,11 @@ const FormCompany = (props) => {
   const changeHandler = (key, value) => {
     if (key === "companyName") {
       if (value && value.created) { // if already created company, then set country according to picked company
-        const country = options.find(entity => entity.label === value.country);
+        const country = options?.find(entity => entity.label === value.country);
         if (country) {
           setFieldValue("companyCountry", country);
         } else {
-          setFieldValue("companyCountry", options && options[0]);
+          setFieldValue("companyCountry", options?.[0]);
         }
         const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays'];
         fields?.forEach(item => setFieldValue(item, value[item]))
@@ -159,13 +159,13 @@ const FormCompany = (props) => {
       label: it.name,
     })), [regionsInCountry]);
   const regionSelectorLabel = React.useMemo(() => {
-    if (values.regions?.length > 0) {
-      if (formattedRegions?.length > 1 && (values.regions?.length === formattedRegions?.length)) {
+    if (values?.regions?.length > 0) {
+      if (formattedRegions?.length > 1 && (values?.regions?.length === formattedRegions?.length)) {
         return t("all regions");
-      } else if (values.regions?.length > 1) {
-        return t("n regions selected", {n: values.regions.length});
+      } else if (values?.regions?.length > 1) {
+        return t("n regions selected", {n: values?.regions.length});
       } else {
-        return formattedRegions?.find(it => it.label === values.regions?.[0]?.label)?.label;
+        return formattedRegions?.find(it => it.label === values?.regions?.[0]?.label)?.label;
       }
     } else {
       return t("select region");
@@ -177,7 +177,7 @@ const FormCompany = (props) => {
       setFieldValue("regions", []);
     } else {
       const organization = organizations?.find(it => it.value?.toString() === values.companyName?.value?.toString());
-      setFieldValue("regions", formattedRegions?.filter(it => organization.regions.some(ele => ele === it.label)) ?? []);
+      setFieldValue("regions", formattedRegions?.filter(it => organization?.regions.some(ele => ele === it.label)) ?? []);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formattedRegions, values.companyName]);
