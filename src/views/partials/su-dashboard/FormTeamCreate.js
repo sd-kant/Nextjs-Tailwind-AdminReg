@@ -5,10 +5,14 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import history from "../../../history";
-import {createTeam} from "../../../http";
+import {createTeam, getCompanyById} from "../../../http";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import backIcon from "../../../assets/images/back.svg";
 import {get} from "lodash";
+import ResponsiveSelect from "../../components/ResponsiveSelect";
+import countryRegions from 'country-region-data/data.json';
+import {customStyles} from "./FormCompany";
+import CreatableSelect from "react-select/creatable/dist/react-select.esm";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -16,18 +20,27 @@ const formSchema = (t) => {
       .required(t('team name required'))
       .min(6, t('team name min error'))
       .max(1024, t('team name max error')),
-    location: Yup.string()
-      .required(t('team location required'))
-      .min(2, t('team location min error'))
-      .max(1024, t('team location max error')),
+    region: Yup.object()
+      /*.required(t('region required'))*/,
+    location: Yup.object()
+      .shape({
+        label: Yup.string()
+          .min(2, t('team location min error'))
+          .max(1024, t('team location max error')),
+      }),
   });
 };
 
 const FormTeamCreate = (props) => {
   const {values, errors, touched, t, setRestBarClass, setFieldValue, match: {params: {organizationId}}, isAdmin,} = props;
+  const [organization, setOrganization] = React.useState(null);
 
   useEffect(() => {
     setRestBarClass("progress-54 medical");
+    getCompanyById(organizationId)
+      .then(response => {
+        setOrganization(response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -40,6 +53,30 @@ const FormTeamCreate = (props) => {
   const navigateTo = (path) => {
     history.push(path);
   }
+
+  const regions = React.useMemo(() => {
+    let ret = [];
+    if (organization) {
+      const regionsForOrganization = countryRegions.find(it => it.countryName === organization.country)?.regions;
+      if (isAdmin) {
+        ret = regionsForOrganization;
+      } else {
+        ret = regionsForOrganization?.filter(it => organization.regions.some(ele => ele === it.name));
+      }
+    }
+    return ret.map(it => ({
+      label: it.name,
+      value: it.shortCode,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [organization, isAdmin]);
+
+  const locations = React.useMemo(() => {
+    return organization?.locations?.map((it, index) => ({
+      label: it,
+      value: `${index}-${it}`,
+    })) ?? [];
+  }, [organization]);
 
   return (
     <Form className='form mt-57'>
@@ -84,8 +121,51 @@ const FormTeamCreate = (props) => {
             )
           }
         </div>
+        <div className='d-flex flex-column mt-40'>
+          <span className='font-input-label'>
+            {t("team region")}
+          </span>
+          <ResponsiveSelect
+            className='mt-10 font-heading-small text-black input-field'
+            options={regions}
+            value={values["region"]}
+            name="region"
+            styles={customStyles()}
+            menuPortalTarget={document.body}
+            menuPosition={'fixed'}
+            onChange={v => setFieldValue("region", v)}
+          />
+          {
+              touched.region && errors.region && (
+                <span className="font-helper-text text-error mt-10">{errors.region?.label}</span>
+              )
+          }
+        </div>
 
-        <div className='grouped-form mt-40'>
+        <div className='d-flex flex-column mt-40'>
+          <label className='font-input-label'>
+            {t("team location")}
+          </label>
+          <CreatableSelect
+            className='mt-10 font-heading-small text-black input-field'
+            isClearable
+            options={locations}
+            value={values["location"]}
+            name="location"
+            styles={customStyles()}
+            menuPortalTarget={document.body}
+            menuPosition={'fixed'}
+            placeholder={t("enter location")}
+            onChange={v => setFieldValue("location", v)}
+          />
+          {
+            touched?.location && errors?.location && (
+              <span className="font-helper-text text-error mt-10">{errors.location?.label}</span>
+            )
+          }
+        </div>
+
+        {/*<div className='grouped-form mt-40'>
           <label className='font-input-label'>
             {t("team location")}
           </label>
@@ -103,13 +183,13 @@ const FormTeamCreate = (props) => {
               <span className="font-helper-text text-error mt-10">{errors.location}</span>
             )
           }
-        </div>
+        </div>*/}
       </div>
 
       <div className='mt-80'>
         <button
-          className={`button ${values['name'] && values["location"] ? "active cursor-pointer" : "inactive cursor-default"}`}
-          type={values['name'] && values["location"] ? "submit" : "button"}
+          className={`button active cursor-pointer`}
+          type={"submit"}
         >
           <span className='font-button-label text-white'>
             {t("next")}
@@ -124,10 +204,11 @@ const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     name: '',
     location: '',
+    region: '',
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
-    const { match: {params: {organizationId: orgId}}} = props;
+    const {match: {params: {organizationId: orgId}}} = props;
     if ([undefined, "-1", null, ""].includes(orgId?.toString())) {
       history.push("/invite/company");
       return;
@@ -135,7 +216,8 @@ const EnhancedForm = withFormik({
     const data = {
       orgId: parseInt(orgId),
       name: values?.name,
-      location: values?.location,
+      location: values?.location?.label,
+      region: values?.region?.label,
     };
 
     try {

@@ -74,9 +74,9 @@
   "company name required": "Veuillez entrer le nom de l'entreprise",
   "company name min error": "Veuillez saisir plus de 6 lettres",
   "company name max error": "Veuillez saisir moins de 1024 lettres",
-  "company location": "Emplacement de l'entreprise",
-  "company location required": "Veuillez entrer l'emplacement de l'entreprise",
-  "company location max error": "Veuillez saisir moins de 1024 lettres",
+  "company country": "De campagne",
+  "company country required": "Veuillez entrer le pays",
+  "company country max error": "Veuillez entrer moins de 1024 lettres",
   "2fa": "Authentification à deux facteurs (2FA)",
   "2fa description": "Configurons votre authentification à deux facteurs. Veuillez indiquer votre numéro de téléphone dans le champ ci-dessous.",
   "on": "sur",
@@ -413,5 +413,12 @@
   "dashboard": "Tableau de bord",
   "monitor your team": "Surveillez votre équipe",
   "leave team dashboard": "Quitter l'équipe Tableau de bord",
-  "select team": "Sélectionnez l'équipe"
+  "select team": "Sélectionnez l'équipe",
+  "company region required": "Veuillez sélectionner les régions",
+  "all regions": "Toutes les régions",
+  "n regions selected": "{{n}} régions sélectionnées",
+  "select region": "Sélectionnez les régions",
+  "company region": "Région",
+  "team region": "Région de l'équipe",
+  "enter location": "Entrez l'emplacement"
 }
