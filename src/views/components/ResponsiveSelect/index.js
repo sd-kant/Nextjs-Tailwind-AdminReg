@@ -1,6 +1,7 @@
 import * as React from "react";
 import Select from "react-select"
 import {useWidthContext} from "../../../providers/WidthProvider";
+import {withTranslation} from "react-i18next";
 
 const ResponsiveSelect = (
   {
@@ -16,6 +17,7 @@ const ResponsiveSelect = (
     isDisabled = false,
     maxMenuHeight,
     onChange = () => {},
+    t,
   }) => {
   const {width} = useWidthContext();
   const [searchable, setSearchable] = React.useState(false);
@@ -36,7 +38,7 @@ const ResponsiveSelect = (
       value={value}
       styles={styles}
       isDisabled={isDisabled}
-      placeholder={placeholder}
+      placeholder={placeholder ?? t("select")}
       maxMenuHeight={maxMenuHeight}
       menuPortalTarget={menuPortalTarget}
       menuPosition={menuPosition}
@@ -45,4 +47,4 @@ const ResponsiveSelect = (
   )
 }
 
-export default ResponsiveSelect;
+export default withTranslation()(ResponsiveSelect);

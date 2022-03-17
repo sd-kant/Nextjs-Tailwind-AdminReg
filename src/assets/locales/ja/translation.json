@@ -74,9 +74,9 @@
   "company name required": "会社名を入力してください",
   "company name min error": "6文字以上を入力してください",
   "company name max error": "1024文字未満で入力してください",
-  "company location": "会社所在地",
-  "company location required": "会社所在地を入力してください",
-  "company location max error": "1024文字未満で入力してください",
+  "company country": "国",
+  "company country required": "国を入力してください",
+  "company country max error": "1024文字未満で入力してください",
   "2fa": "二要素認証（2FA）",
   "2fa description": "二要素認証を設定しましょう。 下のフィールドに電話番号を入力してください。",
   "on": "オン",
@@ -413,5 +413,12 @@
   "dashboard": "ダッシュボード",
   "monitor your team": "チームを監視する",
   "leave team dashboard": "チームダッシュボードを離れる",
-  "select team": "チームを選択"
+  "select team": "チームを選択",
+  "company region required": "地域を選択してください",
+  "all regions": "すべての地域",
+  "n regions selected": "{{n}}選択された地域」",
+  "select region": "地域を選択",
+  "company region": "領域",
+  "team region": "チームリージョン",
+  "enter location": "場所を入力してください"
 }
