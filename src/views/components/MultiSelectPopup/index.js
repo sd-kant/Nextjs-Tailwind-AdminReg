@@ -23,13 +23,13 @@ const MultiSelectPopup = (
     setCheckedItems(value);
   }, [open, value]);
   const handleChange = (id, checked) => {
-    if (checkedItems.some(it => it.value?.toString() === id?.toString())) {
+    if (checkedItems?.some(it => it.value?.toString() === id?.toString())) {
       if (!checked) {
-        setCheckedItems(checkedItems.filter(it => it.value?.toString() !== id?.toString()));
+        setCheckedItems(checkedItems?.filter(it => it.value?.toString() !== id?.toString()));
       }
     } else {
       if (checked) {
-        setCheckedItems([...(checkedItems ?? []), options.find(it => it.value?.toString() === id?.toString())]);
+        setCheckedItems([...(checkedItems ?? []), options?.find(it => it.value?.toString() === id?.toString())]);
       }
     }
   };
@@ -58,25 +58,28 @@ const MultiSelectPopup = (
             alt="close icon"
             onClick={() => setOpen(false)}
           />
-          <div>
-            <div>
-              <Checkbox
-                label={t("select all")}
-                checked={isEqual(options?.sort(), checkedItems?.sort())}
-                setChecked={v => {
-                  if (v) {
-                    setCheckedItems(options);
-                  } else {
-                    setCheckedItems([]);
-                  }
-                }}
-              />
-            </div>
+          <div className={clsx(style.Body)}>
+            {
+              options?.length > 0 &&
+              <div>
+                <Checkbox
+                  label={t("select all")}
+                  checked={isEqual(options?.sort(), checkedItems?.sort())}
+                  setChecked={v => {
+                    if (v) {
+                      setCheckedItems(options);
+                    } else {
+                      setCheckedItems([]);
+                    }
+                  }}
+                />
+              </div>
+            }
             {
               options?.map((option, index) => (
                 <div key={`multi-selector-option-${index}`}>
                   <Checkbox
-                    checked={checkedItems.some(it => it.value?.toString() === option.value?.toString())}
+                    checked={checkedItems?.some(it => it.value?.toString() === option.value?.toString())}
                     label={option.label}
                     setChecked={(v) => handleChange(option.value, v)}
                   />
@@ -84,23 +87,26 @@ const MultiSelectPopup = (
               ))
             }
           </div>
-          <div className={clsx(style.Footer)}>
-            <Button
-              title={t('ok')}
-              size={'sm'}
-              onClick={() => {
-                setOpen(false);
-                onChange(checkedItems);
-              }}
-            />
+          {
+            options?.length > 0 &&
+            <div className={clsx(style.Footer)}>
+              <Button
+                title={t('ok')}
+                size={'sm'}
+                onClick={() => {
+                  setOpen(false);
+                  onChange(checkedItems);
+                }}
+              />
 
-            <Button
-              title={t('cancel')}
-              bgColor={'transparent'}
-              size={'sm'}
-              onClick={() => setOpen(false)}
-            />
-          </div>
+              <Button
+                title={t('cancel')}
+                bgColor={'transparent'}
+                size={'sm'}
+                onClick={() => setOpen(false)}
+              />
+            </div>
+          }
         </div>
       </Modal>
     </>

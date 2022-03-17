@@ -9,7 +9,6 @@ import CreatableSelect from 'react-select/creatable';
 import {createCompany, updateCompany} from "../../../http";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {
-  AVAILABLE_COUNTRIES,
   passwordExpirationDaysOptions,
   passwordMinLengthOptions,
   twoFAOptions
@@ -20,18 +19,21 @@ import ButtonGroup from "../../components/ButtonGroup";
 import clsx from "clsx";
 import style from "./FormCompany.module.scss";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
+import MultiSelectPopup from "../../components/MultiSelectPopup";
+import countryRegions from 'country-region-data/data.json';
 
 export const customStyles = () => ({
   option: (provided, state) => ({
     ...provided,
-    backgroundColor: state.isSelected ? '#DE7D2C' : (state.isFocused ? '#5BAEB6': 'white'),
+    backgroundColor: state.isSelected ? '#DE7D2C' : (state.isFocused ? '#5BAEB6' : 'white'),
     color: 'black',
     fontSize: '21px',
     lineHeight: '24.13px',
     zIndex: 1,
   }),
   control: styles => ({...styles, border: 'none', outline: 'none', boxShadow: 'none', zIndex: 1}),
-  menu: styles => ({...styles,
+  menu: styles => ({
+    ...styles,
     zIndex: 2,
     backgroundColor: 'white',
   }),
@@ -60,8 +62,9 @@ const formSchema = (t) => {
       )
       .min(6, t('company name min error'))
       .max(1024, t('company name max error')),
-    companyLocation: Yup.object()
-      .required(t('company location required')),
+    companyCountry: Yup.object()
+      .required(t('company country required')),
+    regions: Yup.array().required(t('company region required')),
     twoFA: Yup.boolean(),
     passwordMinimumLength: Yup.number(),
     passwordExpirationDays: Yup.number(),
@@ -81,7 +84,12 @@ const FormCompany = (props) => {
     isOrgAdmin,
     isSuperAdmin,
   } = props;
-  const options = useMemo(() => AVAILABLE_COUNTRIES, []);
+  // const options = useMemo(() => AVAILABLE_COUNTRIES, []);
+  const options = useMemo(() =>
+    countryRegions?.map(it => ({label: it.countryName, value: it.countryShortCode})),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [countryRegions]
+  );
 
   useEffect(() => {
     setRestBarClass("progress-0 medical");
@@ -96,12 +104,12 @@ const FormCompany = (props) => {
 
   const changeHandler = (key, value) => {
     if (key === "companyName") {
-      if (value && value.created) { // if already created company, then set location according to picked company
-        const location = AVAILABLE_COUNTRIES.find(entity => entity.label === value.location);
-        if (location) {
-          setFieldValue("companyLocation", location);
+      if (value && value.created) { // if already created company, then set country according to picked company
+        const country = options.find(entity => entity.label === value.country);
+        if (country) {
+          setFieldValue("companyCountry", country);
         } else {
-          setFieldValue("companyLocation", AVAILABLE_COUNTRIES && AVAILABLE_COUNTRIES[0]);
+          setFieldValue("companyCountry", options && options[0]);
         }
         const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays'];
         fields?.forEach(item => setFieldValue(item, value[item]))
@@ -114,7 +122,8 @@ const FormCompany = (props) => {
     setOrganizations((allOrganizations && allOrganizations.map(organization => ({
       value: organization.id,
       label: organization.name,
-      location: organization.country,
+      country: organization.country,
+      regions: organization.regions,
       twoFA: organization.settings?.twoFA ?? false,
       passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 6,
       passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
@@ -143,6 +152,35 @@ const FormCompany = (props) => {
   };
 
   const isEditing = useMemo(() => values.companyName?.__isNew__ || values["isEditing"], [values]);
+  const regionsInCountry = useMemo(() => countryRegions?.find(it => it.countryShortCode === values.companyCountry?.value)?.regions ?? [], [values.companyCountry]);
+  const formattedRegions = useMemo(() =>
+    regionsInCountry?.map(it => ({
+      value: it.shortCode,
+      label: it.name,
+    })), [regionsInCountry]);
+  const regionSelectorLabel = React.useMemo(() => {
+    if (values.regions?.length > 0) {
+      if (formattedRegions?.length > 1 && (values.regions?.length === formattedRegions?.length)) {
+        return t("all regions");
+      } else if (values.regions?.length > 1) {
+        return t("n regions selected", {n: values.regions.length});
+      } else {
+        return formattedRegions?.find(it => it.label === values.regions?.[0]?.label)?.label;
+      }
+    } else {
+      return t("select region");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.regions, formattedRegions]);
+  useEffect(() => {
+    if (values.companyName?.__isNew__) {
+      setFieldValue("regions", []);
+    } else {
+      const organization = organizations?.find(it => it.value?.toString() === values.companyName?.value?.toString());
+      setFieldValue("regions", formattedRegions?.filter(it => organization.regions.some(ele => ele === it.label)) ?? []);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formattedRegions, values.companyName]);
 
   return (
     <Form className='form mt-57'>
@@ -217,27 +255,49 @@ const FormCompany = (props) => {
           }
         </div>
         {
-          (isEditing || values["companyName"]?.value) &&
+          isEditing &&
           <div className='mt-40 d-flex flex-column'>
             <label className='font-input-label'>
-              {t("country")}
+              {t("company country")}
             </label>
 
             <ResponsiveSelect
               className='mt-10 font-heading-small text-black input-field'
               options={options}
-              value={values["companyLocation"]}
-              name="companyLocation"
+              value={values["companyCountry"]}
+              name="companyCountry"
               styles={customStyles()}
-              onChange={(value) => changeHandler("companyLocation", value)}
+              onChange={(value) => changeHandler("companyCountry", value)}
               menuPortalTarget={document.body}
               menuPosition={'fixed'}
               placeholder={t("select")}
             />
 
             {
-              touched.companyLocation && errors.companyLocation && (
-                <span className="font-helper-text text-error mt-10">{errors.companyLocation}</span>
+              touched.companyCountry && errors.companyCountry && (
+                <span className="font-helper-text text-error mt-10">{errors.companyCountry}</span>
+              )
+            }
+          </div>
+        }
+        {
+          (isEditing && values["companyCountry"]?.value) &&
+          <div className='mt-40 d-flex flex-column'>
+            <span className='font-input-label'>
+              {t("company region")}
+            </span>
+
+            <div className='mt-10 input-field'>
+              <MultiSelectPopup
+                label={regionSelectorLabel}
+                options={formattedRegions}
+                value={values["regions"]}
+                onChange={value => changeHandler('regions', value)}
+              />
+            </div>
+            {
+              touched.regions && errors.regions && (
+                <span className="font-helper-text text-error mt-10">{errors.regions}</span>
               )
             }
           </div>
@@ -245,66 +305,66 @@ const FormCompany = (props) => {
 
         {
           isEditing &&
-            <>
-              <div className='d-flex flex-column mt-40'>
-                <label className='font-input-label'>
-                  {t("password min length")}
-                </label>
+          <>
+            <div className='d-flex flex-column mt-40'>
+              <label className='font-input-label'>
+                {t("password min length")}
+              </label>
 
-                <div className='d-inline-block mt-10'>
-                  <ButtonGroup
-                    size={'sm'}
-                    rounded={true}
-                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-                    options={passwordMinLengthOptions}
-                    value={values["passwordMinimumLength"]}
-                    id={'password-min-length-option'}
-                    setValue={(v) => changeHandler("passwordMinimumLength", v)}
-                  />
-                </div>
+              <div className='d-inline-block mt-10'>
+                <ButtonGroup
+                  size={'sm'}
+                  rounded={true}
+                  disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                  options={passwordMinLengthOptions}
+                  value={values["passwordMinimumLength"]}
+                  id={'password-min-length-option'}
+                  setValue={(v) => changeHandler("passwordMinimumLength", v)}
+                />
               </div>
+            </div>
 
-              <div className='d-flex flex-column mt-40'>
-                <label className='font-input-label'>
-                  {t("Password Expiration (Days)")}
-                </label>
+            <div className='d-flex flex-column mt-40'>
+              <label className='font-input-label'>
+                {t("Password Expiration (Days)")}
+              </label>
 
-                <div className='d-inline-block mt-10'>
-                  <ButtonGroup
-                    size={'sm'}
-                    rounded={true}
-                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-                    options={passwordExpirationDaysOptions}
-                    value={values["passwordExpirationDays"]}
-                    id={'password-expiration-days-option'}
-                    setValue={(v) => changeHandler("passwordExpirationDays", v)}
-                  />
-                </div>
+              <div className='d-inline-block mt-10'>
+                <ButtonGroup
+                  size={'sm'}
+                  rounded={true}
+                  disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                  options={passwordExpirationDaysOptions}
+                  value={values["passwordExpirationDays"]}
+                  id={'password-expiration-days-option'}
+                  setValue={(v) => changeHandler("passwordExpirationDays", v)}
+                />
               </div>
+            </div>
 
-              <div className='d-flex flex-column mt-40'>
-                <label className='font-input-label'>
-                  {t("2fa")}
-                </label>
+            <div className='d-flex flex-column mt-40'>
+              <label className='font-input-label'>
+                {t("2fa")}
+              </label>
 
-                <div className='d-inline-block mt-10'>
-                  <ButtonGroup
-                    options={twoFAOptions}
-                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-                    value={values["twoFA"]}
-                    id={'2fa-option'}
-                    setValue={(v) => changeHandler("twoFA", v)}
-                  />
-                </div>
+              <div className='d-inline-block mt-10'>
+                <ButtonGroup
+                  options={twoFAOptions}
+                  disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                  value={values["twoFA"]}
+                  id={'2fa-option'}
+                  setValue={(v) => changeHandler("twoFA", v)}
+                />
               </div>
-            </>
+            </div>
+          </>
         }
       </div>
 
       <div className='mt-80'>
         <button
-          className={`button ${values['companyName'] && values["companyLocation"] ? "active cursor-pointer" : "inactive cursor-default"}`}
-          type={values['companyName'] && values["companyLocation"] ? "submit" : "button"}
+          className={"button active cursor-pointer"}
+          type={"submit"}
         >
           <span className='font-button-label text-white text-uppercase'>
             {values["isEditing"] ? t("save") : t("next")}
@@ -330,7 +390,8 @@ const FormCompany = (props) => {
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     companyName: '',
-    companyLocation: '',
+    companyCountry: '',
+    regions: [],
     twoFA: false,
     passwordMinimumLength: 6,
     passwordExpirationDays: 0,
@@ -340,7 +401,8 @@ const EnhancedForm = withFormik({
     const {isSuperAdmin} = props;
     const data = {
       name: values.isEditing ? values?.editingCompanyName : values?.companyName?.label,
-      country: values?.companyLocation?.label,
+      country: values?.companyCountry?.label,
+      regions: values?.regions?.map(it => it.label) ?? [],
       settings: {
         twoFA: values.twoFA,
         passwordMinimumLength: values.passwordMinimumLength,
