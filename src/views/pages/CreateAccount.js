@@ -9,7 +9,6 @@ import FormGender from "../partials/create-account/FormGender";
 import FormBirth from "../partials/create-account/FormBirth";
 import FormHeight from "../partials/create-account/FormHeight";
 import FormWeight from "../partials/create-account/FormWeight";
-import FormCountry from "../partials/create-account/FormCountry";
 import FormWorkLength from "../partials/create-account/FormWorkLength";
 import FormStartWork from "../partials/create-account/FormStartWork";
 import FormPhotoUpload from "../partials/create-account/FormPhotoUpload";
