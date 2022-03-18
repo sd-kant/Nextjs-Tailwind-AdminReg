@@ -10,7 +10,7 @@ const ForgotUsername = ({t}) => {
         <img className='form-header-logo' src={logo} alt='kenzen logo'/>
         &nbsp;&nbsp;
         <span className='form-header-text text-capitalize'>
-          //&nbsp;&nbsp;{t("forgot username")}
+          &#47;&#47;&nbsp;&nbsp;{t("forgot username")}
         </span>
       </div>
 
