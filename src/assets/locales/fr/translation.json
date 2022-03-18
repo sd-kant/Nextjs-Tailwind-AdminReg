@@ -410,7 +410,7 @@
   "team admin": "Administrateur d'équipe",
   "welcome to kenzen": "bienvenue à kenzen",
   "administration": "Administration",
-  "dashboard": "Tableau de bord",
+  "dashboard": "Tableau de bord de l'équipe",
   "monitor your team": "Surveillez votre équipe",
   "leave team dashboard": "Quitter l'équipe Tableau de bord",
   "select team": "Sélectionnez l'équipe",
@@ -426,5 +426,6 @@
   "forgot username description1": "Entrez votre adresse e-mail enregistrée pour récupérer votre nom d'utilisateur.",
   "forgot username description2": "Si votre compte est valide, vous recevrez un email avec votre nom d'utilisateur",
   "forgot username confirm header": "Email envoyé",
-  "forgot username confirm subheader": "Si vous avez un e-mail d'utilisateur valide, votre nom d'utilisateur sera envoyé à votre adresse e-mail"
+  "forgot username confirm subheader": "Si vous avez un e-mail d'utilisateur valide, votre nom d'utilisateur sera envoyé à votre adresse e-mail",
+  "leave administration": "Gestion des congés"
 }

@@ -57,6 +57,7 @@ const Router = (
               loggedIn &&
               <SignInRoute
                 loggedIn={true}
+                isEntry={true}
                 path="/select-mode"
                 render={(props) => (
                   <SelectMode

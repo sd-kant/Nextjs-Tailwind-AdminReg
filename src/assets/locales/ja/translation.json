@@ -410,7 +410,7 @@
   "team admin": "チーム管理者",
   "welcome to kenzen": "kenzenへようこそ",
   "administration": "管理",
-  "dashboard": "ダッシュボード",
+  "dashboard": "チームダッシュボード",
   "monitor your team": "チームを監視する",
   "leave team dashboard": "チームダッシュボードを離れる",
   "select team": "チームを選択",
@@ -426,5 +426,6 @@
   "forgot username description1": "登録したメールアドレスを入力して、ユーザー名を復元します。",
   "forgot username description2": "アカウントが有効な場合は、ユーザー名が記載されたメールが届きます",
   "forgot username confirm header": "送信された電子メール",
-  "forgot username confirm subheader": "有効なユーザーメールアドレスをお持ちの場合、ユーザー名はメールアドレスに送信されます"
+  "forgot username confirm subheader": "有効なユーザーメールアドレスをお持ちの場合、ユーザー名はメールアドレスに送信されます",
+  "leave administration": "管理を離れる"
 }

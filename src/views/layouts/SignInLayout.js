@@ -8,14 +8,23 @@ import smallStripes from "../../assets/images/small-stripes.svg";
 import {get} from "lodash";
 import Footer from "./Footer";
 import LanguagePicker from "../components/LanguagePicker";
-import LogoutButton from "../components/LogoutButton";
+import clsx from "clsx";
+import style from "./SignInLayout.module.scss";
+import SettingsAdmin from "../components/SettingsAdmin";
 
 const SignInLayout = (props) => {
-  const {loggedIn} = props;
+  const {loggedIn, isEntry} = props;
   return (
     <div className='wrapper'>
       <LanguagePicker/>
-      {loggedIn && <LogoutButton/>}
+      {
+        loggedIn &&
+        <div className={clsx(style.MenuWrapper)}>
+          <SettingsAdmin
+            isEntry={isEntry}
+          />
+        </div>
+      }
 
       <div className='content-wrapper'>
         <div className="desktop-stripes">
