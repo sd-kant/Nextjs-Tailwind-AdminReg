@@ -82,7 +82,7 @@ const FormTimezone = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/country')}
+          onClick={() => navigateTo('/create-account/weight')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;

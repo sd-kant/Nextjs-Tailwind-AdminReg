@@ -168,7 +168,7 @@ const CreateAccount = (
             />
           </Route>
         }
-        {
+        {/*{
           !!token &&
           <Route
             exact
@@ -178,7 +178,7 @@ const CreateAccount = (
               {...props}
             />
           </Route>
-        }
+        }*/}
         {
           !!token &&
           <Route
