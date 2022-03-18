@@ -420,5 +420,11 @@
   "select region": "Select Regions",
   "company region": "Region",
   "team region": "Team Region",
-  "enter location": "Enter Location"
+  "enter location": "Enter Location",
+  "forgot your username": "Forgot your username?",
+  "forgot username": "Forgot Username",
+  "forgot username description1": "Enter your registered email address to recover your username.",
+  "forgot username description2": "If your account is valid, you will receive an email with your username",
+  "forgot username confirm header": "Email Sent",
+  "forgot username confirm subheader": "If you have a valid user email, your username will be sent to your email address"
 }

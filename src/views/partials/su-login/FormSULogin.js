@@ -114,6 +114,12 @@ const FormSULogin = (props) => {
             {t("forgot password")}
           </Link>
         </div>
+
+        <div className='mt-10 d-flex flex-column'>
+          <Link to={"/forgot-username"} className="font-input-label text-orange no-underline">
+            {t("forgot your username")}
+          </Link>
+        </div>
       </div>
 
       <div className='mt-80'>

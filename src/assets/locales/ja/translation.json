@@ -420,5 +420,11 @@
   "select region": "地域を選択",
   "company region": "領域",
   "team region": "チームリージョン",
-  "enter location": "場所を入力してください"
+  "enter location": "場所を入力してください",
+  "forgot your username": "ユーザーネームを忘れましたか？",
+  "forgot username": "ユーザー名を忘れた",
+  "forgot username description1": "登録したメールアドレスを入力して、ユーザー名を復元します。",
+  "forgot username description2": "アカウントが有効な場合は、ユーザー名が記載されたメールが届きます",
+  "forgot username confirm header": "送信された電子メール",
+  "forgot username confirm subheader": "有効なユーザーメールアドレスをお持ちの場合、ユーザー名はメールアドレスに送信されます"
 }

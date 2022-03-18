@@ -314,3 +314,7 @@ export const getMedicalResponsesV2 = token => {
 export const answerMedicalQuestionsV2 = (body, token) => {
   return post("/questionnaire", body, token)
 }
+
+export const recoverUsername = email => {
+  return get(`/auth/forgot/username/${email}`);
+};

@@ -420,5 +420,11 @@
   "select region": "Sélectionnez les régions",
   "company region": "Région",
   "team region": "Région de l'équipe",
-  "enter location": "Entrez l'emplacement"
+  "enter location": "Entrez l'emplacement",
+  "forgot your username": "Vous avez oublié votre nom d'utilisateur?",
+  "forgot username": "Identifiant oublié",
+  "forgot username description1": "Entrez votre adresse e-mail enregistrée pour récupérer votre nom d'utilisateur.",
+  "forgot username description2": "Si votre compte est valide, vous recevrez un email avec votre nom d'utilisateur",
+  "forgot username confirm header": "Email envoyé",
+  "forgot username confirm subheader": "Si vous avez un e-mail d'utilisateur valide, votre nom d'utilisateur sera envoyé à votre adresse e-mail"
 }
