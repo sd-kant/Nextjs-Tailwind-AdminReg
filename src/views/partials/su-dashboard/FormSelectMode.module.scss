@@ -18,7 +18,7 @@
     .ImageWrapper {
       position: relative;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       padding: 15px 0;
 
       .WorkerOrangeImage {
@@ -29,6 +29,7 @@
         position: absolute;
         width: 26px;
         right: -15px;
+        margin-top: 10px;
       }
     }
 
@@ -40,18 +41,18 @@
       padding: 15px 0;
 
       .WorkerOrangeImage {
-        width: 83px;
+        width: 78px;
         z-index: 2;
       }
       .WorkerWhiteImage1 {
         position: absolute;
         left: 0;
         top: 13px;
-        width: 59px;
+        width: 54px;
       }
       .WorkerWhiteImage2 {
         position: absolute;
-        width: 59px;
+        width: 54px;
         right: 0;
         top: 13px;
       }

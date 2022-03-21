@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import history from "../../../history";
 import {checkPasswordValidation, getTokenFromUrl} from "../../../utils";
-import {resetPasswordV2} from "../../../http";
+import {instance, lookupByToken, resetPasswordV2} from "../../../http";
 import {
   setLoadingAction, setRestBarClassAction,
   showErrorNotificationAction,
@@ -160,6 +160,11 @@ const EnhancedForm = withFormik({
 
     try {
       props.setLoading(true);
+      const lookupRes = await lookupByToken(values?.token);
+      const {baseUri} = lookupRes.data;
+      if (baseUri) {
+        instance.defaults.baseURL = lookupRes.data?.baseUri;
+      }
       await resetPasswordV2(data);
       setStatus({visibleModal: true});
     } catch (e) {

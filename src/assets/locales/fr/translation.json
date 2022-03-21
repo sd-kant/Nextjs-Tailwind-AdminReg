@@ -410,7 +410,7 @@
   "team admin": "Administrateur d'équipe",
   "welcome to kenzen": "bienvenue à kenzen",
   "administration": "Administration",
-  "dashboard": "Tableau de bord",
+  "dashboard": "Tableau de bord de l'équipe",
   "monitor your team": "Surveillez votre équipe",
   "leave team dashboard": "Quitter l'équipe Tableau de bord",
   "select team": "Sélectionnez l'équipe",
@@ -420,5 +420,19 @@
   "select region": "Sélectionnez les régions",
   "company region": "Région",
   "team region": "Région de l'équipe",
-  "enter location": "Entrez l'emplacement"
+  "enter location": "Entrez l'emplacement",
+  "forgot your username": "Vous avez oublié votre nom d'utilisateur?",
+  "forgot username": "Identifiant oublié",
+  "forgot username description1": "Entrez votre adresse e-mail enregistrée pour récupérer votre nom d'utilisateur.",
+  "forgot username description2": "Si votre compte est valide, vous recevrez un email avec votre nom d'utilisateur",
+  "forgot username confirm header": "Email envoyé",
+  "forgot username confirm subheader": "Si vous avez un e-mail d'utilisateur valide, votre nom d'utilisateur sera envoyé à votre adresse e-mail",
+  "leave administration": "Gestion des congés",
+  "edit company": "Modifier l'entreprise",
+  "company administrators": "Administrateurs de l'entreprise",
+  "security": "Sécurité",
+  "add company admin": "Ajouter un administrateur de société",
+
+  "username invalid 1": "Le nom d'utilisateur doit comporter au moins cinq caractères, commencer par une lettre et ne contenir que des lettres, des chiffres ou un point",
+  "username invalid 2": "Le nom d'utilisateur ne peut pas se terminer par un point"
 }

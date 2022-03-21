@@ -10,7 +10,6 @@ import {apiBaseUrl} from "../../../config";
 import axios from "axios";
 import history from "../../../history";
 import {formSchema} from "./FormSULogin";
-import {domain} from "../../../constant";
 
 const FormMobileLogin = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
@@ -38,6 +37,9 @@ const FormMobileLogin = (props) => {
   /*const authHandler = (err, data) => {
     console.log(err, data);
   };*/
+
+  const baseUrlArr = (window.location.href).split("/");
+  const baseUrl = baseUrlArr[0] + "//" + baseUrlArr[2];
 
   return (
     <Form className='form-group mt-57'>
@@ -83,9 +85,14 @@ const FormMobileLogin = (props) => {
         </div>
 
         <div className='mt-40 d-flex flex-column'>
-          {/*fixme update link before moving production version*/}
-          <a href={`${domain}/forgot-password`} target="_blank" rel="noreferrer" className="font-input-label text-orange no-underline">
+          <a href={`${baseUrl}/forgot-password`} target="_blank" rel="noreferrer" className="font-input-label text-orange no-underline">
             {t("forgot password")}
+          </a>
+        </div>
+
+        <div className='mt-10 d-flex flex-column'>
+          <a href={`${baseUrl}/forgot-username`} target="_blank" rel="noreferrer" className="font-input-label text-orange no-underline">
+            {t("forgot your username")}
           </a>
         </div>
       </div>

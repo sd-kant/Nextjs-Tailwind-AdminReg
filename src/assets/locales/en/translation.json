@@ -410,7 +410,7 @@
   "team admin": "Team Admin",
   "welcome to kenzen": "welcome to kenzen",
   "administration": "Administration",
-  "dashboard": "Dashboard",
+  "dashboard": "Team Dashboard",
   "monitor your team": "Monitor your team",
   "leave team dashboard": "Leave Team Dashboard",
   "select team": "Select Team",
@@ -420,5 +420,19 @@
   "select region": "Select Regions",
   "company region": "Region",
   "team region": "Team Region",
-  "enter location": "Enter Location"
+  "enter location": "Enter Location",
+  "forgot your username": "Forgot your username?",
+  "forgot username": "Forgot Username",
+  "forgot username description1": "Enter your registered email address to recover your username.",
+  "forgot username description2": "If your account is valid, you will receive an email with your username",
+  "forgot username confirm header": "Email Sent",
+  "forgot username confirm subheader": "If you have a valid user email, your username will be sent to your email address",
+  "leave administration": "Leave Administration",
+  "edit company": "Edit Company",
+  "company administrators": "Company Administrators",
+  "security": "Security",
+  "add company admin": "Add Company Administrator",
+
+  "username invalid 1": "Username must be at lease five characters long, start with a letter, and only contain letters, numbers or a dot",
+  "username invalid 2": "Username cannot end with a dot"
 }

@@ -6,35 +6,20 @@ import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import ConfirmModal from "../../components/ConfirmModal";
-import {instance, lookupByUsername, requestResetPassword} from "../../../http";
+import {instance, lookupByEmail, recoverUsername} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
 import history from "../../../history";
-import {checkUsernameValidation2, checkUsernameValidation1} from "../../../utils";
 
 const formSchema = (t) => {
   return Yup.object().shape({
-    username: Yup.string()
-      .required(t('username required'))
-      .min(6, t('username min error'))
-      .max(1024, t('username max error'))
-      .test(
-        'is-valid-2',
-        t('username invalid 2'),
-        function (value) {
-          return checkUsernameValidation2(value);
-        }
-      )
-      .test(
-        'is-valid-1',
-        t('username invalid 1'),
-        function (value) {
-          return checkUsernameValidation1(value);
-        }
-      ),
+    email: Yup.string()
+      .required(t('email required'))
+      .email(t("email invalid"))
+      .max(1024, t('email max error')),
   });
 };
 
-const FormForgotPassword = (props) => {
+const FormForgotUsername = (props) => {
   const {values, errors, touched, t, setFieldValue, status, setStatus} = props;
 
   const changeFormField = (e) => {
@@ -57,26 +42,31 @@ const FormForgotPassword = (props) => {
 
         <div className='grouped-form mt-25'>
           <label className="font-binary d-block mt-8">
-            {t("forgot password description")}
+            {t("forgot username description1")}
+          </label>
+        </div>
+        <div className='grouped-form'>
+          <label className="font-binary d-block">
+            {t("forgot username description2")}
           </label>
         </div>
 
         <div className='d-flex mt-40 flex-column'>
           <label className='font-input-label'>
-            {t("username")}
+            {t("email")}
           </label>
 
           <input
             className='input input-field mt-10 font-heading-small text-white'
-            name="username"
-            value={values["username"]}
+            name="email"
+            value={values["email"]}
             type='text'
             onChange={changeFormField}
           />
 
           {
-            errors.username && touched.username && (
-              <span className="font-helper-text text-error mt-10">{errors.username}</span>
+            errors.email && touched.email && (
+              <span className="font-helper-text text-error mt-10">{errors.email}</span>
             )
           }
         </div>
@@ -84,8 +74,8 @@ const FormForgotPassword = (props) => {
 
       <div className='mt-80'>
         <button
-          className={`button ${values['username'] ? "active cursor-pointer" : "inactive cursor-default"}`}
-          type={values['username'] ? "submit" : "button"}
+          className={"button active cursor-pointer"}
+          type={"submit"}
         >
           <span className='font-button-label text-white'>
             {t("send")}
@@ -96,8 +86,8 @@ const FormForgotPassword = (props) => {
         status?.visibleModal &&
         <ConfirmModal
           show={status?.visibleModal}
-          header={t("forgot password confirm header")}
-          subheader={t("forgot password confirm subheader")}
+          header={t("forgot username confirm header")}
+          subheader={t("forgot username confirm subheader")}
           onOk={(e) => {
             e.preventDefault();
             setStatus({visibleModal: false});
@@ -111,18 +101,18 @@ const FormForgotPassword = (props) => {
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
-    username: '',
+    email: '',
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {
     try {
       props.setLoading(true);
-      const lookupRes = await lookupByUsername(values?.username);
+      const lookupRes = await lookupByEmail(values?.email);
       const {baseUri} = lookupRes.data;
       if (baseUri) {
         instance.defaults.baseURL = lookupRes.data?.baseUri;
       }
-      await requestResetPassword(values?.username);
+      await recoverUsername(values?.email);
       setStatus({visibleModal: true});
     } catch (e) {
       if (e.response?.data?.status?.toString() === "404") { // if user not found
@@ -136,7 +126,7 @@ const EnhancedForm = withFormik({
       props.setLoading(false);
     }
   }
-})(FormForgotPassword);
+})(FormForgotUsername);
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(

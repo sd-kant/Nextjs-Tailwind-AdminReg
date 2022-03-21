@@ -6,12 +6,17 @@ import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import history from "../../../history";
 import CreatableSelect from 'react-select/creatable';
-import {createCompany, updateCompany} from "../../../http";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {createCompany, createUserByAdmin, getUsersUnderOrganization, updateCompany} from "../../../http";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction,
+  showSuccessNotificationAction
+} from "../../../redux/action/ui";
 import {
   passwordExpirationDaysOptions,
   passwordMinLengthOptions,
-  twoFAOptions
+  twoFAOptions, USER_TYPE_ORG_ADMIN
 } from "../../../constant";
 import {queryAllOrganizationsAction} from "../../../redux/action/base";
 import {get} from "lodash";
@@ -21,6 +26,9 @@ import style from "./FormCompany.module.scss";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import MultiSelectPopup from "../../components/MultiSelectPopup";
 import countryRegions from 'country-region-data/data.json';
+import removeIcon from "../../../assets/images/remove.svg";
+import plusCircleFire from "../../../assets/images/plus-circle-fire.svg";
+import {defaultMember, lowercaseEmail, setUserTypeToUsers} from "./FormRepresentative";
 
 export const customStyles = () => ({
   option: (provided, state) => ({
@@ -68,6 +76,20 @@ const formSchema = (t) => {
     twoFA: Yup.boolean(),
     passwordMinimumLength: Yup.number(),
     passwordExpirationDays: Yup.number(),
+    users: Yup.array().of(
+      Yup.object().shape({
+        email: Yup.string()
+          .required(t('email required'))
+          .email(t("email invalid"))
+          .max(1024, t('email max error')),
+        firstName: Yup.string()
+          .required(t('firstName required'))
+          .max(1024, t("firstName max error")),
+        lastName: Yup.string()
+          .required(t('lastName required'))
+          .max(1024, t("lastName max error")),
+      }).required(),
+    ),
   });
 };
 
@@ -86,11 +108,30 @@ const FormCompany = (props) => {
   } = props;
   // const options = useMemo(() => AVAILABLE_COUNTRIES, []);
   const options = useMemo(() =>
-    countryRegions?.map(it => ({label: it.countryName, value: it.countryShortCode})),
+      countryRegions?.map(it => ({label: it.countryName, value: it.countryShortCode})),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [countryRegions]
   );
-
+  const [orgAdmins, setOrgAdmins] = React.useState([]);
+  React.useEffect(() => {
+    setFieldValue("users", []);
+    if (!(values.companyName?.__isNew__) && values.companyName?.value) {
+      fetchOrgAdmins(values.companyName?.value)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.companyName?.value, values.isEditing]);
+  const fetchOrgAdmins = organizationId => {
+    getUsersUnderOrganization({
+      organizationId,
+      userType: 'OrgAdmin',
+    })
+      .then(res => {
+        setOrgAdmins(res.data ?? []);
+      })
+      .catch(e => {
+        console.error("get org admin error", e);
+      });
+  }
   useEffect(() => {
     setRestBarClass("progress-0 medical");
     queryAllOrganizations();
@@ -101,7 +142,16 @@ const FormCompany = (props) => {
     const {value, name} = e.target;
     setFieldValue(name, value);
   }
-
+  const deleteMember = (index) => {
+    const data = JSON.parse(JSON.stringify(values["users"]));
+    data.splice(index, 1);
+    setFieldValue("users", data);
+  }
+  const addAnother = () => {
+    const data = JSON.parse(JSON.stringify(values["users"]));
+    data.push(defaultMember);
+    setFieldValue("users", data);
+  }
   const changeHandler = (key, value) => {
     if (key === "companyName") {
       if (value && value.created) { // if already created company, then set country according to picked company
@@ -143,6 +193,7 @@ const FormCompany = (props) => {
   const cancelEditing = () => {
     setFieldValue("isEditing", false);
     setFieldValue("selectedItem", null);
+    setFieldValue("companyName", null);
   };
 
   const enableEditing = () => {
@@ -187,19 +238,19 @@ const FormCompany = (props) => {
       <div className={clsx(style.TopWrapper)}>
         <div className='grouped-form'>
           <label className="font-header-medium">
-            {isSuperAdmin ? t("create or select company") : t("welcome")}
+            {values.isEditing ? t("edit company") : (isSuperAdmin ? t("create or select company") : t("welcome"))}
           </label>
           {
-            values.companyName?.created ?
+            (values.companyName?.created && !values.isEditing) ?
               <label
                 className={`font-binary d-block mt-8 text-capitalize text-orange cursor-pointer`}
                 onClick={enableEditing}
               >
                 {t("edit")}
-              </label> :
-              <label className={`font-binary d-block mt-8 text-capitalize text-white`}>
-                {isSuperAdmin ? t("create or select company description") : t("select company description")}
-              </label>
+              </label> : null
+            /*<label className={`font-binary d-block mt-8 text-capitalize text-white`}>
+              {isSuperAdmin ? t("create or select company description") : t("select company description")}
+            </label>*/
           }
         </div>
 
@@ -304,9 +355,215 @@ const FormCompany = (props) => {
         }
 
         {
+          values.isEditing &&
+          <React.Fragment>
+            <div className='grouped-form mt-40'>
+              <label className="font-header-medium">
+                {t("company administrators")}
+              </label>
+            </div>
+            <div className='grouped-form mt-25'
+                 style={{maxWidth: '700px', overFlowY: 'auto'}}>
+              {
+                orgAdmins?.map((user, index) => (
+                  <div
+                    className={`team-representative-wrapper d-flex ${index !== 0 ? "mt-25" : ""}`}
+                    key={`already-registered-member-${index}`}
+                  >
+                    <div className="d-flex flex-column">
+                      {
+                        index === 0 &&
+                        <label className="font-input-label text-white">
+                          {t("firstName")}
+                        </label>
+                      }
+
+                      <input
+                        className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
+                        defaultValue={user?.firstName}
+                        disabled
+                        type="text"
+                        style={{width: "145px"}}
+                      />
+                    </div>
+
+                    <div className="d-flex flex-column ml-25">
+                      {
+                        index === 0 &&
+                        <label className="font-input-label text-white">
+                          {t("lastName")}
+                        </label>
+                      }
+
+                      <input
+                        className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
+                        defaultValue={user?.lastName}
+                        disabled
+                        type="text"
+                        style={{width: "145px"}}
+                      />
+                    </div>
+
+                    <div className="d-flex flex-column ml-25">
+                      {
+                        index === 0 &&
+                        <label className="font-input-label text-white">
+                          {t("administrator email")}
+                        </label>
+                      }
+
+                      <input
+                        className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
+                        defaultValue={user?.email}
+                        disabled
+                        type="text"
+                        style={{width: "195px"}}
+                      />
+                    </div>
+                  </div>
+                ))
+              }
+              {
+                values && values["users"] && values["users"].map((user, index) => {
+                  return (
+                    <div
+                      className={`team-representative-wrapper d-flex ${orgAdmins.length !== 0 || index !== 0 ? "mt-25" : ""}`}
+                      key={`member-${index}`}
+                    >
+                      <div className="d-flex flex-column">
+                        {
+                          (orgAdmins?.length === 0 && index === 0) &&
+                          <label className="font-input-label text-white">
+                            {t("firstName")}
+                          </label>
+                        }
+
+                        <input
+                          className="input font-binary text-white mt-10 px-15"
+                          name={`users[${index}].firstName`}
+                          value={values?.users && values.users[index] && values.users[index]?.firstName}
+                          type="text"
+                          style={{width: "145px"}}
+                          onChange={changeFormField}
+                        />
+
+                        {
+                          touched?.users && touched.users[index] && touched.users[index]?.firstName &&
+                          errors?.users && errors.users[index] && errors.users[index]?.firstName && (
+                            <span className="font-helper-text text-error mt-10">{errors.users[index].firstName}</span>
+                          )
+                        }
+                      </div>
+
+                      <div className="d-flex flex-column ml-25">
+                        {
+                          (orgAdmins?.length === 0 && index === 0) &&
+                          <label className="font-input-label text-white">
+                            {t("lastName")}
+                          </label>
+                        }
+
+                        <input
+                          className="input font-binary text-white mt-10 px-15"
+                          name={`users[${index}].lastName`}
+                          value={values?.users && values.users[index] && values.users[index]?.lastName}
+                          type="text"
+                          style={{width: "145px"}}
+                          onChange={changeFormField}
+                        />
+
+                        {
+                          touched?.users && touched.users[index] && touched.users[index]?.lastName &&
+                          errors?.users && errors.users[index] && errors.users[index]?.lastName && (
+                            <span className="font-helper-text text-error mt-10">{errors.users[index].lastName}</span>
+                          )
+                        }
+                      </div>
+
+                      <div className="d-flex flex-column ml-25">
+                        {
+                          (orgAdmins?.length === 0 && index === 0) &&
+                          <label className="font-input-label text-white">
+                            {t("administrator email")}
+                          </label>
+                        }
+
+                        <input
+                          className="input font-binary text-white mt-10 px-15"
+                          name={`users[${index}].email`}
+                          value={values?.users && values.users[index] && values.users[index]?.email}
+                          type="text"
+                          style={{width: "195px"}}
+                          onChange={changeFormField}
+                        />
+
+                        {
+                          touched?.users && touched.users[index] && touched.users[index]?.email &&
+                          errors?.users && errors.users[index] && errors.users[index]?.email && (
+                            <span className="font-helper-text text-error mt-10">{errors.users[index].email}</span>
+                          )
+                        }
+                      </div>
+
+                      <div className="d-flex align-center ml-25" style={{height: '45px'}}>
+                        <img
+                          className={`${(orgAdmins?.length === 0 && index === 0) ? 'mt-57' : 'mt-25'} cursor-pointer`}
+                          style={{zIndex: 1}}
+                          src={removeIcon}
+                          width={30}
+                          height={30}
+                          alt="close icon"
+                          onClick={() => deleteMember(index)}
+                        />
+                      </div>
+                    </div>
+                  )
+                })
+              }
+            </div>
+
+            <div className={`d-flex align-center mt-15 mb-15`} style={{zIndex: 1, position: "relative"}}>
+              <img
+                src={plusCircleFire} className="cursor-pointer"
+                onClick={addAnother}
+                alt="add icon"
+              />
+              <span
+                className="font-binary cursor-pointer"
+                onClick={addAnother}
+              >
+                &nbsp;&nbsp;{values.users?.length > 0 || orgAdmins?.length > 0 ? t("add another company admin") : t("add company admin")}
+              </span>
+            </div>
+          </React.Fragment>
+        }
+
+        {
           isEditing &&
-          <>
-            <div className='d-flex flex-column mt-40'>
+          <React.Fragment>
+            <div className='grouped-form mt-40'>
+              <label className="font-header-medium">
+                {t("security")}
+              </label>
+            </div>
+
+            <div className='d-flex flex-column mt-25'>
+              <label className='font-input-label'>
+                {t("2fa")}
+              </label>
+
+              <div className='d-inline-block mt-10'>
+                <ButtonGroup
+                  options={twoFAOptions}
+                  disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                  value={values["twoFA"]}
+                  id={'2fa-option'}
+                  setValue={(v) => changeHandler("twoFA", v)}
+                />
+              </div>
+            </div>
+
+            <div className='d-flex flex-column mt-25'>
               <label className='font-input-label'>
                 {t("password min length")}
               </label>
@@ -324,7 +581,7 @@ const FormCompany = (props) => {
               </div>
             </div>
 
-            <div className='d-flex flex-column mt-40'>
+            <div className='d-flex flex-column mt-25'>
               <label className='font-input-label'>
                 {t("Password Expiration (Days)")}
               </label>
@@ -341,23 +598,7 @@ const FormCompany = (props) => {
                 />
               </div>
             </div>
-
-            <div className='d-flex flex-column mt-40'>
-              <label className='font-input-label'>
-                {t("2fa")}
-              </label>
-
-              <div className='d-inline-block mt-10'>
-                <ButtonGroup
-                  options={twoFAOptions}
-                  disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-                  value={values["twoFA"]}
-                  id={'2fa-option'}
-                  setValue={(v) => changeHandler("twoFA", v)}
-                />
-              </div>
-            </div>
-          </>
+          </React.Fragment>
         }
       </div>
 
@@ -371,7 +612,7 @@ const FormCompany = (props) => {
           </span>
         </button>
         {
-          values.isEditing &&
+          isEditing &&
           <button
             className={`button cursor-pointer cancel ml-15`}
             type={"button"}
@@ -395,6 +636,7 @@ const EnhancedForm = withFormik({
     twoFA: false,
     passwordMinimumLength: 6,
     passwordExpirationDays: 0,
+    users: [],
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue}) => {
@@ -414,9 +656,49 @@ const EnhancedForm = withFormik({
       if (values.selectedItem) {
         try {
           props.setLoading(true);
-          await updateCompany(values.selectedItem, data);
+          const organizationId = values.selectedItem;
+          await updateCompany(organizationId, data);
+
+          // creating org admins
+          let users = values?.users;
+          users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
+          const promises = [];
+          let totalSuccessForInvite = 0;
+
+          users?.forEach(it => {
+            promises.push(createUserByAdmin(organizationId, it));
+          });
+          if (promises?.length > 0) {
+            Promise.allSettled(promises)
+              .then(items => {
+                items.forEach((item, index) => {
+                  if (item.status === "fulfilled") {
+                    totalSuccessForInvite++;
+                  } else {
+                    console.error("creating user failed", item.reason?.response?.data);
+                    if (item?.reason?.response?.data?.status?.toString() === "409") {
+                      props.showErrorNotification(props.t(
+                        'msg user email conflicts', {
+                          email: users[index]?.email,
+                        }));
+                    }
+                  }
+                });
+              })
+              .finally(() => {
+                if (totalSuccessForInvite > 0) {
+                  props.showSuccessNotification(props.t(
+                    totalSuccessForInvite ?
+                      'msg users created success' : 'msg user created success', {
+                      numberOfSuccess: totalSuccessForInvite,
+                    }));
+                }
+              });
+          }
+
           setFieldValue("isEditing", false);
           setFieldValue("selectedItem", null);
+
           props.queryAllOrganizations();
         } catch (e) {
           console.log("update company error", e);
@@ -427,7 +709,7 @@ const EnhancedForm = withFormik({
       }
     } else {
       if (values?.companyName?.created) { // if selected already created company
-        isSuperAdmin ? history.push(`/invite/${values?.companyName?.value}/representative`) : history.push(`/invite/${values?.companyName?.value}/team-mode`);
+        history.push(`/invite/${values?.companyName?.value}/team-mode`);
       } else {
         try {
           props.setLoading(true);
@@ -455,6 +737,7 @@ const mapDispatchToProps = (dispatch) =>
       setLoading: setLoadingAction,
       setRestBarClass: setRestBarClassAction,
       showErrorNotification: showErrorNotificationAction,
+      showSuccessNotification: showSuccessNotificationAction,
       queryAllOrganizations: queryAllOrganizationsAction,
     },
     dispatch

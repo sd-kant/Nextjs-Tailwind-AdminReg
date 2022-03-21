@@ -128,7 +128,7 @@ const EnhancedForm = withFormik({
         body: {
           weight: values["weight"],
         },
-        nextPath: '/create-account/country'
+        nextPath: '/create-account/timezone'
       })
     } catch (e) {
       console.log("storing values error", e);

@@ -4,8 +4,8 @@ import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
-import {checkAlphaNumeric, checkPasswordValidation, getTokenFromUrl} from "../../../utils";
-import {resetPasswordV2} from "../../../http";
+import {checkUsernameValidation2, checkUsernameValidation1, checkPasswordValidation, getTokenFromUrl} from "../../../utils";
+import {instance, lookupByToken, resetPasswordV2} from "../../../http";
 import {
   setLoadingAction,
   showErrorNotificationAction,
@@ -22,10 +22,17 @@ const formSchema = (t) => {
       .min(6, t('username min error'))
       .max(1024, t('username max error'))
       .test(
-        'is-valid',
-        t('username invalid'),
+        'is-valid-2',
+        t('username invalid 2'),
         function (value) {
-          return checkAlphaNumeric(value);
+          return checkUsernameValidation2(value);
+        }
+      )
+      .test(
+        'is-valid-1',
+        t('username invalid 1'),
+        function (value) {
+          return checkUsernameValidation1(value);
         }
       ),
     password: Yup.string()
@@ -193,6 +200,11 @@ const EnhancedForm = withFormik({
 
     try {
       setLoading(true);
+      const lookupRes = await lookupByToken(values?.token);
+      const {baseUri} = lookupRes.data;
+      if (baseUri) {
+        instance.defaults.baseURL = lookupRes.data?.baseUri;
+      }
       await resetPasswordV2(data);
       showSuccessNotification(t("msg password updated success"));
       login(values["username"], values["password"], true);

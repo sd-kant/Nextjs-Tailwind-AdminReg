@@ -24,6 +24,7 @@ import {DashboardProvider} from "./providers/DashboardProvider";
 import MainRouteV2 from "./views/routes/MainRouteV2";
 import DashboardV2 from "./views/pages/DashboardV2";
 import SelectMode from "./views/pages/SelectMode";
+import ForgotUsername from "./views/pages/ForgotUsername";
 
 const Router = (
   {
@@ -56,6 +57,7 @@ const Router = (
               loggedIn &&
               <SignInRoute
                 loggedIn={true}
+                isEntry={true}
                 path="/select-mode"
                 render={(props) => (
                   <SelectMode
@@ -192,6 +194,15 @@ const Router = (
               path="/forgot-password"
               render={(props) => (
                 <ForgotPassword
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/forgot-username"
+              render={(props) => (
+                <ForgotUsername
                   {...props}
                 />
               )}

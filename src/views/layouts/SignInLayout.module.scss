@@ -1,24 +1,35 @@
-.ReInviteWrapper {
+// settings menu button
+.MenuWrapper {
   display: block;
   position: absolute;
-  width: 100%;
-  top: 0;
+  top: 90px;
+  bottom: auto;
+  right: 40px;
+  z-index: 99;
 }
 
 @media only screen and (min-width: 768px) {
-  .ReInviteWrapper {
+  .MenuWrapper {
     display: none;
   }
 }
 
 @media only screen and (min-width: 1024px) {
-  .ReInviteWrapper {
+  .MenuWrapper {
     display: block;
+    position: absolute;
+    top: 90px;
+    right: 30px;
+    z-index: 99;
   }
 }
 
 @media only screen and (min-width: 1400px) {
-  .ReInviteWrapper {
-    //display: block;
+  .MenuWrapper {
+    display: block;
+    position: absolute;
+    top: 50px;
+    right: 30px;
+    z-index: 99;
   }
 }
