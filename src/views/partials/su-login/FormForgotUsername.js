@@ -6,7 +6,7 @@ import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import ConfirmModal from "../../components/ConfirmModal";
-import {recoverUsername} from "../../../http";
+import {instance, lookupByEmail, recoverUsername} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
 import history from "../../../history";
 
@@ -107,6 +107,11 @@ const EnhancedForm = withFormik({
   handleSubmit: async (values, {props, setStatus}) => {
     try {
       props.setLoading(true);
+      const lookupRes = await lookupByEmail(values?.email);
+      const {baseUri} = lookupRes.data;
+      if (baseUri) {
+        instance.defaults.baseURL = lookupRes.data?.baseUri;
+      }
       await recoverUsername(values?.email);
       setStatus({visibleModal: true});
     } catch (e) {

@@ -5,7 +5,7 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {checkAlphaNumeric, checkPasswordValidation, getTokenFromUrl} from "../../../utils";
-import {resetPasswordV2} from "../../../http";
+import {instance, lookupByToken, resetPasswordV2} from "../../../http";
 import {
   setLoadingAction,
   showErrorNotificationAction,
@@ -193,6 +193,11 @@ const EnhancedForm = withFormik({
 
     try {
       setLoading(true);
+      const lookupRes = await lookupByToken(values?.token);
+      const {baseUri} = lookupRes.data;
+      if (baseUri) {
+        instance.defaults.baseURL = lookupRes.data?.baseUri;
+      }
       await resetPasswordV2(data);
       showSuccessNotification(t("msg password updated success"));
       login(values["username"], values["password"], true);

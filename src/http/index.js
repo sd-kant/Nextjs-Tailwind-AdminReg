@@ -329,6 +329,10 @@ export const lookupByPhone = phone => {
   return get(`/master/lookup/phone/${phone}`);
 };
 
+export const lookupByToken = token => {
+  return get(`/master/lookup/token/${token}`);
+};
+
 export const lookupByEmail = email => {
   return get(`/master/lookup/email/${email}`);
 };

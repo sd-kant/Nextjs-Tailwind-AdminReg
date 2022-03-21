@@ -74,6 +74,8 @@ function* loginSaga({payload: {
 
     if (fromRegister) {
       localStorage.setItem("kop-v2-register-token", token);
+      localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
+
       if (!mfa) { // if multi-factor authentication off
         history.push("/create-account/name");
       } else {
