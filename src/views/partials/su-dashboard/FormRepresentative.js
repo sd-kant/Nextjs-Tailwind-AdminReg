@@ -116,23 +116,6 @@ const FormRepresentative = (props) => {
                   {
                     index === 0 &&
                     <label className="font-input-label text-white">
-                      {t("administrator email")}
-                    </label>
-                  }
-
-                  <input
-                    className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
-                    defaultValue={user?.email}
-                    disabled
-                    type="text"
-                    style={{width: "195px"}}
-                  />
-                </div>
-
-                <div className="d-flex flex-column ml-25">
-                  {
-                    index === 0 &&
-                    <label className="font-input-label text-white">
                       {t("firstName")}
                     </label>
                   }
@@ -162,6 +145,23 @@ const FormRepresentative = (props) => {
                     style={{width: "145px"}}
                   />
                 </div>
+
+                <div className="d-flex flex-column ml-25">
+                  {
+                    index === 0 &&
+                    <label className="font-input-label text-white">
+                      {t("administrator email")}
+                    </label>
+                  }
+
+                  <input
+                    className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
+                    defaultValue={user?.email}
+                    disabled
+                    type="text"
+                    style={{width: "195px"}}
+                  />
+                </div>
               </div>
             ))
           }
@@ -173,31 +173,6 @@ const FormRepresentative = (props) => {
                   key={`member-${index}`}
                 >
                   <div className="d-flex flex-column">
-                    {
-                      (orgAdmins?.length === 0 && index === 0) &&
-                      <label className="font-input-label text-white">
-                        {t("administrator email")}
-                      </label>
-                    }
-
-                    <input
-                      className="input font-binary text-white mt-10 px-15"
-                      name={`users[${index}].email`}
-                      value={values?.users && values.users[index] && values.users[index]?.email}
-                      type="text"
-                      style={{width: "195px"}}
-                      onChange={changeFormField}
-                    />
-
-                    {
-                      touched?.users && touched.users[index] && touched.users[index]?.email &&
-                      errors?.users && errors.users[index] && errors.users[index]?.email && (
-                        <span className="font-helper-text text-error mt-10">{errors.users[index].email}</span>
-                      )
-                    }
-                  </div>
-
-                  <div className="d-flex flex-column ml-25">
                     {
                       (orgAdmins?.length === 0 && index === 0) &&
                       <label className="font-input-label text-white">
@@ -243,6 +218,31 @@ const FormRepresentative = (props) => {
                       touched?.users && touched.users[index] && touched.users[index]?.lastName &&
                       errors?.users && errors.users[index] && errors.users[index]?.lastName && (
                         <span className="font-helper-text text-error mt-10">{errors.users[index].lastName}</span>
+                      )
+                    }
+                  </div>
+
+                  <div className="d-flex flex-column ml-25">
+                    {
+                      (orgAdmins?.length === 0 && index === 0) &&
+                      <label className="font-input-label text-white">
+                        {t("administrator email")}
+                      </label>
+                    }
+
+                    <input
+                      className="input font-binary text-white mt-10 px-15"
+                      name={`users[${index}].email`}
+                      value={values?.users && values.users[index] && values.users[index]?.email}
+                      type="text"
+                      style={{width: "195px"}}
+                      onChange={changeFormField}
+                    />
+
+                    {
+                      touched?.users && touched.users[index] && touched.users[index]?.email &&
+                      errors?.users && errors.users[index] && errors.users[index]?.email && (
+                        <span className="font-helper-text text-error mt-10">{errors.users[index].email}</span>
                       )
                     }
                   </div>

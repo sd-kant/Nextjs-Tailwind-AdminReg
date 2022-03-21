@@ -427,5 +427,9 @@
   "forgot username description2": "If your account is valid, you will receive an email with your username",
   "forgot username confirm header": "Email Sent",
   "forgot username confirm subheader": "If you have a valid user email, your username will be sent to your email address",
-  "leave administration": "Leave Administration"
+  "leave administration": "Leave Administration",
+  "edit company": "Edit Company",
+  "company administrators": "Company Administrators",
+  "security": "Security",
+  "add company admin": "Add Company Administrator"
 }

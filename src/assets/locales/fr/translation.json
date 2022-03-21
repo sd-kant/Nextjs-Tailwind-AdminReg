@@ -427,5 +427,9 @@
   "forgot username description2": "Si votre compte est valide, vous recevrez un email avec votre nom d'utilisateur",
   "forgot username confirm header": "Email envoyé",
   "forgot username confirm subheader": "Si vous avez un e-mail d'utilisateur valide, votre nom d'utilisateur sera envoyé à votre adresse e-mail",
-  "leave administration": "Gestion des congés"
+  "leave administration": "Gestion des congés",
+  "edit company": "Modifier l'entreprise",
+  "company administrators": "Administrateurs de l'entreprise",
+  "security": "Sécurité",
+  "add company admin": "Ajouter un administrateur de société"
 }
