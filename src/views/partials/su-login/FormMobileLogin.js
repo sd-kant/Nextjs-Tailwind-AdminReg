@@ -89,6 +89,12 @@ const FormMobileLogin = (props) => {
             {t("forgot password")}
           </a>
         </div>
+
+        <div className='mt-10 d-flex flex-column'>
+          <a href={`${baseUrl}/forgot-username`} target="_blank" rel="noreferrer" className="font-input-label text-orange no-underline">
+            {t("forgot your username")}
+          </a>
+        </div>
       </div>
 
       <div className='mt-80'>
