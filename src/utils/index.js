@@ -16,6 +16,34 @@ export const checkAlphaNumeric = str => {
   return str?.match(regex);
 }
 
+export const countString = (str, letter) => {
+  let count = 0;
+
+  // looping through the items
+  for (let i = 0; i < str.length; i++) {
+
+    // check if the character is at that position
+    if (str.charAt(i) === letter) {
+      count += 1;
+    }
+  }
+  return count;
+}
+
+export const checkUsernameValidation1 = str => {
+  const dotCount = countString(str, '.');
+  if (dotCount < 2) {
+    const regex = /^(?!.*\\..*\\..*)[A-Za-z]([A-Za-z0-9.]*[A-Za-z0-9])?$/;
+    return str?.match(regex);
+  }
+
+  return false;
+}
+
+export const checkUsernameValidation2 = str => {
+  return str.charAt(str.length - 1) !== '.';
+}
+
 export const getParamFromUrl = key => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);

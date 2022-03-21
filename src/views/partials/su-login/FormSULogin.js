@@ -6,7 +6,11 @@ import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {loginAction} from "../../../redux/action/auth";
-import {checkAlphaNumeric, checkPasswordValidation} from "../../../utils";
+import {
+  checkPasswordValidation,
+  checkUsernameValidation1,
+  checkUsernameValidation2
+} from "../../../utils";
 import {Link} from "react-router-dom";
 // import MicrosoftLogin from "react-microsoft-login";
 // import {microsoftAppClientID} from "../../../config";
@@ -18,13 +22,19 @@ export const formSchema = (t) => {
       .min(6, t('username min error'))
       .max(1024, t('username max error'))
       .test(
-        'is-valid',
-        t('username invalid'),
+        'is-valid-2',
+        t('username invalid 2'),
         function (value) {
-          return checkAlphaNumeric(value);
+          return checkUsernameValidation2(value);
         }
       )
-    ,
+      .test(
+        'is-valid-1',
+        t('username invalid 1'),
+        function (value) {
+          return checkUsernameValidation1(value);
+        }
+      ),
     password: Yup.string()
       .required(t('your password required'))
       .min(6, t('password min error'))

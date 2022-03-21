@@ -9,7 +9,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import {instance, lookupByUsername, requestResetPassword} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
 import history from "../../../history";
-import {checkAlphaNumeric} from "../../../utils";
+import {checkUsernameValidation2, checkUsernameValidation1} from "../../../utils";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -18,10 +18,17 @@ const formSchema = (t) => {
       .min(6, t('username min error'))
       .max(1024, t('username max error'))
       .test(
-        'is-valid',
-        t('username invalid'),
+        'is-valid-2',
+        t('username invalid 2'),
         function (value) {
-          return checkAlphaNumeric(value);
+          return checkUsernameValidation2(value);
+        }
+      )
+      .test(
+        'is-valid-1',
+        t('username invalid 1'),
+        function (value) {
+          return checkUsernameValidation1(value);
         }
       ),
   });
