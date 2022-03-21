@@ -431,5 +431,8 @@
   "edit company": "Edit Company",
   "company administrators": "Company Administrators",
   "security": "Security",
-  "add company admin": "Add Company Administrator"
+  "add company admin": "Add Company Administrator",
+
+  "username invalid 1": "Username must be at lease five characters long, start with a letter, and only contain letters, numbers or a dot",
+  "username invalid 2": "Username cannot end with a dot"
 }

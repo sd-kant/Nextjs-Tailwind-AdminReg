@@ -431,5 +431,8 @@
   "edit company": "会社を編集する",
   "company administrators": "会社の管理者",
   "security": "安全",
-  "add company admin": "会社管理者を追加"
+  "add company admin": "会社管理者を追加",
+
+  "username invalid 1": "ユーザー名は少なくとも5文字の長さで、文字で始まり、文字、数字、またはドットのみを含める必要があります",
+  "username invalid 2": "ユーザー名をドットで終わらせることはできません"
 }

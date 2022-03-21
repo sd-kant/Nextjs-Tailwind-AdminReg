@@ -431,5 +431,8 @@
   "edit company": "Modifier l'entreprise",
   "company administrators": "Administrateurs de l'entreprise",
   "security": "Sécurité",
-  "add company admin": "Ajouter un administrateur de société"
+  "add company admin": "Ajouter un administrateur de société",
+
+  "username invalid 1": "Le nom d'utilisateur doit comporter au moins cinq caractères, commencer par une lettre et ne contenir que des lettres, des chiffres ou un point",
+  "username invalid 2": "Le nom d'utilisateur ne peut pas se terminer par un point"
 }
