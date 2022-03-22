@@ -442,5 +442,6 @@
   "remove user confirmation title": "ユーザーはチームから削除され、「チームが割り当てられていません」に移動しました",
   "delete user warning title": "ユーザーを削除しますか？",
   "delete user warning description": "ユーザーを削除すると、ユーザーの個人情報が削除されます。 このアクションは元に戻せません。",
-  "delete user confirmation title": "ユーザーが削除され、すべての個人情報が削除されました。"
+  "delete user confirmation title": "ユーザーが削除され、すべての個人情報が削除されました。",
+  "edit location": "場所を編集する"
 }

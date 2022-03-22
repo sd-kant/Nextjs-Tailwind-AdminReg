@@ -193,6 +193,10 @@ export const createTeam = (body) => {
   return post("/team", body);
 }
 
+export const updateTeam = (teamId, body) => {
+  return patch(`/team/${teamId}`, body);
+}
+
 export const queryAllOrganizations = () => {
   return get("organization");
 }
