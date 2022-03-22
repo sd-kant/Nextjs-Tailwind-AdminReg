@@ -17,7 +17,7 @@ import {
 import {get} from 'lodash';
 
 const FormTeamMode = (props) => {
-  const {t, setRestBarClass, match: {params: {organizationId}}, myOrganizationId} = props;
+  const {t, setRestBarClass, match: {params: {organizationId}}, myOrganizationId, isAdmin} = props;
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -32,16 +32,19 @@ const FormTeamMode = (props) => {
   return (
     <div className='form-group mt-57'>
       <div>
-        <div
-          className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/invite/company')}
-        >
-          <img src={backIcon} alt="back"/>
-          &nbsp;&nbsp;
-          <span className='font-button-label text-orange'>
+        {
+          isAdmin &&
+          <div
+            className="d-flex align-center cursor-pointer"
+            onClick={() => navigateTo('/invite/company')}
+          >
+            <img src={backIcon} alt="back"/>
+            &nbsp;&nbsp;
+            <span className='font-button-label text-orange'>
               {t("previous")}
             </span>
-        </div>
+          </div>
+        }
 
         <div className='mt-28 form-header-medium'>
             <span className='font-header-medium d-block'>
@@ -106,6 +109,7 @@ const FormTeamMode = (props) => {
 }
 
 const mapStateToProps = (state) => ({
+  isAdmin: get(state, 'auth.isAdmin'),
   userType: get(state, 'auth.userType'),
   myOrganizationId: get(state, 'auth.organizationId'),
 });
