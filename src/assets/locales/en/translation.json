@@ -434,5 +434,13 @@
   "add company admin": "Add Company Administrator",
 
   "username invalid 1": "Username must be at lease five characters long, start with a letter, and only contain letters, numbers or a dot",
-  "username invalid 2": "Username cannot end with a dot"
+  "username invalid 2": "Username cannot end with a dot",
+  "select action": "Select Action",
+  "re-invite user warning title": "Re-invite User to the team?",
+  "re-invite user confirmation title": "User will receive an invitation to join the team",
+  "remove user warning title": "Remove user from the team?",
+  "remove user confirmation title": "User has been removed from the team and moved to “No Team Assigned”",
+  "delete user warning title": "Delete user?",
+  "delete user warning description": "Deleting a user will remove the users' personal identifiable information. This action cannot be undone.",
+  "delete user confirmation title": "User has been deleted and all personal identifiable information has been removed."
 }

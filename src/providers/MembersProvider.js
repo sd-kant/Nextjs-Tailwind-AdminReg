@@ -26,6 +26,7 @@ import ConfirmModalV2 from "../views/components/ConfirmModalV2";
 import {withTranslation} from "react-i18next";
 import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAction} from "../redux/action/ui";
 import {updateUrlParam} from "../utils";
+import ConfirmModal from "../views/components/ConfirmModal";
 
 const MembersContext = React.createContext(null);
 let searchTimeout = null;
@@ -77,6 +78,11 @@ const MembersProvider = (
   const [admins, setAdmins] = React.useState([]);
   const [visibleDeleteModal, setVisibleDeleteModal] = React.useState(false);
   const [visibleRemoveModal, setVisibleRemoveModal] = React.useState(false);
+  const [visibleReInviteModal, setVisibleReInviteModal] = React.useState(false);
+  const [confirmModal, setConfirmModal] = React.useState({
+    title: null,
+    visible: false,
+  });
   const [selectedUser, setSelectedUser] = React.useState(null);
   const [page, setPage] = React.useState('');
   const [teamId, setTeamId] = React.useState(id);
@@ -306,7 +312,7 @@ const MembersProvider = (
         }
 
         it['index'] = index;
-        it['action'] = 1;
+        it['action'] = null;
         it['accessibleTeams'] = accessibleTeams;
         it['originalAccessibleTeams'] = accessibleTeams;
         it['job'] = (parseInt(it['job']) > 0 && parseInt(it['job']) <= 14) ? it['job'] : "14";
@@ -511,6 +517,7 @@ const MembersProvider = (
           remove: [selectedUser.email],
         });
         setVisibleRemoveModal(false);
+        setConfirmModal({visible: true, title: t("remove user confirmation title")});
         showSuccessNotification(t('msg user removed success', {
           user: `${selectedUser?.firstName} ${selectedUser?.firstName}`,
         }));
@@ -537,6 +544,7 @@ const MembersProvider = (
         })
           .then(() => {
             setVisibleDeleteModal(false);
+            setConfirmModal({visible: true, title: t("delete user confirmation title")});
             setMembers(prev => prev.filter(it => it.userId?.toString() !== selectedUser.userId.toString()));
             setTempMembers(prev => prev.filter(it => it.userId?.toString() !== selectedUser.userId.toString()));
             showSuccessNotification(t("msg user deleted success", {
@@ -553,7 +561,8 @@ const MembersProvider = (
     }
   };
 
-  const handleReInvite = (user) => {
+  const handleReInvite = () => {
+    const user = selectedUser;
     let requestHttp = null; let payload = null;
     if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) { // super or org admin
       if (!["-1", "", null, undefined].includes(organizationId?.toString()) && user?.userId) {
@@ -585,6 +594,11 @@ const MembersProvider = (
       setLoading(true);
       requestHttp(payload)
         .then(() => {
+          setVisibleReInviteModal(false);
+          setConfirmModal({
+            visible: true,
+            title: t("re-invite user confirmation title"),
+          });
           showSuccessNotification(t("msg user invite success", {
             user: `${user?.firstName} ${user?.lastName}`,
           }));
@@ -601,7 +615,8 @@ const MembersProvider = (
   const handleActionButtonClick = user => {
     switch (user?.action) {
       case 1: // re-invite
-        handleReInvite(user);
+        setSelectedUser(user);
+        setVisibleReInviteModal(true);
         break;
       case 2: // remove from team
         setSelectedUser(user);
@@ -612,7 +627,7 @@ const MembersProvider = (
         setVisibleDeleteModal(true);
         break;
       default:
-        console.log('action type not valid');
+        console.log('please select action type');
     }
   }
 
@@ -645,18 +660,28 @@ const MembersProvider = (
   return (
     <MembersContext.Provider value={providerValue}>
       <ConfirmModalV2
+        show={visibleReInviteModal}
+        header={t("re-invite user warning title")}
+        onOk={handleReInvite}
+        onCancel={() => setVisibleReInviteModal(false)}
+      />
+      <ConfirmModalV2
         show={visibleRemoveModal}
-        header={t('remove team user header')}
-        subheader={t('remove team user description')}
+        header={t('remove user warning title')}
         onOk={handleRemoveFromTeam}
         onCancel={() => setVisibleRemoveModal(false)}
       />
       <ConfirmModalV2
         show={visibleDeleteModal}
-        header={t('delete user header')}
-        subheader={t('delete user description')}
+        header={t('delete user warning title')}
+        subheader={t('delete user warning description')}
         onOk={handleDeleteUser}
         onCancel={() => setVisibleDeleteModal(false)}
+      />
+      <ConfirmModal
+        show={confirmModal?.visible}
+        header={confirmModal?.title}
+        onOk={() => setConfirmModal({title: null, visible: false})}
       />
       {children}
     </MembersContext.Provider>

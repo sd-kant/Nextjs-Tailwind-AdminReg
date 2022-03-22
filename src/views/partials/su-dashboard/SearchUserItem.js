@@ -287,6 +287,7 @@ const SearchUserItem = (
           <div className="d-flex flex-column justify-end">
             <div className={clsx(style.ButtonWrapper)}>
               <DropdownButton
+                placeholder={t("select action")}
                 option={user?.action}
                 options={doableActions}
                 onClick={() => handleActionButtonClick(user)}
