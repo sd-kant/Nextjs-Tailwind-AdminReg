@@ -15,7 +15,7 @@ const PhoneVerification = (props) => {
         &nbsp;&nbsp;
         {/* eslint-disable-next-line react/jsx-no-comment-textnodes */}
         <span className='form-header-text text-capitalize'>
-          //&nbsp;&nbsp;{t("admin sign in")}
+          //&nbsp;&nbsp;{t("sign in")}
         </span>
       </div>
 
