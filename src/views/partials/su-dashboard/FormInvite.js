@@ -30,6 +30,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import CustomPhoneInput from "../../components/PhoneInput";
 import {checkPhoneNumberValidation} from "../../../utils";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
+import SuccessModal from "../../components/SuccessModal";
 
 export const defaultTeamMember = {
   email: '',
@@ -127,8 +128,8 @@ const FormInvite = (props) => {
     setRestBarClass,
     status,
     setStatus,
-    setVisibleSuccessModal,
     userType,
+    match: {params: {organizationId}},
   } = props;
 
   useEffect(() => {
@@ -390,7 +391,7 @@ const FormInvite = (props) => {
         onOk={() => {
           setStatus({visibleWarningModal: false, alreadyRegisteredUsers: []});
           if (status?.leavePage) {
-            onFinish(setVisibleSuccessModal);
+            setStatus({visibleSuccessModal: true});
           }
         }}
         okText={t('ok')}
@@ -408,6 +409,19 @@ const FormInvite = (props) => {
           </div>
         )}
       />
+
+      <SuccessModal
+        show={status?.visibleSuccessModal}
+        onCancel={() => {
+          setStatus({visibleSuccessModal: false});
+          history.push((`/invite/${organizationId}/team-create`));
+        }}
+        onOk={() => {
+          setStatus({visibleSuccessModal: false});
+          history.push((`/invite/${organizationId}/team-modify`));
+        }}
+      />
+
       <Form className='form-group mt-57'>
         <div>
           <div
@@ -520,14 +534,6 @@ const formatPhoneNumber = (users) => {
   }));
 }
 
-const onFinish = (setVisibleSuccessModal) => {
-  let keysToRemove = ["kop-team-id", "kop-picked-organization-id"];
-  keysToRemove.map(key => localStorage.removeItem(key));
-
-  setVisibleSuccessModal(true);
-  history.push("/dashboard");
-}
-
 // eslint-disable-next-line no-unused-vars
 const onTryAgain = (failedEmails, setFieldValue, values) => {
   const users = values["users"];
@@ -609,7 +615,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {
-    const {showErrorNotification, showSuccessNotification, setLoading, setVisibleSuccessModal, t, match: {params: {organizationId, id: teamId}}} = props;
+    const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId, id: teamId}}} = props;
     let users = values?.users;
     if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
       showErrorNotification(
@@ -636,9 +642,9 @@ const EnhancedForm = withFormik({
           });
         } else {
           if (numberOfSuccess > 0) {
-            setTimeout(() => {
-              onFinish(setVisibleSuccessModal);
-            }, 1500);
+            setStatus({
+              visibleSuccessModal: true,
+            });
           }
         }
       }
