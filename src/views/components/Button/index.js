@@ -102,11 +102,13 @@ const Button = (
       style={{color: calcColor(), backgroundColor: calcBgColor(), borderColor: calcBorderColor()}}
       onClick={() => disabled ? () => {} : onClick()}
     >
-      <span
-        className={clsx(calcTxtSizeStyle(), dropdown ? style.ButtonLabel : null)}
-      >
+      <div className={clsx(style.InnerWrapper)}>
+        <span
+          className={clsx(calcTxtSizeStyle())}
+        >
         {title}
       </span>
+      </div>
       {
         icon ?
           <div

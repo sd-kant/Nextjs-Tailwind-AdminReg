@@ -7,6 +7,13 @@
   border: 1px solid;
   cursor: pointer;
 
+  .InnerWrapper {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .IconWrapper {
     position: absolute;
     width: 35px;
@@ -22,14 +29,6 @@
       top: 50%;
       transform: translateY(-50%);
     }
-  }
-
-  .ButtonLabel {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 120px;
-    display: inline-block;
   }
 }
 
