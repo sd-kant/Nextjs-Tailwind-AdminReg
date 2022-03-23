@@ -730,7 +730,7 @@ const DashboardProviderDraft = (
     if ([null, undefined, "0", ""].includes(rate?.toString())) {
       return "--";
     }
-    return parseInt(rate);
+    return Math.ceil(parseFloat(rate));
   }
 
   const getHeartRateZone = (birthday, heartRate) => {
