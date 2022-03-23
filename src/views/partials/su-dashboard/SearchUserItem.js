@@ -3,7 +3,6 @@ import {connect} from "react-redux";
 import {customStyles} from "./FormInvite";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import DropdownButton from "../../components/DropdownButton";
-import Button from "../../components/Button";
 import {withTranslation} from "react-i18next";
 import {checkIfHigherThanMe, getPermissionLevelFromUserTypes} from "../../../providers/MembersProvider";
 import {
@@ -35,7 +34,7 @@ const SearchUserItem = (
     handleMemberInfoChange,
     handleMemberTeamChange,
     handleMemberTeamUserTypeChange,
-    handleResetPhoneNumber,
+    handlePhoneActionButtonClick,
     handleResetUpdates,
   } = useMembersContext();
 
@@ -87,7 +86,23 @@ const SearchUserItem = (
     wearingDeviceSelected = yesNoOptions?.[0];
   }
   const hiddenPhoneNumber = (user?.phoneNumber?.value) ? t('ends with', {number: user?.phoneNumber?.value?.slice(-4)}) : t("not registered");
-  const phoneNumberInputDisabled = !((user?.phoneNumber?.value) && isAdmin);
+  const ableToResetPhoneNumber = (user?.phoneNumber?.value) && isAdmin;
+
+  const phoneDropdownOptions = React.useMemo(() => {
+    if (ableToResetPhoneNumber) {
+      return [
+        {
+          value: 1,
+          label: hiddenPhoneNumber,
+        },
+        {
+          value: 2,
+          label: 'Reset registered phone number',
+        },
+      ];
+    }
+    return [];
+  }, [hiddenPhoneNumber, ableToResetPhoneNumber]);
 
   return (
     <div className={clsx(style.User)}>
@@ -237,33 +252,31 @@ const SearchUserItem = (
         </div>
       </div>
 
-      <div className={clsx(style.UserRow, 'mt-10')}>
-        <div className={style.GroupWrapper2}>
-          <div className="d-flex flex-column">
-            <label className='font-input-label'>
-              {t("phone number")}
-            </label>
-            <input
-              className={clsx(style.InputHalf, style.DisabledInput, 'input mt-10 font-heading-small text-white text-capitalize')}
-              value={hiddenPhoneNumber}
-              type="text"
-              disabled={true}
-              onChange={() => {
-              }}
-            />
-          </div>
-
-          <div className="d-flex flex-column justify-end">
-            <div className={clsx(style.ButtonWrapper)}>
-              <Button
-                title={t('reset')}
-                borderColor={'orange'}
-                bgColor={'gray'}
-                disabled={phoneNumberInputDisabled}
-                onClick={() => handleResetPhoneNumber(user?.userId, user?.originIndex)}
+      <div className={clsx(style.UserRow)}>
+        <div className="d-flex flex-column">
+          <label className='font-input-label'>
+            {t("phone number")}
+          </label>
+          {
+            ableToResetPhoneNumber ?
+              <div className={clsx(style.PhoneWrapper, 'mt-10')}>
+                <DropdownButton
+                  placeholder={t("select action")}
+                  option={user?.phoneAction}
+                  options={phoneDropdownOptions}
+                  onClick={() => handlePhoneActionButtonClick(user)}
+                  onClickOption={value => handleMemberInfoChange(value, user?.originIndex, 'phoneAction')}
+                />
+              </div> :
+              <input
+                className={clsx(style.Input, style.DisabledInput, 'input mt-10 font-heading-small text-white text-capitalize')}
+                value={hiddenPhoneNumber}
+                type="text"
+                disabled={true}
+                onChange={() => {
+                }}
               />
-            </div>
-          </div>
+          }
         </div>
 
         <div className={style.GroupWrapper}>
@@ -284,7 +297,11 @@ const SearchUserItem = (
             />
           </div>
 
-          <div className="d-flex flex-column justify-end">
+          <div className="d-flex flex-column">
+            <label className="font-input-label text-white text-capitalize">
+              {t("actions")}
+            </label>
+
             <div className={clsx(style.ButtonWrapper)}>
               <DropdownButton
                 placeholder={t("select action")}

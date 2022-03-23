@@ -33,6 +33,10 @@
       width: calc(100% - 45PX);
     }
 
+    .PhoneWrapper {
+      width: 100%;
+    }
+
     .DisabledInput {
       border: 1px solid $app-ts;
       background-color: $app-tf;
@@ -49,6 +53,10 @@
       .ButtonWrapper {
         display: flex;
         justify-content: flex-end;
+        margin-top: 10px;
+      }
+
+      & > div:last-child {
         margin-top: 10px;
       }
     }
@@ -113,12 +121,16 @@
         grid-template-columns: 1fr 1fr;
         grid-column-gap: 40px;
 
-        .Select {
+        & > div:last-child {
+          margin-top: 0;
+        }
+
+        .PhoneWrapper {
           width: 100%;
         }
 
-        .ButtonWrapper {
-          margin-top: 0;
+        .Select {
+          width: 100%;
         }
       }
     }
@@ -154,6 +166,10 @@
       .GroupWrapper2 {
         width: 50%;
         max-width: 370px;
+      }
+
+      .PhoneWrapper {
+        width: 372px;
       }
 
       .Select {
@@ -192,6 +208,10 @@
       .GroupWrapper2 {
         width: 50%;
         max-width: 397px;
+      }
+
+      .PhoneWrapper {
+        width: 397px;
       }
 
       .Select {

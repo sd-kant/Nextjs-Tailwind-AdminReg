@@ -443,5 +443,8 @@
   "delete user warning title": "Supprimer l'utilisateur?",
   "delete user warning description": "La suppression d'un utilisateur supprimera les informations personnelles identifiables de l'utilisateur. Cette action ne peut pas être annulée.",
   "delete user confirmation title": "L'utilisateur a été supprimé et toutes les informations personnelles identifiables ont été supprimées.",
-  "edit location": "Modifier l'emplacement"
+  "edit location": "Modifier l'emplacement",
+  "reset phone warning title": "Réinitialiser le numéro de téléphone enregistré de l'utilisateur ?",
+  "reset phone confirmation title": "Réinitialisation du numéro de téléphone enregistré, l'utilisateur sera invité à enregistrer un nouveau numéro de téléphone",
+  "actions": "Actions"
 }

@@ -443,5 +443,8 @@
   "delete user warning title": "Delete user?",
   "delete user warning description": "Deleting a user will remove the users' personal identifiable information. This action cannot be undone.",
   "delete user confirmation title": "User has been deleted and all personal identifiable information has been removed.",
-  "edit location": "edit location"
+  "edit location": "edit location",
+  "reset phone warning title": "Reset User's Registered Phone Number?",
+  "reset phone confirmation title": "Registered phone number reset, user will be prompted to register a new phone number",
+  "actions": "Actions"
 }

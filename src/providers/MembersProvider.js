@@ -79,6 +79,7 @@ const MembersProvider = (
   const [visibleDeleteModal, setVisibleDeleteModal] = React.useState(false);
   const [visibleRemoveModal, setVisibleRemoveModal] = React.useState(false);
   const [visibleReInviteModal, setVisibleReInviteModal] = React.useState(false);
+  const [visiblePhoneModal, setVisiblePhoneModal] = React.useState(false);
   const [confirmModal, setConfirmModal] = React.useState({
     title: null,
     visible: false,
@@ -197,6 +198,7 @@ const MembersProvider = (
       accessibleTeams: it.accessibleTeams,
       originalAccessibleTeams: it.originalAccessibleTeams,
       action: it.action,
+      phoneAction: it.phoneAction,
       phoneNumber: {
         value: it.phoneNumber,
       },
@@ -313,6 +315,7 @@ const MembersProvider = (
 
         it['index'] = index;
         it['action'] = null;
+        it['phoneAction'] = 1;
         it['accessibleTeams'] = accessibleTeams;
         it['originalAccessibleTeams'] = accessibleTeams;
         it['job'] = (parseInt(it['job']) > 0 && parseInt(it['job']) <= 14) ? it['job'] : "14";
@@ -482,8 +485,12 @@ const MembersProvider = (
     }
   };
 
-  const handleResetPhoneNumber = async (userId) => {
+  const handleResetPhoneNumber = async () => {
+    if (!selectedUser?.userId)
+      return;
+
     try {
+      const userId = selectedUser?.userId;
       setLoading(true);
       await updateUserByAdmin(organizationId, userId, {
         phoneNumber: "",
@@ -501,6 +508,11 @@ const MembersProvider = (
         temp[index]['phoneNumber'] = null;
         setTempMembers(temp);
       }
+      setVisiblePhoneModal(false);
+      setConfirmModal({
+        title: t("reset phone confirmation title"),
+        visible: true,
+      });
     } catch (e) {
       console.log("reset phone number error", e.response?.data);
       showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
@@ -612,6 +624,22 @@ const MembersProvider = (
     }
   };
 
+  const handlePhoneActionButtonClick = user => {
+    switch (user?.phoneAction) {
+      case 1: // label
+        console.log("no action for phone number");
+        break;
+      case 2: // reset phone number
+        if (user?.userId) {
+          setSelectedUser(user);
+          setVisiblePhoneModal(true);
+        }
+        break;
+      default:
+        console.log("no action for phone number");
+    }
+  }
+
   const handleActionButtonClick = user => {
     switch (user?.action) {
       case 1: // re-invite
@@ -655,10 +683,17 @@ const MembersProvider = (
     handleReInvite,
     handleDeleteUser,
     handleActionButtonClick,
+    handlePhoneActionButtonClick,
   };
 
   return (
     <MembersContext.Provider value={providerValue}>
+      <ConfirmModalV2
+        show={visiblePhoneModal}
+        header={t("reset phone warning title")}
+        onOk={handleResetPhoneNumber}
+        onCancel={() => setVisiblePhoneModal(false)}
+      />
       <ConfirmModalV2
         show={visibleReInviteModal}
         header={t("re-invite user warning title")}
