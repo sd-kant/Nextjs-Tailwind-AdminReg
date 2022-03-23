@@ -155,15 +155,15 @@ const MemberDetail = (
                 </div>
 
                 <div className={clsx(style.NameDevice)}>
-                  <div title={data?.firstName + ' ' + data?.lastName}>
+                  <div title={data?.firstName + ' ' + data?.lastName} className={clsx(style.NameDeviceElement)}>
                     <span className={clsx('font-heading-small')}>
-                      {`${textEllipsis(data?.firstName + ' ' + data?.lastName, 20)}`}
+                      {`${data?.firstName}  ${data?.lastName}`}
                     </span>
                   </div>
 
-                  <div title={data?.email}>
+                  <div title={data?.email} className={clsx(style.NameDeviceElement)}>
                       <span className={clsx('font-binary')}>
-                        {textEllipsis(data?.email, 30)}
+                        {data?.email}
                       </span>
                   </div>
 
