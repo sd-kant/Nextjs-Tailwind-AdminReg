@@ -119,10 +119,6 @@ const MemberDetail = (
     );
   }
 
-  const textEllipsis = (str, len) => {
-    return str?.length > len ? `${str.slice(0, len - 1)} ...` : str;
-  }
-
   return (
     <Modal
       isOpen={open}
