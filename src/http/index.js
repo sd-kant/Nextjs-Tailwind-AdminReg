@@ -340,3 +340,7 @@ export const lookupByToken = token => {
 export const lookupByEmail = email => {
   return get(`/master/lookup/email/${email}`);
 };
+
+export const resetPasswordWithToken = (body, token) => {
+  return patch("/user/password", body, token);
+};

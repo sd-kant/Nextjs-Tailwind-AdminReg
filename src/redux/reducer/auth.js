@@ -12,6 +12,7 @@ const initialState = {
   mobileToken: null,
   baseUri: null,
   smsAuthFailedCount: 0,
+  passwordExpired: false,
 };
 
 const authReducer =  (state = initialState, action) => {
@@ -23,6 +24,10 @@ const authReducer =  (state = initialState, action) => {
         draft.userType = action.payload.userType;
         draft.organizationId = action.payload.organizationId;
         draft.isAdmin = action.payload.userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it?.toString()));
+      });
+    case actionTypes.PASSWORD_EXPIRED:
+      return produce(state, draft => {
+        draft.passwordExpired = action.payload.passwordExpired;
       });
     case actionTypes.LOGGED_IN:
       return produce(state, draft => {

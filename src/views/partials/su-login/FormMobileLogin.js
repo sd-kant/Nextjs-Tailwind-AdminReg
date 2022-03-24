@@ -4,7 +4,7 @@ import {withTranslation} from "react-i18next";
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
-import {loginAction, setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth";
+import {setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth";
 // import MicrosoftLogin from "react-microsoft-login";
 import {apiBaseUrl} from "../../../config";
 import axios from "axios";
@@ -182,7 +182,6 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       setRestBarClass: setRestBarClassAction,
-      loginAction: loginAction,
       showErrorNotification: showErrorNotificationAction,
       setBaseUri: setBaseUriAction,
       setMobileToken: setMobileTokenAction,

@@ -446,5 +446,7 @@
   "edit location": "Modifier l'emplacement",
   "reset phone warning title": "Réinitialiser le numéro de téléphone enregistré de l'utilisateur ?",
   "reset phone confirmation title": "Réinitialisation du numéro de téléphone enregistré, l'utilisateur sera invité à enregistrer un nouveau numéro de téléphone",
-  "actions": "Actions"
+  "actions": "Actions",
+  "password expired": "Mot de passe expiré",
+  "password expired description": "Votre mot de passe a expiré, veuillez réinitialiser votre mot de passe !"
 }

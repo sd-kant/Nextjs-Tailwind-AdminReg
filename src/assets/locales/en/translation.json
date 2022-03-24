@@ -446,5 +446,7 @@
   "edit location": "edit location",
   "reset phone warning title": "Reset User's Registered Phone Number?",
   "reset phone confirmation title": "Registered phone number reset, user will be prompted to register a new phone number",
-  "actions": "Actions"
+  "actions": "Actions",
+  "password expired": "Password Expired",
+  "password expired description": "Your password expired, Please reset your password!"
 }

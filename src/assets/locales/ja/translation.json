@@ -446,5 +446,7 @@
   "edit location": "場所を編集する",
   "reset phone warning title": "ユーザーの登録電話番号をリセットしますか？",
   "reset phone confirmation title": "登録された電話番号がリセットされ、ユーザーは新しい電話番号を登録するように求められます",
-  "actions": "行動"
+  "actions": "行動",
+  "password expired": "パスワードの有効期限が切れました",
+  "password expired description": "パスワードの有効期限が切れています。パスワードをリセットしてください。"
 }

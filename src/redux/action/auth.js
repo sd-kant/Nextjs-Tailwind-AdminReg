@@ -38,3 +38,10 @@ export const setMobileTokenAction = token => ({
     token,
   }
 });
+
+export const setPasswordExpiredAction = flag => ({
+  type: actionTypes.PASSWORD_EXPIRED,
+  payload: {
+    passwordExpired: flag,
+  }
+});
