@@ -25,12 +25,14 @@ import MainRouteV2 from "./views/routes/MainRouteV2";
 import DashboardV2 from "./views/pages/DashboardV2";
 import SelectMode from "./views/pages/SelectMode";
 import ForgotUsername from "./views/pages/ForgotUsername";
+import PasswordExpired from "./views/pages/PasswordExpired";
 
 const Router = (
   {
     token,
     userType,
     loggedIn,
+    passwordExpired,
     metric,
     setLoading,
   }) => {
@@ -40,108 +42,118 @@ const Router = (
     <BrowserRouter basename="/" history={history}>
       {
         token ? (
-          <Switch>
-            {/* registration side */}
-            <SignInRoute
-              path="/create-account"
-              loggedIn={loggedIn}
-              render={(props) => (
-                <CreateAccount
-                  {...props}
+          passwordExpired ? (
+            <Switch>
+              <SignInRoute
+                loggedIn={false}
+                path="/password-expired"
+                render={(props) => (
+                  <PasswordExpired
+                    {...props}
+                  />
+                )}
+              />
+              <Redirect to="/password-expired"/>
+            </Switch>
+          ) : (
+            <Switch>
+              {/* registration side */}
+              <SignInRoute
+                path="/create-account"
+                loggedIn={loggedIn}
+                render={(props) => (
+                  <CreateAccount
+                    {...props}
+                  />
+                )}
+              />
+              {/* admin side*/}
+              {
+                ableToLogin(userType) &&
+                loggedIn &&
+                <SignInRoute
+                  loggedIn={true}
+                  isEntry={true}
+                  path="/select-mode"
+                  render={(props) => (
+                    <SelectMode
+                      {...props}
+                    />
+                  )}
                 />
-              )}
-            />
-            {/* admin side*/}
-            {
-              ableToLogin(userType) &&
-              loggedIn &&
-              <SignInRoute
-                loggedIn={true}
-                isEntry={true}
-                path="/select-mode"
-                render={(props) => (
-                  <SelectMode
-                    {...props}
-                  />
-                )}
-              />
-            }
-            {
-              ableToLogin(userType) &&
-              loggedIn &&
-              <SignInRoute
-                loggedIn={true}
-                path="/invite"
-                render={(props) => (
-                  <Invite
-                    {...props}
-                    userType={userType}
-                  />
-                )}
-              />
-            }
-
-            {
-              ableToLogin(userType) &&
-              loggedIn &&
-              <MainRoute
-                exact
-                path="/dashboard"
-                render={(props) => (
-                  <Dashboard
-                    {...props}
-                  />
-                )}
-              />
-            }
-
-            {
-              !loggedIn &&
-              <SignInRoute
-                path="/phone-verification/:mode"
-                render={(props) => (
-                  <PhoneVerification
-                    {...props}
-                  />
-                )}
-              />
-            }
-
-            {
-              !loggedIn &&
-              <SignInRoute
-                path="/phone-register"
-                render={(props) => (
-                  <PhoneRegister
-                    {...props}
-                  />
-                )}
-              />
-            }
-
-            {
-              loggedIn &&
-              <MainRouteV2
-                exact
-                path="/dashboard/multi"
-                render={(props) => (
-                  <StickyComponentsProvider>
-                    <DashboardProvider
-                      setLoading={setLoading}
-                      metric={metric}
-                    >
-                      <DashboardV2
-                        multi={true}
-                        {...props}
-                      />
-                    </DashboardProvider>
-                  </StickyComponentsProvider>
-                )}
-              />
-            }
-
-            <Redirect to={redirectPath}/>
-          </Switch>
+              }
+              {
+                ableToLogin(userType) &&
+                loggedIn &&
+                <SignInRoute
+                  loggedIn={true}
+                  path="/invite"
+                  render={(props) => (
+                    <Invite
+                      {...props}
+                      userType={userType}
+                    />
+                  )}
+                />
+              }
+              {
+                ableToLogin(userType) &&
+                loggedIn &&
+                <MainRoute
+                  exact
+                  path="/dashboard"
+                  render={(props) => (
+                    <Dashboard
+                      {...props}
+                    />
+                  )}
+                />
+              }
+              {
+                !loggedIn &&
+                <SignInRoute
+                  path="/phone-verification/:mode"
+                  render={(props) => (
+                    <PhoneVerification
+                      {...props}
+                    />
+                  )}
+                />
+              }
+              {
+                !loggedIn &&
+                <SignInRoute
+                  path="/phone-register"
+                  render={(props) => (
+                    <PhoneRegister
+                      {...props}
+                    />
+                  )}
+                />
+              }
+              {
+                loggedIn &&
+                <MainRouteV2
+                  exact
+                  path="/dashboard/multi"
+                  render={(props) => (
+                    <StickyComponentsProvider>
+                      <DashboardProvider
+                        setLoading={setLoading}
+                        metric={metric}
+                      >
+                        <DashboardV2
+                          multi={true}
+                          {...props}
+                        />
+                      </DashboardProvider>
+                    </StickyComponentsProvider>
+                  )}
+                />
+              }
+              <Redirect to={redirectPath}/>
+            </Switch>
+          )
         ) : (
           <Switch>
             {/* registration side */}
@@ -230,6 +242,7 @@ const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
   loggedIn: get(state, 'auth.loggedIn'),
   metric: get(state, 'ui.metric'),
+  passwordExpired: get(state, 'auth.passwordExpired'),
 });
 
 const mapDispatchToProps = (dispatch) =>

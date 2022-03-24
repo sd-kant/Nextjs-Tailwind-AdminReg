@@ -54,9 +54,9 @@ function* loginSaga({payload: {
       orgId,
       mfa,
       havePhone,
+      passwordExpired,
     } = responseData;
 
-    // if (ableToLogin(userType)) {
     yield put({
       type: fromRegister ? actionTypes.REGISTER_LOGIN_SUCCESS : actionTypes.LOGIN_SUCCESS,
       payload: {
@@ -66,44 +66,55 @@ function* loginSaga({payload: {
       }
     });
     yield put({
-      type: actionTypes.LOGGED_IN,
+      type: actionTypes.PASSWORD_EXPIRED,
       payload: {
-        loggedIn: !mfa,
-      }
+        passwordExpired: passwordExpired,
+      },
     });
 
-    if (fromRegister) {
-      localStorage.setItem("kop-v2-register-token", token);
-      localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
+    if (!passwordExpired) {
+      yield put({
+        type: actionTypes.LOGGED_IN,
+        payload: {
+          loggedIn: !mfa,
+        }
+      });
 
-      if (!mfa) { // if multi-factor authentication off
-        history.push("/create-account/name");
+      if (fromRegister) {
+        localStorage.setItem("kop-v2-register-token", token);
+        localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
+
+        if (!mfa) { // if multi-factor authentication off
+          history.push("/create-account/name");
+        } else {
+          history.push('/create-account/phone-register');
+        }
       } else {
-        history.push('/create-account/phone-register');
+        localStorage.setItem("kop-v2-logged-in", !mfa ? "true" : "false");
+
+        if (!mfa) { // if multi-factor authentication off
+          localStorage.setItem("kop-v2-token", token);
+          localStorage.setItem("kop-v2-refresh-token", refreshToken);
+          localStorage.setItem("kop-v2-register-token", token);
+          localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
+          localStorage.setItem("kop-v2-picked-organization-id", orgId);
+          if (ableToLogin(userType)) {
+            history.push("/select-mode");
+          } else {
+            history.push("/create-account/name");
+          }
+
+          localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
+        } else {
+          if (havePhone) {
+            history.push('/phone-verification/1');
+          } else {
+            history.push('/phone-register');
+          }
+        }
       }
     } else {
-      localStorage.setItem("kop-v2-logged-in", !mfa ? "true" : "false");
-
-      if (!mfa) { // if multi-factor authentication off
-        localStorage.setItem("kop-v2-token", token);
-        localStorage.setItem("kop-v2-refresh-token", refreshToken);
-        localStorage.setItem("kop-v2-register-token", token);
-        localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
-        localStorage.setItem("kop-v2-picked-organization-id", orgId);
-        if (ableToLogin(userType)) {
-          history.push("/select-mode");
-        } else {
-          history.push("/create-account/name");
-        }
-
-        localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
-      } else {
-        if (havePhone) {
-          history.push('/phone-verification/1');
-        } else {
-          history.push('/phone-register');
-        }
-      }
+      history.push("/password-expired");
     }
   } catch (e) {
     console.log("login error", e);
