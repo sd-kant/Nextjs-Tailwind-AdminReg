@@ -151,6 +151,35 @@ const Router = (
                   )}
                 />
               }
+              <SignInRoute
+                loggedIn={false}
+                path="/mobile-login"
+                render={(props) => (
+                  <MobileLogin
+                    {...props}
+                  />
+                )}
+              />
+
+              <SignInRoute
+                loggedIn={false}
+                path="/mobile-phone-register"
+                render={(props) => (
+                  <MobilePhoneRegister
+                    {...props}
+                  />
+                )}
+              />
+
+              <SignInRoute
+                loggedIn={false}
+                path="/mobile-phone-verification/:mode"
+                render={(props) => (
+                  <MobilePhoneVerification
+                    {...props}
+                  />
+                )}
+              />
               <Redirect to={redirectPath}/>
             </Switch>
           )
