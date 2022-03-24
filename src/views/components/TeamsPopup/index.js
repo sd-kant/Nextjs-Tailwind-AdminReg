@@ -4,6 +4,8 @@ import clsx from 'clsx';
 import style from './TeamsPopup.module.scss';
 import Popup from 'reactjs-popup';
 import teamIcon from '../../../assets/images/teams-icon.svg';
+import {useDashboardContext} from "../../../providers/DashboardProvider";
+import {useMembersContextV2} from "../../../providers/MembersProviderV2";
 
 const popupContentStyle = {
   boxShadow: '0px 15px 25px rgba(0, 0, 0, 0.15)',
@@ -15,45 +17,21 @@ const popupContentStyle = {
   position: 'absolute',
 }
 
-const teams = [
-  {
-    id: 1,
-    title: 'Factory First Floor',
-    cnt: 12,
-  },
-  {
-    id: 2,
-    title: 'Factory Second Floor',
-    cnt: 5,
-  },
-  {
-    id: 3,
-    title: 'Factory Third Floor',
-    cnt: 7,
-  },
-  {
-    id: 4,
-    title: 'Factory Fourth Floor',
-    cnt: 9,
-  },
-  {
-    id: 5,
-    title: 'Factory Fifth Floor',
-    cnt: 10,
-  },
-];
-
 const TeamsPopup = (
   {
     t,
     content,
   }) => {
-  const [selected, setSelected] = React.useState(1);
+  const {formattedTeams} = useDashboardContext();
+  const {handleMove} = useMembersContextV2();
+  const ref = React.useRef();
+
   return (
     <Popup
       trigger={content}
       position="top"
       arrow={false}
+      ref={ref}
       {...{ contentStyle: popupContentStyle }}
     >
       <div
@@ -73,19 +51,22 @@ const TeamsPopup = (
           /*tabIndex={0}*/
         >
           {
-            teams?.map((team, index) => (
+            formattedTeams?.map(team => (
               <div
-                key={`team-dropdown-item-${index}`}
-                className={clsx(style.Item, 'font-binary', index === selected ? style.Selected : null)}
-                onClick={() => setSelected(index)}
+                key={`team-dropdown-item-team-${team.value}`}
+                className={clsx(style.Item, 'font-binary')}
+                onClick={() => {
+                  handleMove(team.value);
+                  ref.current.close();
+                }}
               >
                 <span className={clsx('text-white')}>
-                  {team.title}
+                  {team.label}
                 </span>
-                &nbsp;&nbsp;&nbsp;
+                {/*&nbsp;&nbsp;&nbsp;
                 <span className={clsx('text-gray-2')}>
                   ({team.cnt})
-                </span>
+                </span>*/}
               </div>
             ))
           }

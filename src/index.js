@@ -6,22 +6,27 @@ import App from './App';
 import ReduxToastr from 'react-redux-toastr';
 import reportWebVitals from './reportWebVitals';
 import {store} from "./redux/store";
+import {NotificationProvider} from "./providers/NotificationProvider";
+import Notifications from "./views/partials/Notifications";
 
 ReactDOM.render(
   <Provider store={store}>
-    <React.StrictMode>
-      <App />
-      <ReduxToastr
-        timeOut={3000}
-        newestOnTop={true}
-        preventDuplicates
-        position="top-right"
-        transitionIn="fadeIn"
-        transitionOut="fadeOut"
-        progressBar
-        closeOnToastrClick
-      />
-    </React.StrictMode>
+    <NotificationProvider>
+      <React.StrictMode>
+        <App />
+        <ReduxToastr
+          timeOut={3000}
+          newestOnTop={true}
+          preventDuplicates
+          position="top-right"
+          transitionIn="fadeIn"
+          transitionOut="fadeOut"
+          progressBar
+          closeOnToastrClick
+        />
+        <Notifications/>
+      </React.StrictMode>
+    </NotificationProvider>
   </Provider>,
   document.getElementById('root')
 );

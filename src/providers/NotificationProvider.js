@@ -21,7 +21,7 @@ export const NotificationProvider = (
 
   const addNotification = (title, variant = 'success') => {
     setNotifications(prevState => [...prevState, {
-      id: notifications?.[notifications?.length - 1]?.id + 1 ?? 1,
+      id: new Date().getTime(),
       title,
       variant,
     }])
