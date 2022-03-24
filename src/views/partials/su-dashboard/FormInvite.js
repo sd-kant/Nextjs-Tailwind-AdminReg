@@ -27,9 +27,8 @@ import style from "./FormInvite.module.scss";
 import clsx from "clsx";
 import {AVAILABLE_JOBS, permissionLevels, USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
-import CustomPhoneInput from "../../components/PhoneInput";
-import {checkPhoneNumberValidation} from "../../../utils";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
+import SuccessModal from "../../components/SuccessModal";
 
 export const defaultTeamMember = {
   email: '',
@@ -37,10 +36,6 @@ export const defaultTeamMember = {
   lastName: '',
   userType: '',
   job: "",
-  phoneNumber: {
-    value: '',
-    countryCode: '',
-  },
 };
 
 const userSchema = (t) => {
@@ -59,17 +54,6 @@ const userSchema = (t) => {
       .required(t('role required')),
     job: Yup.object()
       .required(t('role required')),
-    phoneNumber: Yup.object()
-      // .required(t('phone number required'))
-      .test(
-        'is-valid',
-        t('phone number invalid'),
-        function (obj) {
-          if (!obj?.value)
-            return true;
-          return checkPhoneNumberValidation(obj.value, obj.countryCode);
-        },
-      ),
   }).required();
 };
 
@@ -127,8 +111,8 @@ const FormInvite = (props) => {
     setRestBarClass,
     status,
     setStatus,
-    setVisibleSuccessModal,
     userType,
+    match: {params: {organizationId}},
   } = props;
 
   useEffect(() => {
@@ -330,31 +314,6 @@ const FormInvite = (props) => {
             </div>
           </div>
         </div>
-
-        <div className={clsx(style.UserRow)}>
-          <div>
-            <label className='font-input-label'>
-              {t("phone number")}
-            </label>
-            <CustomPhoneInput
-              containerClass={style.PhoneNumberContainer}
-              inputClass={style.PhoneNumberInput}
-              dropdownClass={style.PhoneNumberDropdown}
-              value={user?.phoneNumber?.value}
-              onChange={(value, countryCode) => changeHandler(`${formInputName}.phoneNumber`, {value, countryCode})}
-            />
-            {
-              (touchField?.phoneNumber &&
-                errorField?.phoneNumber) ? (
-                <span className="font-helper-text text-error mt-10">{errorField.phoneNumber}</span>
-              ) : (<span className="font-helper-text text-white mt-10">{t("required for 2fa")}</span>)
-            }
-          </div>
-
-          <div>
-
-          </div>
-        </div>
       </div>
     );
   };
@@ -390,7 +349,7 @@ const FormInvite = (props) => {
         onOk={() => {
           setStatus({visibleWarningModal: false, alreadyRegisteredUsers: []});
           if (status?.leavePage) {
-            onFinish(setVisibleSuccessModal);
+            setStatus({visibleSuccessModal: true});
           }
         }}
         okText={t('ok')}
@@ -408,6 +367,19 @@ const FormInvite = (props) => {
           </div>
         )}
       />
+
+      <SuccessModal
+        show={status?.visibleSuccessModal}
+        onCancel={() => {
+          setStatus({visibleSuccessModal: false});
+          history.push((`/invite/${organizationId}/team-create`));
+        }}
+        onOk={() => {
+          setStatus({visibleSuccessModal: false});
+          history.push((`/invite/${organizationId}/team-modify`));
+        }}
+      />
+
       <Form className='form-group mt-57'>
         <div>
           <div
@@ -513,21 +485,6 @@ const formatJob = (users) => {
   }));
 }
 
-const formatPhoneNumber = (users) => {
-  return users && users.map((user) => ({
-    ...user,
-    phoneNumber: user?.phoneNumber?.value ? `+${user?.phoneNumber?.value}` : null,
-  }));
-}
-
-const onFinish = (setVisibleSuccessModal) => {
-  let keysToRemove = ["kop-team-id", "kop-picked-organization-id"];
-  keysToRemove.map(key => localStorage.removeItem(key));
-
-  setVisibleSuccessModal(true);
-  history.push("/dashboard");
-}
-
 // eslint-disable-next-line no-unused-vars
 const onTryAgain = (failedEmails, setFieldValue, values) => {
   const users = values["users"];
@@ -547,7 +504,7 @@ export const _handleSubmit = (
 ) => {
   return new Promise((resolve) => {
     setLoading(true);
-    const users = setTeamIdToUsers(formatUserType(formatPhoneNumber(formatJob(lowercaseEmail(unFormattedUsers)))), teamId);
+    const users = setTeamIdToUsers(formatUserType(formatJob(lowercaseEmail(unFormattedUsers))), teamId);
     const promises = [];
     users?.forEach(it => {
       promises.push(createUserByAdmin(organizationId, it));
@@ -609,7 +566,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {
-    const {showErrorNotification, showSuccessNotification, setLoading, setVisibleSuccessModal, t, match: {params: {organizationId, id: teamId}}} = props;
+    const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId, id: teamId}}} = props;
     let users = values?.users;
     if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
       showErrorNotification(
@@ -636,9 +593,9 @@ const EnhancedForm = withFormik({
           });
         } else {
           if (numberOfSuccess > 0) {
-            setTimeout(() => {
-              onFinish(setVisibleSuccessModal);
-            }, 1500);
+            setStatus({
+              visibleSuccessModal: true,
+            });
           }
         }
       }

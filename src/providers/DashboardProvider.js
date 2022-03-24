@@ -273,7 +273,7 @@ const DashboardProviderDraft = (
     valuesV2.members?.forEach(member => {
       const stat = valuesV2.stats?.find(it => it.userId?.toString() === member.userId?.toString());
       const userDevices = valuesV2.devices?.find(it => it.userId?.toString() === member.userId?.toString())?.devices;
-      const userKenzenDevice = userDevices?.find(it => it.type === "kenzen" && it.deviceId === stat.deviceId);
+      const userKenzenDevice = userDevices?.find(it => it.type === "kenzen" && it.deviceId === stat?.deviceId);
       const alertsForMe = valuesV2.alerts?.filter(it => it.userId?.toString() === member.userId?.toString());
       const alert = alertsForMe
         ?.sort(function (a, b) {
@@ -730,7 +730,7 @@ const DashboardProviderDraft = (
     if ([null, undefined, "0", ""].includes(rate?.toString())) {
       return "--";
     }
-    return parseInt(rate);
+    return Math.ceil(parseFloat(rate));
   }
 
   const getHeartRateZone = (birthday, heartRate) => {

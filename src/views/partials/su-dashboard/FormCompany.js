@@ -193,7 +193,6 @@ const FormCompany = (props) => {
   const cancelEditing = () => {
     setFieldValue("isEditing", false);
     setFieldValue("selectedItem", null);
-    setFieldValue("companyName", null);
   };
 
   const enableEditing = () => {

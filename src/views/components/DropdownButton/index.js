@@ -1,4 +1,5 @@
 import React from "react";
+import {withTranslation} from "react-i18next";
 import Button from "../Button";
 import DropDownCard from "./DropdownButtonCard";
 import style from "./DropdownButton.module.scss";
@@ -7,6 +8,8 @@ import chevronDown from "../../../assets/images/chevron-down.svg"
 
 const DropdownButton = (
   {
+    t,
+    placeholder,
     option = null,
     options = [],
     onClick = () => {},
@@ -27,6 +30,12 @@ const DropdownButton = (
       document.removeEventListener("click", handleClick);
     };
   });
+
+  const title = React.useMemo(() => {
+    return options?.find(it => it.value?.toString() === option?.toString())?.label ?? (placeholder ?? t("select"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options, option]);
+
   return (
     <div
       className={clsx(style.DropdownWrapper)}
@@ -38,7 +47,7 @@ const DropdownButton = (
         dropdown={true}
         fullWidth={true}
         icon={<img src={chevronDown} alt="down"/>}
-        title={options?.find(it => it.value?.toString() === option?.toString())?.label}
+        title={title}
         onClick={onClick}
         drop={drop}
         onClickArrow={() => setOpen(open => !open)}
@@ -56,4 +65,4 @@ const DropdownButton = (
   );
 };
 
-export default DropdownButton;
+export default withTranslation()(DropdownButton);

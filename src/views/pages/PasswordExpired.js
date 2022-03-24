@@ -1,29 +1,24 @@
 import React from 'react';
 import logo from "../../assets/images/logo_light.svg";
+import FormPasswordExpired from "../partials/su-login/FormPasswordExpired";
 import {useTranslation} from "react-i18next";
-import FormPhoneVerification from "../partials/su-login/FormPhoneVerification";
 
-
-const PhoneVerification = (props) => {
+const PasswordExpired = () => {
   const {t} = useTranslation();
-  const mode = props.match.params.mode;
 
   return (
     <div className='form-main'>
       <div className='form-header'>
         <img className='form-header-logo' src={logo} alt='kenzen logo'/>
         &nbsp;&nbsp;
-        {/* eslint-disable-next-line react/jsx-no-comment-textnodes */}
         <span className='form-header-text text-capitalize'>
-          //&nbsp;&nbsp;{t("sign in")}
+          &#47;&#47;&nbsp;&nbsp;{t("password expired")}
         </span>
       </div>
 
-      <FormPhoneVerification
-        mode={mode}
-      />
+      <FormPasswordExpired/>
     </div>
   )
 }
 
-export default PhoneVerification;
+export default PasswordExpired;

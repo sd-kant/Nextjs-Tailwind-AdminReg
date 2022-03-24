@@ -44,10 +44,10 @@
     .UserActionCard {
       .UserCard {
         .UserMain {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          height: 130px;
+          display: grid;
+          grid-template-columns: auto 1fr;
+          grid-column-gap: 10px;
+          height: 150px;
 
           .AvatarArea {
             display: flex;
@@ -57,8 +57,8 @@
             justify-content: space-between;
 
             .Avatar {
-              width: 100px;
-              height: 100px;
+              width: 80px;
+              height: 80px;
             }
           }
 
@@ -67,23 +67,19 @@
             flex-direction: column;
             height: 100%;
             justify-content: space-between;
+            overflow-x: hidden;
+
+            .NameDeviceElement {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
 
             .Mac_Battery {
               display: flex;
               align-items: center;
             }
           }
-
-          /*.MessageIconWrapper {
-            display: none;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: white;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-          }*/
         }
 
         .Divider {
@@ -325,6 +321,29 @@
       top: 10px;
     }
 
+    .LeftCard {
+      .UserActionCard {
+        .UserCard {
+          .UserMain {
+            grid-column-gap: 20px;
+
+            .AvatarArea {
+              .Avatar {
+                width: 100px;
+                height: 100px;
+              }
+            }
+          }
+
+          .InformationArea {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-column-gap: 32px;
+          }
+        }
+      }
+    }
+
     .RightCard {
       .AlertsCard {
         .AlertCardContent {
@@ -375,25 +394,19 @@
     .LeftCard {
       .UserActionCard {
         display: grid;
-        grid-template-columns: 1fr 190px;
+        grid-template-columns: 1fr 300px;
         grid-column-gap: 10px;
 
         .UserCard {
           .UserMain {
-            /*.MessageIconWrapper {
-              display: inline-flex;
-            }*/
-          }
 
-          .InformationArea {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            grid-column-gap: 32px;
           }
         }
 
         .FirstRolesCard {
-          display: block;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
           margin-top: 20px;
         }
       }
@@ -451,10 +464,6 @@
 
         .UserCard {
           .InformationArea {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-column-gap: 32px;
-
             .InformationEntity {
               .Cell {
                 width: 170px;

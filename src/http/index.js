@@ -193,6 +193,10 @@ export const createTeam = (body) => {
   return post("/team", body);
 }
 
+export const updateTeam = (teamId, body) => {
+  return patch(`/team/${teamId}`, body);
+}
+
 export const queryAllOrganizations = () => {
   return get("organization");
 }
@@ -335,4 +339,8 @@ export const lookupByToken = token => {
 
 export const lookupByEmail = email => {
   return get(`/master/lookup/email/${email}`);
+};
+
+export const resetPasswordWithToken = (body, token) => {
+  return patch("/user/password", body, token);
 };

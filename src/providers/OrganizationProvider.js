@@ -4,7 +4,8 @@ import {connect} from "react-redux";
 import {get} from "lodash";
 import {withTranslation} from "react-i18next";
 import {setLoadingAction, showErrorNotificationAction} from "../redux/action/ui";
-import {getUsersUnderOrganization} from "../http";
+import {getCompanyById, getUsersUnderOrganization} from "../http";
+import countryRegions from 'country-region-data/data.json';
 
 const OrganizationContext = React.createContext(null);
 
@@ -12,17 +13,29 @@ const OrganizationProvider = (
   {
     t,
     children,
+    isAdmin,
     organizationId,
     showErrorNotification,
     setLoading,
   }) => {
   const [orgAdmins, setOrgAdmins] = React.useState([]);
+  const [organization, setOrganization] = React.useState(null);
   React.useEffect(() => {
     if (organizationId) {
       fetchOrgAdmins();
+      fetchCompany();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organizationId]);
+
+  const fetchCompany = () => {
+    if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
+      getCompanyById(organizationId)
+        .then(response => {
+          setOrganization(response.data);
+        });
+    }
+  }
 
   const fetchOrgAdmins = () => {
     setLoading(true);
@@ -41,8 +54,35 @@ const OrganizationProvider = (
       });
   }
 
+  const regions = React.useMemo(() => {
+    let ret = [];
+    if (organization) {
+      const regionsForOrganization = countryRegions.find(it => it.countryName === organization.country)?.regions;
+      if (isAdmin) {
+        ret = regionsForOrganization;
+      } else {
+        ret = regionsForOrganization?.filter(it => organization.regions.some(ele => ele === it.name));
+      }
+    }
+    return ret.map(it => ({
+      label: it.name,
+      value: it.shortCode,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [organization, isAdmin]);
+
+  const locations = React.useMemo(() => {
+    return organization?.locations?.map((it, index) => ({
+      label: it,
+      value: `${index}-${it}`,
+    })) ?? [];
+  }, [organization]);
+
   const providerValue = {
     orgAdmins,
+    organization,
+    regions,
+    locations,
   };
 
   return (
@@ -54,6 +94,7 @@ const OrganizationProvider = (
 
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
+  isAdmin: get(state, 'auth.isAdmin'),
 });
 
 const mapDispatchToProps = (dispatch) =>

@@ -3,7 +3,6 @@ import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import {bindActionCreators} from "redux";
 import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
-import {loginAction} from "../../../redux/action/auth";
 import workerOrange from "../../../assets/images/worker-orange-2.svg";
 import workerOrange1 from "../../../assets/images/worker-orange.svg";
 import settings from "../../../assets/images/settings-orange.svg";
@@ -84,7 +83,6 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       setRestBarClass: setRestBarClassAction,
-      loginAction: loginAction,
       showErrorNotification: showErrorNotificationAction,
     },
     dispatch
