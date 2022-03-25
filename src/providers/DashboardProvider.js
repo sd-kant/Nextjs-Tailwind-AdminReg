@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {
   getTeamAlerts,
   getTeamDevices,
-  getTeamStats,
+  getTeamStats, inviteTeamMember,
   queryAllOrganizations,
   queryTeamMembers,
   queryTeams,
@@ -21,8 +21,9 @@ import {
 } from "../utils";
 import {withTranslation} from "react-i18next";
 import {get} from "lodash";
-import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../constant";
+import {USER_TYPE_ADMIN, USER_TYPE_OPERATOR, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN} from "../constant";
 import useForceUpdate from "../hooks/useForceUpdate";
+import {useNotificationContext} from "./NotificationProvider";
 
 const DashboardContext = React.createContext(null);
 let timeout = undefined;
@@ -54,6 +55,7 @@ const DashboardProviderDraft = (
   const [page, setPage] = React.useState(null);
   const [sizePerPage] = React.useState(10);
   const [keyword, setKeyword] = React.useState(keywordInUrl ?? "");
+  const {addNotification} = useNotificationContext();
   const [values, setValues] = React.useState({
     members: [],
     alerts: [],
@@ -843,6 +845,71 @@ const DashboardProviderDraft = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginatedMembers]);
 
+  const removeMembers = userIds => {
+    const filtered = valuesV2.members?.filter(it => userIds?.every(ele => ele.toString() !== it.userId?.toString()));
+    setValuesV2({
+      ...valuesV2,
+      members: filtered,
+    });
+  };
+
+  const moveMember = async (members, teamId) => {
+    if (!teamId)
+      return;
+
+    return new Promise((resolve) => {
+      const addObj = [];
+      members?.forEach(member => {
+        if (member.teamId?.toString() !== teamId?.toString()) { // check if user from another team
+          const userTypes = [USER_TYPE_OPERATOR];
+          if (member.teams?.some(it => it.teamId?.toString() === teamId?.toString())) { // check if user is a team admin
+            userTypes.push(USER_TYPE_TEAM_ADMIN);
+          }
+          addObj.push({
+            email: member.email,
+            userTypes,
+            userId: member.userId,
+          });
+        } else {
+          addNotification(
+            t('msg user already on the team', {user: `${member.firstName} ${member.lastName}`}),
+            'success',
+          );
+        }
+      });
+      if (addObj.length > 0) {
+        setLoading(true);
+        inviteTeamMember(teamId, {
+          add: addObj,
+        })
+          .then(() => {
+            addNotification(
+              t((addObj.length > 1 ? "msg users moved to the team" : "msg user moved to the team"), {
+                n: addObj.length,
+              }),
+              'success',
+            );
+            if (pickedTeams?.every(it => it.toString() !== teamId.toString())) {
+              const userIdsToRemove = addObj.map(it => it.userId);
+              removeMembers(userIdsToRemove);
+            }
+            setVisibleMemberModal(false);
+            setMember(null);
+          })
+          .catch(e => {
+            addNotification(
+              e.response?.data?.message,
+              'error',
+            );
+          })
+          .finally(() => {
+            setLoading(false);
+            resolve();
+          });
+      }
+    });
+  }
+
   const providerValue = {
     teams,
     team,
@@ -877,6 +944,8 @@ const DashboardProviderDraft = (
     formatHeartRate,
     getHeartRateZone,
     formatConnectionStatusV2,
+    removeMembers,
+    moveMember,
   };
 
   return (

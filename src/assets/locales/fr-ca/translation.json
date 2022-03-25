@@ -448,5 +448,8 @@
   "reset phone confirmation title": "Réinitialisation du numéro de téléphone enregistré, l'utilisateur sera invité à enregistrer un nouveau numéro de téléphone",
   "actions": "Actions",
   "password expired": "Mot de passe expiré",
-  "password expired description": "Votre mot de passe a expiré, veuillez réinitialiser votre mot de passe !"
+  "password expired description": "Votre mot de passe a expiré, veuillez réinitialiser votre mot de passe !",
+  "msg user already on the team": "{{user}} fait déjà partie de l'équipe",
+  "msg user moved to the team": "{{n}} utilisateur a été transféré dans l'équipe avec succès !",
+  "msg users moved to the team": "{{n}} utilisateurs ont été transférés dans l'équipe avec succès !"
 }

@@ -448,5 +448,8 @@
   "reset phone confirmation title": "登録された電話番号がリセットされ、ユーザーは新しい電話番号を登録するように求められます",
   "actions": "行動",
   "password expired": "パスワードの有効期限が切れました",
-  "password expired description": "パスワードの有効期限が切れています。パスワードをリセットしてください。"
+  "password expired description": "パスワードの有効期限が切れています。パスワードをリセットしてください。",
+  "msg user already on the team": "{{user}}はすでにチームに参加しています",
+  "msg user moved to the team": "{{n}}ユーザーは正常にチームに移動しました。",
+  "msg users moved to the team": "{{n}}ユーザーは正常にチームに移動しました。"
 }

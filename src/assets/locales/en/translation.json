@@ -448,5 +448,8 @@
   "reset phone confirmation title": "Registered phone number reset, user will be prompted to register a new phone number",
   "actions": "Actions",
   "password expired": "Password Expired",
-  "password expired description": "Your password expired, Please reset your password!"
+  "password expired description": "Your password expired, Please reset your password!",
+  "msg user already on the team": "{{user}} is already on the team",
+  "msg user moved to the team": "{{n}} user was moved to the team successfully!",
+  "msg users moved to the team": "{{n}} users were moved to the team successfully!"
 }

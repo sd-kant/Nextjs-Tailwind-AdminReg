@@ -56,6 +56,7 @@ const MemberDetail = (
     getHeartRateZone,
     formattedTeams,
     formatHeartRate,
+    moveMember,
   } = useDashboardContext();
   const {stat, alertsForMe, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk} = data ?? {
     stat: null, alertsForMe: null, lastSyncStr: null, numberOfAlerts: null,
@@ -396,6 +397,17 @@ const MemberDetail = (
                   value={team}
                   onChange={e => setTeam(e)}
                   maxMenuHeight={190}
+                />
+              </div>
+
+              <div className='mt-15 d-flex justify-end'>
+                <Button
+                  title={'update team'}
+                  size='sm'
+                  disabled={team?.value?.toString() === data?.teamId?.toString()}
+                  onClick={async () => {
+                    await moveMember([data], team?.value);
+                  }}
                 />
               </div>
             </div>

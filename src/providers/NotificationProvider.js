@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const NotificationContext = React.createContext(null);
 
@@ -6,29 +7,18 @@ export const NotificationProvider = (
   {
     children,
   }) => {
-  const [notifications, setNotifications] = React.useState([
-    /*{
-      id: 1,
-      title: 'Kristina Duran was successfully moved to Factory Second Floor!',
-      variant: 'success',
-    },
-    {
-      id: 2,
-      title: 'Kristina Duran was successfully moved to Factory Second Floor!',
-      variant: 'success',
-    },*/
-  ]);
+  const [notifications, setNotifications] = React.useState([]);
 
   const addNotification = (title, variant = 'success') => {
     setNotifications(prevState => [...prevState, {
-      id: new Date().getTime(),
+      id: uuidv4(),
       title,
       variant,
     }])
   };
 
   const removeNotification = id => {
-    setNotifications(prevState => prevState?.filter(it => it.id !== id) || []);
+    setNotifications(prevState => prevState?.filter(it => it.id !== id));
   };
 
   const providerValue = {
