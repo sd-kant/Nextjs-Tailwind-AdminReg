@@ -10,24 +10,26 @@ import {NotificationProvider} from "./providers/NotificationProvider";
 import Notifications from "./views/partials/Notifications";
 
 ReactDOM.render(
-  <Provider store={store}>
-    <NotificationProvider>
-      <React.StrictMode>
-        <App />
-        <ReduxToastr
-          timeOut={3000}
-          newestOnTop={true}
-          preventDuplicates
-          position="top-right"
-          transitionIn="fadeIn"
-          transitionOut="fadeOut"
-          progressBar
-          closeOnToastrClick
-        />
-        <Notifications/>
-      </React.StrictMode>
-    </NotificationProvider>
-  </Provider>,
+  <React.Suspense fallback={"loading..."}>
+    <Provider store={store}>
+      <NotificationProvider>
+        <React.StrictMode>
+          <App />
+          <ReduxToastr
+            timeOut={3000}
+            newestOnTop={true}
+            preventDuplicates
+            position="top-right"
+            transitionIn="fadeIn"
+            transitionOut="fadeOut"
+            progressBar
+            closeOnToastrClick
+          />
+          <Notifications/>
+        </React.StrictMode>
+      </NotificationProvider>
+    </Provider>
+  </React.Suspense>,
   document.getElementById('root')
 );
 
