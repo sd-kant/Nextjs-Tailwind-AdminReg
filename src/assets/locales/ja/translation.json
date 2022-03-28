@@ -450,9 +450,15 @@
   "password expired": "パスワードの有効期限が切れました",
   "password expired description": "パスワードの有効期限が切れています。パスワードをリセットしてください。",
   "msg user already on the team": "{{user}}はすでにチームに参加しています",
-  "msg user moved to the team": "{{n}}ユーザーは正常にチームに移動しました。",
-  "msg users moved to the team": "{{n}}ユーザーは正常にチームに移動しました。",
   "n users selected": "{{n}}ユーザーが選択されました",
   "n user selected": "{{n}}ユーザーが選択しました",
-  "refresh": "リフレッシュ"
+  "refresh": "リフレッシュ",
+  "move n user to team warning title": "{{n}}ユーザーを{{team}}に移動しますか？",
+  "move n users to team warning title": "{{n}}ユーザーを{{team}}に移動しますか？",
+  "move n user to team confirmation title": "{{n}}ユーザーが{{team}}に移動しました",
+  "move n users to team confirmation title": "{{n}}ユーザーが{{team}}に移動しました",
+  "remove n user warning title": "{{n}}ユーザーを{{team}}から削除しますか？",
+  "remove n user confirmation title": "{{n}}ユーザーが{{team}}から削除されました。ユーザーは、「チームが割り当てられていません」の下にあります。",
+  "remove n users warning title": "{{team}}から{{n}}ユーザーを削除しますか？",
+  "remove n users confirmation title": "{{n}}ユーザーが{{team}}から削除されました。ユーザーは、[チームが割り当てられていません]の下にあります。"
 }
