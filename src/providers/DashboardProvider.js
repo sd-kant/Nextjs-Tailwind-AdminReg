@@ -13,10 +13,10 @@ import axios from "axios";
 import MemberDetail from "../views/modals/MemberDetail";
 import {
   celsiusToFahrenheit,
-  getLatestDate,
+  getLatestDateBeforeNow as getLatestDate,
   getParamFromUrl,
   minutesToDaysHoursMinutes,
-  numMinutesBetween,
+  numMinutesBetweenWithNow as numMinutesBetween,
   updateUrlParam,
 } from "../utils";
 import {withTranslation} from "react-i18next";
@@ -293,8 +293,8 @@ const DashboardProviderDraft = (
         alert,
       });
       const lastSync = getLatestDate(
-        stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
-        alert?.utcTs ? new Date(alert?.utcTs) : null
+        getLatestDate(stat?.heartRateTs ? new Date(stat?.heartRateTs) : null, stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null),
+        getLatestDate(stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null, alert?.utcTs ? new Date(alert?.utcTs) : null)
       );
       const lastSyncStr = formatLastSync(lastSync);
 
@@ -302,7 +302,7 @@ const DashboardProviderDraft = (
       const invisibleDeviceMac = ["1"].includes(connectionObj?.value?.toString());
       const invisibleBattery = ["1", "8"].includes(connectionObj?.value?.toString()) ||
         (["2", "4"].includes(connectionObj?.value?.toString()) && numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 240);
-      const invisibleHeatRisk = !alert || ["1", "2", "8"].includes(connectionObj?.value?.toString());
+      const invisibleHeatRisk = ["1", "2", "8"].includes(connectionObj?.value?.toString());
       const invisibleLastSync = (new Date(lastSync).getTime() > (new Date().getTime() + (60 * 1000))) || ["1"].includes(connectionObj?.value?.toString());
 
       arr.push({
@@ -322,6 +322,16 @@ const DashboardProviderDraft = (
         invisibleLastSync,
       })
     });
+
+    const priorities = {
+      "1": 6,
+      "2": 5,
+      "3": 1,
+      "4": 2,
+      "7": 3,
+      "8": 4,
+    };
+
     if ([1, 2].includes(filter?.lastSync)) { // sort by last sync
       arr = arr?.sort((a, b) => {
         if (a.invisibleLastSync) {
@@ -353,12 +363,15 @@ const DashboardProviderDraft = (
         } else {
           v = filter?.heatRisk === 1 ? a.alertObj?.value - b.alertObj?.value : b.alertObj?.value - a.alertObj?.value;
           if (v === 0) {
-            if (a.invisibleLastSync) {
-              v = 1;
-            } else if (b.invisibleLastSync) {
-              v = -1;
-            } else {
-              v = new Date(b.lastSync) - new Date(a.lastSync);
+            v = priorities[a.connectionObj?.value] - priorities[b.connectionObj?.value];
+            if (v === 0) {
+              if (a.invisibleLastSync) {
+                v = 1;
+              } else if (b.invisibleLastSync) {
+                v = -1;
+              } else {
+                v = new Date(b.lastSync) - new Date(a.lastSync);
+              }
             }
           }
         }
@@ -366,14 +379,6 @@ const DashboardProviderDraft = (
       });
     }
     if ([1, 2].includes(filter?.connection)) {
-      const priorities = {
-        "1": 6,
-        "2": 5,
-        "3": 1,
-        "4": 2,
-        "7": 3,
-        "8": 4,
-      };
       arr = arr?.sort((a, b) => {
         let v = filter?.connection === 1 ? priorities[a.connectionObj?.value] - priorities[b.connectionObj?.value] : priorities[b.connectionObj?.value] - priorities[a.connectionObj?.value];
         if (v === 0) {
@@ -393,28 +398,7 @@ const DashboardProviderDraft = (
     console.log(`last rendering done at ${new Date().toLocaleString()}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valuesV2.members, valuesV2.alerts, valuesV2.stats, valuesV2.devices, filter, count]);
-  /*React.useEffect(() => {
-    if (team?.value && values?.members?.length) {
-      setTeams(prev => prev.map(item => {
-        if (item?.id?.toString() === team?.value?.toString()) {
-          const origin = originTeams?.find(it => it.id?.toString() === team?.value?.toString());
-          if (origin) {
-            const teamWithNumber = {
-              ...origin,
-              name: `${origin.name} (${values?.members?.length ?? 0})`,
-            };
-            setTeam({
-              value: teamWithNumber.id,
-              label: teamWithNumber.name,
-            });
-            return teamWithNumber;
-          }
-        }
-        return item;
-      }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values?.members]);*/
+
   const subscribe = (ts, cancelToken) => {
     // fixme check whether the function that removes previous subscribe is correct
     if (pickedTeams?.length > 0) {
@@ -598,28 +582,74 @@ const DashboardProviderDraft = (
     if (flag && connected) {
       if (
         numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 60 ||
-        numMinutesBetween(new Date(), new Date(stat?.tempHumidityTs)) <= 60
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60
       ) {
-        if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 10) {
-          return {
-            label: t('limited connectivity'),
-            value: 4,
-          };
-        } else {
+        if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
           return {
             label: t('device connected'),
             value: 3,
+          };
+        } else {
+          return {
+            label: t('limited connectivity'),
+            value: 4,
           };
         }
       } else if (
         numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 60 &&
         numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 90 &&
-        numMinutesBetween(new Date(), new Date(stat?.tempHumidityTs)) > 60 &&
-        numMinutesBetween(new Date(), new Date(stat?.tempHumidityTs)) <= 240
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) > 60 &&
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 90
       ) {
         return {
           label: t('limited connectivity'),
           value: 4,
+        };
+      } else if (
+        (
+          numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 90 &&
+          numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 120
+        ) ||
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 120
+      ) {
+        return {
+          label: t('no connection'),
+          value: 7,
+        };
+      } else {
+        return {
+          label: t('no connection'),
+          value: 8,
+        };
+      }
+    }
+
+    if (!flag) {
+      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
+        return {
+          label: t('no connection'),
+          value: 7,
+        };
+      } else {
+        return {
+          label: t('no connection'),
+          value: 8,
+        };
+      }
+    }
+
+    if (
+      !connected
+    ) {
+      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
+        return {
+          label: t('no connection'),
+          value: 7,
+        };
+      } else {
+        return {
+          label: t('no connection'),
+          value: 8,
         };
       }
     }
@@ -673,6 +703,13 @@ const DashboardProviderDraft = (
   }
 
   const formatAlert = stageId => {
+    if (!stageId) {
+      return {
+        label: "Safe",
+        value: 5,
+      };
+    }
+
     switch (stageId?.toString()) {
       case "1":
         return {
