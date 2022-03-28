@@ -451,5 +451,7 @@
   "password expired description": "Your password expired, Please reset your password!",
   "msg user already on the team": "{{user}} is already on the team",
   "msg user moved to the team": "{{n}} user was moved to the team successfully!",
-  "msg users moved to the team": "{{n}} users were moved to the team successfully!"
+  "msg users moved to the team": "{{n}} users were moved to the team successfully!",
+  "n users selected": "{{n}} users selected",
+  "n user selected": "{{n}} user selected"
 }

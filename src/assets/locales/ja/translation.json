@@ -451,5 +451,7 @@
   "password expired description": "パスワードの有効期限が切れています。パスワードをリセットしてください。",
   "msg user already on the team": "{{user}}はすでにチームに参加しています",
   "msg user moved to the team": "{{n}}ユーザーは正常にチームに移動しました。",
-  "msg users moved to the team": "{{n}}ユーザーは正常にチームに移動しました。"
+  "msg users moved to the team": "{{n}}ユーザーは正常にチームに移動しました。",
+  "n users selected": "{{n}}ユーザーが選択されました",
+  "n user selected": "{{n}}ユーザーが選択しました"
 }
