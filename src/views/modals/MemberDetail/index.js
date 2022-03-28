@@ -15,7 +15,7 @@ import heart from '../../../assets/images/heart.svg';
 import {get} from "lodash";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import {customStyles} from "../../pages/DashboardV2";
-import {numMinutesBetween} from "../../../utils";
+import {numMinutesBetweenWithNow as numMinutesBetween} from "../../../utils";
 import BatteryV3 from "../../components/BatteryV3";
 
 export const filters = [
@@ -58,15 +58,16 @@ const MemberDetail = (
     formatHeartRate,
     moveMember,
   } = useDashboardContext();
+  console.log("member", data);
   const {stat, alertsForMe, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk} = data ?? {
     stat: null, alertsForMe: null, lastSyncStr: null, numberOfAlerts: null,
   };
   let badgeColorStyle = style.Off;
   if (connectionObj?.value?.toString() === "3") {
-    if (["3", "4"].includes(alertObj?.value?.toString())) {
-      badgeColorStyle = style.Green;
-    } else if (["1", "2"].includes(alertObj?.value?.toString())) {
+    if (["1", "2"].includes(alertObj?.value?.toString())) {
       badgeColorStyle = style.Red;
+    } else {
+      badgeColorStyle = style.Green;
     }
   } else if (connectionObj?.value?.toString() === "4") {
     badgeColorStyle = style.Yellow;

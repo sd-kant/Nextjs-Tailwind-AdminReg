@@ -150,6 +150,15 @@ export const numMinutesBetween = (d1 = new Date(), d2 = new Date(1900, 1, 1)) =>
   return Math.ceil(diff / (1000 * 60));
 };
 
+export const numMinutesBetweenWithNow = (d1 = new Date(), d2 = new Date(1900, 1, 1)) => {
+  if (d2.getTime() > (d1.getTime() + (60 * 1000))) {
+    return 100000;
+  }
+  const diff = (d1.getTime() - d2.getTime());
+  // const diff = Math.abs(d1.getTime() - d2.getTime());
+  return Math.ceil(diff / (1000 * 60));
+};
+
 export const minutesToDaysHoursMinutes = minutes => {
   if (!minutes) {
     return {
@@ -170,6 +179,28 @@ export const celsiusToFahrenheit = t => {
 };
 
 export const getLatestDate = (d1, d2) => {
+  if (!d1) return d2;
+  if (!d2) return d1;
+  if (d2?.getTime() <= d1?.getTime()) {
+    return d1;
+  }
+
+  return d2;
+}
+
+export const getLatestDateBeforeNow = (d1, d2) => {
+  const now = new Date().getTime();
+  const gap1 = now - d1;
+  const gap2 = now - d2;
+  if (gap1 < 0 && gap2 < 0) {
+    return null;
+  }
+  if (gap1 < 0) {
+    return d2;
+  }
+  if (gap2 < 0) {
+    return d1;
+  }
   if (!d1) return d2;
   if (!d2) return d1;
   if (d2?.getTime() <= d1?.getTime()) {

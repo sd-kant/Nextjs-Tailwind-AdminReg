@@ -115,18 +115,23 @@ const MemberTable = (
                 <span className={clsx('font-bold')}>
                   {alertObj?.label}
                 </span>
-                <span>
-                  {formatHeartCbt(alert?.heartCbtAvg)}{metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;{formatHeartRate(alert?.heartRateAvg)} BPM
-                </span>
-                <span>
-                  {alert?.utcTs ? new Date(alert?.utcTs).toLocaleString([], {
-                    year: 'numeric',
-                    month: 'numeric',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  }) : ''}
-                </span>
+                {
+                  alertObj?.value?.toString() !== "5" &&
+                    <React.Fragment>
+                      <span>
+                        {formatHeartCbt(alert?.heartCbtAvg)}{metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;{formatHeartRate(alert?.heartRateAvg)} BPM
+                      </span>
+                      <span>
+                        {alert?.utcTs ? new Date(alert?.utcTs).toLocaleString([], {
+                          year: 'numeric',
+                          month: 'numeric',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        }) : ''}
+                      </span>
+                    </React.Fragment>
+                }
               </div>
             }
           </td>
@@ -162,10 +167,10 @@ const MemberTable = (
     const {alertObj: {value: alertValue}, connectionObj: {value: connectionValue}} = member;
     let badgeColorStyle = null;
     if (connectionValue?.toString() === "3") {
-      if (["3", "4"].includes(alertValue?.toString())) {
-        badgeColorStyle = style.Green;
-      } else if (["1", "2"].includes(alertValue?.toString())) {
+      if (["1", "2"].includes(alertValue?.toString())) {
         badgeColorStyle = style.Red;
+      } else {
+        badgeColorStyle = style.Green;
       }
     } else if (connectionValue?.toString() === "4") {
       badgeColorStyle = style.Yellow;
