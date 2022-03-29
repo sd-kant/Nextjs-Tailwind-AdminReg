@@ -445,8 +445,40 @@ const DashboardProviderDraft = (
                 const memberEvents = events?.filter(it => it.userId?.toString() === member.userId.toString());
                 const latestHeartRate = memberEvents?.filter(it => it.type === "HeartRate")
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
-                const latestDeviceLog = memberEvents?.filter(it => it.type === "DeviceLog")
+
+                // update member's devices list
+                const memberDeviceLogs = memberEvents?.filter(it => it.type === "DeviceLog");
+                const latestDeviceLog = memberDeviceLogs
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
+
+                if (memberDeviceLogs?.length > 0) {
+                  const devicesTemp = JSON.parse(JSON.stringify(valuesV2Ref.current?.devices));
+                  const devicesMemberIndex = devicesTemp.findIndex(it => it.userId?.toString() === member.userId?.toString()) ?? [];
+                  const memberDeviceLogsData = memberDeviceLogs?.map(it => ({...it.data, ts: it.data?.utcTs}));
+                  let memberDevices = [];
+                  if (devicesMemberIndex !== -1) {
+                    memberDevices = devicesTemp[devicesMemberIndex].devices ?? [];
+                  }
+                  // fixme I assumed all device logs as kenzen device logs
+                  memberDeviceLogsData?.forEach(it => {
+                    const index = memberDevices.findIndex(ele => ele.deviceId === it.deviceId)
+                    if (index !== -1) {
+                      memberDevices.splice(index, 1, {...it, type: 'kenzen'});
+                    } else {
+                      memberDevices.push({...it, type: 'kenzen'});
+                    }
+                  })
+                  if (devicesMemberIndex !== -1) {
+                    devicesTemp.splice(devicesMemberIndex, 1, {userId: member.userId, devices: memberDevices});
+                  } else {
+                    devicesTemp.push({userId: member.userId, devices: memberDevices});
+                  }
+                  setValuesV2({
+                    ...valuesV2Ref.current,
+                    devices: devicesTemp,
+                  });
+                }
+
                 const latestTempHumidity = memberEvents?.filter(it => it.type === "TempHumidity")
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
                 const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
@@ -542,7 +574,6 @@ const DashboardProviderDraft = (
         console.error(e);
       });
   };
-
   // eslint-disable-next-line no-unused-vars
   const fetchTeamAlerts = (id) => {
     const d = new Date();
