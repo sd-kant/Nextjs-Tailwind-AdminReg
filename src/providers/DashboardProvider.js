@@ -213,17 +213,23 @@ const DashboardProviderDraft = (
               if (result.status === "fulfilled") {
                 if (result.value?.data?.length > 0) {
                   const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                  const updated = [
+                    ...prev.alerts,
+                    ...(
+                      result.value?.data?.map(it => ({
+                          ...it,
+                          utcTs: it.ts,
+                        })
+                      )
+                    )];
+                  const uniqueUpdated = [];
+                  for (const entry of updated) {
+                    if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) { uniqueUpdated.push(entry) }
+                  }
+
                   setValuesV2({
                     ...prev,
-                    alerts: [
-                      ...prev.alerts,
-                      ...(
-                        result.value?.data?.map(it => ({
-                            ...it,
-                            utcTs: it.ts,
-                          })
-                        )
-                      )],
+                    alerts: uniqueUpdated,
                   });
                 }
               }
