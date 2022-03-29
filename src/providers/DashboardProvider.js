@@ -431,9 +431,14 @@ const DashboardProviderDraft = (
               const alerts = events?.filter(it => it.type === "Alert");
               if (alerts?.length > 0) {
                 const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                const updated = [...prev.alerts, ...(alerts?.map(it => it.data))];
+                const uniqueUpdated = [];
+                for (const entry of updated) {
+                  if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) { uniqueUpdated.push(entry) }
+                }
                 setValuesV2({
                   ...prev,
-                  alerts: [...prev.alerts, ...(alerts?.map(it => it.data))],
+                  alerts: uniqueUpdated,
                 });
               }
               valuesV2Ref.current?.members?.forEach(member => {
