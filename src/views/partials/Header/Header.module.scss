@@ -58,6 +58,18 @@
     .PaginationWrapper {
       margin-top: 5px;
     }
+
+    .SearchInputWrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .RefreshIcon {
+        width: 23px;
+        height: 23px;
+        cursor: pointer;
+      }
+    }
   }
 }
 
@@ -90,6 +102,12 @@
       display: grid;
       grid-template-columns: 1fr auto;
       grid-column-gap: 25px;
+
+      .SearchInputWrapper {
+        .RefreshIcon {
+          display: none;
+        }
+      }
 
       .PaginationWrapper {
         margin-top: 10px;
