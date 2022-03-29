@@ -453,5 +453,6 @@
   "msg user moved to the team": "{{n}} user was moved to the team successfully!",
   "msg users moved to the team": "{{n}} users were moved to the team successfully!",
   "n users selected": "{{n}} users selected",
-  "n user selected": "{{n}} user selected"
+  "n user selected": "{{n}} user selected",
+  "refresh": "refresh"
 }

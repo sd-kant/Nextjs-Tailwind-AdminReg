@@ -43,6 +43,7 @@ const DashboardProviderDraft = (
   const organizationInUrl = getParamFromUrl("organization");
   const teamsInUrl = getParamFromUrl('teams');
 
+  const [refreshCount, setRefreshCount] = React.useState(0);
   const [organizations, setOrganizations] = React.useState([]);
   const [organization, setOrganization] = React.useState(organizationInUrl ?? null);
   const [teams, setTeams] = React.useState([]);
@@ -258,19 +259,23 @@ const DashboardProviderDraft = (
             resolve();
           });
       });
+      setLoading(true);
       Promise.allSettled([a(), b(), c(), e()])
         .then(() => {
           const d = new Date().getTime();
           setHorizon(d);
           subscribe(d, source.token);
           setPage(1);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
     return () => {
       source.cancel("cancel by user");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickedTeams]);
+  }, [pickedTeams, refreshCount]);
   React.useEffect(() => {
     setTeam(null);
     updateUrlParam({param: {key: 'organization', value: organization}});
@@ -1032,6 +1037,7 @@ const DashboardProviderDraft = (
     formatConnectionStatusV2,
     removeMembers,
     moveMember,
+    setRefreshCount,
   };
 
   return (

@@ -453,5 +453,6 @@
   "msg user moved to the team": "{{n}}ユーザーは正常にチームに移動しました。",
   "msg users moved to the team": "{{n}}ユーザーは正常にチームに移動しました。",
   "n users selected": "{{n}}ユーザーが選択されました",
-  "n user selected": "{{n}}ユーザーが選択しました"
+  "n user selected": "{{n}}ユーザーが選択しました",
+  "refresh": "リフレッシュ"
 }
