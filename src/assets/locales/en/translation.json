@@ -457,6 +457,8 @@
   "move n users to team warning title": "Move {{n}} users to {{team}}?",
   "move n user to team confirmation title": "{{n}} user moved to {{team}}",
   "move n users to team confirmation title": "{{n}} users moved to {{team}}",
+  "move user to team warning title": "Move {{user}} to {{team}}?",
+  "move user to team confirmation title": "{{user}} moved to {{team}}",
   "remove n user warning title": "Remove {{n}} user from {{team}}?",
   "remove n user confirmation title": "{{n}} user removed from the {{team}}, User can be found under “No Team Assigned”",
   "remove n users warning title": "Remove {{n}} users from {{team}}?",

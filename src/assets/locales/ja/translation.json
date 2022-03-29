@@ -457,6 +457,8 @@
   "move n users to team warning title": "{{n}}ユーザーを{{team}}に移動しますか？",
   "move n user to team confirmation title": "{{n}}ユーザーが{{team}}に移動しました",
   "move n users to team confirmation title": "{{n}}ユーザーが{{team}}に移動しました",
+  "move user to team warning title": "{{user}}を{{team}}に移動しますか？",
+  "move user to team confirmation title": "{{user}}は{{team}}に移動しました ",
   "remove n user warning title": "{{n}}ユーザーを{{team}}から削除しますか？",
   "remove n user confirmation title": "{{n}}ユーザーが{{team}}から削除されました。ユーザーは、「チームが割り当てられていません」の下にあります。",
   "remove n users warning title": "{{team}}から{{n}}ユーザーを削除しますか？",
