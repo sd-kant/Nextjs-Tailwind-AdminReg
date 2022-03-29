@@ -23,7 +23,7 @@ const TeamsPopup = (
     content,
   }) => {
   const {formattedTeams} = useDashboardContext();
-  const {handleMove} = useMembersContextV2();
+  const {handleMoveClick} = useMembersContextV2();
   const ref = React.useRef();
 
   return (
@@ -56,7 +56,7 @@ const TeamsPopup = (
                 key={`team-dropdown-item-team-${team.value}`}
                 className={clsx(style.Item, 'font-binary')}
                 onClick={() => {
-                  handleMove(team.value);
+                  handleMoveClick(team.value);
                   ref.current.close();
                 }}
               >

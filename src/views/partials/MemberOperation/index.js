@@ -13,7 +13,7 @@ const MemberOperation = (
   {
     t,
   }) => {
-  const {selectedMembers, setSelectedMembers} = useMembersContextV2();
+  const {selectedMembers, setSelectedMembers, handleRemoveClick} = useMembersContextV2();
   const renderAction = (
     {
       icon = removeIcon,
@@ -54,6 +54,7 @@ const MemberOperation = (
       icon: removeIcon,
       title: t('remove'),
       isRemove: true,
+      action: handleRemoveClick,
     },
     {
       icon: closeIcon,

@@ -450,9 +450,17 @@
   "password expired": "Mot de passe expiré",
   "password expired description": "Votre mot de passe a expiré, veuillez réinitialiser votre mot de passe !",
   "msg user already on the team": "{{user}} fait déjà partie de l'équipe",
-  "msg user moved to the team": "{{n}} utilisateur a été transféré dans l'équipe avec succès !",
-  "msg users moved to the team": "{{n}} utilisateurs ont été transférés dans l'équipe avec succès !",
   "n users selected": "{{n}} utilisateurs sélectionnés",
   "n user selected": "{{n}} utilisateur sélectionné",
-  "refresh": "rafraîchir"
+  "refresh": "rafraîchir",
+  "move n user to team warning title": "Déplacer {{n}} utilisateur vers {{team}} ?",
+  "move n users to team warning title": "Transférer {{n}} utilisateurs vers {{team}} ?",
+  "move n user to team confirmation title": "{{n}} utilisateur a été déplacé vers {{team}}",
+  "move n users to team confirmation title": "{{n}} utilisateurs déplacés vers {{team}}",
+  "move user to team warning title": "Déplacer {{user}} vers {{team}} ?",
+  "move user to team confirmation title": "{{user}} a été déplacé vers {{team}}",
+  "remove n user warning title": "Supprimer {{n}} utilisateur de {{team}} ?",
+  "remove n user confirmation title": "{{n}} utilisateur supprimé de l'{{équipe}}, l'utilisateur peut être trouvé sous “Aucune équipe attribuée”",
+  "remove n users warning title": "Supprimer {{n}} utilisateurs de {{team}} ?",
+  "remove n users confirmation title": "{{n}} utilisateurs supprimés de l'{{équipe}}, les utilisateurs peuvent être trouvés sous “Aucune équipe affectée” "
 }

@@ -936,7 +936,7 @@ const DashboardProviderDraft = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginatedMembers]);
 
-  const removeMembers = userIds => {
+  const removeMembersFromView = userIds => {
     const filtered = valuesV2.members?.filter(it => userIds?.every(ele => ele.toString() !== it.userId?.toString()));
     setValuesV2({
       ...valuesV2,
@@ -944,11 +944,63 @@ const DashboardProviderDraft = (
     });
   };
 
+  const updateMembersFromView = (userIds, teamId) => {
+    const updated = valuesV2.members?.map(it => ({
+      ...it,
+      teamId: teamId,
+    }));
+    setValuesV2({
+      ...valuesV2,
+      members: updated,
+    });
+  };
+
+  const removeMember = async members => {
+    return new Promise((resolve) => {
+      const removeObj = [];
+      members?.forEach(member => {
+        const index = removeObj?.findIndex(it => it.teamId?.toString() === member.teamId?.toString());
+        if (index !== -1) {
+          removeObj.splice(index, 1,  {
+            ...removeObj[index],
+            emails: [...removeObj[index].emails, member.email],
+          })
+        } else {
+          removeObj.push({
+            teamId: member.teamId,
+            emails: [member.email],
+          });
+        }
+      });
+      if (removeObj.length > 0) {
+        const promises = removeObj.map(it => inviteTeamMember(it.teamId, {remove: it.emails}));
+        setLoading(true);
+        let cnt = 0;
+        Promise.allSettled(promises)
+          .then(results => {
+            results?.forEach(result => {
+              if (result.status === "fulfilled") {
+                cnt += result.value?.data?.removed?.length;
+                setValuesV2({
+                  ...valuesV2Ref.current,
+                  members: valuesV2Ref.current.members?.filter(it => !(result.value?.data?.removed?.includes(it.email))),
+                })
+              }
+            });
+          })
+          .finally(() => {
+            setLoading(false);
+            resolve({cnt});
+          });
+      }
+    });
+  }
+
   const moveMember = async (members, teamId) => {
     if (!teamId)
       return;
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const addObj = [];
       members?.forEach(member => {
         if (member.teamId?.toString() !== teamId?.toString()) { // check if user from another team
@@ -974,28 +1026,23 @@ const DashboardProviderDraft = (
           add: addObj,
         })
           .then(() => {
-            addNotification(
-              t((addObj.length > 1 ? "msg users moved to the team" : "msg user moved to the team"), {
-                n: addObj.length,
-              }),
-              'success',
-            );
+            const userIdsToProcess = addObj.map(it => it.userId);
             if (pickedTeams?.every(it => it.toString() !== teamId.toString())) {
-              const userIdsToRemove = addObj.map(it => it.userId);
-              removeMembers(userIdsToRemove);
+              removeMembersFromView(userIdsToProcess);
+            } else {
+              updateMembersFromView(userIdsToProcess, teamId);
             }
-            setVisibleMemberModal(false);
-            setMember(null);
+            resolve();
           })
           .catch(e => {
             addNotification(
               e.response?.data?.message,
               'error',
             );
+            reject(e);
           })
           .finally(() => {
             setLoading(false);
-            resolve();
           });
       }
     });
@@ -1035,9 +1082,10 @@ const DashboardProviderDraft = (
     formatHeartRate,
     getHeartRateZone,
     formatConnectionStatusV2,
-    removeMembers,
+    removeMembersFromView,
     moveMember,
     setRefreshCount,
+    removeMember,
   };
 
   return (

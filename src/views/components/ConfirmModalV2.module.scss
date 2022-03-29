@@ -1,5 +1,18 @@
 @import "../../assets/scss/colors";
 
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  backdrop-filter: blur(2px);
+  z-index: 200;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
 .Modal {
   position: fixed;
   top: 50%;
