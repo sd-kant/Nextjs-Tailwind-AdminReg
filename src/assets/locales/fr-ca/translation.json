@@ -463,5 +463,6 @@
   "remove n user confirmation title": "{{n}} utilisateur supprimé de l'{{équipe}}, l'utilisateur peut être trouvé sous “Aucune équipe attribuée”",
   "remove n users warning title": "Supprimer {{n}} utilisateurs de {{team}} ?",
   "remove n users confirmation title": "{{n}} utilisateurs supprimés de l'{{équipe}}, les utilisateurs peuvent être trouvés sous “Aucune équipe affectée” ",
-  "create modify team": "Créer ou modifier une équipe"
+  "create modify team": "Créer ou modifier une équipe",
+  "enter team name": "Entrez le nom de l'équipe"
 }

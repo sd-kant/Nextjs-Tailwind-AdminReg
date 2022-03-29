@@ -112,6 +112,7 @@ const FormTeamCreate = (props) => {
             name="name"
             value={values["name"]}
             type='text'
+            placeholder={t("enter team name")}
             onChange={changeFormField}
           />
 

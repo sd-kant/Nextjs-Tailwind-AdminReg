@@ -463,5 +463,6 @@
   "remove n user confirmation title": "{{n}}ユーザーが{{team}}から削除されました。ユーザーは、「チームが割り当てられていません」の下にあります。",
   "remove n users warning title": "{{team}}から{{n}}ユーザーを削除しますか？",
   "remove n users confirmation title": "{{n}}ユーザーが{{team}}から削除されました。ユーザーは、[チームが割り当てられていません]の下にあります。",
-  "create modify team": "チームの作成または変更"
+  "create modify team": "チームの作成または変更",
+  "enter team name": "チーム名を入力してください"
 }
