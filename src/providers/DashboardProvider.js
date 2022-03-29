@@ -474,7 +474,7 @@ const DashboardProviderDraft = (
                   memberDeviceLogsData?.forEach(it => {
                     const index = memberDevices.findIndex(ele => ele.deviceId === it.deviceId)
                     if (index !== -1) {
-                      memberDevices.splice(index, 1, {...it, type: 'kenzen'});
+                      memberDevices.splice(index, 1, {...it, type: 'kenzen', version: memberDevices[index].version});
                     } else {
                       memberDevices.push({...it, type: 'kenzen'});
                     }
