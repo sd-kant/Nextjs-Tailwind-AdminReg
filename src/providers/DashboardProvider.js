@@ -356,13 +356,20 @@ const DashboardProviderDraft = (
     if ([1, 2].includes(filter?.heatRisk)) { // sort by heat risk
       arr = arr?.sort((a, b) => {
         let v;
-        if (a.invisibleHeatRisk) {
-          v = 1;
-        } else if (b.invisibleHeatRisk) {
-          v = -1;
+        if (a.invisibleHeatRisk ^ b.invisibleHeatRisk) {
+          v = a.invisibleHeatRisk ? 1 : -1;
         } else {
-          v = filter?.heatRisk === 1 ? a.alertObj?.value - b.alertObj?.value : b.alertObj?.value - a.alertObj?.value;
-          if (v === 0) {
+          let flag = false;
+          if (a.invisibleHeatRisk) {
+            flag = true;
+          } else {
+            v = filter?.heatRisk === 1 ? a.alertObj?.value - b.alertObj?.value : b.alertObj?.value - a.alertObj?.value;
+            if (v === 0) {
+              flag = true;
+            }
+          }
+
+          if (flag) {
             v = priorities[a.connectionObj?.value] - priorities[b.connectionObj?.value];
             if (v === 0) {
               if (a.invisibleLastSync) {
