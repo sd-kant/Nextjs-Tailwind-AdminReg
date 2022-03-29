@@ -29,6 +29,7 @@ import {AVAILABLE_JOBS, permissionLevels, USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} 
 import ConfirmModal from "../../components/ConfirmModal";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import SuccessModal from "../../components/SuccessModal";
+import {logout} from "../../layouts/MainLayout";
 
 export const defaultTeamMember = {
   email: '',
@@ -372,11 +373,11 @@ const FormInvite = (props) => {
         show={status?.visibleSuccessModal}
         onCancel={() => {
           setStatus({visibleSuccessModal: false});
-          history.push((`/invite/${organizationId}/team-create`));
+          history.push((`/invite/${organizationId}/team-mode`));
         }}
         onOk={() => {
           setStatus({visibleSuccessModal: false});
-          history.push((`/invite/${organizationId}/team-modify`));
+          logout();
         }}
       />
 
