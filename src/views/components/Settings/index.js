@@ -15,7 +15,6 @@ import ConfirmModalV2 from "../ConfirmModalV2";
 import {useWidthContext} from "../../../providers/WidthProvider";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERSION} from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
-import history from "../../../history";
 import {getMyProfileAction} from "../../../redux/action/profile";
 
 const popupContentStyle = {

@@ -12,7 +12,6 @@ import {get} from "lodash";
 import ConfirmModalV2 from "../ConfirmModalV2";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERSION} from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
-import history from "../../../history";
 import {getMyProfileAction} from "../../../redux/action/profile";
 import queryString from "query-string";
 import {concatAsUrlParam} from "../../../utils";
