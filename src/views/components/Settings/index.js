@@ -183,7 +183,8 @@ const Settings = (
         header={t("leave team dashboard")}
         onOk={() => {
           setVisibleLeavePopup(false);
-          history.push("/invite");
+          const win = window.open("/invite", "_blank");
+          win.focus();
         }}
         onCancel={() => {
           setVisibleLeavePopup(false);

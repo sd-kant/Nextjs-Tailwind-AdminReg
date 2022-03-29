@@ -171,7 +171,8 @@ const SettingsAdmin = (
         header={t("leave administration")}
         onOk={() => {
           setVisibleLeavePopup(false);
-          history.push(`/dashboard/multi?${flattened}`);
+          const win = window.open(`/dashboard/multi?${flattened}`, "_blank");
+          win.focus();
         }}
         onCancel={() => {
           setVisibleLeavePopup(false);
