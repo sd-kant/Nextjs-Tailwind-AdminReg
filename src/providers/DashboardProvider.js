@@ -944,6 +944,17 @@ const DashboardProviderDraft = (
     });
   };
 
+  const updateMembersFromView = (userIds, teamId) => {
+    const updated = valuesV2.members?.map(it => ({
+      ...it,
+      teamId: teamId,
+    }));
+    setValuesV2({
+      ...valuesV2,
+      members: updated,
+    });
+  };
+
   const removeMember = async members => {
     return new Promise((resolve) => {
       const removeObj = [];
@@ -1015,12 +1026,12 @@ const DashboardProviderDraft = (
           add: addObj,
         })
           .then(() => {
+            const userIdsToProcess = addObj.map(it => it.userId);
             if (pickedTeams?.every(it => it.toString() !== teamId.toString())) {
-              const userIdsToRemove = addObj.map(it => it.userId);
-              removeMembersFromView(userIdsToRemove);
+              removeMembersFromView(userIdsToProcess);
+            } else {
+              updateMembersFromView(userIdsToProcess, teamId);
             }
-            setVisibleMemberModal(false);
-            setMember(null);
             resolve();
           })
           .catch(e => {
