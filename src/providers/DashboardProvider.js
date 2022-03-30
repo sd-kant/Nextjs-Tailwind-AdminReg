@@ -87,18 +87,20 @@ const DashboardProviderDraft = (
     setIsAdmin(userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it)));
   }, [userType]);
   React.useEffect(() => {
-    queryAllOrganizations()
-      .then(res => {
-        const allOrganizations = res.data;
-        allOrganizations.sort((a, b) => {
-          return a.name?.toLowerCase() > b.name?.toLowerCase() ? 1 : -1;
+    if (isAdmin) {
+      queryAllOrganizations()
+        .then(res => {
+          const allOrganizations = res.data;
+          allOrganizations.sort((a, b) => {
+            return a.name?.toLowerCase() > b.name?.toLowerCase() ? 1 : -1;
+          });
+          setOrganizations(allOrganizations);
+        })
+        .catch(e => {
+          console.error("getting companies error", e);
+          // todo show error
         });
-        setOrganizations(allOrganizations);
-      })
-      .catch(e => {
-        console.error("getting companies error", e);
-        // todo show error
-      });
+    }
   }, [isAdmin]);
   React.useEffect(() => {
     queryTeams()
@@ -141,141 +143,173 @@ const DashboardProviderDraft = (
     updateUrlParam({param: {key: 'sortDirection', value: sortDirection}});
     localStorage.setItem("kop-params", location.search);
   }, [filter]);
-  React.useEffect(() => {
-    const pickedTeamIds = pickedTeams?.toString();
-    updateUrlParam({param: {key: 'teams', value: pickedTeamIds}});
-    localStorage.setItem("kop-params", location.search);
-    setPage(null);
-    setValuesV2({
-      members: [],
-      alerts: [],
-      stats: [],
-      devices: [],
-    });
-    const source = axios.CancelToken.source();
-    if (pickedTeams?.length > 0) {
-      const membersPromises = [];
-      const statsPromises = [];
-      const alertsPromises = [];
-      const devicePromises = [];
-      const d = new Date();
-      d.setHours(0, 0, 0, 0);
-      // d.setDate(d.getDate() - 1);
-      // todo filter daily alerts every time you got response from subscribe
-      const since = d.toISOString();
-      pickedTeams.forEach(team => {
-        membersPromises.push(queryTeamMembers(team));
-        statsPromises.push(getTeamStats(team));
-        alertsPromises.push(getTeamAlerts(team, since));
-        devicePromises.push(getTeamDevices(team));
-      });
-      const a = () => new Promise(resolve => {
-        Promise.allSettled(membersPromises)
-          .then(results => {
-            results?.forEach((result, index) => {
-              if (result.status === "fulfilled") {
-                if (result.value?.data?.members?.length > 0) {
-                  const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString()) ?? [];
-                  const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                  setValuesV2({
-                    ...prev,
-                    members: [...prev.members, ...operators],
-                  });
-                }
-              }
-            })
-          })
-          .finally(() => resolve());
-      });
-
-      const b = () => new Promise(resolve => {
-        Promise.allSettled(statsPromises)
-          .then(results => {
-            results?.forEach(result => {
-              if (result.status === "fulfilled") {
-                if (result.value?.data?.length > 0) {
-                  const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                  setValuesV2({
-                    ...prev,
-                    stats: [...prev.stats, ...result.value?.data],
-                  });
-                }
-              }
-            })
-          })
-          .finally(() => {
-            resolve();
-          });
-      });
-      const c = () => new Promise(resolve => {
-        Promise.allSettled(alertsPromises)
-          .then(results => {
-            results?.forEach(result => {
-              if (result.status === "fulfilled") {
-                if (result.value?.data?.length > 0) {
-                  const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                  const updated = [
-                    ...prev.alerts,
-                    ...(
-                      result.value?.data?.map(it => ({
-                          ...it,
-                          utcTs: it.ts,
-                        })
-                      )
-                    )];
-                  const uniqueUpdated = [];
-                  for (const entry of updated) {
-                    if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) { uniqueUpdated.push(entry) }
-                  }
-
-                  setValuesV2({
-                    ...prev,
-                    alerts: uniqueUpdated,
-                  });
-                }
-              }
-            })
-          })
-          .finally(() => {
-            resolve();
-          });
-      });
-      const e = () => new Promise(resolve => {
-        Promise.allSettled(devicePromises)
-          .then(results => {
-            results?.forEach(result => {
-              if (result.status === "fulfilled") {
-                if (result.value?.data?.length > 0) {
-                  const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                  setValuesV2({
-                    ...prev,
-                    devices: [...prev.devices, ...result.value?.data],
-                  });
-                }
-              }
-            })
-          })
-          .finally(() => {
-            resolve();
-          });
-      });
-      setLoading(true);
-      Promise.allSettled([a(), b(), c(), e()])
-        .then(() => {
-          const d = new Date().getTime();
-          setHorizon(d);
-          subscribe(d, source.token);
-          setPage(1);
-        })
-        .finally(() => {
-          setLoading(false);
+  const formattedTeams = React.useMemo(() => {
+    const ret = [];
+    teams?.forEach(team => {
+      if (isAdmin) {
+        if (organization) {
+          if (team?.orgId?.toString() === organization?.toString()) {
+            ret.push({
+              value: team.id,
+              label: team.name,
+            });
+          }
+        }
+      } else {
+        ret.push({
+          value: team.id,
+          label: team.name,
         });
-    }
-    return () => {
-      source.cancel("cancel by user");
-    };
+      }
+    });
+
+    return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickedTeams, refreshCount]);
+  }, [organization, teams]);
+
+  React.useEffect(() => {
+    if (formattedTeams?.length > 0) {
+      const validPickedTeams = pickedTeams?.filter(ele => formattedTeams?.some(it => it.value?.toString() === ele.toString()));
+      updateUrlParam({param: {key: 'teams', value: validPickedTeams?.toString()}});
+      localStorage.setItem("kop-params", location.search);
+
+      if (validPickedTeams?.length !== pickedTeams?.length) {
+        setPickedTeams(validPickedTeams);
+      } else {
+        setPage(null);
+        setValuesV2({
+          members: [],
+          alerts: [],
+          stats: [],
+          devices: [],
+        });
+        const source = axios.CancelToken.source();
+        if (validPickedTeams?.length > 0) {
+          const membersPromises = [];
+          const statsPromises = [];
+          const alertsPromises = [];
+          const devicePromises = [];
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          // d.setDate(d.getDate() - 1);
+          // todo filter daily alerts every time you got response from subscribe
+          const since = d.toISOString();
+          validPickedTeams.forEach(team => {
+            membersPromises.push(queryTeamMembers(team));
+            statsPromises.push(getTeamStats(team));
+            alertsPromises.push(getTeamAlerts(team, since));
+            devicePromises.push(getTeamDevices(team));
+          });
+          const a = () => new Promise(resolve => {
+            Promise.allSettled(membersPromises)
+              .then(results => {
+                results?.forEach((result, index) => {
+                  if (result.status === "fulfilled") {
+                    if (result.value?.data?.members?.length > 0) {
+                      const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === validPickedTeams?.[index]?.toString()) ?? [];
+                      const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                      setValuesV2({
+                        ...prev,
+                        members: [...prev.members, ...operators],
+                      });
+                    }
+                  }
+                })
+              })
+              .finally(() => resolve());
+          });
+
+          const b = () => new Promise(resolve => {
+            Promise.allSettled(statsPromises)
+              .then(results => {
+                results?.forEach(result => {
+                  if (result.status === "fulfilled") {
+                    if (result.value?.data?.length > 0) {
+                      const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                      setValuesV2({
+                        ...prev,
+                        stats: [...prev.stats, ...result.value?.data],
+                      });
+                    }
+                  }
+                })
+              })
+              .finally(() => {
+                resolve();
+              });
+          });
+          const c = () => new Promise(resolve => {
+            Promise.allSettled(alertsPromises)
+              .then(results => {
+                results?.forEach(result => {
+                  if (result.status === "fulfilled") {
+                    if (result.value?.data?.length > 0) {
+                      const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                      const updated = [
+                        ...prev.alerts,
+                        ...(
+                          result.value?.data?.map(it => ({
+                              ...it,
+                              utcTs: it.ts,
+                            })
+                          )
+                        )];
+                      const uniqueUpdated = [];
+                      for (const entry of updated) {
+                        if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) { uniqueUpdated.push(entry) }
+                      }
+
+                      setValuesV2({
+                        ...prev,
+                        alerts: uniqueUpdated,
+                      });
+                    }
+                  }
+                })
+              })
+              .finally(() => {
+                resolve();
+              });
+          });
+          const e = () => new Promise(resolve => {
+            Promise.allSettled(devicePromises)
+              .then(results => {
+                results?.forEach(result => {
+                  if (result.status === "fulfilled") {
+                    if (result.value?.data?.length > 0) {
+                      const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                      setValuesV2({
+                        ...prev,
+                        devices: [...prev.devices, ...result.value?.data],
+                      });
+                    }
+                  }
+                })
+              })
+              .finally(() => {
+                resolve();
+              });
+          });
+          setLoading(true);
+          Promise.allSettled([a(), b(), c(), e()])
+            .then(() => {
+              const d = new Date().getTime();
+              setHorizon(d);
+              subscribe(d, source.token);
+              setPage(1);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
+
+        return () => {
+          source.cancel("cancel by user");
+        };
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickedTeams, refreshCount, formattedTeams]);
   React.useEffect(() => {
     setTeam(null);
     updateUrlParam({param: {key: 'organization', value: organization}});
@@ -877,30 +911,6 @@ const DashboardProviderDraft = (
       value: null,
     }
   }
-
-  const formattedTeams = React.useMemo(() => {
-    const ret = [];
-    teams?.forEach(team => {
-      if (isAdmin) {
-        if (organization) {
-          if (team?.orgId?.toString() === organization?.toString()) {
-            ret.push({
-              value: team.id,
-              label: team.name,
-            });
-          }
-        }
-      } else {
-        ret.push({
-          value: team.id,
-          label: team.name,
-        });
-      }
-    });
-
-    return ret;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organization, teams]);
 
   const formattedOrganizations = React.useMemo(() => {
     return organizations?.map(organization => (
