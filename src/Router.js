@@ -26,6 +26,7 @@ import DashboardV2 from "./views/pages/DashboardV2";
 import SelectMode from "./views/pages/SelectMode";
 import ForgotUsername from "./views/pages/ForgotUsername";
 import PasswordExpired from "./views/pages/PasswordExpired";
+import {getMyProfileAction} from "./redux/action/profile";
 
 const Router = (
   {
@@ -34,9 +35,15 @@ const Router = (
     loggedIn,
     passwordExpired,
     metric,
+    getMyProfile,
     setLoading,
   }) => {
   const redirectPath = loggedIn ? (ableToLogin(userType) ? "/select-mode" : "/create-account") : "/login";
+  React.useEffect(() => {
+    if (token && loggedIn) {
+      getMyProfile();
+    }
+  }, [token, loggedIn, getMyProfile]);
 
   return (
     <BrowserRouter basename="/" history={history}>
@@ -278,6 +285,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       setLoading: setLoadingAction,
+      getMyProfile: getMyProfileAction,
     },
     dispatch
   );

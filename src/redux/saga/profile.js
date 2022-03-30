@@ -92,6 +92,15 @@ function* getProfileSaga() {
     if (token) {
       const apiRes = yield call(getProfileV2, token);
       const responseData = apiRes.data;
+      const {userTypes} = responseData;
+      localStorage.setItem("kop-v2-user-type", JSON.stringify(userTypes));
+      yield put({
+        type: actionTypes.SET_USER_TYPE,
+        payload: {
+          userType: userTypes,
+        }
+      });
+
       yield put({
         type: actionTypes.PROFILE_UPDATED,
         payload: {

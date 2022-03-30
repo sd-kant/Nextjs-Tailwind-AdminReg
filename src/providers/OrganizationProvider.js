@@ -26,7 +26,7 @@ const OrganizationProvider = (
       fetchCompany();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organizationId]);
+  }, [organizationId, isAdmin]);
 
   const fetchCompany = () => {
     if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
@@ -39,19 +39,21 @@ const OrganizationProvider = (
 
   const fetchOrgAdmins = () => {
     setLoading(true);
-    getUsersUnderOrganization({
-      organizationId,
-      userType: 'OrgAdmin',
-    })
-      .then(res => {
-        setOrgAdmins(res.data ?? []);
+    if (isAdmin) {
+      getUsersUnderOrganization({
+        organizationId,
+        userType: 'OrgAdmin',
       })
-      .catch(e => {
-        showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+        .then(res => {
+          setOrgAdmins(res.data ?? []);
+        })
+        .catch(e => {
+          showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }
 
   const regions = React.useMemo(() => {
