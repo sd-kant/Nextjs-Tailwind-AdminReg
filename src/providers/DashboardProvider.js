@@ -343,6 +343,14 @@ const DashboardProviderDraft = (
       "8": 4,
     };
 
+    const heatRiskPriorities = {
+      "1": 1,
+      "2": 2,
+      "3": 3,
+      "4": 3,
+      "5": 3,
+    };
+
     if ([1, 2].includes(filter?.lastSync)) { // sort by last sync
       arr = arr?.sort((a, b) => {
         if (a.invisibleLastSync) {
@@ -374,7 +382,9 @@ const DashboardProviderDraft = (
           if (a.invisibleHeatRisk) {
             flag = true;
           } else {
-            v = filter?.heatRisk === 1 ? a.alertObj?.value - b.alertObj?.value : b.alertObj?.value - a.alertObj?.value;
+            v = filter?.heatRisk === 1 ?
+              heatRiskPriorities[a.alertObj?.value?.toString()] - heatRiskPriorities[b.alertObj?.value?.toString()] :
+              heatRiskPriorities[b.alertObj?.value?.toString()] - heatRiskPriorities[a.alertObj?.value?.toString()];
             if (v === 0) {
               flag = true;
             }
