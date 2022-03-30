@@ -176,10 +176,11 @@ const Settings = (
           setVisiblePopup(false);
         }}
       />
-
       <ConfirmModalV2
         show={visibleLeavePopup}
-        header={t("leave team dashboard")}
+        header={t("leave team dashboard 2")}
+        visibleCancel={false}
+        okText={t("ok")}
         onOk={() => {
           setVisibleLeavePopup(false);
           const win = window.open("/invite", "_blank");

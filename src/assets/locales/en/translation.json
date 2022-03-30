@@ -464,5 +464,7 @@
   "remove n users warning title": "Remove {{n}} users from {{team}}?",
   "remove n users confirmation title": "{{n}} users removed from the {{team}}, Users can be found under “No Team Assigned”",
   "create modify team": "Create or Modify Team",
-  "enter team name": "Enter Team Name"
+  "enter team name": "Enter Team Name",
+  "leave team dashboard 2": "Kenzen Administration will open in a new browser window",
+  "leave administration 2": "Kenzen Team Dashboard will open in a new browser window"
 }
