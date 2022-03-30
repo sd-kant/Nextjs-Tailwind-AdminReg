@@ -30,12 +30,12 @@ const SearchUserItem = (
     teams,
     jobs,
     doableActions,
-    handleActionButtonClick,
     handleMemberInfoChange,
     handleMemberTeamChange,
     handleMemberTeamUserTypeChange,
-    handlePhoneActionButtonClick,
     handleResetUpdates,
+    handlePhoneOptionClick,
+    handleActionOptionClick,
   } = useMembersContext();
 
   const approvalGreen = '#35EA6C';
@@ -200,7 +200,6 @@ const SearchUserItem = (
             menuPosition={'fixed'}
             isDisabled={!hasRightToEdit}
             onChange={(e) => handleMemberTeamChange(e?.value, user?.originIndex, selectedPermissionLevel)}
-            // onChange={(e) => handleMemberInfoChange(e?.value, user?.originIndex, 'teamId')}
           />
           {/*fixme fix validation rule */}
         </div>
@@ -264,8 +263,10 @@ const SearchUserItem = (
                   placeholder={t("select action")}
                   option={user?.phoneAction}
                   options={phoneDropdownOptions}
-                  onClick={() => handlePhoneActionButtonClick(user)}
-                  onClickOption={value => handleMemberInfoChange(value, user?.originIndex, 'phoneAction')}
+                  onClick={() => {}}
+                  onClickOption={value => {
+                    handlePhoneOptionClick(value, user)
+                  }}
                 />
               </div> :
               <input
@@ -307,8 +308,10 @@ const SearchUserItem = (
                 placeholder={t("select action")}
                 option={user?.action}
                 options={doableActions}
-                onClick={() => handleActionButtonClick(user)}
-                onClickOption={value => handleMemberInfoChange(value, user?.originIndex, 'action')}
+                onClick={() => {}}
+                onClickOption={value => {
+                  handleActionOptionClick(value, user);
+                }}
               />
             </div>
           </div>

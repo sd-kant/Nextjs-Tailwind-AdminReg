@@ -624,40 +624,37 @@ const MembersProvider = (
     }
   };
 
-  const handlePhoneActionButtonClick = user => {
-    switch (user?.phoneAction) {
-      case 1: // label
-        console.log("no action for phone number");
+  const handlePhoneOptionClick = (value, user) => {
+    switch (value?.toString()) {
+      case "1":
         break;
-      case 2: // reset phone number
-        if (user?.userId) {
-          setSelectedUser(user);
-          setVisiblePhoneModal(true);
-        }
+      case "2":
+        setSelectedUser(user);
+        setVisiblePhoneModal(true);
         break;
       default:
-        console.log("no action for phone number");
+        console.log('please select valid phone action type');
     }
-  }
+  };
 
-  const handleActionButtonClick = user => {
-    switch (user?.action) {
-      case 1: // re-invite
+  const handleActionOptionClick = (value, user) => {
+    switch (value?.toString()) {
+      case "1": // re-invite
         setSelectedUser(user);
         setVisibleReInviteModal(true);
         break;
-      case 2: // remove from team
+      case "2": // remove from team
         setSelectedUser(user);
         setVisibleRemoveModal(true);
         break;
-      case 3: // delete
+      case "3": // delete
         setSelectedUser(user);
         setVisibleDeleteModal(true);
         break;
       default:
-        console.log('please select action type');
+        console.log('please select valid action type');
     }
-  }
+  };
 
   const providerValue = {
     userType,
@@ -679,11 +676,8 @@ const MembersProvider = (
     handleMemberTeamUserTypeChange,
     handleMemberTeamChange,
     handleResetUpdates,
-    handleResetPhoneNumber,
-    handleReInvite,
-    handleDeleteUser,
-    handleActionButtonClick,
-    handlePhoneActionButtonClick,
+    handlePhoneOptionClick,
+    handleActionOptionClick,
   };
 
   return (
