@@ -433,7 +433,7 @@
   "security": "安全",
   "add company admin": "会社管理者を追加",
 
-  "username invalid 1": "ユーザー名は少なくとも5文字の長さで、文字で始まり、文字、数字、またはドットのみを含める必要があります",
+  "username invalid 1": "ユーザー名は5文字以上で、文字で始まり、文字、数字、または1つのドットのみを含める必要があります",
   "username invalid 2": "ユーザー名をドットで終わらせることはできません",
   "select action": "アクションを選択",
   "re-invite user warning title": "ユーザーをチームに再招待しますか？",
