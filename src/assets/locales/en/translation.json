@@ -466,5 +466,6 @@
   "create modify team": "Create or Modify Team",
   "enter team name": "Enter Team Name",
   "leave team dashboard 2": "Kenzen Administration will open in a new browser window",
-  "leave administration 2": "Kenzen Team Dashboard will open in a new browser window"
+  "leave administration 2": "Kenzen Team Dashboard will open in a new browser window",
+  "error member with same email address": "There is already a team member with the same email address, please try again"
 }
