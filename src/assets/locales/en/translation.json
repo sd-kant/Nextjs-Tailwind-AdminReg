@@ -433,7 +433,7 @@
   "security": "Security",
   "add company admin": "Add Company Administrator",
 
-  "username invalid 1": "Username must be at lease five characters long, start with a letter, and only contain letters, numbers or a dot",
+  "username invalid 1": "Username must be at least five characters long, start with a letter, and only contain letters, numbers or one dot",
   "username invalid 2": "Username cannot end with a dot",
   "select action": "Select Action",
   "re-invite user warning title": "Re-invite User to the team?",
