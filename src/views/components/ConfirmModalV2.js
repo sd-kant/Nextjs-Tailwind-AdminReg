@@ -11,6 +11,10 @@ const ConfirmModalV2 = (
     show,
     header,
     subheader,
+    okText,
+    cancelText,
+    visibleCancel = true,
+    visibleOk = true,
     onOk,
     onCancel,
   }) => {
@@ -34,27 +38,32 @@ const ConfirmModalV2 = (
 
         <div className={clsx(style.ModalBody, "mt-60")}>
           <div className="d-flex justify-center">
-            <div
-              className={clsx(style.Tap, `cursor-pointer`)}
-              onClick={onOk}
-            >
-              <img src={yesIcon} alt="male icon"/>
+            {
+              visibleOk &&
+              <div
+                className={clsx(style.Tap, `cursor-pointer`)}
+                onClick={onOk}
+              >
+                <img src={yesIcon} alt="male icon"/>
 
-              <span className='font-binary mt-8 text-uppercase'>
-                {t("yes")}
+                <span className='font-binary mt-8 text-uppercase'>
+                {okText ?? t("yes")}
               </span>
-            </div>
+              </div>
+            }
+            {
+              visibleCancel &&
+              <div
+                className={clsx(style.Tap, `cursor-pointer ml-40`)}
+                onClick={onCancel}
+              >
+                <img src={noIcon} alt="female icon"/>
 
-            <div
-              className={clsx(style.Tap, `cursor-pointer ml-40`)}
-              onClick={onCancel}
-            >
-              <img src={noIcon} alt="female icon"/>
-
-              <span className='font-binary mt-8 capitalize text-uppercase'>
-                {t("no")}
+                <span className='font-binary mt-8 capitalize text-uppercase'>
+                  {cancelText ?? t("no")}
               </span>
-            </div>
+              </div>
+            }
           </div>
         </div>
 

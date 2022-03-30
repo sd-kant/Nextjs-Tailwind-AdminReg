@@ -167,7 +167,9 @@ const SettingsAdmin = (
 
       <ConfirmModalV2
         show={visibleLeavePopup}
-        header={t("leave administration")}
+        header={t("leave administration 2")}
+        visibleCancel={false}
+        okText={t("ok")}
         onOk={() => {
           setVisibleLeavePopup(false);
           const win = window.open(`/dashboard/multi?${flattened}`, "_blank");
