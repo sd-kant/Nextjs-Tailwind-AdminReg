@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.4.12";
+export const CURRENT_VERSION = "3.4.13";
 export const AVAILABLE_COUNTRIES = [
   {
     "value": "AU",

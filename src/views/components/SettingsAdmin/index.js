@@ -12,7 +12,6 @@ import {get} from "lodash";
 import ConfirmModalV2 from "../ConfirmModalV2";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERSION} from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
-import {getMyProfileAction} from "../../../redux/action/profile";
 import queryString from "query-string";
 import {concatAsUrlParam} from "../../../utils";
 
@@ -29,7 +28,6 @@ const SettingsAdmin = (
   {
     userType,
     t,
-    getMyProfile,
     profile,
     isEntry,
   }
@@ -40,10 +38,6 @@ const SettingsAdmin = (
   const cachedSearchUrl = localStorage.getItem("kop-params");
   const q = queryString.parse(cachedSearchUrl);
   const flattened = concatAsUrlParam(q);
-  React.useEffect(() => {
-    getMyProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const role = React.useMemo(() => {
     if (userType?.includes(USER_TYPE_ADMIN)) {
       return t("administrator super");
@@ -191,7 +185,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      getMyProfile: getMyProfileAction,
     },
     dispatch
   );
