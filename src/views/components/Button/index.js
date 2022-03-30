@@ -32,6 +32,8 @@ const Button = (
   };
 
   const calcBgColor = () => {
+    if (disabled)
+      return '#979797';
     switch (bgColor) {
       case 'orange':
         return '#DE7D2C';
@@ -47,6 +49,8 @@ const Button = (
   };
 
   const calcBorderColor = () => {
+    if (disabled)
+      return '#979797';
     switch (borderColor) {
       case 'orange':
         return '#DE7D2C';

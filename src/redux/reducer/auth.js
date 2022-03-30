@@ -34,6 +34,11 @@ const authReducer =  (state = initialState, action) => {
         draft.loggedIn = action.payload.loggedIn;
       });
 
+    case actionTypes.SET_USER_TYPE:
+      return produce(state, draft => {
+        draft.userType = action.payload.userType;
+      });
+
     case actionTypes.SET_MOBILE_TOKEN:
       return produce(state, draft => {
         draft.mobileToken = action.payload.token;

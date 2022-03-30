@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {
   getTeamAlerts,
   getTeamDevices,
-  getTeamStats,
+  getTeamStats, inviteTeamMember,
   queryAllOrganizations,
   queryTeamMembers,
   queryTeams,
@@ -13,16 +13,17 @@ import axios from "axios";
 import MemberDetail from "../views/modals/MemberDetail";
 import {
   celsiusToFahrenheit,
-  getLatestDate,
+  getLatestDateBeforeNow as getLatestDate,
   getParamFromUrl,
   minutesToDaysHoursMinutes,
-  numMinutesBetween,
+  numMinutesBetweenWithNow as numMinutesBetween,
   updateUrlParam,
 } from "../utils";
 import {withTranslation} from "react-i18next";
 import {get} from "lodash";
-import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../constant";
+import {USER_TYPE_ADMIN, USER_TYPE_OPERATOR, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN} from "../constant";
 import useForceUpdate from "../hooks/useForceUpdate";
+import {useNotificationContext} from "./NotificationProvider";
 
 const DashboardContext = React.createContext(null);
 let timeout = undefined;
@@ -42,6 +43,7 @@ const DashboardProviderDraft = (
   const organizationInUrl = getParamFromUrl("organization");
   const teamsInUrl = getParamFromUrl('teams');
 
+  const [refreshCount, setRefreshCount] = React.useState(0);
   const [organizations, setOrganizations] = React.useState([]);
   const [organization, setOrganization] = React.useState(organizationInUrl ?? null);
   const [teams, setTeams] = React.useState([]);
@@ -54,6 +56,7 @@ const DashboardProviderDraft = (
   const [page, setPage] = React.useState(null);
   const [sizePerPage] = React.useState(10);
   const [keyword, setKeyword] = React.useState(keywordInUrl ?? "");
+  const {addNotification} = useNotificationContext();
   const [values, setValues] = React.useState({
     members: [],
     alerts: [],
@@ -84,18 +87,20 @@ const DashboardProviderDraft = (
     setIsAdmin(userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it)));
   }, [userType]);
   React.useEffect(() => {
-    queryAllOrganizations()
-      .then(res => {
-        const allOrganizations = res.data;
-        allOrganizations.sort((a, b) => {
-          return a.name?.toLowerCase() > b.name?.toLowerCase() ? 1 : -1;
+    if (isAdmin) {
+      queryAllOrganizations()
+        .then(res => {
+          const allOrganizations = res.data;
+          allOrganizations.sort((a, b) => {
+            return a.name?.toLowerCase() > b.name?.toLowerCase() ? 1 : -1;
+          });
+          setOrganizations(allOrganizations);
+        })
+        .catch(e => {
+          console.error("getting companies error", e);
+          // todo show error
         });
-        setOrganizations(allOrganizations);
-      })
-      .catch(e => {
-        console.error("getting companies error", e);
-        // todo show error
-      });
+    }
   }, [isAdmin]);
   React.useEffect(() => {
     queryTeams()
@@ -138,131 +143,173 @@ const DashboardProviderDraft = (
     updateUrlParam({param: {key: 'sortDirection', value: sortDirection}});
     localStorage.setItem("kop-params", location.search);
   }, [filter]);
-  React.useEffect(() => {
-    const pickedTeamIds = pickedTeams?.toString();
-    updateUrlParam({param: {key: 'teams', value: pickedTeamIds}});
-    localStorage.setItem("kop-params", location.search);
-    setPage(null);
-    setValuesV2({
-      members: [],
-      alerts: [],
-      stats: [],
-      devices: [],
-    });
-    const source = axios.CancelToken.source();
-    if (pickedTeams?.length > 0) {
-      const membersPromises = [];
-      const statsPromises = [];
-      const alertsPromises = [];
-      const devicePromises = [];
-      const d = new Date();
-      d.setHours(0, 0, 0, 0);
-      // d.setDate(d.getDate() - 1);
-      // todo filter daily alerts every time you got response from subscribe
-      const since = d.toISOString();
-      pickedTeams.forEach(team => {
-        membersPromises.push(queryTeamMembers(team));
-        statsPromises.push(getTeamStats(team));
-        alertsPromises.push(getTeamAlerts(team, since));
-        devicePromises.push(getTeamDevices(team));
-      });
-      const a = () => new Promise(resolve => {
-        Promise.allSettled(membersPromises)
-          .then(results => {
-            results?.forEach((result, index) => {
-              if (result.status === "fulfilled") {
-                if (result.value?.data?.members?.length > 0) {
-                  const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString()) ?? [];
-                  const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                  setValuesV2({
-                    ...prev,
-                    members: [...prev.members, ...operators],
-                  });
-                }
-              }
-            })
-          })
-          .finally(() => resolve());
-      });
-
-      const b = () => new Promise(resolve => {
-        Promise.allSettled(statsPromises)
-          .then(results => {
-            results?.forEach(result => {
-              if (result.status === "fulfilled") {
-                if (result.value?.data?.length > 0) {
-                  const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                  setValuesV2({
-                    ...prev,
-                    stats: [...prev.stats, ...result.value?.data],
-                  });
-                }
-              }
-            })
-          })
-          .finally(() => {
-            resolve();
-          });
-      });
-      const c = () => new Promise(resolve => {
-        Promise.allSettled(alertsPromises)
-          .then(results => {
-            results?.forEach(result => {
-              if (result.status === "fulfilled") {
-                if (result.value?.data?.length > 0) {
-                  const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                  setValuesV2({
-                    ...prev,
-                    alerts: [
-                      ...prev.alerts,
-                      ...(
-                        result.value?.data?.map(it => ({
-                            ...it,
-                            utcTs: it.ts,
-                          })
-                        )
-                      )],
-                  });
-                }
-              }
-            })
-          })
-          .finally(() => {
-            resolve();
-          });
-      });
-      const e = () => new Promise(resolve => {
-        Promise.allSettled(devicePromises)
-          .then(results => {
-            results?.forEach(result => {
-              if (result.status === "fulfilled") {
-                if (result.value?.data?.length > 0) {
-                  const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                  setValuesV2({
-                    ...prev,
-                    devices: [...prev.devices, ...result.value?.data],
-                  });
-                }
-              }
-            })
-          })
-          .finally(() => {
-            resolve();
-          });
-      });
-      Promise.allSettled([a(), b(), c(), e()])
-        .then(() => {
-          const d = new Date().getTime();
-          setHorizon(d);
-          subscribe(d, source.token);
-          setPage(1);
+  const formattedTeams = React.useMemo(() => {
+    const ret = [];
+    teams?.forEach(team => {
+      if (isAdmin) {
+        if (organization) {
+          if (team?.orgId?.toString() === organization?.toString()) {
+            ret.push({
+              value: team.id,
+              label: team.name,
+            });
+          }
+        }
+      } else {
+        ret.push({
+          value: team.id,
+          label: team.name,
         });
-    }
-    return () => {
-      source.cancel("cancel by user");
-    };
+      }
+    });
+
+    return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickedTeams]);
+  }, [organization, teams]);
+
+  React.useEffect(() => {
+    if (formattedTeams?.length > 0) {
+      const validPickedTeams = pickedTeams?.filter(ele => formattedTeams?.some(it => it.value?.toString() === ele.toString()));
+      updateUrlParam({param: {key: 'teams', value: validPickedTeams?.toString()}});
+      localStorage.setItem("kop-params", location.search);
+
+      if (validPickedTeams?.length !== pickedTeams?.length) {
+        setPickedTeams(validPickedTeams);
+      } else {
+        setPage(null);
+        setValuesV2({
+          members: [],
+          alerts: [],
+          stats: [],
+          devices: [],
+        });
+        const source = axios.CancelToken.source();
+        if (validPickedTeams?.length > 0) {
+          const membersPromises = [];
+          const statsPromises = [];
+          const alertsPromises = [];
+          const devicePromises = [];
+          const d = new Date();
+          d.setHours(0, 0, 0, 0);
+          // d.setDate(d.getDate() - 1);
+          // todo filter daily alerts every time you got response from subscribe
+          const since = d.toISOString();
+          validPickedTeams.forEach(team => {
+            membersPromises.push(queryTeamMembers(team));
+            statsPromises.push(getTeamStats(team));
+            alertsPromises.push(getTeamAlerts(team, since));
+            devicePromises.push(getTeamDevices(team));
+          });
+          const a = () => new Promise(resolve => {
+            Promise.allSettled(membersPromises)
+              .then(results => {
+                results?.forEach((result, index) => {
+                  if (result.status === "fulfilled") {
+                    if (result.value?.data?.members?.length > 0) {
+                      const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === validPickedTeams?.[index]?.toString()) ?? [];
+                      const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                      setValuesV2({
+                        ...prev,
+                        members: [...prev.members, ...operators],
+                      });
+                    }
+                  }
+                })
+              })
+              .finally(() => resolve());
+          });
+
+          const b = () => new Promise(resolve => {
+            Promise.allSettled(statsPromises)
+              .then(results => {
+                results?.forEach(result => {
+                  if (result.status === "fulfilled") {
+                    if (result.value?.data?.length > 0) {
+                      const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                      setValuesV2({
+                        ...prev,
+                        stats: [...prev.stats, ...result.value?.data],
+                      });
+                    }
+                  }
+                })
+              })
+              .finally(() => {
+                resolve();
+              });
+          });
+          const c = () => new Promise(resolve => {
+            Promise.allSettled(alertsPromises)
+              .then(results => {
+                results?.forEach(result => {
+                  if (result.status === "fulfilled") {
+                    if (result.value?.data?.length > 0) {
+                      const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                      const updated = [
+                        ...prev.alerts,
+                        ...(
+                          result.value?.data?.map(it => ({
+                              ...it,
+                              utcTs: it.ts,
+                            })
+                          )
+                        )];
+                      const uniqueUpdated = [];
+                      for (const entry of updated) {
+                        if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) { uniqueUpdated.push(entry) }
+                      }
+
+                      setValuesV2({
+                        ...prev,
+                        alerts: uniqueUpdated,
+                      });
+                    }
+                  }
+                })
+              })
+              .finally(() => {
+                resolve();
+              });
+          });
+          const e = () => new Promise(resolve => {
+            Promise.allSettled(devicePromises)
+              .then(results => {
+                results?.forEach(result => {
+                  if (result.status === "fulfilled") {
+                    if (result.value?.data?.length > 0) {
+                      const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                      setValuesV2({
+                        ...prev,
+                        devices: [...prev.devices, ...result.value?.data],
+                      });
+                    }
+                  }
+                })
+              })
+              .finally(() => {
+                resolve();
+              });
+          });
+          setLoading(true);
+          Promise.allSettled([a(), b(), c(), e()])
+            .then(() => {
+              const d = new Date().getTime();
+              setHorizon(d);
+              subscribe(d, source.token);
+              setPage(1);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
+
+        return () => {
+          source.cancel("cancel by user");
+        };
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickedTeams, refreshCount, formattedTeams]);
   React.useEffect(() => {
     setTeam(null);
     updateUrlParam({param: {key: 'organization', value: organization}});
@@ -291,8 +338,8 @@ const DashboardProviderDraft = (
         alert,
       });
       const lastSync = getLatestDate(
-        stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
-        alert?.utcTs ? new Date(alert?.utcTs) : null
+        getLatestDate(stat?.heartRateTs ? new Date(stat?.heartRateTs) : null, stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null),
+        getLatestDate(stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null, alert?.utcTs ? new Date(alert?.utcTs) : null)
       );
       const lastSyncStr = formatLastSync(lastSync);
 
@@ -300,7 +347,7 @@ const DashboardProviderDraft = (
       const invisibleDeviceMac = ["1"].includes(connectionObj?.value?.toString());
       const invisibleBattery = ["1", "8"].includes(connectionObj?.value?.toString()) ||
         (["2", "4"].includes(connectionObj?.value?.toString()) && numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 240);
-      const invisibleHeatRisk = !alert || ["1", "2", "8"].includes(connectionObj?.value?.toString());
+      const invisibleHeatRisk = ["1", "2", "8"].includes(connectionObj?.value?.toString());
       const invisibleLastSync = (new Date(lastSync).getTime() > (new Date().getTime() + (60 * 1000))) || ["1"].includes(connectionObj?.value?.toString());
 
       arr.push({
@@ -320,6 +367,24 @@ const DashboardProviderDraft = (
         invisibleLastSync,
       })
     });
+
+    const priorities = {
+      "1": 6,
+      "2": 5,
+      "3": 1,
+      "4": 2,
+      "7": 3,
+      "8": 4,
+    };
+
+    const heatRiskPriorities = {
+      "1": 1,
+      "2": 2,
+      "3": 3,
+      "4": 3,
+      "5": 3,
+    };
+
     if ([1, 2].includes(filter?.lastSync)) { // sort by last sync
       arr = arr?.sort((a, b) => {
         if (a.invisibleLastSync) {
@@ -344,19 +409,31 @@ const DashboardProviderDraft = (
     if ([1, 2].includes(filter?.heatRisk)) { // sort by heat risk
       arr = arr?.sort((a, b) => {
         let v;
-        if (a.invisibleHeatRisk) {
-          v = 1;
-        } else if (b.invisibleHeatRisk) {
-          v = -1;
+        if (a.invisibleHeatRisk ^ b.invisibleHeatRisk) {
+          v = a.invisibleHeatRisk ? 1 : -1;
         } else {
-          v = filter?.heatRisk === 1 ? a.alertObj?.value - b.alertObj?.value : b.alertObj?.value - a.alertObj?.value;
-          if (v === 0) {
-            if (a.invisibleLastSync) {
-              v = 1;
-            } else if (b.invisibleLastSync) {
-              v = -1;
-            } else {
-              v = new Date(b.lastSync) - new Date(a.lastSync);
+          let flag = false;
+          if (a.invisibleHeatRisk) {
+            flag = true;
+          } else {
+            v = filter?.heatRisk === 1 ?
+              heatRiskPriorities[a.alertObj?.value?.toString()] - heatRiskPriorities[b.alertObj?.value?.toString()] :
+              heatRiskPriorities[b.alertObj?.value?.toString()] - heatRiskPriorities[a.alertObj?.value?.toString()];
+            if (v === 0) {
+              flag = true;
+            }
+          }
+
+          if (flag) {
+            v = priorities[a.connectionObj?.value] - priorities[b.connectionObj?.value];
+            if (v === 0) {
+              if (a.invisibleLastSync) {
+                v = 1;
+              } else if (b.invisibleLastSync) {
+                v = -1;
+              } else {
+                v = new Date(b.lastSync) - new Date(a.lastSync);
+              }
             }
           }
         }
@@ -364,14 +441,6 @@ const DashboardProviderDraft = (
       });
     }
     if ([1, 2].includes(filter?.connection)) {
-      const priorities = {
-        "1": 6,
-        "2": 5,
-        "3": 1,
-        "4": 2,
-        "7": 3,
-        "8": 4,
-      };
       arr = arr?.sort((a, b) => {
         let v = filter?.connection === 1 ? priorities[a.connectionObj?.value] - priorities[b.connectionObj?.value] : priorities[b.connectionObj?.value] - priorities[a.connectionObj?.value];
         if (v === 0) {
@@ -391,28 +460,7 @@ const DashboardProviderDraft = (
     console.log(`last rendering done at ${new Date().toLocaleString()}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valuesV2.members, valuesV2.alerts, valuesV2.stats, valuesV2.devices, filter, count]);
-  /*React.useEffect(() => {
-    if (team?.value && values?.members?.length) {
-      setTeams(prev => prev.map(item => {
-        if (item?.id?.toString() === team?.value?.toString()) {
-          const origin = originTeams?.find(it => it.id?.toString() === team?.value?.toString());
-          if (origin) {
-            const teamWithNumber = {
-              ...origin,
-              name: `${origin.name} (${values?.members?.length ?? 0})`,
-            };
-            setTeam({
-              value: teamWithNumber.id,
-              label: teamWithNumber.name,
-            });
-            return teamWithNumber;
-          }
-        }
-        return item;
-      }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values?.members]);*/
+
   const subscribe = (ts, cancelToken) => {
     // fixme check whether the function that removes previous subscribe is correct
     if (pickedTeams?.length > 0) {
@@ -438,17 +486,54 @@ const DashboardProviderDraft = (
               const alerts = events?.filter(it => it.type === "Alert");
               if (alerts?.length > 0) {
                 const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                const updated = [...prev.alerts, ...(alerts?.map(it => it.data))];
+                const uniqueUpdated = [];
+                for (const entry of updated) {
+                  if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) { uniqueUpdated.push(entry) }
+                }
                 setValuesV2({
                   ...prev,
-                  alerts: [...prev.alerts, ...(alerts?.map(it => it.data))],
+                  alerts: uniqueUpdated,
                 });
               }
               valuesV2Ref.current?.members?.forEach(member => {
                 const memberEvents = events?.filter(it => it.userId?.toString() === member.userId.toString());
                 const latestHeartRate = memberEvents?.filter(it => it.type === "HeartRate")
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
-                const latestDeviceLog = memberEvents?.filter(it => it.type === "DeviceLog")
+
+                // update member's devices list
+                const memberDeviceLogs = memberEvents?.filter(it => it.type === "DeviceLog");
+                const latestDeviceLog = memberDeviceLogs
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
+
+                if (memberDeviceLogs?.length > 0) {
+                  const devicesTemp = JSON.parse(JSON.stringify(valuesV2Ref.current?.devices));
+                  const devicesMemberIndex = devicesTemp.findIndex(it => it.userId?.toString() === member.userId?.toString()) ?? [];
+                  const memberDeviceLogsData = memberDeviceLogs?.map(it => ({...it.data, ts: it.data?.utcTs}));
+                  let memberDevices = [];
+                  if (devicesMemberIndex !== -1) {
+                    memberDevices = devicesTemp[devicesMemberIndex].devices ?? [];
+                  }
+                  // fixme I assumed all device logs as kenzen device logs
+                  memberDeviceLogsData?.forEach(it => {
+                    const index = memberDevices.findIndex(ele => ele.deviceId === it.deviceId)
+                    if (index !== -1) {
+                      memberDevices.splice(index, 1, {...it, type: 'kenzen', version: memberDevices[index].version});
+                    } else {
+                      memberDevices.push({...it, type: 'kenzen'});
+                    }
+                  })
+                  if (devicesMemberIndex !== -1) {
+                    devicesTemp.splice(devicesMemberIndex, 1, {userId: member.userId, devices: memberDevices});
+                  } else {
+                    devicesTemp.push({userId: member.userId, devices: memberDevices});
+                  }
+                  setValuesV2({
+                    ...valuesV2Ref.current,
+                    devices: devicesTemp,
+                  });
+                }
+
                 const latestTempHumidity = memberEvents?.filter(it => it.type === "TempHumidity")
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
                 const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
@@ -544,7 +629,6 @@ const DashboardProviderDraft = (
         console.error(e);
       });
   };
-
   // eslint-disable-next-line no-unused-vars
   const fetchTeamAlerts = (id) => {
     const d = new Date();
@@ -596,28 +680,74 @@ const DashboardProviderDraft = (
     if (flag && connected) {
       if (
         numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 60 ||
-        numMinutesBetween(new Date(), new Date(stat?.tempHumidityTs)) <= 60
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60
       ) {
-        if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 10) {
-          return {
-            label: t('limited connectivity'),
-            value: 4,
-          };
-        } else {
+        if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
           return {
             label: t('device connected'),
             value: 3,
+          };
+        } else {
+          return {
+            label: t('limited connectivity'),
+            value: 4,
           };
         }
       } else if (
         numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 60 &&
         numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 90 &&
-        numMinutesBetween(new Date(), new Date(stat?.tempHumidityTs)) > 60 &&
-        numMinutesBetween(new Date(), new Date(stat?.tempHumidityTs)) <= 240
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) > 60 &&
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 90
       ) {
         return {
           label: t('limited connectivity'),
           value: 4,
+        };
+      } else if (
+        (
+          numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 90 &&
+          numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 120
+        ) ||
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 120
+      ) {
+        return {
+          label: t('no connection'),
+          value: 7,
+        };
+      } else {
+        return {
+          label: t('no connection'),
+          value: 8,
+        };
+      }
+    }
+
+    if (!flag) {
+      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
+        return {
+          label: t('no connection'),
+          value: 7,
+        };
+      } else {
+        return {
+          label: t('no connection'),
+          value: 8,
+        };
+      }
+    }
+
+    if (
+      !connected
+    ) {
+      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
+        return {
+          label: t('no connection'),
+          value: 7,
+        };
+      } else {
+        return {
+          label: t('no connection'),
+          value: 8,
         };
       }
     }
@@ -671,6 +801,13 @@ const DashboardProviderDraft = (
   }
 
   const formatAlert = stageId => {
+    if (!stageId) {
+      return {
+        label: "Safe",
+        value: 5,
+      };
+    }
+
     switch (stageId?.toString()) {
       case "1":
         return {
@@ -775,30 +912,6 @@ const DashboardProviderDraft = (
     }
   }
 
-  const formattedTeams = React.useMemo(() => {
-    const ret = [];
-    teams?.forEach(team => {
-      if (isAdmin) {
-        if (organization) {
-          if (team?.orgId?.toString() === organization?.toString()) {
-            ret.push({
-              value: team.id,
-              label: team.name,
-            });
-          }
-        }
-      } else {
-        ret.push({
-          value: team.id,
-          label: team.name,
-        });
-      }
-    });
-
-    return ret;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organization, teams]);
-
   const formattedOrganizations = React.useMemo(() => {
     return organizations?.map(organization => (
       {
@@ -843,6 +956,118 @@ const DashboardProviderDraft = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginatedMembers]);
 
+  const removeMembersFromView = userIds => {
+    const filtered = valuesV2.members?.filter(it => userIds?.every(ele => ele.toString() !== it.userId?.toString()));
+    setValuesV2({
+      ...valuesV2,
+      members: filtered,
+    });
+  };
+
+  const updateMembersFromView = (userIds, teamId) => {
+    const updated = valuesV2.members?.map(it => ({
+      ...it,
+      teamId: teamId,
+    }));
+    setValuesV2({
+      ...valuesV2,
+      members: updated,
+    });
+  };
+
+  const removeMember = async members => {
+    return new Promise((resolve) => {
+      const removeObj = [];
+      members?.forEach(member => {
+        const index = removeObj?.findIndex(it => it.teamId?.toString() === member.teamId?.toString());
+        if (index !== -1) {
+          removeObj.splice(index, 1,  {
+            ...removeObj[index],
+            emails: [...removeObj[index].emails, member.email],
+          })
+        } else {
+          removeObj.push({
+            teamId: member.teamId,
+            emails: [member.email],
+          });
+        }
+      });
+      if (removeObj.length > 0) {
+        const promises = removeObj.map(it => inviteTeamMember(it.teamId, {remove: it.emails}));
+        setLoading(true);
+        let cnt = 0;
+        Promise.allSettled(promises)
+          .then(results => {
+            results?.forEach(result => {
+              if (result.status === "fulfilled") {
+                cnt += result.value?.data?.removed?.length;
+                setValuesV2({
+                  ...valuesV2Ref.current,
+                  members: valuesV2Ref.current.members?.filter(it => !(result.value?.data?.removed?.includes(it.email))),
+                })
+              }
+            });
+          })
+          .finally(() => {
+            setLoading(false);
+            resolve({cnt});
+          });
+      }
+    });
+  }
+
+  const moveMember = async (members, teamId) => {
+    if (!teamId)
+      return;
+
+    return new Promise((resolve, reject) => {
+      const addObj = [];
+      members?.forEach(member => {
+        if (member.teamId?.toString() !== teamId?.toString()) { // check if user from another team
+          const userTypes = [USER_TYPE_OPERATOR];
+          if (member.teams?.some(it => it.teamId?.toString() === teamId?.toString())) { // check if user is a team admin
+            userTypes.push(USER_TYPE_TEAM_ADMIN);
+          }
+          addObj.push({
+            email: member.email,
+            userTypes,
+            userId: member.userId,
+          });
+        } else {
+          addNotification(
+            t('msg user already on the team', {user: `${member.firstName} ${member.lastName}`}),
+            'success',
+          );
+        }
+      });
+      if (addObj.length > 0) {
+        setLoading(true);
+        inviteTeamMember(teamId, {
+          add: addObj,
+        })
+          .then(() => {
+            const userIdsToProcess = addObj.map(it => it.userId);
+            if (pickedTeams?.every(it => it.toString() !== teamId.toString())) {
+              removeMembersFromView(userIdsToProcess);
+            } else {
+              updateMembersFromView(userIdsToProcess, teamId);
+            }
+            resolve();
+          })
+          .catch(e => {
+            addNotification(
+              e.response?.data?.message,
+              'error',
+            );
+            reject(e);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+    });
+  }
+
   const providerValue = {
     teams,
     team,
@@ -877,6 +1102,10 @@ const DashboardProviderDraft = (
     formatHeartRate,
     getHeartRateZone,
     formatConnectionStatusV2,
+    removeMembersFromView,
+    moveMember,
+    setRefreshCount,
+    removeMember,
   };
 
   return (

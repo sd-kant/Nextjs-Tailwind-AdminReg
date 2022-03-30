@@ -15,6 +15,7 @@ import {get} from "lodash";
 import {getCompanyById} from "../../../http";
 import SearchInput from "../../components/SearchInput";
 import Pagination from "../../components/Pagination";
+import refreshIcon from "../../../assets/images/refresh.svg";
 
 const Header = (
   {
@@ -36,6 +37,7 @@ const Header = (
     sizePerPage,
     keyword,
     setKeyword,
+    setRefreshCount,
   } = useDashboardContext();
   const {visible, setVisible} = useStickyComponentsContext();
   // eslint-disable-next-line no-unused-vars
@@ -184,7 +186,8 @@ const Header = (
         <div className={clsx(style.ModifyButton)}>
           <Button
             size='sm'
-            title={t('modify')}
+            title={t('refresh')}
+            onClick={() => setRefreshCount(prev => prev + 1)}
           />
         </div>
       </div>
@@ -195,6 +198,11 @@ const Header = (
               <SearchInput
                 keyword={keyword}
                 onChange={e => setKeyword(e.target.value)}
+              />
+
+              <img
+                src={refreshIcon} className={clsx(style.RefreshIcon)} alt="refresh"
+                onClick={() => setRefreshCount(prev => prev + 1)}
               />
             </div>
 

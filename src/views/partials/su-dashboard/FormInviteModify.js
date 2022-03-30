@@ -126,7 +126,7 @@ const FormInviteModify = (props) => {
     if (alreadyExist) {
       showErrorNotification(
         '',
-        t('team has same email user'),
+        t('error member with same email address'),
       );
       return;
     }

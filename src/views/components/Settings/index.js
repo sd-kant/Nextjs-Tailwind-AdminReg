@@ -15,8 +15,6 @@ import ConfirmModalV2 from "../ConfirmModalV2";
 import {useWidthContext} from "../../../providers/WidthProvider";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERSION} from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
-import history from "../../../history";
-import {getMyProfileAction} from "../../../redux/action/profile";
 
 const popupContentStyle = {
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
@@ -33,7 +31,6 @@ const Settings = (
     t,
     metric,
     setMetric,
-    getMyProfile,
     profile,
   }
 ) => {
@@ -41,10 +38,6 @@ const Settings = (
   const [visiblePopup, setVisiblePopup] = React.useState(false);
   const [visibleLeavePopup, setVisibleLeavePopup] = React.useState(false);
   const {width} = useWidthContext();
-  React.useEffect(() => {
-    getMyProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const role = React.useMemo(() => {
     if (userType?.includes(USER_TYPE_ADMIN)) {
       return t("administrator super");
@@ -177,13 +170,15 @@ const Settings = (
           setVisiblePopup(false);
         }}
       />
-
       <ConfirmModalV2
         show={visibleLeavePopup}
-        header={t("leave team dashboard")}
+        header={t("leave team dashboard 2")}
+        visibleCancel={false}
+        okText={t("ok")}
         onOk={() => {
           setVisibleLeavePopup(false);
-          history.push("/invite");
+          const win = window.open("/invite", "_blank");
+          win.focus();
         }}
         onCancel={() => {
           setVisibleLeavePopup(false);
@@ -203,7 +198,6 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       setMetric: setMetricAction,
-      getMyProfile: getMyProfileAction,
     },
     dispatch
   );
