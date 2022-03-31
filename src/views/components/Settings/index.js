@@ -61,7 +61,13 @@ const Settings = (
       },
     },
     {
-      title: t('privacy policy'),
+      title:
+        <a
+          href={"https://kenzen.com/kenzen-solution-privacy-policy/"}
+          target="_blank"
+          rel="noreferrer"
+          className="text-black no-underline no-outline"
+        >{t('privacy policy')}</a>,
     },
   ];
   const direction = React.useMemo(() => {
@@ -120,7 +126,8 @@ const Settings = (
               <div
                 key={`menu-item-${index}`}
                 className={clsx(style.MenuItem, 'cursor-pointer')}
-                onClick={it.handleClick ? () => it.handleClick() : () => {}}
+                onClick={it.handleClick ? () => it.handleClick() : () => {
+                }}
               >
               <span className={clsx('font-binary')}>
                 {it.title}
