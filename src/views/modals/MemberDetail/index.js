@@ -19,6 +19,8 @@ import {numMinutesBetweenWithNow as numMinutesBetween} from "../../../utils";
 import BatteryV3 from "../../components/BatteryV3";
 import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
+import {formatHeartRate} from "../../../utils/dashboard";
+import {useUtilsContext} from "../../../providers/UtilsProvider";
 
 export const filters = [
   {
@@ -48,26 +50,27 @@ const MemberDetail = (
     open = false,
     closeModal = () => {
     },
-    data,
+    data: origin,
     metric,
   }) => {
+  const {getHeartRateZone, formatHeartCbt, formatAlertForDetail} = useUtilsContext();
   const {
     values: {devices},
-    formatAlertForDetail,
-    formatHeartCbt,
-    getHeartRateZone,
+    formattedMembers,
     formattedTeams,
-    formatHeartRate,
     moveMember,
     setMember,
-    setVisibleMemberModal,
   } = useDashboardContext();
   const [visibleMoveModal, setVisibleMoveModal] = React.useState(false);
   const [confirmModal, setConfirmModal] = React.useState({visible: false, title: ''});
-  console.log("member", data);
+  const memberId = React.useRef(origin?.userId);
+  const data = React.useMemo(() => {
+    return origin ? origin : formattedMembers.find(it => it.userId?.toString() === memberId.current?.toString());
+  }, [formattedMembers, origin]);
   const {stat, alertsForMe, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk} = data ?? {
     stat: null, alertsForMe: null, lastSyncStr: null, numberOfAlerts: null,
   };
+  console.log("member", data);
   let badgeColorStyle = style.Off;
   if (connectionObj?.value?.toString() === "3") {
     if (["1", "2"].includes(alertObj?.value?.toString())) {
@@ -104,17 +107,25 @@ const MemberDetail = (
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
 
   const handleMove = async () => {
-    try {
-      await moveMember([data], team?.value);
-      setVisibleMemberModal(false);
-      setVisibleMoveModal(false);
-      setConfirmModal({
-        visible: true,
-        title: t("move user to team confirmation title", {user: `${data?.firstName} ${data?.lastName}`, team: team?.label})
+    moveMember([data], team?.value)
+      .then(() => {
+        setVisibleMoveModal(false);
+        setConfirmModal({
+          visible: true,
+          title: t("move user to team confirmation title", {
+            user: `${data?.firstName} ${data?.lastName}`,
+            team: team?.label
+          })
+        });
+      })
+      .catch(e => {
+        console.log("moving member error", e);
       });
-    } catch (e) {
-      console.log("moving member error", e);
-    }
+  };
+
+  const handleConfirm = () => {
+    setMember(null);
+    setConfirmModal({visible: false, title: ''});
   };
 
   const renderActionContent = () => {
@@ -141,9 +152,12 @@ const MemberDetail = (
     );
   }
 
+  const handleClickMoveTeam = () => {
+    setVisibleMoveModal(true);
+  };
+
   return (
     <React.Fragment>
-
       <Modal
         isOpen={open}
         className={clsx(style.Modal)}
@@ -244,7 +258,8 @@ const MemberDetail = (
                       <div>
                         <span className={clsx(style.HelperText, 'font-helper-text')}>{t("status")}</span>
                       </div>
-                      <div className={clsx(style.StatusCell)} title={invisibleHeatRisk ? null : alertObj?.label} style={{height: '18.38px'}}>
+                      <div className={clsx(style.StatusCell)} title={invisibleHeatRisk ? null : alertObj?.label}
+                           style={{height: '18.38px'}}>
                         <div className={clsx(style.BadgeWrapper)}>
                           <div className={clsx(style.StatusBadge, badgeColorStyle)}/>
                         </div>
@@ -265,10 +280,12 @@ const MemberDetail = (
 
                     <div className={clsx(style.InformationEntity)}>
                       <div>
-                        <span className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}>{t("connection status")}</span>
+                        <span
+                          className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}>{t("connection status")}</span>
                       </div>
                       <div className={clsx(style.Cell)}>
-                        <span className={clsx('font-input-label')} title={connectionObj?.label}>{connectionObj?.label}</span>
+                        <span className={clsx('font-input-label')}
+                              title={connectionObj?.label}>{connectionObj?.label}</span>
                       </div>
                     </div>
                   </div>
@@ -395,7 +412,13 @@ const MemberDetail = (
 
                         <div>
                         <span className={clsx('font-binary text-gray-2', style.Padding)}>
-                          {new Date(item.utcTs).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          {new Date(item.utcTs).toLocaleString([], {
+                            year: 'numeric',
+                            month: 'numeric',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
                         </span>
                         </div>
                       </div>
@@ -428,9 +451,7 @@ const MemberDetail = (
                     title={'update team'}
                     size='sm'
                     disabled={team?.value?.toString() === data?.teamId?.toString()}
-                    onClick={() => {
-                      setVisibleMoveModal(true);
-                    }}
+                    onClick={handleClickMoveTeam}
                   />
                 </div>
               </div>
@@ -451,10 +472,7 @@ const MemberDetail = (
       <ConfirmModal
         show={confirmModal.visible}
         header={confirmModal.title}
-        onOk={() => {
-          setMember(null);
-          setConfirmModal({visible: false, title: ''});
-        }}
+        onOk={handleConfirm}
       />
     </React.Fragment>
   );
@@ -467,4 +485,4 @@ const mapStateToProps = (state) => ({
 export default connect(
   mapStateToProps,
   null,
-)(withTranslation()(MemberDetail));
+)(withTranslation()(React.memo(MemberDetail)));

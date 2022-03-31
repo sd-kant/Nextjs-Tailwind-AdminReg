@@ -27,6 +27,7 @@ import SelectMode from "./views/pages/SelectMode";
 import ForgotUsername from "./views/pages/ForgotUsername";
 import PasswordExpired from "./views/pages/PasswordExpired";
 import {getMyProfileAction} from "./redux/action/profile";
+import {UtilsProvider} from "./providers/UtilsProvider";
 
 const Router = (
   {
@@ -34,9 +35,7 @@ const Router = (
     userType,
     loggedIn,
     passwordExpired,
-    metric,
     getMyProfile,
-    setLoading,
   }) => {
   const redirectPath = loggedIn ? (ableToLogin(userType) ? "/select-mode" : "/create-account") : "/login";
   React.useEffect(() => {
@@ -145,15 +144,13 @@ const Router = (
                   path="/dashboard/multi"
                   render={(props) => (
                     <StickyComponentsProvider>
-                      <DashboardProvider
-                        setLoading={setLoading}
-                        metric={metric}
-                      >
-                        <DashboardV2
-                          multi={true}
-                          {...props}
-                        />
-                      </DashboardProvider>
+                      <UtilsProvider>
+                        <DashboardProvider>
+                          <DashboardV2
+                            {...props}
+                          />
+                        </DashboardProvider>
+                      </UtilsProvider>
                     </StickyComponentsProvider>
                   )}
                 />

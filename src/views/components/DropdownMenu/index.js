@@ -41,7 +41,12 @@ const DropdownMenu = (
   const closeTooltip = () => ref?.current?.close();
   document?.addEventListener('scroll', () => {
     closeTooltip();
-  })
+  });
+  const handleClick = React.useCallback((it) => {
+    it.action();
+    closeTooltip();
+  }, []);
+
 
   return (
     <Popup
@@ -65,10 +70,7 @@ const DropdownMenu = (
             <div key={`menu-item-${index}-${Date.now()}`} className={clsx(style.MenuItemWrapper)}>
               <div
                 className={clsx(style.MenuItem, it.highlight ? style.HighLight : null, 'cursor-pointer')}
-                onClick={() => {
-                  it.action();
-                  closeTooltip();
-                }}
+                onClick={() => handleClick(it)}
               >
                 <span className={clsx('font-binary')}>
                   {it.title}
@@ -87,4 +89,4 @@ const DropdownMenu = (
   )
 }
 
-export default withTranslation()(DropdownMenu);
+export default withTranslation()(React.memo(DropdownMenu));

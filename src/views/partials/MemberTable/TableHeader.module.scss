@@ -1,0 +1,74 @@
+@import "src/assets/scss/colors";
+
+@mixin FirstColumn {
+  position: sticky;
+  left: 0;
+  top: auto;
+  border-top-width: 1px;
+}
+
+.TableHeader {
+  position: sticky;
+  top: 0;
+  background: $app-bg;
+  z-index: 3;
+
+  .TableHeaderRow {
+    cursor: pointer;
+
+    & > td:first-child {
+      border-radius: 0;
+    }
+
+    & > td:last-child {
+      border-radius: 0;
+    }
+
+    .TableHeaderCell {
+      padding: 5px 10px;
+      text-align: center;
+      white-space: nowrap;
+      background: $app-list-bg;
+      border: 1px solid $app-bg;
+
+      .TableHeaderCellSpan {
+        font-size: 18px;
+        line-height: 20.13px;
+      }
+
+      .ChevronWrapper {
+        display: inline-flex;
+        width: 30px;
+        height: 30px;
+        justify-content: flex-end;
+        align-items: center;
+        cursor: pointer;
+
+        .ChevronIcon {
+          width: 12px;
+        }
+      }
+    }
+
+    .UserNameHeader {
+      @include FirstColumn;
+      z-index: 3;
+      opacity: 1;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .TableHeader {
+    .TableHeaderRow {
+      .TableHeaderCell {
+        padding: 15px 40px;
+
+        .TableHeaderCellSpan {
+          font-size: 21px;
+          line-height: 24.13px;
+        }
+      }
+    }
+  }
+}

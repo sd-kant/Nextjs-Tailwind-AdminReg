@@ -36,7 +36,7 @@ function useElementSize(){
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref?.offsetHeight, ref?.offsetWidth])
 
-  return [setRef, size, forceUpdate]
+  return [setRef, size, forceUpdate];
 }
 
-export default useElementSize
+export default useElementSize;
