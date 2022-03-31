@@ -525,8 +525,10 @@ const DashboardProviderDraft = (
                   alerts: uniqueUpdated,
                 });
               }
-              // fixme setValues at once
-              valuesV2Ref.current?.members?.forEach(member => {
+
+              let valuesV2Temp = JSON.parse(JSON.stringify(valuesV2Ref.current));
+
+              valuesV2Temp?.members?.forEach(member => {
                 const memberEvents = events?.filter(it => it.userId?.toString() === member.userId.toString());
                 const latestHeartRate = memberEvents?.filter(it => it.type === "HeartRate")
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
@@ -537,7 +539,7 @@ const DashboardProviderDraft = (
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
 
                 if (memberDeviceLogs?.length > 0) {
-                  const devicesTemp = JSON.parse(JSON.stringify(valuesV2Ref.current?.devices));
+                  const devicesTemp = JSON.parse(JSON.stringify(valuesV2Temp?.devices));
                   const devicesMemberIndex = devicesTemp.findIndex(it => it.userId?.toString() === member.userId?.toString()) ?? [];
                   const memberDeviceLogsData = memberDeviceLogs?.map(it => ({...it.data, ts: it.data?.utcTs}));
                   let memberDevices = [];
@@ -558,15 +560,16 @@ const DashboardProviderDraft = (
                   } else {
                     devicesTemp.push({userId: member.userId, devices: memberDevices});
                   }
-                  setValuesV2({
-                    ...valuesV2Ref.current,
-                    devices: devicesTemp,
-                  });
+
+                  valuesV2Temp = {
+                    ...valuesV2Temp,
+                    devices: devicesTemp
+                  };
                 }
 
                 const latestTempHumidity = memberEvents?.filter(it => it.type === "TempHumidity")
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
-                const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                const prev = JSON.parse(JSON.stringify(valuesV2Temp));
                 const statIndex = prev.stats?.findIndex(it => it.userId?.toString() === member?.userId?.toString());
                 if (statIndex !== -1) {
                   const temp = JSON.parse(JSON.stringify(prev.stats));
@@ -584,12 +587,14 @@ const DashboardProviderDraft = (
                     userId: member.userId,
                   };
                   temp.splice(statIndex, 1, newEle);
-                  setValuesV2({
-                    ...prev,
+                  valuesV2Temp = {
+                    ...valuesV2Temp,
                     stats: temp,
-                  });
+                  };
                 }
               });
+
+              setValuesV2(valuesV2Temp);
             }
           } else if (res.status?.toString() === "204") {
             // when there is no updates
