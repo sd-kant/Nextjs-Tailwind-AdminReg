@@ -38,4 +38,4 @@ const TableHeaderCell = (
   );
 }
 
-export default TableHeaderCell;
+export default React.memo(TableHeaderCell);

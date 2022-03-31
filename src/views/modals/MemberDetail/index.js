@@ -485,4 +485,4 @@ const mapStateToProps = (state) => ({
 export default connect(
   mapStateToProps,
   null,
-)(withTranslation()(MemberDetail));
+)(withTranslation()(React.memo(MemberDetail)));

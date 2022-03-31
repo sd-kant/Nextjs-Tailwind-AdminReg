@@ -89,4 +89,4 @@ const DropdownMenu = (
   )
 }
 
-export default withTranslation()(DropdownMenu);
+export default withTranslation()(React.memo(DropdownMenu));

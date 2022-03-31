@@ -64,4 +64,4 @@ const mapStateToProps = () => ({});
 export default connect(
   mapStateToProps,
   null,
-)(withTranslation()(MemberTable));
+)(withTranslation()(React.memo(MemberTable)));
