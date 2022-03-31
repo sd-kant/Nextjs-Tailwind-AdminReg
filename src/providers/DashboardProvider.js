@@ -97,14 +97,17 @@ const DashboardProviderDraft = (
         // todo show error
       });
   }, []);
+
   React.useEffect(() => {
     updateUrlParam({param: {key: 'keyword', value: trimmedKeyword}});
     localStorage.setItem("kop-params", location.search);
     setPage(1);
   }, [trimmedKeyword]);
+
   React.useEffect(() => {
     setIsAdmin(userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it)));
   }, [userType]);
+
   React.useEffect(() => {
     if (isAdmin) {
       queryAllOrganizations()
@@ -121,10 +124,12 @@ const DashboardProviderDraft = (
         });
     }
   }, [isAdmin]);
+
   React.useEffect(() => {
     updateUrlParam({param: {key: 'organization', value: organization}});
     localStorage.setItem("kop-params", location.search);
   }, [organization]);
+
   React.useEffect(() => {
     const sortBy = Object.keys(filter)?.[0];
     let sortDirection = undefined;
@@ -157,8 +162,7 @@ const DashboardProviderDraft = (
     });
 
     return ret;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organization, teams]);
+  }, [organization, teams, isAdmin]);
 
   React.useEffect(() => {
     if (formattedTeams?.length > 0) {
@@ -314,7 +318,6 @@ const DashboardProviderDraft = (
         country: organization.country,
       }
     ));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organizations]);
 
   const formattedMembers = React.useMemo(() => {
