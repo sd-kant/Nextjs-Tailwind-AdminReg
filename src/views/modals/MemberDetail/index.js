@@ -19,6 +19,7 @@ import {numMinutesBetweenWithNow as numMinutesBetween} from "../../../utils";
 import BatteryV3 from "../../components/BatteryV3";
 import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
+import {formatHeartRate} from "../../../utils/dashboard";
 
 export const filters = [
   {
@@ -57,7 +58,6 @@ const MemberDetail = (
     formatHeartCbt,
     getHeartRateZone,
     formattedTeams,
-    formatHeartRate,
     moveMember,
     setMember,
     setVisibleMemberModal,
@@ -143,7 +143,6 @@ const MemberDetail = (
 
   return (
     <React.Fragment>
-
       <Modal
         isOpen={open}
         className={clsx(style.Modal)}

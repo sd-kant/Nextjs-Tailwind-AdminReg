@@ -14,6 +14,7 @@ import {useDashboardContext} from "../../../providers/DashboardProvider";
 import {get} from "lodash";
 import {useWidthContext} from "../../../providers/WidthProvider";
 import BatteryV3 from "../../components/BatteryV3";
+import {formatDevice4Digits, formatHeartRate} from "../../../utils/dashboard";
 
 const MemberTable = (
   {
@@ -27,9 +28,7 @@ const MemberTable = (
     setVisibleMemberModal,
     filter,
     setFilter,
-    formatDevice4Digits,
     formatHeartCbt,
-    formatHeartRate,
   } = useDashboardContext();
   const {width} = useWidthContext();
   const checkboxSize = React.useMemo(() => width < 768 ? 'sm' : 'md', [width]);

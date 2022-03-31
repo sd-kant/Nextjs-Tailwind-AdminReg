@@ -150,7 +150,6 @@ const Router = (
                         metric={metric}
                       >
                         <DashboardV2
-                          multi={true}
                           {...props}
                         />
                       </DashboardProvider>
