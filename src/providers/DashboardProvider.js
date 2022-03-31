@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
 import {
   getTeamAlerts,
   getTeamDevices,
@@ -12,7 +13,6 @@ import {
 import axios from "axios";
 import MemberDetail from "../views/modals/MemberDetail";
 import {
-  celsiusToFahrenheit,
   getLatestDateBeforeNow as getLatestDate,
   getParamFromUrl,
   numMinutesBetweenWithNow as numMinutesBetween,
@@ -24,6 +24,8 @@ import {USER_TYPE_ADMIN, USER_TYPE_OPERATOR, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM
 import useForceUpdate from "../hooks/useForceUpdate";
 import {useNotificationContext} from "./NotificationProvider";
 import {formatLastSync} from "../utils/dashboard";
+import {setLoadingAction} from "../redux/action/ui";
+import {useUtilsContext} from "./UtilsProvider";
 
 const DashboardContext = React.createContext(null);
 
@@ -31,7 +33,6 @@ const DashboardProviderDraft = (
   {
     children,
     setLoading,
-    metric,
     userType,
     t,
   }) => {
@@ -57,8 +58,7 @@ const DashboardProviderDraft = (
   const [sizePerPage] = React.useState(10);
   const [keyword, setKeyword] = React.useState(keywordInUrl ?? "");
   const trimmedKeyword = React.useMemo(() => keyword.trim(), [keyword]);
-
-  const {addNotification} = useNotificationContext();
+  const [count, setCount] = React.useState(0);
 
   const [valuesV2, _setValuesV2] = React.useState({
     members: [],
@@ -78,8 +78,10 @@ const DashboardProviderDraft = (
     _setHorizon(v);
   };
 
+  const {addNotification} = useNotificationContext();
+  const {formatAlert, formatConnectionStatusV2} = useUtilsContext();
+
   const forceUpdate = useForceUpdate();
-  const [count, setCount] = React.useState(0);
 
   React.useEffect(() => {
     queryTeams()
@@ -247,7 +249,9 @@ const DashboardProviderDraft = (
                         )];
                       const uniqueUpdated = [];
                       for (const entry of updated) {
-                        if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) { uniqueUpdated.push(entry) }
+                        if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) {
+                          uniqueUpdated.push(entry)
+                        }
                       }
 
                       setValuesV2({
@@ -312,206 +316,6 @@ const DashboardProviderDraft = (
     ));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organizations]);
-
-  const formatConnectionStatusV2 = ({flag, deviceId, connected, stat, alert}) => {
-    if (!deviceId || deviceId?.toString().includes("none")) { // if no device
-      return {
-        label: t("never connected"),
-        value: 1,
-      };
-    }
-    if (stat?.chargingFlag) {
-      return {
-        label: t("charging"),
-        value: 2,
-      };
-    }
-
-    if (flag && connected) {
-      if (
-        numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 60 ||
-        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60
-      ) {
-        if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
-          return {
-            label: t('device connected'),
-            value: 3,
-          };
-        } else {
-          return {
-            label: t('limited connectivity'),
-            value: 4,
-          };
-        }
-      } else if (
-        numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 60 &&
-        numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 90 &&
-        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) > 60 &&
-        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 90
-      ) {
-        return {
-          label: t('limited connectivity'),
-          value: 4,
-        };
-      } else if (
-        (
-          numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 90 &&
-          numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 120
-        ) ||
-        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 120
-      ) {
-        return {
-          label: t('no connection'),
-          value: 7,
-        };
-      } else {
-        return {
-          label: t('no connection'),
-          value: 8,
-        };
-      }
-    }
-
-    if (!flag) {
-      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
-        return {
-          label: t('no connection'),
-          value: 7,
-        };
-      } else {
-        return {
-          label: t('no connection'),
-          value: 8,
-        };
-      }
-    }
-
-    if (
-      !connected
-    ) {
-      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
-        return {
-          label: t('no connection'),
-          value: 7,
-        };
-      } else {
-        return {
-          label: t('no connection'),
-          value: 8,
-        };
-      }
-    }
-
-    return {
-      label: t('no connection'),
-      value: 8,
-    };
-  };
-
-  const formatAlert = stageId => {
-    if (!stageId) {
-      return {
-        label: "Safe",
-        value: 5,
-      };
-    }
-
-    switch (stageId?.toString()) {
-      case "1":
-        return {
-          label: "At Risk",
-          value: 1,
-        };
-      case "2":
-        return {
-          label: "Elevated Risk",
-          value: 2,
-        };
-      case "3":
-        return {
-          label: "Safe",
-          value: 3,
-        };
-      case "4":
-        return {
-          label: "Safe",
-          value: 4,
-        };
-      default:
-        return {
-          label: "N/A",
-          value: null,
-        };
-    }
-  };
-
-  const formatAlertForDetail = stageId => {
-    switch (stageId?.toString()) {
-      case "1":
-        return "At Risk, Stop Work";
-      case "2":
-        return "Elevated Risk, Stop Work";
-      case "3":
-        return "Safe, Return to Work";
-      case "4":
-        return "Alert Reset";
-      default:
-        return "N/A";
-    }
-  };
-
-  const formatHeartCbt = cbt => {
-    if ([null, undefined, "0", ""].includes(cbt?.toString())) {
-      return "--";
-    }
-    if (metric) {
-      return cbt.toFixed(1);
-    } else {
-      return celsiusToFahrenheit(cbt);
-    }
-  };
-
-  const getHeartRateZone = (birthday, heartRate) => {
-    if (!heartRate) {
-      return {
-        label: null,
-        value: null,
-      }
-    }
-    const arr = birthday?.split("-");
-    if (arr?.length === 3) {
-      const ageDifMs = Date.now() - new Date(arr[0], parseInt(arr[1]) - 1, arr[2]).getTime();
-      const ageDate = new Date(ageDifMs); // milliseconds from epoch
-      const age = Math.abs(ageDate.getUTCFullYear() - 1970);
-      const maxHR = 208 - (0.7 * age);
-      if (heartRate <= 0.57 * maxHR) {
-        return {
-          label: t("very light"),
-          value: 1,
-        };
-      } else if (heartRate <= 0.64 * maxHR) {
-        return {
-          label: t('light'),
-          value: 2,
-        };
-      } else if (heartRate <= 0.75 * maxHR) {
-        return {
-          label: t("moderate"),
-          value: 3,
-        };
-      } else {
-        return {
-          label: t('high'),
-          value: 4,
-        };
-      }
-    }
-
-    return {
-      label: null,
-      value: null,
-    }
-  };
 
   const formattedMembers = React.useMemo(() => {
     let arr = [];
@@ -709,7 +513,9 @@ const DashboardProviderDraft = (
                 const updated = [...prev.alerts, ...(alerts?.map(it => it.data))];
                 const uniqueUpdated = [];
                 for (const entry of updated) {
-                  if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) { uniqueUpdated.push(entry) }
+                  if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) {
+                    uniqueUpdated.push(entry)
+                  }
                 }
                 setValuesV2({
                   ...prev,
@@ -931,9 +737,6 @@ const DashboardProviderDraft = (
     sizePerPage,
     keyword,
     setKeyword,
-    formatAlertForDetail,
-    formatHeartCbt,
-    getHeartRateZone,
     moveMember,
     setRefreshCount,
     removeMember,
@@ -958,9 +761,17 @@ const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
 });
 
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setLoading: setLoadingAction,
+    },
+    dispatch
+  );
+
 export const DashboardProvider = connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(withTranslation()(DashboardProviderDraft));
 
 export const useDashboardContext = () => {

@@ -20,6 +20,7 @@ import BatteryV3 from "../../components/BatteryV3";
 import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
 import {formatHeartRate} from "../../../utils/dashboard";
+import {useUtilsContext} from "../../../providers/UtilsProvider";
 
 export const filters = [
   {
@@ -52,11 +53,9 @@ const MemberDetail = (
     data,
     metric,
   }) => {
+  const {getHeartRateZone, formatHeartCbt, formatAlertForDetail} = useUtilsContext();
   const {
     values: {devices},
-    formatAlertForDetail,
-    formatHeartCbt,
-    getHeartRateZone,
     formattedTeams,
     moveMember,
     setMember,
