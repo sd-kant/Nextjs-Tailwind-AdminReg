@@ -59,7 +59,12 @@ const SettingsAdmin = (
         },
       },
       {
-        title: t('privacy policy'),
+        title: <a
+          href={"https://kenzen.com/kenzen-solution-privacy-policy/"}
+          target="_blank"
+          rel="noreferrer"
+          className="text-black no-underline no-outline"
+        >{t('privacy policy')}</a>,
       },
     ];
     if (isEntry) {
