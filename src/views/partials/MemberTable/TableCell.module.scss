@@ -1,0 +1,38 @@
+@import "src/assets/scss/colors";
+
+.NoConnection {
+  color: #979797;
+}
+
+.TableCell {
+  background: $app-list-bg;
+  text-align: center;
+  border: 1px solid $app-bg;
+  height: 95px;
+  font-size: 14px;
+  line-height: 21px;
+
+  .Device {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 65px;
+
+    .Battery {
+      margin-top: 10px;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .TableCell {
+    height: 106px;
+
+    font-size: 16px;
+    line-height: 24px;
+
+    .Badge {
+      width: 20px;
+    }
+  }
+}
