@@ -29,7 +29,7 @@ const MainLayoutV2 = (
   const {tableWidth} = useWidthContext();
 
   return (
-    <div className={clsx(style.Wrapper)}>
+    <div className={clsx(style.Wrapper, 'content')}>
       <div className={clsx(style.Navbar)}>
         <div className={clsx(style.NavbarMain)} style={{width: `${tableWidth}px`}}>
           <img src={logo} alt="logo"/>
@@ -56,7 +56,7 @@ const MainLayoutV2 = (
         }
       </div>
 
-      <div className={clsx(style.Content)}>
+      <div className={clsx(style.Content, 'content--inner')}>
         {children}
       </div>
     </div>

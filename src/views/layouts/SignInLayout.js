@@ -15,7 +15,7 @@ import SettingsAdmin from "../components/SettingsAdmin";
 const SignInLayout = (props) => {
   const {loggedIn, isEntry} = props;
   return (
-    <div className='wrapper'>
+    <div className='wrapper content'>
       <LanguagePicker/>
       {
         loggedIn &&
@@ -26,7 +26,7 @@ const SignInLayout = (props) => {
         </div>
       }
 
-      <div className='content-wrapper'>
+      <div className='content-wrapper content--inner'>
         <div className="desktop-stripes">
           <img src={stripes} alt="stripes"/>
         </div>
