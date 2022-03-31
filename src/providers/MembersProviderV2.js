@@ -45,31 +45,36 @@ export const MembersProviderV2Draft = (
   }, [selectedUsersTeams, formattedTeams]);
 
   const handleMove = async () => {
-    try {
-      await moveMember(selectedMembers, selectedTeam);
-      setVisibleMoveModal(false);
-      setConfirmModal({visible: true, title: t(
-          selectedMembers?.length > 1 ?
-            'move n users to team confirmation title' :
-            'move n user to team confirmation title',
-          {n: selectedMembers?.length, team: teamName}
-        )});
-      setSelectedMembers([]);
-    } catch (e) {
-      console.log("moving member error", e);
-    }
+    moveMember(selectedMembers, selectedTeam)
+      .then(() => {
+        setVisibleMoveModal(false);
+        setConfirmModal({
+          visible: true, title: t(
+            selectedMembers?.length > 1 ?
+              'move n users to team confirmation title' :
+              'move n user to team confirmation title',
+            {n: selectedMembers?.length, team: teamName}
+          )
+        });
+        setSelectedMembers([]);
+      })
+      .catch(e => {
+        console.log("moving member error", e);
+      });
   };
 
   const handleRemove = async () => {
     try {
       const {cnt} = await removeMember(selectedMembers);
       setVisibleRemoveModal(false);
-      setConfirmModal({visible: true, title: t(
+      setConfirmModal({
+        visible: true, title: t(
           cnt > 1 ?
             'remove n users confirmation title' :
             'remove n user confirmation title',
           {n: cnt, team: teamNamePlaceholder}
-        )});
+        )
+      });
       setSelectedMembers([]);
     } catch (e) {
       console.log("moving member error", e);

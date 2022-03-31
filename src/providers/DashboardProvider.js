@@ -370,7 +370,7 @@ const DashboardProviderDraft = (
         invisibleBattery,
         invisibleHeatRisk,
         invisibleLastSync,
-      })
+      });
     });
 
     const priorities = {
@@ -468,6 +468,9 @@ const DashboardProviderDraft = (
 
   const filteredMembers = React.useMemo(() => {
     return formattedMembers?.filter(it => {
+      if (it.hidden) {
+        return false;
+      }
       if (["", null, undefined].includes(trimmedKeyword)) {
         return true;
       }
@@ -609,6 +612,7 @@ const DashboardProviderDraft = (
           subscribeAgain && subscribe(sinceTs, cancelToken);
           forceUpdate();
           setCount(prev => (prev + 1) % 100);
+          console.log(`last signal received at ${new Date().toLocaleString()}`);
         });
     }
   }, [organization, pickedTeams, forceUpdate]);
@@ -654,7 +658,7 @@ const DashboardProviderDraft = (
     });
   }, [setLoading]);
 
-  const moveMember = React.useCallback(async (members, teamId) => {
+  const moveMember = React.useCallback((members, teamId) => {
     const updateMembersFromView = (userIds, teamId) => {
       const updated = valuesV2Ref.current.members?.map(it => ({
         ...it,
@@ -666,17 +670,20 @@ const DashboardProviderDraft = (
       });
     };
     const removeMembersFromView = userIds => {
-      const filtered = valuesV2Ref.current.members?.filter(it => userIds?.some(ele => ele.toString() === it.userId?.toString()));
+      const filtered = valuesV2Ref.current.members?.map(it => !(userIds?.some(ele => ele.toString() === it.userId?.toString())) ? it : {
+        ...it,
+        hidden: true
+      });
       setValuesV2({
         ...valuesV2Ref.current,
         members: filtered,
       });
     };
 
-    if (!teamId)
-      return;
-
     return new Promise((resolve, reject) => {
+      if (!teamId)
+        reject("teamId not set");
+
       const addObj = [];
       members?.forEach(member => {
         if (member.teamId?.toString() !== teamId?.toString()) { // check if user from another team
@@ -705,6 +712,7 @@ const DashboardProviderDraft = (
             const userIdsToProcess = addObj.map(it => it.userId);
             if (pickedTeams?.every(it => it.toString() !== teamId.toString())) {
               removeMembersFromView(userIdsToProcess);
+              updateMembersFromView(userIdsToProcess, teamId);
             } else {
               updateMembersFromView(userIdsToProcess, teamId);
             }
