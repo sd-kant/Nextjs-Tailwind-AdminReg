@@ -168,7 +168,10 @@ const MembersProvider = (
           !trimmedKeyword ||
           [it.email?.toLowerCase(), it.firstName?.toLowerCase(), it.lastName?.toLowerCase()].some(item => item?.includes(trimmedKeyword))
         ) {
-          if ([USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN].some(ele => memberItem?.userTypesOrigin?.includes(ele))) { // if member has admin role
+          if (
+            [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].some(ele => memberItem?.userTypesOrigin?.includes(ele)) && // if super or org admin
+            memberItem?.originalAccessibleTeams?.some(ele => ele.teamId?.toString() === teamId?.toString() && ele.userTypes?.includes(USER_TYPE_TEAM_ADMIN)) // if this team's team admin
+          ) { // if member has admin role
             admins.push(memberItem);
           } else {
             users.push(memberItem);
