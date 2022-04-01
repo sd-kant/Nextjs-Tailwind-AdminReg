@@ -23,7 +23,7 @@ import {get} from "lodash";
 import {USER_TYPE_ADMIN, USER_TYPE_OPERATOR, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN} from "../constant";
 import useForceUpdate from "../hooks/useForceUpdate";
 import {useNotificationContext} from "./NotificationProvider";
-import {formatLastSync} from "../utils/dashboard";
+import {formatLastSync, sortMembers} from "../utils/dashboard";
 import {setLoadingAction} from "../redux/action/ui";
 import {useUtilsContext} from "./UtilsProvider";
 
@@ -373,96 +373,7 @@ const DashboardProviderDraft = (
       });
     });
 
-    const priorities = {
-      "1": 6,
-      "2": 5,
-      "3": 1,
-      "4": 2,
-      "7": 3,
-      "8": 4,
-    };
-
-    const heatRiskPriorities = {
-      "1": 1,
-      "2": 2,
-      "3": 3,
-      "4": 3,
-      "5": 3,
-    };
-
-    if ([1, 2].includes(filter?.lastSync)) { // sort by last sync
-      arr = arr?.sort((a, b) => {
-        if (a.invisibleLastSync) {
-          return 1;
-        } else if (b.invisibleLastSync) {
-          return -1;
-        } else {
-          return filter?.lastSync === 1 ? new Date(b.lastSync) - new Date(a.lastSync) : new Date(a.lastSync) - new Date(b.lastSync);
-        }
-      });
-    }
-    if ([1, 2].includes(filter?.alerts)) { // sort by number of alerts
-      arr = arr?.sort((a, b) => {
-        return filter?.alerts === 1 ? b.numberOfAlerts - a.numberOfAlerts : a.numberOfAlerts - b.numberOfAlerts;
-      });
-    }
-    if ([1, 2].includes(filter?.username)) { // sort by username
-      arr = arr?.sort((a, b) => {
-        return filter?.username === 1 ? a.lastName?.localeCompare(b.lastName) : b.lastName?.localeCompare(a.lastName);
-      });
-    }
-    if ([1, 2].includes(filter?.heatRisk)) { // sort by heat risk
-      arr = arr?.sort((a, b) => {
-        let v;
-        if (a.invisibleHeatRisk ^ b.invisibleHeatRisk) {
-          v = a.invisibleHeatRisk ? 1 : -1;
-        } else {
-          let flag = false;
-          if (a.invisibleHeatRisk) {
-            flag = true;
-          } else {
-            v = filter?.heatRisk === 1 ?
-              heatRiskPriorities[a.alertObj?.value?.toString()] - heatRiskPriorities[b.alertObj?.value?.toString()] :
-              heatRiskPriorities[b.alertObj?.value?.toString()] - heatRiskPriorities[a.alertObj?.value?.toString()];
-            if (v === 0) {
-              flag = true;
-            }
-          }
-
-          if (flag) {
-            v = priorities[a.connectionObj?.value] - priorities[b.connectionObj?.value];
-            if (v === 0) {
-              if (a.invisibleLastSync) {
-                v = 1;
-              } else if (b.invisibleLastSync) {
-                v = -1;
-              } else {
-                v = new Date(b.lastSync) - new Date(a.lastSync);
-              }
-            }
-          }
-        }
-        return v;
-      });
-    }
-    if ([1, 2].includes(filter?.connection)) {
-      arr = arr?.sort((a, b) => {
-        let v = filter?.connection === 1 ? priorities[a.connectionObj?.value] - priorities[b.connectionObj?.value] : priorities[b.connectionObj?.value] - priorities[a.connectionObj?.value];
-        if (v === 0) {
-          if (a.invisibleLastSync) {
-            v = 1;
-          } else if (b.invisibleLastSync) {
-            v = -1;
-          } else {
-            v = new Date(b.lastSync) - new Date(a.lastSync);
-          }
-        }
-
-        return v;
-      });
-    }
-
-    return arr;
+    return sortMembers({arrOrigin: arr, filter})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valuesV2.members, valuesV2.alerts, valuesV2.stats, valuesV2.devices, filter, count]);
 
