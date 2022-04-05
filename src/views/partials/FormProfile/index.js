@@ -661,9 +661,12 @@ const EnhancedForm = withFormik({
     minute: "00",
   }),
   validationSchema: ((props) => formSchema(props.t)),
-  handleSubmit: (values, {props}) => {
+  handleSubmit: async (values, {props}) => {
+    const {
+      updateProfile, token, t,
+      getMedicalResponses, showErrorNotification,
+    } = props;
     try {
-      const {updateProfile, token, getMedicalResponses} = props;
       const {
         gender,
         startTimeOption, hour, minute,
@@ -704,10 +707,12 @@ const EnhancedForm = withFormik({
         gmt: gmtTz?.toLowerCase()?.replace("gmt", "") ?? "+00:00",
         responses: responses,
       };
-      answerMedicalQuestionsV2(medicalQuestionData, token)
-        .then(() => getMedicalResponses());
+      await answerMedicalQuestionsV2(medicalQuestionData, token);
+      getMedicalResponses();
+      history.back();
     } catch (e) {
       console.error("save profile error", e);
+      showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
     }
   }
 })(FormProfile);
