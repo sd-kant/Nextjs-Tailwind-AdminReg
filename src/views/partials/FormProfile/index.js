@@ -9,12 +9,16 @@ import {bindActionCreators} from "redux";
 import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {loginAction} from "../../../redux/action/auth";
 import maleIcon from "../../../assets/images/male.svg";
+import maleGrayIcon from "../../../assets/images/male-gray.svg";
 import femaleIcon from "../../../assets/images/female.svg";
+import femaleGrayIcon from "../../../assets/images/female-gray.svg";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 import DatePicker from "react-modern-calendar-datepicker";
 import {IMPERIAL, METRIC} from "../../../constant";
 import imperialIcon from "../../../assets/images/imperial.svg";
+import imperialGrayIcon from "../../../assets/images/imperial-gray.svg";
 import metricIcon from "../../../assets/images/metric.svg";
+import metricGrayIcon from "../../../assets/images/metric-gray.svg";
 import {formShape as nameFormShape} from "../create-account/FormName";
 import {formShape as genderFormShape} from "../create-account/FormGender";
 import {CustomInput, formShape as dobFormShape} from "../create-account/FormBirth";
@@ -23,7 +27,7 @@ import {ftOptions, inOptions, formShape as heightFormShape} from "../create-acco
 import {formShape as weightFormShape} from "../create-account/FormWeight";
 import {formShape as timezoneFormShape} from "../create-account/FormTimezone";
 import {formShape as workLengthFormShape} from "../create-account/FormWorkLength";
-import {formShape as startWorkFormLength} from "../create-account/FormStartWork";
+import {formShape as startWorkFormLength, hourTo24Hour} from "../create-account/FormStartWork";
 import Select from "react-select";
 import {customStyles} from "../create-account/FormCountry";
 import useTimezone from "../../../hooks/useTimezone";
@@ -36,10 +40,11 @@ import {
   convertKilosToLbs, convertLbsToKilos,
   format2Digits
 } from "../../../utils";
-import {getMedicalQuestionsAction, getMedicalResponsesAction} from "../../../redux/action/profile";
+import {getMedicalResponsesAction} from "../../../redux/action/profile";
 import MedicalQuestions from "../MedicalQuestions";
 import clsx from "clsx";
 import style from "./FormProfile.module.scss";
+import TrueFalse from "../../components/TrueFalse";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -63,18 +68,24 @@ const FormProfile = (props) => {
     t,
     setFieldValue,
     profile,
-    getMedicalQuestions,
+    medicalResponses,
     getMedicalResponses,
   } = props;
+  const [edit, setEdit] = React.useState(false);
   const [selectedDay, setSelectedDay] = React.useState(null);
   const [timezones] = useTimezone();
   const [hourOptions, minuteOptions] = useTimeOptions();
   const [cnt, setCnt] = React.useState(0);
+  const [confirmedCnt, setConfirmedCnt] = React.useState(0);
+
   useEffect(() => {
-    getMedicalQuestions();
     getMedicalResponses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const [responses, setResponses] = React.useState(medicalResponses?.responses);
+  React.useEffect(() => {
+    setResponses(medicalResponses?.responses);
+  }, [medicalResponses, confirmedCnt]);
   useEffect(() => {
     if (profile) {
       setFieldValue("firstName", profile.firstName);
@@ -126,10 +137,10 @@ const FormProfile = (props) => {
         setFieldValue("minute", minute);
       }
     }
-  }, [setFieldValue, profile, timezones]);
+  }, [setFieldValue, profile, timezones, confirmedCnt]);
   React.useLayoutEffect(() => {
     setCnt(cnt => cnt + 1);
-    if (cnt > 1) {
+    if (cnt > 1) { // according to length of dependency array of this useLayoutEffect
       if (values.measureType === IMPERIAL) {
         setFieldValue("heightUnit", "1");
         setFieldValue("weightUnit", "1");
@@ -158,9 +169,76 @@ const FormProfile = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setFieldValue, values.measureType]);
-  React.useLayoutEffect(() => {
+  const changes = React.useMemo(() => {
+    const ret = [];
+    if (!profile || !values)
+      return ret;
+    const {
+      firstName, lastName, gender,
+      measureType, timezone, workLength,
+      startTimeOption, hour, minute,
+    } = values;
 
-  }, [values, profile]);
+    if (firstName !== profile?.firstName) {
+      ret.push("firstName");
+    }
+    if (lastName !== profile?.lastName) {
+      ret.push("lastName");
+    }
+    if (gender?.toString() !== profile?.sex?.toString()) {
+      ret.push("gender");
+    }
+    if (`${selectedDay?.year}-${selectedDay?.month}-${selectedDay?.day}` !== profile?.dateOfBirth) {
+      ret.push("dob");
+    }
+    if (measureType !== profile?.measure) {
+      ret.push("measureType");
+    }
+    if (measureType === IMPERIAL) {
+      if (values?.feet && values?.inch) {
+        const {m, cm} = convertImperialToMetric(`${values?.feet}ft${values?.inch}in`);
+        if (((m * 100) + parseInt(cm)).toString() !== profile?.height?.toString()) {
+          ret.push("height");
+        }
+      }
+      if (values?.weight) {
+        const kilos = convertLbsToKilos(values?.weight);
+        if (kilos?.toString() !== profile?.weight?.toString()) {
+          ret.push("weight");
+        }
+      }
+    } else if (measureType === METRIC) {
+      if (values?.height) {
+        const cm = values?.height?.replaceAll('m', '')?.replaceAll('c', '');
+        if (cm !== profile?.height?.toString()) {
+          ret.push("height");
+        }
+      }
+      if (values?.weight) {
+        if (values?.weight?.toString() !== profile?.weight?.toString()) {
+          ret.push("weight");
+        }
+      }
+    }
+    const option = timezones?.find(it => it.gmtTz === profile?.gmt);
+    if (timezone?.gmtTz !== option?.gmtTz) {
+      ret.push("timezone");
+    }
+    if (workLength?.toString() !== profile?.workDayLength?.toString()) {
+      ret.push("workLength");
+    }
+    const hour24 = hourTo24Hour({startTimeOption, hour});
+    if (`${format2Digits(hour24)}:${minute}` !== profile?.workDayStart) {
+      ret.push("workDayStart");
+    }
+    medicalResponses?.responses?.forEach(it => {
+      if (!responses?.some(ele => ele.questionId?.toString() === it.questionId?.toString() && ele.answerId?.toString() === it.answerId?.toString())) {
+        ret.push(`medicalQuestion-${it.questionId}`);
+      }
+    })
+
+    return ret;
+  }, [values, profile, selectedDay, timezones, medicalResponses, responses]);
 
   const changeFormField = (e) => {
     const {value, name} = e.target;
@@ -170,68 +248,50 @@ const FormProfile = (props) => {
     setFieldValue("dob", selectedDay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDay]);
+  const unitOptions = [
+    {
+      value: IMPERIAL,
+      title: t('imperial'),
+      icons: {active: imperialIcon, inactive: imperialGrayIcon},
+    },
+    {
+      value: METRIC,
+      title: t('metric'),
+      icons: {active: metricIcon, inactive: metricGrayIcon},
+    },
+  ];
+  const genderOptions = [
+    {
+      value: 0,
+      title: t('male'),
+      icons: {active: maleIcon, inactive: maleGrayIcon},
+    },
+    {
+      value: 1,
+      title: t('female'),
+      icons: {active: femaleIcon, inactive: femaleGrayIcon},
+    },
+  ];
 
   return (
     <Form className='form-group mt-10'>
-      <div className={clsx('form-header-medium', style.Head)}><span className='font-heading-small d-block'>1 New Change</span></div>
+      {
+        edit ?
+          <div className={clsx('form-header-medium', style.Head)}><span className='font-heading-small d-block'>{changes?.length > 0 ? changes?.length : 'No'} New Change</span></div> :
+          <div className={clsx('form-header-medium', style.HeadLeft)}><span
+            className='font-button-label d-block text-orange'
+            onClick={() => setEdit(true)}
+          >Edit</span></div>
+      }
       <div className={clsx(style.ContentWrapper, 'form-header-medium')}>
         {/*username password section*/}
         <div className='mt-10 d-flex flex-column'>
           <label className='font-input-label text-capitalize'>
             {t("username")}
           </label>
-
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
-            name="username"
-            type='text'
-            value={values["username"]}
-            onChange={changeFormField}
-          />
-
-          {
-            errors.username && touched.username && (
-              <span className="font-helper-text text-error mt-10">{errors.username}</span>
-            )
-          }
-        </div>
-        <div className='mt-10 d-flex flex-column'>
-          <label className='font-input-label text-capitalize'>
-            {t("new password")}
-          </label>
-
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
-            name="newPassword"
-            type='password'
-            value={values["newPassword"]}
-            onChange={changeFormField}
-          />
-
-          {
-            errors.newPassword && touched.newPassword && (
-              <span className="font-helper-text text-error mt-10">{errors.newPassword}</span>
-            )
-          }
-        </div>
-        <div className='mt-10 d-flex flex-column'>
-          <label className='font-input-label text-capitalize'>
-            {t("confirm password")}
-          </label>
-
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
-            name="confirmPassword"
-            type='password'
-            value={values["confirmPassword"]}
-            onChange={changeFormField}
-          />
-
-          {
-            errors.confirmPassword && touched.confirmPassword && (
-              <span className="font-helper-text text-error mt-10">{errors.confirmPassword}</span>
-            )
-          }
+          <div className='mt-10 font-heading-small'>
+            <span className='font-binary'>{profile?.username ?? 'username'}</span>
+          </div>
         </div>
         {/*name section*/}
         <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("name description")}</span></div>
@@ -241,9 +301,10 @@ const FormProfile = (props) => {
           </label>
 
           <input
-            className='input input-field mt-10 font-heading-small text-white'
+            className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
             name="firstName"
             value={values["firstName"]}
+            disabled={!edit}
             type='text'
             onChange={changeFormField}
           />
@@ -260,7 +321,7 @@ const FormProfile = (props) => {
           </label>
 
           <input
-            className='input input-field mt-10 font-heading-small text-white'
+            className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
             name="lastName"
             type='text'
             value={values["lastName"]}
@@ -276,21 +337,12 @@ const FormProfile = (props) => {
         {/*gender section*/}
         <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("gender question")}</span></div>
         <div className="mt-15 d-flex">
-          <div
-            className={`tap cursor-pointer ${values["gender"]?.toString() === "0" ? 'active' : ''}`}
-            onClick={() => setFieldValue("gender", 0)}
-          >
-            <img src={maleIcon} alt="male icon"/>
-            <span className='font-binary mt-8'>{t("male")}</span>
-          </div>
-
-          <div
-            className={`ml-40 cursor-pointer tap ${values["gender"]?.toString() === "1" ? 'active' : ''}`}
-            onClick={() => setFieldValue("gender", 1)}
-          >
-            <img src={femaleIcon} alt="female icon"/>
-            <span className='font-binary mt-8'>{t("female")}</span>
-          </div>
+          <TrueFalse
+            disabled={!edit}
+            answer={values["gender"]}
+            options={genderOptions}
+            onChange={v => changeFormField({target: {name: 'gender', value: v}})}
+          />
         </div>
         {/*birthday section*/}
         <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("dob question")}</span></div>
@@ -302,7 +354,7 @@ const FormProfile = (props) => {
             value={selectedDay}
             colorPrimary={'#DE7D2C'}
             renderInput={({ref}) => {
-              return <CustomInput ref={ref} selectedDay={selectedDay}/>
+              return <CustomInput ref={ref} selectedDay={selectedDay} disabled={!edit}/>
             }}
             onChange={setSelectedDay}
           />
@@ -315,27 +367,12 @@ const FormProfile = (props) => {
         {/*unit section*/}
         <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("unit description")}</span></div>
         <div className="mt-15 d-flex">
-          <div
-            className={`tap cursor-pointer ${values["measureType"] === IMPERIAL ? 'active' : ''}`}
-            onClick={() => setFieldValue("measureType", IMPERIAL)}
-          >
-            <img src={imperialIcon} alt="imperial icon"/>
-
-            <span className='font-binary mt-8'>
-            {t("imperial")}
-          </span>
-          </div>
-
-          <div
-            className={`ml-40 cursor-pointer tap ${values["measureType"] === METRIC ? 'active' : ''}`}
-            onClick={() => setFieldValue("measureType", METRIC)}
-          >
-            <img src={metricIcon} alt="metric icon"/>
-
-            <span className='font-binary mt-8'>
-            {t("metric")}
-          </span>
-          </div>
+          <TrueFalse
+            disabled={!edit}
+            answer={values["measureType"]}
+            options={unitOptions}
+            onChange={v => changeFormField({target: {name: 'measureType', value: v}})}
+          />
         </div>
         {/*height section*/}
         <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("height question")}</span></div>
@@ -351,9 +388,10 @@ const FormProfile = (props) => {
               <div className="d-flex mt-25">
                 <div className="unit-picker">
                   <select
-                    className="font-input-label text-white"
+                    className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
                     value={values["feet"]}
                     name="feet"
+                    disabled={!edit}
                     onChange={changeFormField}
                   >
                     {
@@ -372,9 +410,10 @@ const FormProfile = (props) => {
                 &nbsp;&nbsp;
                 <div className="unit-picker">
                   <select
-                    className="font-input-label text-white"
+                    className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
                     value={values["inch"]}
                     name="inch"
+                    disabled={!edit}
                     onChange={changeFormField}
                   >
                     {
@@ -393,10 +432,11 @@ const FormProfile = (props) => {
               </div>
             ): (
               <InputMask
-                className='d-block input input-field mt-10 font-heading-small text-white'
+                className={`d-block input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
                 placeholder={`_m__cm`}
                 mask={`9m99cm`}
                 value={values["height"]}
+                disabled={!edit}
                 name="height"
                 onChange={changeFormField}
               />
@@ -424,8 +464,9 @@ const FormProfile = (props) => {
           </div>
 
           <input
-            className='input input-field mt-10 font-heading-small text-white'
+            className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
             type='number'
+            disabled={!edit}
             value={values["weight"]}
             name="weight"
             step={1}
@@ -449,6 +490,7 @@ const FormProfile = (props) => {
             className='mt-10 font-heading-small text-black input-field'
             options={timezones}
             value={values["timezone"]}
+            isDisabled={!edit}
             placeholder={t("select")}
             styles={customStyles}
             onChange={v => setFieldValue("timezone", v)}
@@ -461,9 +503,10 @@ const FormProfile = (props) => {
             {t("work length")}
           </label>
           <input
-            className='input input-field mt-10 font-heading-small text-white'
+            className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
             type='number'
             name="workLength"
+            disabled={!edit}
             value={values["workLength"]}
             onChange={changeFormField}
           />
@@ -482,9 +525,10 @@ const FormProfile = (props) => {
           <div className="d-flex mt-25">
             <div className="unit-picker">
               <select
-                className="font-input-label text-white"
+                className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
                 value={values["hour"]}
                 name="hour"
+                disabled={!edit}
                 onChange={changeFormField}
               >
                 {
@@ -499,9 +543,10 @@ const FormProfile = (props) => {
             &nbsp;&nbsp;:&nbsp;&nbsp;
             <div className="unit-picker">
               <select
-                className="font-input-label text-white"
+                className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
                 value={values["minute"]}
                 name="minute"
+                disabled={!edit}
                 onChange={changeFormField}
               >
                 {
@@ -516,9 +561,10 @@ const FormProfile = (props) => {
             &nbsp;&nbsp;&nbsp;&nbsp;
             <div className="unit-picker">
               <select
-                className="font-input-label text-white"
+                className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
                 value={values["startTimeOption"]}
                 name="startTimeOption"
+                disabled={!edit}
                 onChange={changeFormField}
               >
                 {
@@ -539,21 +585,35 @@ const FormProfile = (props) => {
           }
         </div>
         {/*medical questions*/}
-        <MedicalQuestions/>
+        <MedicalQuestions
+          edit={edit}
+          responses={responses}
+          setResponses={setResponses}
+        />
       </div>
 
-      <div className='mt-40'>
-        <div>
-          <button
-            className={"button active cursor-pointer"}
-            type={"submit"}
-          >
-          <span className='font-button-label text-white text-uppercase'>
-            {t("save & close")}
-          </span>
-          </button>
-        </div>
-      </div>
+      {
+        edit ?
+          <div className='mt-40'>
+            <div>
+              <button
+                className={"button active cursor-pointer"}
+                type={"submit"}
+              ><span className='font-button-label text-white text-uppercase'>{t("save & close")}</span>
+              </button>
+
+              <button
+                className={`button cursor-pointer cancel ml-15`}
+                type={"button"}
+                onClick={() => {
+                  setEdit(false);
+                  setConfirmedCnt(prev => prev + 1);
+                }}
+              ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
+              </button>
+            </div>
+          </div> : null
+      }
     </Form>
   )
 }
@@ -586,6 +646,7 @@ const EnhancedForm = withFormik({
 
 const mapStateToProps = (state) => ({
   profile: get(state, 'profile.profile'),
+  medicalResponses: get(state, 'profile.medicalResponses'),
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -594,7 +655,6 @@ const mapDispatchToProps = (dispatch) =>
       setRestBarClass: setRestBarClassAction,
       loginAction: loginAction,
       showErrorNotification: showErrorNotificationAction,
-      getMedicalQuestions: getMedicalQuestionsAction,
       getMedicalResponses: getMedicalResponsesAction,
     },
     dispatch

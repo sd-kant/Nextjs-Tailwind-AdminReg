@@ -2,10 +2,7 @@ import * as React from "react";
 import {connect} from "react-redux";
 import {get} from "lodash";
 import {bindActionCreators} from "redux";
-import {
-  getMedicalQuestionsAction,
-  getMedicalResponsesAction,
-} from "../../../redux/action/profile";
+import {getMedicalQuestionsAction} from "../../../redux/action/profile";
 import {QUESTION_TYPE_BOOLEAN, QUESTION_TYPE_RADIO} from "../../../constant";
 import RadioGroup from "../../components/RadioGroup";
 import {formatAnswersToOptions} from "../medical-prompt/FormMedical";
@@ -13,20 +10,16 @@ import MedicalTrueFalse from "../../components/MedicalTrueFalse";
 
 const MedicalQuestions = (
   {
+    edit = true,
     medicalQuestions,
-    medicalResponses,
     getMedicalQuestions,
-    getMedicalResponses,
+    responses,
+    setResponses,
   }) => {
   React.useEffect(() => {
     getMedicalQuestions();
-    getMedicalResponses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [responses, setResponses] = React.useState(medicalResponses?.responses);
-  React.useEffect(() => {
-    setResponses(medicalResponses?.responses);
-  }, [medicalResponses]);
   const onChangeOption = (questionId, value) => {
     setResponses(prev => prev.map(it => it.questionId?.toString() === questionId?.toString() ? ({...it, answerId: value}) : it));
   };
@@ -47,6 +40,7 @@ const MedicalQuestions = (
             questionContent?.type === QUESTION_TYPE_RADIO &&
             <div className="mt-28">
               <RadioGroup
+                disabled={!edit}
                 answer={answer}
                 options={formatAnswersToOptions(questionContent?.["answers"])}
                 onChange={v => onChangeOption(questionId, v)}
@@ -58,6 +52,7 @@ const MedicalQuestions = (
             questionContent?.type === QUESTION_TYPE_BOOLEAN &&
             <div className="mt-28 d-flex">
               <MedicalTrueFalse
+                disabled={!edit}
                 answer={answer}
                 options={formatAnswersToOptions(questionContent?.["answers"])}
                 onChange={v => onChangeOption(questionId, v)}
@@ -72,14 +67,12 @@ const MedicalQuestions = (
 
 const mapStateToProps = (state) => ({
   medicalQuestions: get(state, 'profile.medicalQuestions'),
-  medicalResponses: get(state, 'profile.medicalResponses'),
 });
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       getMedicalQuestions: getMedicalQuestionsAction,
-      getMedicalResponses: getMedicalResponsesAction,
     },
     dispatch
   );
