@@ -21,7 +21,7 @@ const MedicalQuestions = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const onChangeOption = (questionId, value) => {
-    setResponses(prev => prev.map(it => it.questionId?.toString() === questionId?.toString() ? ({...it, answerId: value}) : it));
+    setResponses(responses?.map(it => it.questionId?.toString() === questionId?.toString() ? ({...it, answerId: value}) : it));
   };
 
   if (!medicalQuestions)

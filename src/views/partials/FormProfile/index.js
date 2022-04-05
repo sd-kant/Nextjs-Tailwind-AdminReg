@@ -48,6 +48,7 @@ import TrueFalse from "../../components/TrueFalse";
 import Button from "../../components/Button";
 import history from "../../../history";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
+import {answerMedicalQuestionsV2} from "../../../http";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -73,22 +74,22 @@ const FormProfile = (props) => {
     profile,
     medicalResponses,
     getMedicalResponses,
+    status: {confirmedCnt},
+    setStatus,
   } = props;
   const [edit, setEdit] = React.useState(false);
   const [selectedDay, setSelectedDay] = React.useState(null);
   const [timezones] = useTimezone();
   const [hourOptions, minuteOptions] = useTimeOptions();
   const [cnt, setCnt] = React.useState(0);
-  const [confirmedCnt, setConfirmedCnt] = React.useState(0);
 
   useEffect(() => {
     getMedicalResponses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [responses, setResponses] = React.useState(medicalResponses?.responses);
   React.useEffect(() => {
-    setResponses(medicalResponses?.responses);
-  }, [medicalResponses, confirmedCnt]);
+    setFieldValue("responses", medicalResponses?.responses);
+  }, [medicalResponses, confirmedCnt, setFieldValue]);
   useEffect(() => {
     if (profile) {
       setEdit(false);
@@ -181,6 +182,7 @@ const FormProfile = (props) => {
       firstName, lastName, gender,
       measureType, timezone, workLength,
       startTimeOption, hour, minute,
+      responses,
     } = values;
 
     if (firstName !== profile?.firstName) {
@@ -242,7 +244,8 @@ const FormProfile = (props) => {
     })
 
     return ret;
-  }, [values, profile, selectedDay, timezones, medicalResponses, responses]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values, profile, selectedDay, timezones, medicalResponses, confirmedCnt]);
 
   const changeFormField = (e) => {
     const {value, name} = e.target;
@@ -603,8 +606,8 @@ const FormProfile = (props) => {
         {/*medical questions*/}
         <MedicalQuestions
           edit={edit}
-          responses={responses}
-          setResponses={setResponses}
+          responses={values?.responses}
+          setResponses={v => setFieldValue("responses", v)}
         />
       </div>
 
@@ -623,7 +626,7 @@ const FormProfile = (props) => {
                 className={`button cursor-pointer cancel ml-15`}
                 type={"button"}
                 onClick={() => {
-                  setConfirmedCnt(prev => prev + 1);
+                  setStatus({confirmedCnt: confirmedCnt + 1});
                 }}
               ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
               </button>
@@ -645,6 +648,9 @@ const FormProfile = (props) => {
 }
 
 const EnhancedForm = withFormik({
+  mapPropsToStatus: () => ({
+    confirmedCnt: 0,
+  }),
   mapPropsToValues: () => ({
     firstName: '',
     lastName: '',
@@ -665,47 +671,58 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
-    const {updateProfile} = props;
-    const {
-      gender,
-      startTimeOption, hour, minute,
-      dob: {year, month, day},
-      measureType, height, feet, inch, weight,
-      timezone: {gmtTz},
-      workLength,
-    } = values;
-    const dobStr = makeDobStr({year, month, day});
-    const measure = measureType;
-    const heightAsMetric = getHeightAsMetric({
-      measure: measure,
-      height: height,
-      feet: feet,
-      inch: inch,
-    });
-    let weightAsMetric = weight;
-    if (measure === IMPERIAL) {
-      weightAsMetric = convertLbsToKilos(values?.weight);
+    try {
+      const {updateProfile, token, getMedicalResponses} = props;
+      const {
+        gender,
+        startTimeOption, hour, minute,
+        dob: {year, month, day},
+        measureType, height, feet, inch, weight,
+        timezone: {gmtTz},
+        workLength,
+        responses,
+      } = values;
+      const dobStr = makeDobStr({year, month, day});
+      const measure = measureType;
+      const heightAsMetric = getHeightAsMetric({
+        measure: measure,
+        height: height,
+        feet: feet,
+        inch: inch,
+      });
+      let weightAsMetric = weight;
+      if (measure === IMPERIAL) {
+        weightAsMetric = convertLbsToKilos(values?.weight);
+      }
+      const hour24 = hourTo24Hour({startTimeOption, hour});
+      const body = {
+        ...values,
+        sex: gender,
+        dateOfBirth: dobStr,
+        measure: measure,
+        height: heightAsMetric,
+        weight: weightAsMetric,
+        gmt: gmtTz ?? "GMT+00:00",
+        workDayLength: workLength,
+        workDayStart: `${format2Digits(hour24)}:${minute}`,
+      };
+      updateProfile({body, apiCall: true});
+      const medicalQuestionData = {
+        category: 'medical',
+        ts: new Date().toISOString(),
+        gmt: gmtTz?.toLowerCase()?.replace("gmt", "") ?? "+00:00",
+        responses: responses,
+      };
+      answerMedicalQuestionsV2(medicalQuestionData, token)
+        .then(() => getMedicalResponses());
+    } catch (e) {
+      console.error("save profile error", e);
     }
-    const hour24 = hourTo24Hour({startTimeOption, hour});
-    const body = {
-      ...values,
-      sex: gender,
-      dateOfBirth: dobStr,
-      measure: measure,
-      height: heightAsMetric,
-      weight: weightAsMetric,
-      gmt: gmtTz ?? "GMT+00:00",
-      workDayLength: workLength,
-      workDayStart: `${format2Digits(hour24)}:${minute}`,
-    };
-    console.log("values", values);
-    console.log("props", props);
-    console.log("body", body);
-    updateProfile({body, apiCall: true});
   }
 })(FormProfile);
 
 const mapStateToProps = (state) => ({
+  token: get(state, 'auth.token'),
   profile: get(state, 'profile.profile'),
   medicalResponses: get(state, 'profile.medicalResponses'),
 });
