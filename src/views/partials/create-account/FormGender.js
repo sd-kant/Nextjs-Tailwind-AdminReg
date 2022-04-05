@@ -9,17 +9,19 @@ import {Form, withFormik} from "formik";
 import * as Yup from "yup";
 import {bindActionCreators} from "redux";
 
+export const formShape = t => ({
+  gender: Yup.number()
+    .test(
+      'is-valid',
+      t('gender required'),
+      function (value) {
+        return (value !== "");
+      }
+    ),
+});
+
 const formSchema = (t) => {
-  return Yup.object().shape({
-    gender: Yup.number()
-      .test(
-        'is-valid',
-        t('gender required'),
-        function (value) {
-          return (value !== "");
-        }
-      ),
-  });
+  return Yup.object().shape(formShape(t));
 };
 
 const FormGender = (props) => {

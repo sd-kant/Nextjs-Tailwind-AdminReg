@@ -7,27 +7,29 @@ import {Form, withFormik} from "formik";
 import {IMPERIAL, METRIC} from "../../../constant";
 import {convertKilosToLbs, convertLbsToKilos} from "../../../utils";
 
+export const formShape = t => ({
+  weightUnit: Yup.string(),
+  weight: Yup.string()
+    .required(t("weight required"))
+    .test(
+      'is-decimal',
+      t('weight not decimal'),
+      function (value) {
+        const str = value && value.toString();
+        return !(str && str.includes("."));
+      }
+    )
+    .test(
+      'is-valid',
+      t('weight invalid'),
+      function (value) {
+        return (value && parseInt(value) > 0 && parseInt(value) < 400);
+      }
+    ),
+});
+
 const formSchema = (t) => {
-  return Yup.object().shape({
-    weightUnit: Yup.string(),
-    weight: Yup.string()
-      .required(t("weight required"))
-      .test(
-        'is-decimal',
-        t('weight not decimal'),
-        function (value) {
-          const str = value && value.toString();
-          return !(str && str.includes("."));
-        }
-      )
-      .test(
-        'is-valid',
-        t('weight invalid'),
-        function (value) {
-          return (value && parseInt(value) > 0 && parseInt(value) < 400);
-        }
-      ),
-  });
+  return Yup.object().shape(formShape(t));
 };
 
 const FormWeight = (props) => {

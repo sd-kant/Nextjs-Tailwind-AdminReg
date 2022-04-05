@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
@@ -12,48 +12,51 @@ import {
   showSuccessNotificationAction,
 } from "../../../redux/action/ui";
 import {format2Digits} from "../../../utils";
+import useTimeOptions from "../../../hooks/useTimeOptions";
+
+export const formShape = t => ({
+  hour: Yup.string()
+    .required(t("start work invalid"))
+    .test(
+      'is-valid',
+      t('start work invalid'),
+      function (value) {
+        return parseInt(value) >= 0 && parseInt(value) <= 23;
+      }
+    ),
+  minute: Yup.string()
+    .required(t("start work invalid"))
+    .test(
+      'is-valid',
+      t('start work invalid'),
+      function (value) {
+        return parseInt(value) >= 0 && parseInt(value) <= 59;
+      }
+    ),
+  startTimeOption: Yup.string(),
+});
 
 const formSchema = (t) => {
-  return Yup.object().shape({
-    hour: Yup.string()
-      .required(t("start work invalid"))
-      .test(
-        'is-valid',
-        t('start work invalid'),
-        function (value) {
-          return parseInt(value) >= 0 && parseInt(value) <= 23;
-        }
-      ),
-    minute: Yup.string()
-      .required(t("start work invalid"))
-      .test(
-        'is-valid',
-        t('start work invalid'),
-        function (value) {
-          return parseInt(value) >= 0 && parseInt(value) <= 59;
-        }
-      ),
-    startTimeOption: Yup.string(),
-  });
+  return Yup.object().shape(formShape(t));
 };
+
+export const options = [
+  {
+    value: 'AM',
+    title: 'AM',
+  },
+  {
+    value: 'PM',
+    title: 'PM',
+  },
+];
 
 const FormStartWork = (props) => {
   const {t, values, profile, setFieldValue, setRestBarClass, errors, touched} = props;
-  const [hourOptions, setHourOptions] = useState([]);
-  const [minuteOptions, setMinuteOptions] = useState([]);
+  const [hourOptions, minuteOptions] = useTimeOptions();
 
   useEffect(() => {
     setRestBarClass('progress-100');
-
-    let i = 1;
-    let options = [];
-    while (i <= 12) {
-      options.push(String(i).padStart(2, '0'));
-      i++;
-    }
-    setHourOptions(options);
-    options = ["00", "15", "30", "45"];
-    setMinuteOptions(options);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -80,16 +83,7 @@ const FormStartWork = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
-  const options = [
-    {
-      value: 'AM',
-      title: 'AM',
-    },
-    {
-      value: 'PM',
-      title: 'PM',
-    },
-  ]
+
   const navigateTo = (path) => {
     history.push(path);
   }
