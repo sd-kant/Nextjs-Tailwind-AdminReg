@@ -5,18 +5,20 @@ import backIcon from "../../../assets/images/back.svg";
 import {Form, withFormik} from "formik";
 import * as Yup from "yup";
 
+export const formShape = t => ({
+  workLength: Yup.string()
+    .required(t("work length required"))
+    .test(
+      'is-valid',
+      t('work length invalid'),
+      function (value) {
+        return (parseInt(value) > 0 && parseInt(value) <= 24);
+      }
+    ),
+});
+
 const formSchema = (t) => {
-  return Yup.object().shape({
-    workLength: Yup.string()
-      .required(t("work length required"))
-      .test(
-        'is-valid',
-        t('work length invalid'),
-        function (value) {
-          return (parseInt(value) > 0 && parseInt(value) <= 24);
-        }
-      ),
-  });
+  return Yup.object().shape(formShape(t));
 };
 
 const FormWorkLength = (props) => {

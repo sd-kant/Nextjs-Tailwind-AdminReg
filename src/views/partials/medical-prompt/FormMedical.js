@@ -15,6 +15,21 @@ import {
 } from "../../../redux/action/ui";
 import {answerMedicalQuestionsV2} from "../../../http";
 
+export const formatAnswersToOptions = (answers) => {
+  let temp = JSON.parse(JSON.stringify(answers));
+  const sortedAnswers =  temp &&
+    temp.sort((a, b) => {
+      return a.answerId - b.answerId;
+    });
+  return sortedAnswers &&
+    sortedAnswers.map((answer) => {
+      return {
+        value: answer?.answerId,
+        title: answer?.text,
+      }
+    });
+}
+
 const FormMedical = (props) => {
   const {
     t, medicalQuestions, match, setLoading,
@@ -43,21 +58,6 @@ const FormMedical = (props) => {
       setQuestionContent(currentQuestion);
     }
   }, [questionOrder, medicalQuestions]);
-
-  const formatAnswersToOptions = (answers) => {
-    let temp = JSON.parse(JSON.stringify(answers));
-    const sortedAnswers =  temp &&
-      temp.sort((a, b) => {
-        return a.answerId - b.answerId;
-      });
-    return sortedAnswers &&
-      sortedAnswers.map((answer) => {
-        return {
-          value: answer?.answerId,
-          title: answer?.text,
-        }
-      });
-  }
 
   const initialize = () => {
     const order = match?.params?.order;
