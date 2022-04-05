@@ -294,17 +294,8 @@ const FormProfile = (props) => {
       }
       <div className={clsx(style.ContentWrapper, 'form-header-medium')}>
         <ScrollToFieldError/>
-        {/*username password section*/}
-        <div className='mt-10 d-flex flex-column'>
-          <label className='font-input-label text-capitalize'>
-            {t("username")}
-          </label>
-          <div className='mt-10 font-heading-small'>
-            <span className='font-binary'>{profile?.username ?? 'username'}</span>
-          </div>
-        </div>
         {/*name section*/}
-        <div className='mt-28 form-header-medium'><span
+        <div className='mt-10 form-header-medium'><span
           className='font-header-medium d-block'>{t("name description")}</span></div>
         <div className='mt-15 d-flex flex-column'>
           <label className='font-input-label'>
