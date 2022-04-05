@@ -1,0 +1,11 @@
+.Head {
+  text-align: right;
+}
+
+.ContentWrapper {
+  height: calc(100vh - 386px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 0;
+  margin-top: 15px;
+}

@@ -28,6 +28,7 @@ import ForgotUsername from "./views/pages/ForgotUsername";
 import PasswordExpired from "./views/pages/PasswordExpired";
 import {getMyProfileAction} from "./redux/action/profile";
 import {UtilsProvider} from "./providers/UtilsProvider";
+import Profile from "./views/pages/Profile";
 
 const Router = (
   {
@@ -69,6 +70,15 @@ const Router = (
                 loggedIn={loggedIn}
                 render={(props) => (
                   <CreateAccount
+                    {...props}
+                  />
+                )}
+              />
+              <SignInRoute
+                path="/profile"
+                loggedIn={loggedIn}
+                render={(props) => (
+                  <Profile
                     {...props}
                   />
                 )}
