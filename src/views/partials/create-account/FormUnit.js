@@ -10,8 +10,7 @@ import * as Yup from "yup";
 import {bindActionCreators} from "redux";
 import {IMPERIAL, METRIC} from "../../../constant";
 
-const formSchema = (t) => {
-  return Yup.object().shape({
+export const formShape = t => ({
     measureType: Yup.string()
       .test(
         'is-valid',
@@ -20,7 +19,10 @@ const formSchema = (t) => {
           return (value !== "");
         }
       ),
-  });
+});
+
+const formSchema = (t) => {
+  return Yup.object().shape(formShape(t));
 };
 
 const FormUnit = (props) => {

@@ -7,15 +7,17 @@ import backIcon from "../../../assets/images/back.svg";
 import history from "../../../history";
 import {bindActionCreators} from "redux";
 
+export const formShape = t => ({
+  firstName: Yup.string()
+    .required(t('your firstName required'))
+    .max(1024, t('firstName max error')),
+  lastName: Yup.string()
+    .required(t('your lastName required'))
+    .max(1024, t('lastName max error')),
+});
+
 const formSchema = (t) => {
-  return Yup.object().shape({
-    firstName: Yup.string()
-      .required(t('your firstName required'))
-      .max(1024, t('firstName max error')),
-    lastName: Yup.string()
-      .required(t('your lastName required'))
-      .max(1024, t('lastName max error')),
-  });
+  return Yup.object().shape(formShape(t));
 };
 
 const FormName = (props) => {

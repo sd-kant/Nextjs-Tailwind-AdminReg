@@ -8,59 +8,64 @@ import * as Yup from "yup";
 import {IMPERIAL, METRIC} from "../../../constant";
 import {convertCmToImperial, convertCmToMetric, convertImperialToMetric} from "../../../utils";
 
+export const ftOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+export const inOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+export const formShape = t => ({
+  heightUnit: Yup.string(),
+  feet: Yup.string()
+    .test(
+      'is-valid',
+      t('feet invalid'),
+      function (value) {
+        if (this.parent.heightUnit !== "2") {
+          return parseInt(value) < 10;
+        }
+        return true;
+      }
+    ),
+  inch: Yup.string()
+    .test(
+      'is-valid',
+      t('inch invalid'),
+      function (value) {
+        if (this.parent.heightUnit !== "2") {
+          return parseInt(value) < 12;
+        }
+        return true;
+      }
+    ),
+  height: Yup.string()
+    .test(
+      'is-valid',
+      t('height invalid'),
+      function (value) {
+        if (this.parent.heightUnit !== "1") {
+          const strArr = value && value.split("cm");
+          const cmArr = strArr && strArr[0] && strArr[0].split('m');
+          const m = (cmArr && cmArr[0]) || "0";
+          const cm = (cmArr && cmArr[1]) || "00";
+
+          if (cm && cm.includes("_")) {
+            return false;
+          }
+          if (parseInt(m) > 2) {
+            return false;
+          }
+
+          if (parseInt(m) === 0 && parseInt(cm) < 50) {
+            return false;
+          }
+
+          return !(parseInt(m) === 2 && parseInt(cm) > 30);
+        }
+        return true;
+      }
+    ),
+});
+
 const formSchema = (t) => {
-  return Yup.object().shape({
-    heightUnit: Yup.string(),
-    feet: Yup.string()
-      .test(
-        'is-valid',
-        t('feet invalid'),
-        function (value) {
-          if (this.parent.heightUnit !== "2") {
-            return parseInt(value) < 10;
-          }
-          return true;
-        }
-      ),
-    inch: Yup.string()
-      .test(
-        'is-valid',
-        t('inch invalid'),
-        function (value) {
-          if (this.parent.heightUnit !== "2") {
-            return parseInt(value) < 12;
-          }
-          return true;
-        }
-      ),
-    height: Yup.string()
-      .test(
-        'is-valid',
-        t('height invalid'),
-        function (value) {
-          if (this.parent.heightUnit !== "1") {
-            const strArr = value && value.split("cm");
-            const cmArr = strArr && strArr[0] && strArr[0].split('m');
-            const m = (cmArr && cmArr[0]) || "0";
-            const cm = (cmArr && cmArr[1]) || "00";
-
-            if (cm && cm.includes("_")) {
-              return false;
-            }
-            if (parseInt(m) > 2) {
-              return false;
-            }
-
-            if (parseInt(m) === 0 && parseInt(cm) < 50) {
-              return false;
-            }
-
-            return !(parseInt(m) === 2 && parseInt(cm) > 30);
-          }
-          return true;
-        }
-      ),
-  });
+  return Yup.object().shape(formShape(t));
 };
 
 const FormHeight = (props) => {
@@ -92,9 +97,6 @@ const FormHeight = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
-
-  const ftOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const inOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   const onChange = (value) => {
     setFieldValue("height", value);
@@ -227,7 +229,7 @@ const EnhancedForm = withFormik({
       };
       if (payload.measure === IMPERIAL) {
         const {m, cm} = convertImperialToMetric(`${values["feet"]}ft${values["inch"]}in`);
-        payload["height"] = (m * 100) + cm;
+        payload["height"] = (parseInt(m) * 100) + parseInt(cm);
       } else {
         payload["height"] = values["height"].replaceAll('m', '').replaceAll('c', '');
       }
