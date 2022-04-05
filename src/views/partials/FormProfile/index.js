@@ -21,9 +21,9 @@ import metricIcon from "../../../assets/images/metric.svg";
 import metricGrayIcon from "../../../assets/images/metric-gray.svg";
 import {formShape as nameFormShape} from "../create-account/FormName";
 import {formShape as genderFormShape} from "../create-account/FormGender";
-import {CustomInput, formShape as dobFormShape} from "../create-account/FormBirth";
+import {CustomInput, formShape as dobFormShape, makeDobStr} from "../create-account/FormBirth";
 import {formShape as unitFormShape} from "../create-account/FormUnit";
-import {ftOptions, inOptions, formShape as heightFormShape} from "../create-account/FormHeight";
+import {ftOptions, inOptions, formShape as heightFormShape, getHeightAsMetric} from "../create-account/FormHeight";
 import {formShape as weightFormShape} from "../create-account/FormWeight";
 import {formShape as timezoneFormShape} from "../create-account/FormTimezone";
 import {formShape as workLengthFormShape} from "../create-account/FormWorkLength";
@@ -40,7 +40,7 @@ import {
   convertKilosToLbs, convertLbsToKilos,
   format2Digits
 } from "../../../utils";
-import {getMedicalResponsesAction} from "../../../redux/action/profile";
+import {getMedicalResponsesAction, updateMyProfileAction} from "../../../redux/action/profile";
 import MedicalQuestions from "../MedicalQuestions";
 import clsx from "clsx";
 import style from "./FormProfile.module.scss";
@@ -91,6 +91,7 @@ const FormProfile = (props) => {
   }, [medicalResponses, confirmedCnt]);
   useEffect(() => {
     if (profile) {
+      setEdit(false);
       setFieldValue("firstName", profile.firstName);
       setFieldValue("lastName", profile.lastName);
       setFieldValue("gender", profile.sex);
@@ -622,7 +623,6 @@ const FormProfile = (props) => {
                 className={`button cursor-pointer cancel ml-15`}
                 type={"button"}
                 onClick={() => {
-                  setEdit(false);
                   setConfirmedCnt(prev => prev + 1);
                 }}
               ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
@@ -665,8 +665,43 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
+    const {updateProfile} = props;
+    const {
+      gender,
+      startTimeOption, hour, minute,
+      dob: {year, month, day},
+      measureType, height, feet, inch, weight,
+      timezone: {gmtTz},
+      workLength,
+    } = values;
+    const dobStr = makeDobStr({year, month, day});
+    const measure = measureType;
+    const heightAsMetric = getHeightAsMetric({
+      measure: measure,
+      height: height,
+      feet: feet,
+      inch: inch,
+    });
+    let weightAsMetric = weight;
+    if (measure === IMPERIAL) {
+      weightAsMetric = convertLbsToKilos(values?.weight);
+    }
+    const hour24 = hourTo24Hour({startTimeOption, hour});
+    const body = {
+      ...values,
+      sex: gender,
+      dateOfBirth: dobStr,
+      measure: measure,
+      height: heightAsMetric,
+      weight: weightAsMetric,
+      gmt: gmtTz ?? "GMT+00:00",
+      workDayLength: workLength,
+      workDayStart: `${format2Digits(hour24)}:${minute}`,
+    };
     console.log("values", values);
     console.log("props", props);
+    console.log("body", body);
+    updateProfile({body, apiCall: true});
   }
 })(FormProfile);
 
@@ -682,6 +717,7 @@ const mapDispatchToProps = (dispatch) =>
       loginAction: loginAction,
       showErrorNotification: showErrorNotificationAction,
       getMedicalResponses: getMedicalResponsesAction,
+      updateProfile: updateMyProfileAction,
     },
     dispatch
   );

@@ -155,6 +155,16 @@ const FormBirth = (props) => {
   )
 }
 
+export const makeDobStr = ({year, month, day}) => {
+  return `${year}-${month.toLocaleString("en-US", {
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+  })}-${day.toLocaleString("en-US", {
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+  })}`;
+}
+
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     dob: '',
@@ -163,18 +173,8 @@ const EnhancedForm = withFormik({
   handleSubmit: (values, {props}) => {
     try {
       const dob = values["dob"];
-      const {
-        year,
-        month,
-        day
-      } = dob;
-      const dobStr = `${year}-${month.toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      })}-${day.toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      })}`;
+      const {year, month, day} = dob;
+      const dobStr = makeDobStr({year, month, day});
       props.updateProfile({
         body: {
           dateOfBirth: dobStr,

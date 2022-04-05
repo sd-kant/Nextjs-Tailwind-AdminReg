@@ -214,6 +214,15 @@ const FormHeight = (props) => {
   )
 }
 
+export const getHeightAsMetric = ({measure, feet, inch, height}) => {
+  if (measure === IMPERIAL) {
+    const {m, cm} = convertImperialToMetric(`${feet}ft${inch}in`);
+    return (parseInt(m) * 100) + parseInt(cm);
+  } else {
+    return height?.replaceAll('m', '').replaceAll('c', '');
+  }
+}
+
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     heightUnit: "1",
@@ -227,14 +236,14 @@ const EnhancedForm = withFormik({
       let payload = {
         measure: props.profile?.measure,
       };
-      if (payload.measure === IMPERIAL) {
-        const {m, cm} = convertImperialToMetric(`${values["feet"]}ft${values["inch"]}in`);
-        payload["height"] = (parseInt(m) * 100) + parseInt(cm);
-      } else {
-        payload["height"] = values["height"].replaceAll('m', '').replaceAll('c', '');
-      }
+      const height = getHeightAsMetric({
+        measure: props.profile?.measure,
+        height: values.height,
+        feet: values.feet,
+        inch: values.inch,
+      });
       props.updateProfile({
-        body: payload,
+        body: {...payload, height},
         nextPath: '/create-account/weight',
       });
     } catch (e) {
