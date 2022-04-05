@@ -45,6 +45,9 @@ import MedicalQuestions from "../MedicalQuestions";
 import clsx from "clsx";
 import style from "./FormProfile.module.scss";
 import TrueFalse from "../../components/TrueFalse";
+import Button from "../../components/Button";
+import history from "../../../history";
+import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -277,13 +280,16 @@ const FormProfile = (props) => {
     <Form className='form-group mt-10'>
       {
         edit ?
-          <div className={clsx('form-header-medium', style.Head)}><span className='font-heading-small d-block'>{changes?.length > 0 ? changes?.length : 'No'} New Change</span></div> :
+          <div className={clsx('form-header-medium', style.Head)}><span
+            className='font-heading-small d-block'>{changes?.length > 0 ? changes?.length : 'No'} New Change</span>
+          </div> :
           <div className={clsx('form-header-medium', style.HeadLeft)}><span
             className='font-button-label d-block text-orange'
             onClick={() => setEdit(true)}
           >Edit</span></div>
       }
       <div className={clsx(style.ContentWrapper, 'form-header-medium')}>
+        <ScrollToFieldError/>
         {/*username password section*/}
         <div className='mt-10 d-flex flex-column'>
           <label className='font-input-label text-capitalize'>
@@ -294,7 +300,8 @@ const FormProfile = (props) => {
           </div>
         </div>
         {/*name section*/}
-        <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("name description")}</span></div>
+        <div className='mt-28 form-header-medium'><span
+          className='font-header-medium d-block'>{t("name description")}</span></div>
         <div className='mt-15 d-flex flex-column'>
           <label className='font-input-label'>
             {t("firstName")}
@@ -335,7 +342,8 @@ const FormProfile = (props) => {
           }
         </div>
         {/*gender section*/}
-        <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("gender question")}</span></div>
+        <div className='mt-28 form-header-medium'><span
+          className='font-header-medium d-block'>{t("gender question")}</span></div>
         <div className="mt-15 d-flex">
           <TrueFalse
             disabled={!edit}
@@ -345,7 +353,8 @@ const FormProfile = (props) => {
           />
         </div>
         {/*birthday section*/}
-        <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("dob question")}</span></div>
+        <div className='mt-28 form-header-medium'><span
+          className='font-header-medium d-block'>{t("dob question")}</span></div>
         <div className="mt-15 d-flex flex-column">
           <label className='font-input-label'>
             {t("dob")}
@@ -365,7 +374,8 @@ const FormProfile = (props) => {
           }
         </div>
         {/*unit section*/}
-        <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("unit description")}</span></div>
+        <div className='mt-28 form-header-medium'><span
+          className='font-header-medium d-block'>{t("unit description")}</span></div>
         <div className="mt-15 d-flex">
           <TrueFalse
             disabled={!edit}
@@ -375,7 +385,8 @@ const FormProfile = (props) => {
           />
         </div>
         {/*height section*/}
-        <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("height question")}</span></div>
+        <div className='mt-28 form-header-medium'><span
+          className='font-header-medium d-block'>{t("height question")}</span></div>
         <div className="mt-15 d-flex flex-column">
           <div className="d-flex align-center">
             <label className='font-input-label'>
@@ -430,7 +441,7 @@ const FormProfile = (props) => {
                   {t("inch")}
                 </label>
               </div>
-            ): (
+            ) : (
               <InputMask
                 className={`d-block input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
                 placeholder={`_m__cm`}
@@ -455,7 +466,8 @@ const FormProfile = (props) => {
           }
         </div>
         {/*weight section*/}
-        <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("weight question")}</span></div>
+        <div className='mt-28 form-header-medium'><span
+          className='font-header-medium d-block'>{t("weight question")}</span></div>
         <div className="mt-15 d-flex flex-column">
           <div className="d-flex align-center">
             <label className='font-input-label'>
@@ -480,7 +492,8 @@ const FormProfile = (props) => {
           }
         </div>
         {/*timezone section*/}
-        <div className='mt-28 form-form-header-medium'><span className='font-header-medium d-block'>{t("timezone question")}</span></div>
+        <div className='mt-28 form-form-header-medium'><span
+          className='font-header-medium d-block'>{t("timezone question")}</span></div>
         <div className="mt-15 d-flex flex-column">
           <label className='font-input-label'>
             {t("timezone")}
@@ -497,7 +510,8 @@ const FormProfile = (props) => {
           />
         </div>
         {/*work length section*/}
-        <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("work length question")}</span></div>
+        <div className='mt-28 form-header-medium'><span
+          className='font-header-medium d-block'>{t("work length question")}</span></div>
         <div className="mt-15 d-flex flex-column">
           <label className='font-input-label'>
             {t("work length")}
@@ -517,7 +531,8 @@ const FormProfile = (props) => {
           }
         </div>
         {/*start work section*/}
-        <div className='mt-28 form-header-medium'><span className='font-header-medium d-block'>{t("start work question")}</span></div>
+        <div className='mt-28 form-header-medium'><span
+          className='font-header-medium d-block'>{t("start work question")}</span></div>
         <div className="mt-15 d-flex flex-column">
           <label className='font-input-label'>
             {t("start work")}
@@ -592,9 +607,10 @@ const FormProfile = (props) => {
         />
       </div>
 
-      {
-        edit ?
-          <div className='mt-40'>
+
+      <div className='mt-40'>
+        {
+          edit ?
             <div>
               <button
                 className={"button active cursor-pointer"}
@@ -612,8 +628,18 @@ const FormProfile = (props) => {
               ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
               </button>
             </div>
-          </div> : null
-      }
+            :
+            <Button
+              size='md'
+              color="white"
+              bgColor="gray"
+              borderColor="gray"
+              title={t("cancel")}
+              onClick={() => history.back()}
+            />
+        }
+      </div>
+
     </Form>
   )
 }
