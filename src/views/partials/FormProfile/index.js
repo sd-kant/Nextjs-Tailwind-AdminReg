@@ -326,6 +326,7 @@ const FormProfile = (props) => {
           <input
             className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
             name="lastName"
+            disabled={!edit}
             type='text'
             value={values["lastName"]}
             onChange={changeFormField}
