@@ -21,7 +21,7 @@ const TrueFalse = (
 
           return (
             <div
-              className={`tap ${active ? 'active' : ''} ${active && !disabled ? 'border' : ''} ${!disabled? 'cursor-pointer' : ''} ${index !== 0 ? 'ml-40' : ''}`}
+              className={`tap ${active ? 'active' : ''} ${active && !disabled ? 'border' : ''} ${disabled? 'disabled' : 'cursor-pointer'} ${index !== 0 ? 'ml-40' : ''}`}
               onClick={() => {
                 if (!disabled) onChange(option.value);
               }}
@@ -32,7 +32,7 @@ const TrueFalse = (
                 alt={`${option.title.toLowerCase()} icon`}
               />
 
-              <span className={`font-binary mt-8 ${active || !disabled ? 'text-white' : 'text-gray'}`}>
+              <span className={`font-binary mt-8 text-white`}>
                 {option.title}
               </span>
             </div>
