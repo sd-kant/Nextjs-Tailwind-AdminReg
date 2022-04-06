@@ -38,7 +38,7 @@ const Router = (
     passwordExpired,
     getMyProfile,
   }) => {
-  const redirectPath = loggedIn ? (ableToLogin(userType) ? "/select-mode" : "/create-account") : "/login";
+  const redirectPath = loggedIn ? (ableToLogin(userType) ? "/select-mode" : "/profile") : "/login";
   React.useEffect(() => {
     if (token && loggedIn) {
       getMyProfile();
@@ -64,16 +64,6 @@ const Router = (
             </Switch>
           ) : (
             <Switch>
-              {/* registration side */}
-              <SignInRoute
-                path="/create-account"
-                loggedIn={loggedIn}
-                render={(props) => (
-                  <CreateAccount
-                    {...props}
-                  />
-                )}
-              />
               <SignInRoute
                 path="/profile"
                 loggedIn={loggedIn}
