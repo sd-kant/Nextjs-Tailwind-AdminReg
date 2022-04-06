@@ -195,7 +195,7 @@ const FormProfile = (props) => {
     if (gender?.toString() !== profile?.sex?.toString()) {
       ret.push("gender");
     }
-    if (`${selectedDay?.year}-${selectedDay?.month}-${selectedDay?.day}` !== profile?.dateOfBirth) {
+    if (`${selectedDay?.year}-${format2Digits(selectedDay?.month)}-${format2Digits(selectedDay?.day)}` !== profile?.dateOfBirth) {
       ret.push("dob");
     }
     if (measureType !== profile?.measure) {
@@ -621,7 +621,7 @@ const FormProfile = (props) => {
               </button>
 
               <button
-                className={`button cursor-pointer cancel ml-15`}
+                className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
                 type={"button"}
                 onClick={() => {
                   setStatus({confirmedCnt: confirmedCnt + 1});
