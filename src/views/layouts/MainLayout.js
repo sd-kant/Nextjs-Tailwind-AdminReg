@@ -13,9 +13,9 @@ export const logout = () => {
 
 const MainLayout = (props) => {
   return (
-    <div>
+    <div className='content'>
       <DashLogoutButton/>
-      <div className="dashboard">
+      <div className="dashboard content--inner">
         <div className="dashboard-header">
           <img src={logo} className="dashboard-logo" alt="logo" />
         </div>

@@ -36,6 +36,12 @@
       display: none;
     }
   </style>
+
+  <script>
+    window.loadPromise = new Promise(function(resolve) {
+      window.addEventListener('load', resolve);
+    });
+  </script>
 </head>
 <body>
 <noscript>You need to enable JavaScript to run this app.</noscript>
