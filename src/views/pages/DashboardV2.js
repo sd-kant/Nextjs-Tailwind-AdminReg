@@ -50,7 +50,7 @@ export const customStyles = (disabled = false) => ({
 });
 
 const DashboardV2 = () => {
-  const [tableWrapperRef, { width }, forceUpdate] = useElementSize();
+  const [setRef, { width }, forceUpdate] = useElementSize();
   const {setTableWidth} = useWidthContext();
   React.useEffect(() => {
     return () => {
@@ -77,12 +77,12 @@ const DashboardV2 = () => {
 
         <div
           className={clsx(style.Table)}
-          ref={tableWrapperRef}
+          ref={setRef}
         >
           <MembersProviderV2>
             <>
               <MemberTable
-                forceUpdate={forceUpdate}
+                forceWidthUpdate={forceUpdate}
               />
               <MemberOperation/>
             </>

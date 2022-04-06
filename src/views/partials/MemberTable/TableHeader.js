@@ -9,13 +9,13 @@ import chevronDown from '../../../assets/images/chevron-down.svg';
 import addIcon from '../../../assets/images/plus-circle-fire.svg';
 import {useDashboardContext} from "../../../providers/DashboardProvider";
 import TableHeaderCell from "./TableHeaderCell";
-import useElementSize from "../../../hooks/useElementSize";
 
 const TableHeader = (
   {
     columnsMap,
     visibleColumns,
     setVisibleColumns,
+    forceWidthUpdate,
   }) => {
   const {t} = useTranslation();
   const {
@@ -26,8 +26,6 @@ const TableHeader = (
   const userNameLabel = React.useMemo(() => {
     return width < 768 ? t("name") : t("user name");
   }, [width, t]);
-  const [forceUpdate] = useElementSize();
-
   const items6 = React.useCallback(() => ([
     {
       title: t("a - z"),
@@ -54,14 +52,14 @@ const TableHeader = (
             title: columnsMap[it],
             action: () => {
               setVisibleColumns(prevState => [...prevState, it]);
-              forceUpdate();
+              forceWidthUpdate();
             }
           },
         );
       }
     });
     return ret;
-  }, [columnsMap, forceUpdate, visibleColumns, setVisibleColumns]);
+  }, [columnsMap, forceWidthUpdate, visibleColumns, setVisibleColumns]);
 
   const items3 = React.useCallback(header => ([
     {
@@ -82,10 +80,10 @@ const TableHeader = (
       title: t('remove'),
       action: () => {
         setVisibleColumns(prevState => prevState.filter(it => it !== header));
-        forceUpdate();
+        forceWidthUpdate();
       },
     },
-  ]), [filter.alerts, setFilter, forceUpdate, setVisibleColumns, t]);
+  ]), [filter.alerts, setFilter, forceWidthUpdate, setVisibleColumns, t]);
 
   const items4 = React.useCallback(header => ([
     {
@@ -106,10 +104,10 @@ const TableHeader = (
       title: t('remove'),
       action: () => {
         setVisibleColumns(prevState => prevState.filter(it => it !== header));
-        forceUpdate();
+        forceWidthUpdate();
       },
     },
-  ]), [filter.heatRisk, setFilter, forceUpdate, setVisibleColumns, t]);
+  ]), [filter.heatRisk, setFilter, forceWidthUpdate, setVisibleColumns, t]);
 
   const items5 = React.useCallback(header => ([
     {
@@ -130,10 +128,10 @@ const TableHeader = (
       title: t('remove'),
       action: () => {
         setVisibleColumns(prevState => prevState.filter(it => it !== header));
-        forceUpdate();
+        forceWidthUpdate();
       },
     },
-  ]), [filter.connection, setFilter, forceUpdate, setVisibleColumns, t]);
+  ]), [filter.connection, setFilter, forceWidthUpdate, setVisibleColumns, t]);
 
   const items1 = React.useCallback(header => ([
     {
@@ -154,10 +152,10 @@ const TableHeader = (
       title: t('remove'),
       action: () => {
         setVisibleColumns(prevState => prevState.filter(it => it !== header));
-        forceUpdate();
+        forceWidthUpdate();
       },
     },
-  ]), [filter.lastSync, setFilter, forceUpdate, setVisibleColumns, t]);
+  ]), [filter.lastSync, setFilter, forceWidthUpdate, setVisibleColumns, t]);
 
   const items2 = React.useCallback(header => ([
     {
@@ -174,10 +172,10 @@ const TableHeader = (
       title: t('remove'),
       action: () => {
         setVisibleColumns(prevState => prevState.filter(it => it !== header));
-        forceUpdate();
+        forceWidthUpdate();
       },
     },
-  ]), [forceUpdate, setVisibleColumns, t]);
+  ]), [forceWidthUpdate, setVisibleColumns, t]);
 
   const items = React.useCallback(value => {
     switch (value) {

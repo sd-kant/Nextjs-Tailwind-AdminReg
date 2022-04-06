@@ -11,6 +11,7 @@ import TableHeader from "./TableHeader";
 const MemberTable = (
   {
     t,
+    forceWidthUpdate,
   }) => {
   const {
     paginatedMembers: members,
@@ -41,6 +42,7 @@ const MemberTable = (
         columnsMap={columnsMap}
         visibleColumns={visibleColumns}
         setVisibleColumns={setVisibleColumns}
+        forceWidthUpdate={forceWidthUpdate}
       />
 
       <tbody>
