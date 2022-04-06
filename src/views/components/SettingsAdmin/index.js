@@ -14,6 +14,7 @@ import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERS
 import {logout} from "../../layouts/MainLayout";
 import queryString from "query-string";
 import {concatAsUrlParam} from "../../../utils";
+import history from "../../../history";
 
 const popupContentStyle = {
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
@@ -56,6 +57,13 @@ const SettingsAdmin = (
         title: t("dashboard"),
         handleClick: () => {
           setVisibleLeavePopup(true);
+        },
+      },
+      {
+        title: t("user profile"),
+        handleClick: () => {
+          ref.current.close();
+          history.push("/profile");
         },
       },
       {

@@ -191,6 +191,17 @@ const FormStartWork = (props) => {
   )
 }
 
+export const hourTo24Hour = ({hour, startTimeOption}) => {
+  let hour24;
+  if (startTimeOption === "AM") {
+    hour24 = parseInt(hour) === 12 ? parseInt(hour) - 12: parseInt(hour);
+  } else {
+    hour24 = parseInt(hour) === 12 ? parseInt(hour): parseInt(hour) + 12;
+  }
+
+  return hour24;
+}
+
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     startTimeOption: "AM",
@@ -204,12 +215,7 @@ const EnhancedForm = withFormik({
       hour,
       minute,
     } = values;
-    let hour24;
-    if (startTimeOption === "AM") {
-      hour24 = parseInt(hour) === 12 ? parseInt(hour) - 12: parseInt(hour);
-    } else {
-      hour24 = parseInt(hour) === 12 ? parseInt(hour): parseInt(hour) + 12;
-    }
+    const hour24 = hourTo24Hour({startTimeOption, hour});
     try {
       props.updateProfile({
         body: {

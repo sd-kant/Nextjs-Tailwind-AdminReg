@@ -108,6 +108,10 @@
   border: 2px $app-white solid;
 }
 
+.checkmark.disabled {
+  border: 2px $app-gray solid;
+}
+
 /* When the radio button is checked, add a blue background */
 .radio-container input:checked ~ .checkmark {
   background-color: $app-orange;

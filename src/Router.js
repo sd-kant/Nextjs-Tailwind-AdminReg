@@ -28,6 +28,7 @@ import ForgotUsername from "./views/pages/ForgotUsername";
 import PasswordExpired from "./views/pages/PasswordExpired";
 import {getMyProfileAction} from "./redux/action/profile";
 import {UtilsProvider} from "./providers/UtilsProvider";
+import Profile from "./views/pages/Profile";
 
 const Router = (
   {
@@ -37,7 +38,7 @@ const Router = (
     passwordExpired,
     getMyProfile,
   }) => {
-  const redirectPath = loggedIn ? (ableToLogin(userType) ? "/select-mode" : "/create-account") : "/login";
+  const redirectPath = loggedIn ? (ableToLogin(userType) ? "/select-mode" : "/profile") : "/login";
   React.useEffect(() => {
     if (token && loggedIn) {
       getMyProfile();
@@ -63,12 +64,11 @@ const Router = (
             </Switch>
           ) : (
             <Switch>
-              {/* registration side */}
               <SignInRoute
-                path="/create-account"
+                path="/profile"
                 loggedIn={loggedIn}
                 render={(props) => (
-                  <CreateAccount
+                  <Profile
                     {...props}
                   />
                 )}
