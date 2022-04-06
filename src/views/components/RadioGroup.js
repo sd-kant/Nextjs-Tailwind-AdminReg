@@ -12,7 +12,9 @@ const Radio = (props) => {
           name="radio"
           checked={checked}
           value={value}
-          onChange={() => disabled ? {} : onChange(value)}
+          onChange={() => {
+            if (!disabled) onChange(value);
+          }}
         />
         <span className={`checkmark ${!checked && disabled ? 'disabled' : ''}`}/>
       </label>

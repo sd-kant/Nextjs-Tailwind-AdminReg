@@ -10,6 +10,10 @@ import useTimezone from "../../../hooks/useTimezone";
 
 export const formShape = t => ({
   timezone: Yup.object()
+    .shape({
+      gmtTz: Yup.string()
+        .required(t("timezone required")),
+    })
     .required(t("timezone required")),
 })
 

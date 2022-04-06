@@ -88,14 +88,14 @@ const FormProfile = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   React.useEffect(() => {
-    setFieldValue("responses", medicalResponses?.responses);
+    setFieldValue("responses", medicalResponses?.responses ?? []);
   }, [medicalResponses, confirmedCnt, setFieldValue]);
   useEffect(() => {
     if (profile) {
       setEdit(false);
-      setFieldValue("firstName", profile.firstName);
-      setFieldValue("lastName", profile.lastName);
-      setFieldValue("gender", profile.sex);
+      setFieldValue("firstName", profile.firstName ?? "");
+      setFieldValue("lastName", profile.lastName ?? "");
+      setFieldValue("gender", profile.sex ?? "");
       const dateOfBirth = profile.dateOfBirth;
       const dobSplits = dateOfBirth?.split("-");
       if (dobSplits?.length === 3) {
@@ -105,25 +105,26 @@ const FormProfile = (props) => {
           day: parseInt(dobSplits[2]),
         })
       }
-      setFieldValue("measureType", profile.measure);
+      setFieldValue("dob", dateOfBirth ?? "");
+      setFieldValue("measureType", profile.measure ?? IMPERIAL);
       const {measure, height, weight, workDayStart} = profile;
       if (measure === IMPERIAL) {
         setFieldValue("heightUnit", "1");
         setFieldValue("weightUnit", "1");
-        setFieldValue("weight", convertKilosToLbs(weight));
+        setFieldValue("weight", convertKilosToLbs(weight) ?? "");
       } else if (measure === METRIC) {
         setFieldValue("heightUnit", "2");
         setFieldValue("weightUnit", "2");
-        setFieldValue("weight", weight);
+        setFieldValue("weight", weight ?? "");
       }
       const {feet, inch} = convertCmToImperial(height);
-      setFieldValue("feet", feet);
-      setFieldValue("inch", inch);
+      setFieldValue("feet", feet ?? "");
+      setFieldValue("inch", inch ?? "");
       const {m, cm} = convertCmToMetric(height);
       setFieldValue("height", `${m}m${cm}cm`);
       const option = timezones?.find(it => it.gmtTz === profile.gmt);
-      setFieldValue("timezone", option);
-      setFieldValue("workLength", profile.workDayLength);
+      setFieldValue("timezone", option ?? "");
+      setFieldValue("workLength", profile.workDayLength ?? "");
       if (workDayStart) {
         const hour = workDayStart.split(":")?.[0];
         const minute = workDayStart.split(":")?.[1];
@@ -237,8 +238,8 @@ const FormProfile = (props) => {
     if (`${format2Digits(hour24)}:${minute}` !== profile?.workDayStart) {
       ret.push("workDayStart");
     }
-    medicalResponses?.responses?.forEach(it => {
-      if (!responses?.some(ele => ele.questionId?.toString() === it.questionId?.toString() && ele.answerId?.toString() === it.answerId?.toString())) {
+    responses?.forEach(it => {
+      if (!medicalResponses?.responses?.some(ele => ele.questionId?.toString() === it.questionId?.toString() && ele.answerId?.toString() === it.answerId?.toString())) {
         ret.push(`medicalQuestion-${it.questionId}`);
       }
     })
@@ -358,7 +359,7 @@ const FormProfile = (props) => {
             value={selectedDay}
             colorPrimary={'#DE7D2C'}
             renderInput={({ref}) => {
-              return <CustomInput ref={ref} selectedDay={selectedDay} disabled={!edit}/>
+              return <CustomInput ref={ref} selectedDay={selectedDay} disabled={!edit} name="dob"/>
             }}
             onChange={setSelectedDay}
           />
@@ -498,11 +499,17 @@ const FormProfile = (props) => {
             className='mt-10 font-heading-small text-black input-field'
             options={timezones}
             value={values["timezone"]}
+            name="timezone"
             isDisabled={!edit}
             placeholder={t("select")}
             styles={customStyles}
             onChange={v => setFieldValue("timezone", v)}
           />
+          {
+            errors?.timezone && touched?.timezone && (
+              <span className="font-helper-text text-error mt-10">{errors?.timezone?.gmtTz}</span>
+            )
+          }
         </div>
         {/*work length section*/}
         <div className='mt-28 form-header-medium'><span
@@ -654,13 +661,14 @@ const EnhancedForm = withFormik({
     inch: "0",
     weightUnit: "1",
     weight: "",
-    timezone: null,
+    timezone: '',
     workLength: "",
     startTimeOption: "AM",
     hour: "09",
     minute: "00",
   }),
   validationSchema: ((props) => formSchema(props.t)),
+  enableReinitialize: true,
   handleSubmit: async (values, {props}) => {
     const {
       updateProfile, token, t,

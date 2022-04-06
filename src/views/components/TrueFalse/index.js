@@ -22,7 +22,9 @@ const TrueFalse = (
           return (
             <div
               className={`tap ${active ? 'active' : ''} ${active && !disabled ? 'border' : ''} ${!disabled? 'cursor-pointer' : ''} ${index !== 0 ? 'ml-40' : ''}`}
-              onClick={disabled ? () => {} : () => onChange(option.value)}
+              onClick={() => {
+                if (!disabled) onChange(option.value);
+              }}
               key={`option-${index}`}
             >
               <img

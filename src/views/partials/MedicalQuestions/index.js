@@ -21,7 +21,14 @@ const MedicalQuestions = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const onChangeOption = (questionId, value) => {
-    setResponses(responses?.map(it => it.questionId?.toString() === questionId?.toString() ? ({...it, answerId: value}) : it));
+    const index = responses?.findIndex(it => it.questionId?.toString() === questionId?.toString());
+    let temp = JSON.parse(JSON.stringify(responses ?? []));
+    if (index !== -1) {
+      temp.splice(index, 1, {...temp[index], answerId: value});
+    } else {
+      temp.push({questionId: questionId, answerId: value});
+    }
+    setResponses(temp);
   };
 
   if (!medicalQuestions)

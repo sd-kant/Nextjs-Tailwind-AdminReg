@@ -55,11 +55,12 @@ const getAge = (dateString) => {
 }
 
 export const CustomInput = forwardRef((props, ref) => {
-  const {selectedDay, disabled} = props;
+  const {selectedDay, disabled, name} = props;
   return (
     <input
       readOnly
       ref={ref} // necessary
+      name={name}
       className={`input input-field mt-10 font-heading-small ${disabled ? 'text-gray' : 'text-white'}`}
       disabled={disabled}
       placeholder="Please pick your birthday"
