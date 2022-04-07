@@ -7,6 +7,8 @@ import style from './MemberTable.module.scss';
 import {useDashboardContext} from "../../../providers/DashboardProvider";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
+import MemberDetail from "../../modals/MemberDetail";
+import {UserSubscriptionProvider} from "../../../providers/UserSubscriptionProvider";
 
 const MemberTable = (
   {
@@ -15,6 +17,9 @@ const MemberTable = (
   }) => {
   const {
     paginatedMembers: members,
+    member,
+    visibleMemberModal,
+    setVisibleMemberModal,
   } = useDashboardContext();
   const storedVisibleColumns = localStorage.getItem("visibleColumns");
   const parsedVisibleColumns = storedVisibleColumns ? JSON.parse(storedVisibleColumns) : null;
@@ -37,27 +42,39 @@ const MemberTable = (
   };
 
   return (
-    <table className={clsx(style.Table)}>
-      <TableHeader
-        columnsMap={columnsMap}
-        visibleColumns={visibleColumns}
-        setVisibleColumns={setVisibleColumns}
-        forceWidthUpdate={forceWidthUpdate}
-      />
+    <>
+      <table className={clsx(style.Table)}>
+        <TableHeader
+          columnsMap={columnsMap}
+          visibleColumns={visibleColumns}
+          setVisibleColumns={setVisibleColumns}
+          forceWidthUpdate={forceWidthUpdate}
+        />
 
-      <tbody>
+        <tbody>
+        {
+          members?.map(member => (
+            <TableRow
+              member={member}
+              key={`member-${member.userId}`}
+              visibleColumns={visibleColumns}
+              columnsMap={columnsMap}
+            />
+          ))
+        }
+        </tbody>
+      </table>
       {
-        members?.map(member => (
-          <TableRow
-            member={member}
-            key={`member-${member.userId}`}
-            visibleColumns={visibleColumns}
-            columnsMap={columnsMap}
-          />
-        ))
+        visibleMemberModal &&
+          <UserSubscriptionProvider>
+            <MemberDetail
+              data={member}
+              open={visibleMemberModal}
+              closeModal={() => setVisibleMemberModal(false)}
+            />
+          </UserSubscriptionProvider>
       }
-      </tbody>
-    </table>
+    </>
   )
 };
 

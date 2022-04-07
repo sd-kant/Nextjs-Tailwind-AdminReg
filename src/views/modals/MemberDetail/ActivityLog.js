@@ -1,0 +1,55 @@
+import * as React from "react";
+import clsx from "clsx";
+import style from "./ActivityLogs.module.scss";
+import thermometer from '../../../assets/images/thermometer-orange.svg';
+import heart from '../../../assets/images/heart.svg';
+import {formatHeartRate} from "../../../utils/dashboard";
+import {useUtilsContext} from "../../../providers/UtilsProvider";
+
+const ActivityLog = ({item}) => {
+  const {formatHeartCbt, formatAlertForDetail} = useUtilsContext();
+
+  return (
+    <div className={clsx(style.DataRow)}>
+      <div className={clsx(style.DataLabel)}>
+        <div className={clsx('font-binary', style.Rounded)}>
+          {
+            item.type === "Alert" ?
+              formatAlertForDetail(item.alertStageId)
+              : item.event
+          }
+        </div>
+      </div>
+
+      <div className={clsx(item.type !== "Alert" ? style.HideSM : null)}>
+        <div className={clsx('font-binary', style.Rounded)}>
+          <img className={style.MobileOnly} src={thermometer} alt="thermometer" width={8}
+               style={{marginRight: '3px'}}/>
+          <span
+            className={clsx(style.HeartCBTSpan)}>{item.type === "Alert" ? formatHeartCbt(item.heartCbtAvg) : '--'}</span>
+        </div>
+
+        <div className={clsx('font-binary', style.Rounded, 'ml-15')}>
+          <img className={style.MobileOnly} src={heart} alt="heart" width={13}
+               style={{marginRight: '3px'}}/>
+          <span
+            className={clsx(style.HeartCBTSpan)}>{item.type === "Alert" ? formatHeartRate(item.heartRateAvg) : '--'}</span>
+        </div>
+      </div>
+
+      <div>
+        <span className={clsx('font-binary text-gray-2', style.Padding)}>
+          {new Date(item.utcTs).toLocaleString([], {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+export default React.memo(ActivityLog);

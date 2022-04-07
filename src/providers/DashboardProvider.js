@@ -11,7 +11,6 @@ import {
   subscribeDataEvents
 } from "../http";
 import axios from "axios";
-import MemberDetail from "../views/modals/MemberDetail";
 import {
   getLatestDateBeforeNow as getLatestDate,
   getParamFromUrl,
@@ -292,6 +291,7 @@ const DashboardProviderDraft = (
           setLoading(true);
           Promise.allSettled([a(), b(), c(), e()])
             .then(() => {
+              // fixme there might be new events between the time when api returned and now
               const d = new Date().getTime();
               setHorizon(d);
               subscribe(d, source.token);
@@ -649,7 +649,9 @@ const DashboardProviderDraft = (
     organization,
     setOrganization,
     values: valuesV2Ref.current,
+    member,
     setMember,
+    visibleMemberModal,
     setVisibleMemberModal,
     formattedTeams,
     formattedOrganizations,
@@ -672,14 +674,6 @@ const DashboardProviderDraft = (
   return (
     <DashboardContext.Provider value={providerValue}>
       {children}
-      {
-        visibleMemberModal &&
-        <MemberDetail
-          data={member}
-          open={visibleMemberModal}
-          closeModal={() => setVisibleMemberModal(false)}
-        />
-      }
     </DashboardContext.Provider>
   );
 };
