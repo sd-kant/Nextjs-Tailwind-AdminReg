@@ -232,6 +232,14 @@ const FormCompany = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formattedRegions, values.companyName]);
 
+  const handleCancel = () => {
+    if (isEditing) {
+      cancelEditing();
+    } else {
+      history.push("/select-mode");
+    }
+  };
+
   return (
     <Form className='form mt-57'>
       <div className={clsx(style.TopWrapper)}>
@@ -610,18 +618,15 @@ const FormCompany = (props) => {
             {values["isEditing"] ? t("save") : t("next")}
           </span>
         </button>
-        {
-          isEditing &&
-          <button
-            className={`button cursor-pointer cancel ml-15`}
-            type={"button"}
-            onClick={cancelEditing}
-          >
+        <button
+          className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
+          type={"button"}
+          onClick={handleCancel}
+        >
             <span className='font-button-label text-orange text-uppercase'>
               {t("cancel")}
             </span>
-          </button>
-        }
+        </button>
       </div>
     </Form>
   )
