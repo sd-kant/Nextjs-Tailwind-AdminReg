@@ -20,11 +20,15 @@ const OrganizationProvider = (
   }) => {
   const [orgAdmins, setOrgAdmins] = React.useState([]);
   const [organization, setOrganization] = React.useState(null);
+  const [mounted, setMounted] = React.useState(false);
+
   React.useEffect(() => {
+    setMounted(true);
     if (organizationId) {
       fetchOrgAdmins();
       fetchCompany();
     }
+    return () => setMounted(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organizationId, isAdmin]);
 
@@ -32,7 +36,7 @@ const OrganizationProvider = (
     if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
       getCompanyById(organizationId)
         .then(response => {
-          setOrganization(response.data);
+          if (mounted) setOrganization(response.data);
         });
     }
   }
@@ -45,7 +49,7 @@ const OrganizationProvider = (
         userType: 'OrgAdmin',
       })
         .then(res => {
-          setOrgAdmins(res.data ?? []);
+          if (mounted) setOrgAdmins(res.data ?? []);
         })
         .catch(e => {
           showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
