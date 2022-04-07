@@ -468,5 +468,6 @@
   "leave team dashboard 2": "Kenzen管理が新しいブラウザウィンドウで開きます",
   "leave administration 2": "Kenzenチームダッシュボードが新しいブラウザウィンドウで開きます",
   "error member with same email address": "同じメールアドレスのチームメンバーがすでにいます。もう一度やり直してください",
-  "save & close": "保存して閉じます"
+  "save & close": "保存して閉じます",
+  "support": "サポート"
 }
