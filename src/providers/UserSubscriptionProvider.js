@@ -9,25 +9,25 @@ export const UserSubscriptionProvider = (
   }) => {
   const [duration, setDuration] = React.useState(30); // 1, 7, or 30 days
   const [user, setUser] = React.useState(null);
-
+  console.log('user', user);
   React.useEffect(() => {
     // todo get alerts, events of user
-    if (user?.id) {
+    if (user?.userId) {
       getData(user);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user?.userId]);
 
   const getData = (user) => {
-    if (user?.id && user?.teamId) {
+    if (user?.userId && user?.teamId) {
       const promises = [];
       const d = new Date();
       d.setDate(d.getDate() - duration);
-      const a = getTeamMemberAlerts({teamId: user.teamId, userId: user.id, since: d.toISOString()});
+      const a = getTeamMemberAlerts({teamId: user.teamId, userId: user.userId, since: d.toISOString()});
 
       const b = getTeamMemberEvents({
         teamId: user.teamId,
-        userId: user.id,
+        userId: user.userId,
         startDate: getDateStr(new Date()),
         endDate: getDateStr(d),
       });

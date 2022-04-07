@@ -11,7 +11,6 @@ import {
   subscribeDataEvents
 } from "../http";
 import axios from "axios";
-import MemberDetail from "../views/modals/MemberDetail";
 import {
   getLatestDateBeforeNow as getLatestDate,
   getParamFromUrl,
@@ -649,7 +648,9 @@ const DashboardProviderDraft = (
     organization,
     setOrganization,
     values: valuesV2Ref.current,
+    member,
     setMember,
+    visibleMemberModal,
     setVisibleMemberModal,
     formattedTeams,
     formattedOrganizations,
@@ -672,14 +673,6 @@ const DashboardProviderDraft = (
   return (
     <DashboardContext.Provider value={providerValue}>
       {children}
-      {
-        visibleMemberModal &&
-        <MemberDetail
-          data={member}
-          open={visibleMemberModal}
-          closeModal={() => setVisibleMemberModal(false)}
-        />
-      }
     </DashboardContext.Provider>
   );
 };

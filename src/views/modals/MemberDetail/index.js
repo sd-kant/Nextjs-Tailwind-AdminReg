@@ -21,6 +21,7 @@ import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
 import {formatHeartRate} from "../../../utils/dashboard";
 import {useUtilsContext} from "../../../providers/UtilsProvider";
+import {useUserSubscriptionContext} from "../../../providers/UserSubscriptionProvider";
 
 export const filters = [
   {
@@ -61,6 +62,7 @@ const MemberDetail = (
     moveMember,
     setMember,
   } = useDashboardContext();
+  const {setUser} = useUserSubscriptionContext();
   const [visibleMoveModal, setVisibleMoveModal] = React.useState(false);
   const [confirmModal, setConfirmModal] = React.useState({visible: false, title: ''});
   const memberId = React.useRef(origin?.userId);
@@ -94,6 +96,7 @@ const MemberDetail = (
     } else {
       setTeam(null);
     }
+    setUser(data);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
   const userDevices = devices?.find(it => it.userId?.toString() === data?.userId?.toString())?.devices;
