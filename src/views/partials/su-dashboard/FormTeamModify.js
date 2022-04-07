@@ -39,15 +39,18 @@ const FormTeamModify = (props) => {
   const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams, match: {params: {organizationId}}, isAdmin, showErrorNotification,} = props;
   const [hasUnassignedMember, setHasUnassignedMember] = React.useState(false);
   const {regions, locations} = useOrganizationContext();
+  const [mounted, setMounted] = React.useState(false);
 
   useEffect(() => {
     setRestBarClass("progress-54 medical");
     queryAllTeams();
+    setMounted(true);
     if (isAdmin) {
       unAssignedUsersUnderOrganization();
     } else {
       setHasUnassignedMember(false);
     }
+    return () => setMounted(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -68,7 +71,7 @@ const FormTeamModify = (props) => {
     getUsersUnderOrganization({userType: 'unassigned', organizationId})
       .then(res => {
         const hasUnassignedMember = res.data?.some(ele => !(ele.teamId || ele?.teams?.length > 0));
-        setHasUnassignedMember(hasUnassignedMember);
+        if (mounted) setHasUnassignedMember(hasUnassignedMember);
       })
       .catch(err => {
         showErrorNotification(err?.response?.data?.message ?? t("msg something went wrong"));
