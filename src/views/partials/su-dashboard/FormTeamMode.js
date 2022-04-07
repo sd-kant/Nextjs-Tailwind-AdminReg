@@ -28,6 +28,9 @@ const FormTeamMode = (props) => {
     history.push(path);
   }
   const orgId = [undefined, "-1", null, ""].includes(organizationId?.toString()) ? myOrganizationId : organizationId;
+  const handleCancel = () => {
+    navigateTo("/select-mode");
+  };
 
   return (
     <div className='form-group mt-57'>
@@ -100,9 +103,19 @@ const FormTeamMode = (props) => {
         </div>
       </div>
 
-      <div className='mt-80 form-header-medium'>
-        <span className='font-binary mt-8'>
-        </span>
+      <div className='mt-80'>
+        {
+          !isAdmin ?
+            <button
+              className={`button cursor-pointer cancel`}
+              type={"button"}
+              onClick={handleCancel}
+            >
+              <span className='font-button-label text-orange text-uppercase'>
+                {t("cancel")}
+              </span>
+            </button> : null
+        }
       </div>
     </div>
   )

@@ -1,11 +1,20 @@
 .TopWrapper {
 }
 
+.CancelBtn {
+  margin-top: 15px;
+  margin-left: 0;
+}
+
+@media only screen and (min-width: 768px) {
+  .CancelBtn {
+    margin-left: 15px;
+    margin-top: 0;
+  }
+}
+
 @media only screen and (min-width: 1400px) {
   .TopWrapper {
-    //max-height: 400px;
-    //overflow-y: auto;
-    //width: 500px !important;
-    //padding-bottom: 20px;
+
   }
 }
