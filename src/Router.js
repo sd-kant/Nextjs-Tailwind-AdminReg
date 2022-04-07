@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from "react-redux";
-import {Router as BrowserRouter, Redirect, Switch, Route} from "react-router-dom";
+import {Router as BrowserRouter, Redirect, Switch/*, Route*/} from "react-router-dom";
 import history from "./history";
 import SignInRoute from "./views/routes/SignInRoute";
 import SULogin from "./views/pages/SULogin";
@@ -29,8 +29,8 @@ import PasswordExpired from "./views/pages/PasswordExpired";
 import {getMyProfileAction} from "./redux/action/profile";
 import {UtilsProvider} from "./providers/UtilsProvider";
 import Profile from "./views/pages/Profile";
-import {TransitionGroup, Transition} from "react-transition-group";
-import {play} from "./utils/timelines";
+// import {TransitionGroup, Transition} from "react-transition-group";
+// import {play} from "./utils/timelines";
 
 const Router = (
   {
@@ -49,7 +49,7 @@ const Router = (
 
   return (
     <BrowserRouter basename="/" history={history}>
-      <Route
+      {/*<Route
         render={({location}) => {
           const {key} = location;
 
@@ -61,230 +61,231 @@ const Router = (
                 onEnter={play}
                 timeout={{enter: 750, exit: 0}}
               >
-                {
-                  token ? (
-                    passwordExpired ? (
-                      <Switch>
-                        <SignInRoute
-                          loggedIn={false}
-                          path="/password-expired"
-                          render={(props) => (
-                            <PasswordExpired
-                              {...props}
-                            />
-                          )}
-                        />
-                        <Redirect to="/password-expired"/>
-                      </Switch>
-                    ) : (
-                      <Switch>
-                        <SignInRoute
-                          path="/profile"
-                          loggedIn={loggedIn}
-                          render={(props) => (
-                            <Profile
-                              {...props}
-                            />
-                          )}
-                        />
-                        {/* admin side*/}
-                        {
-                          ableToLogin(userType) &&
-                          loggedIn &&
-                          <SignInRoute
-                            loggedIn={true}
-                            isEntry={true}
-                            path="/select-mode"
-                            render={(props) => (
-                              <SelectMode
-                                {...props}
-                              />
-                            )}
-                          />
-                        }
-                        {
-                          ableToLogin(userType) &&
-                          loggedIn &&
-                          <SignInRoute
-                            loggedIn={true}
-                            path="/invite"
-                            render={(props) => (
-                              <Invite
-                                {...props}
-                                userType={userType}
-                              />
-                            )}
-                          />
-                        }
-                        {
-                          ableToLogin(userType) &&
-                          loggedIn &&
-                          <MainRoute
-                            exact
-                            path="/dashboard"
-                            render={(props) => (
-                              <Dashboard
-                                {...props}
-                              />
-                            )}
-                          />
-                        }
-                        {
-                          !loggedIn &&
-                          <SignInRoute
-                            path="/phone-verification/:mode"
-                            render={(props) => (
-                              <PhoneVerification
-                                {...props}
-                              />
-                            )}
-                          />
-                        }
-                        {
-                          !loggedIn &&
-                          <SignInRoute
-                            path="/phone-register"
-                            render={(props) => (
-                              <PhoneRegister
-                                {...props}
-                              />
-                            )}
-                          />
-                        }
-                        {
-                          loggedIn &&
-                          <MainRouteV2
-                            exact
-                            path="/dashboard/multi"
-                            render={(props) => (
-                              <StickyComponentsProvider>
-                                <UtilsProvider>
-                                  <DashboardProvider>
-                                    <DashboardV2
-                                      {...props}
-                                    />
-                                  </DashboardProvider>
-                                </UtilsProvider>
-                              </StickyComponentsProvider>
-                            )}
-                          />
-                        }
-                        <SignInRoute
-                          loggedIn={false}
-                          path="/mobile-login"
-                          render={(props) => (
-                            <MobileLogin
-                              {...props}
-                            />
-                          )}
-                        />
 
-                        <SignInRoute
-                          loggedIn={false}
-                          path="/mobile-phone-register"
-                          render={(props) => (
-                            <MobilePhoneRegister
-                              {...props}
-                            />
-                          )}
-                        />
-
-                        <SignInRoute
-                          loggedIn={false}
-                          path="/mobile-phone-verification/:mode"
-                          render={(props) => (
-                            <MobilePhoneVerification
-                              {...props}
-                            />
-                          )}
-                        />
-                        <Redirect to={redirectPath}/>
-                      </Switch>
-                    )
-                  ) : (
-                    <Switch>
-                      {/* registration side */}
-                      <SignInRoute
-                        path="/create-account"
-                        render={(props) => (
-                          <CreateAccount
-                            {...props}
-                          />
-                        )}
-                      />
-
-                      <SignInRoute
-                        path="/login"
-                        render={(props) => (
-                          <SULogin
-                            {...props}
-                          />
-                        )}
-                      />
-
-                      <SignInRoute
-                        path="/mobile-login"
-                        render={(props) => (
-                          <MobileLogin
-                            {...props}
-                          />
-                        )}
-                      />
-
-                      <SignInRoute
-                        path="/mobile-phone-register"
-                        render={(props) => (
-                          <MobilePhoneRegister
-                            {...props}
-                          />
-                        )}
-                      />
-
-                      <SignInRoute
-                        path="/mobile-phone-verification/:mode"
-                        render={(props) => (
-                          <MobilePhoneVerification
-                            {...props}
-                          />
-                        )}
-                      />
-
-                      <SignInRoute
-                        path="/forgot-password"
-                        render={(props) => (
-                          <ForgotPassword
-                            {...props}
-                          />
-                        )}
-                      />
-
-                      <SignInRoute
-                        path="/forgot-username"
-                        render={(props) => (
-                          <ForgotUsername
-                            {...props}
-                          />
-                        )}
-                      />
-
-                      <SignInRoute
-                        path="/reset-password"
-                        render={(props) => (
-                          <ResetPassword
-                            {...props}
-                          />
-                        )}
-                      />
-
-                      <Redirect to='/login'/>
-                    </Switch>
-                  )
-                }
               </Transition>
             </TransitionGroup>
           )
         }}
-      />
+      />*/}
+      {
+        token ? (
+          passwordExpired ? (
+            <Switch>
+              <SignInRoute
+                loggedIn={false}
+                path="/password-expired"
+                render={(props) => (
+                  <PasswordExpired
+                    {...props}
+                  />
+                )}
+              />
+              <Redirect to="/password-expired"/>
+            </Switch>
+          ) : (
+            <Switch>
+              <SignInRoute
+                path="/profile"
+                loggedIn={loggedIn}
+                render={(props) => (
+                  <Profile
+                    {...props}
+                  />
+                )}
+              />
+              {/* admin side*/}
+              {
+                ableToLogin(userType) &&
+                loggedIn &&
+                <SignInRoute
+                  loggedIn={true}
+                  isEntry={true}
+                  path="/select-mode"
+                  render={(props) => (
+                    <SelectMode
+                      {...props}
+                    />
+                  )}
+                />
+              }
+              {
+                ableToLogin(userType) &&
+                loggedIn &&
+                <SignInRoute
+                  loggedIn={true}
+                  path="/invite"
+                  render={(props) => (
+                    <Invite
+                      {...props}
+                      userType={userType}
+                    />
+                  )}
+                />
+              }
+              {
+                ableToLogin(userType) &&
+                loggedIn &&
+                <MainRoute
+                  exact
+                  path="/dashboard"
+                  render={(props) => (
+                    <Dashboard
+                      {...props}
+                    />
+                  )}
+                />
+              }
+              {
+                !loggedIn &&
+                <SignInRoute
+                  path="/phone-verification/:mode"
+                  render={(props) => (
+                    <PhoneVerification
+                      {...props}
+                    />
+                  )}
+                />
+              }
+              {
+                !loggedIn &&
+                <SignInRoute
+                  path="/phone-register"
+                  render={(props) => (
+                    <PhoneRegister
+                      {...props}
+                    />
+                  )}
+                />
+              }
+              {
+                loggedIn &&
+                <MainRouteV2
+                  exact
+                  path="/dashboard/multi"
+                  render={(props) => (
+                    <StickyComponentsProvider>
+                      <UtilsProvider>
+                        <DashboardProvider>
+                          <DashboardV2
+                            {...props}
+                          />
+                        </DashboardProvider>
+                      </UtilsProvider>
+                    </StickyComponentsProvider>
+                  )}
+                />
+              }
+              <SignInRoute
+                loggedIn={false}
+                path="/mobile-login"
+                render={(props) => (
+                  <MobileLogin
+                    {...props}
+                  />
+                )}
+              />
+
+              <SignInRoute
+                loggedIn={false}
+                path="/mobile-phone-register"
+                render={(props) => (
+                  <MobilePhoneRegister
+                    {...props}
+                  />
+                )}
+              />
+
+              <SignInRoute
+                loggedIn={false}
+                path="/mobile-phone-verification/:mode"
+                render={(props) => (
+                  <MobilePhoneVerification
+                    {...props}
+                  />
+                )}
+              />
+              <Redirect to={redirectPath}/>
+            </Switch>
+          )
+        ) : (
+          <Switch>
+            {/* registration side */}
+            <SignInRoute
+              path="/create-account"
+              render={(props) => (
+                <CreateAccount
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/login"
+              render={(props) => (
+                <SULogin
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/mobile-login"
+              render={(props) => (
+                <MobileLogin
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/mobile-phone-register"
+              render={(props) => (
+                <MobilePhoneRegister
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/mobile-phone-verification/:mode"
+              render={(props) => (
+                <MobilePhoneVerification
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/forgot-password"
+              render={(props) => (
+                <ForgotPassword
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/forgot-username"
+              render={(props) => (
+                <ForgotUsername
+                  {...props}
+                />
+              )}
+            />
+
+            <SignInRoute
+              path="/reset-password"
+              render={(props) => (
+                <ResetPassword
+                  {...props}
+                />
+              )}
+            />
+
+            <Redirect to='/login'/>
+          </Switch>
+        )
+      }
     </BrowserRouter>
   )
 }
