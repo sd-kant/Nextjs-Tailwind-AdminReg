@@ -344,3 +344,13 @@ export const lookupByEmail = email => {
 export const resetPasswordWithToken = (body, token) => {
   return patch("/user/password", body, token);
 };
+
+export const getTeamMemberEvents = ({teamId, userId, startDate, endDate}) => {
+  return get(`/team/${teamId}/events/user/${userId}?startDate=${startDate}&endDate=${endDate}`);
+};
+
+export const getTeamMemberAlerts = ({teamId, userId, since}) => {
+  return get(`team/${teamId}/alerts/user/${userId}`, null, {
+    "If-None-Match": since,
+  });
+};
