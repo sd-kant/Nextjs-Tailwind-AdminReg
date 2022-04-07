@@ -22,6 +22,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import {formatHeartRate} from "../../../utils/dashboard";
 import {useUtilsContext} from "../../../providers/UtilsProvider";
 import {useUserSubscriptionContext} from "../../../providers/UserSubscriptionProvider";
+import ActivityLogs from "./ActivityLogs";
 
 export const filters = [
   {
@@ -34,17 +35,6 @@ export const filters = [
   },
 ];
 
-export const activitiesSorts = [
-  {
-    value: "1",
-    label: "Most Recent Alerts",
-  },
-  {
-    value: "2",
-    label: "All Activities",
-  },
-];
-
 const MemberDetail = (
   {
     t,
@@ -54,7 +44,7 @@ const MemberDetail = (
     data: origin,
     metric,
   }) => {
-  const {getHeartRateZone, formatHeartCbt, formatAlertForDetail} = useUtilsContext();
+  const {getHeartRateZone, formatHeartCbt} = useUtilsContext();
   const {
     values: {devices},
     formattedMembers,
@@ -62,14 +52,14 @@ const MemberDetail = (
     moveMember,
     setMember,
   } = useDashboardContext();
-  const {setUser} = useUserSubscriptionContext();
+  const {setUser, logs, activitiesFilters, activitiesFilter, setActivitiesFilter} = useUserSubscriptionContext();
   const [visibleMoveModal, setVisibleMoveModal] = React.useState(false);
   const [confirmModal, setConfirmModal] = React.useState({visible: false, title: ''});
   const memberId = React.useRef(origin?.userId);
   const data = React.useMemo(() => {
     return origin ? origin : formattedMembers.find(it => it.userId?.toString() === memberId.current?.toString());
   }, [formattedMembers, origin]);
-  const {stat, alertsForMe, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk} = data ?? {
+  const {stat, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk} = data ?? {
     stat: null, alertsForMe: null, lastSyncStr: null, numberOfAlerts: null,
   };
   console.log("member", data);
@@ -166,6 +156,7 @@ const MemberDetail = (
         className={clsx(style.Modal)}
         overlayClassName={clsx(style.ModalOverlay)}
         onRequestClose={closeModal}
+        preventScroll={true}
         appElement={document.getElementsByTagName("body")}
       >
         <div className={clsx(style.Wrapper)}>
@@ -359,15 +350,13 @@ const MemberDetail = (
                 </div>
 
                 <div className={clsx(style.FilterArea)}>
-                  {/*<span className={clsx('font-binary')} style={{marginTop: '10px'}}>
-                {t("filter by")}
-              </span>*/}
-
                   <ResponsiveSelect
                     className={clsx('font-binary text-black', style.Dropdown)}
-                    placeholder={t("sort by")}
+                    placeholder={t("filter by")}
                     styles={customStyles()}
-                    options={activitiesSorts}
+                    options={activitiesFilters}
+                    value={activitiesFilter}
+                    onChange={setActivitiesFilter}
                     maxMenuHeight={190}
                     writable={false}
                   />
@@ -375,59 +364,9 @@ const MemberDetail = (
               </div>
 
               <div className={clsx(style.AlertCardContent)}>
-                {
-                  alertsForMe?.length > 0 ?
-                    <div className={clsx(style.DataRow, style.Header, 'font-button-label text-orange')}>
-                      <span className={clsx('font-binary', style.Padding)}>{t("details")}</span>
-                      <div>
-                        <span className={clsx('font-binary', style.Padding)}>{t("cbt")}</span>
-                        <span className={clsx('font-binary', style.Padding, 'ml-20')}>{t("hr")}</span>
-                      </div>
-                      <span className={clsx('font-binary', style.Padding)}>{t("datetime")}</span>
-                    </div> :
-                    <div className={clsx(style.DataRow, style.Header, 'font-button-label text-orange')}>
-                      <span className={clsx('font-binary', style.Padding)}>{t("no alerts")}</span>
-                    </div>
-                }
-                {
-                  alertsForMe?.map((item, index) => {
-                    return (
-                      <div className={clsx(style.DataRow)} key={`user-alert-${data?.userId}-${index}`}>
-                        <div className={clsx(style.DataLabel)}>
-                          <div className={clsx('font-binary', style.Rounded)}>
-                            {formatAlertForDetail(item.alertStageId)}
-                          </div>
-                        </div>
-
-                        <div>
-                          <div className={clsx('font-binary', style.Rounded)}>
-                            <img className={style.MobileOnly} src={thermometer} alt="thermometer" width={8}
-                                 style={{marginRight: '3px'}}/>
-                            <span className={clsx(style.HeartCBTSpan)}>{formatHeartCbt(item.heartCbtAvg)}</span>
-                          </div>
-
-                          <div className={clsx('font-binary', style.Rounded, 'ml-15')}>
-                            <img className={style.MobileOnly} src={heart} alt="heart" width={13}
-                                 style={{marginRight: '3px'}}/>
-                            <span className={clsx(style.HeartCBTSpan)}>{formatHeartRate(item.heartRateAvg)}</span>
-                          </div>
-                        </div>
-
-                        <div>
-                        <span className={clsx('font-binary text-gray-2', style.Padding)}>
-                          {new Date(item.utcTs).toLocaleString([], {
-                            year: 'numeric',
-                            month: 'numeric',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </span>
-                        </div>
-                      </div>
-                    )
-                  })
-                }
+                <ActivityLogs
+                  logs={logs}
+                />
               </div>
             </div>
 

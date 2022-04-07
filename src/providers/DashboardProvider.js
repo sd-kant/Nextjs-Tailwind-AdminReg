@@ -291,6 +291,7 @@ const DashboardProviderDraft = (
           setLoading(true);
           Promise.allSettled([a(), b(), c(), e()])
             .then(() => {
+              // fixme there might be new events between the time when api returned and now
               const d = new Date().getTime();
               setHorizon(d);
               subscribe(d, source.token);
