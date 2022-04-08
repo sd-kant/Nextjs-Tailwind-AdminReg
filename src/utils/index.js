@@ -239,3 +239,28 @@ export const updateUrlParam = ({param: {key, value}, reload = false}) => {
     window.location.href = newUrl;
   }
 }
+
+/**
+ * @description time display as on timezone
+ * @param {string} time in utc
+ * @param {string} gmt
+ */
+export const timeOnOtherZone = (time, gmt) => {
+  const os = new Date().getTimezoneOffset();
+  let ret = new Date(time);
+  if (gmt) {
+    const arr = gmt?.toLowerCase()?.replace("gmt", "")?.split(":");
+    if (arr.length === 2) {
+      let offset = (parseInt(arr[0]) * 60) +  parseInt(arr[1]);
+      ret = new Date(new Date(time).getTime() + ((offset + os) * 60 * 1000));
+    }
+  }
+
+  return ret.toLocaleString([], {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
