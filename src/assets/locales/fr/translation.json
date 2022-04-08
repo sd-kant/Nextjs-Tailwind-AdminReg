@@ -469,5 +469,7 @@
   "leave administration 2": "Kenzen Le tableau de bord de l'équipe s'ouvrira dans une nouvelle fenêtre de navigateur",
   "error member with same email address": "Il y a déjà un membre de l'équipe avec la même adresse e-mail, veuillez réessayer",
   "save & close": "sauver et fermer",
-  "support": "Support"
+  "support": "Support",
+  "unlock user warning title": "Déverrouiller l'utilisateur verrouillé ?",
+  "unlock user confirmation title": "{{name}} a été déverrouillé. L'utilisateur recevra des instructions pour réactiver son compte"
 }

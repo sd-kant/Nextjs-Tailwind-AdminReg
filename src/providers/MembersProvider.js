@@ -19,7 +19,7 @@ import {
   getUsersUnderOrganization,
   deleteUser,
   reInviteOrganizationUser,
-  reInviteTeamUser, inviteTeamMember,
+  reInviteTeamUser, inviteTeamMember, unlockUser,
 } from "../http";
 import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../views/components/ConfirmModalV2";
@@ -76,13 +76,15 @@ const MembersProvider = (
   const [tempMembers, setTempMembers] = React.useState([]);
   const [users, setUsers] = React.useState([]);
   const [admins, setAdmins] = React.useState([]);
-  const [visibleDeleteModal, setVisibleDeleteModal] = React.useState(false);
-  const [visibleRemoveModal, setVisibleRemoveModal] = React.useState(false);
-  const [visibleReInviteModal, setVisibleReInviteModal] = React.useState(false);
-  const [visiblePhoneModal, setVisiblePhoneModal] = React.useState(false);
   const [confirmModal, setConfirmModal] = React.useState({
     title: null,
     visible: false,
+  });
+  const [warningModal, setWarningModal] = React.useState({
+    title: null,
+    visible: false,
+    subtitle: null,
+    mode: null, // reset-phone, re-invite, remove, delete, unlock
   });
   const [selectedUser, setSelectedUser] = React.useState(null);
   const [page, setPage] = React.useState('');
@@ -201,6 +203,7 @@ const MembersProvider = (
       accessibleTeams: it.accessibleTeams,
       originalAccessibleTeams: it.originalAccessibleTeams,
       action: it.action,
+      locked: it.locked,
       phoneAction: it.phoneAction,
       phoneNumber: {
         value: it.phoneNumber,
@@ -488,7 +491,7 @@ const MembersProvider = (
     }
   };
 
-  const handleResetPhoneNumber = async () => {
+  const handleResetPhoneNumber = React.useCallback(async () => {
     if (!selectedUser?.userId)
       return;
 
@@ -511,7 +514,7 @@ const MembersProvider = (
         temp[index]['phoneNumber'] = null;
         setTempMembers(temp);
       }
-      setVisiblePhoneModal(false);
+      handleWarningHide();
       setConfirmModal({
         title: t("reset phone confirmation title"),
         visible: true,
@@ -522,16 +525,16 @@ const MembersProvider = (
     } finally {
       setLoading(false);
     }
-  };
+  }, [members, organizationId, selectedUser, setLoading, showErrorNotification, t, tempMembers]);
 
-  const handleRemoveFromTeam = async () => {
+  const handleRemoveFromTeam = React.useCallback(async () => {
     if (selectedUser?.teamId && selectedUser?.email) {
       try {
         setLoading(true);
         await inviteTeamMember(selectedUser?.teamId, {
           remove: [selectedUser.email],
         });
-        setVisibleRemoveModal(false);
+        handleWarningHide();
         setConfirmModal({visible: true, title: t("remove user confirmation title")});
         showSuccessNotification(t('msg user removed success', {
           user: `${selectedUser?.firstName} ${selectedUser?.firstName}`,
@@ -546,9 +549,9 @@ const MembersProvider = (
         setLoading(false);
       }
     }
-  };
+  }, [selectedUser, setLoading, showErrorNotification, showSuccessNotification, t, teamId]);
 
-  const handleDeleteUser = () => {
+  const handleDeleteUser = React.useCallback(() => {
     // only super or org admin can do this
     if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) {
       if (!(["-1", "", null, undefined].includes(organizationId?.toString())) && selectedUser?.userId) {
@@ -558,7 +561,7 @@ const MembersProvider = (
           userId: selectedUser?.userId,
         })
           .then(() => {
-            setVisibleDeleteModal(false);
+            handleWarningHide();
             setConfirmModal({visible: true, title: t("delete user confirmation title")});
             setMembers(prev => prev.filter(it => it.userId?.toString() !== selectedUser.userId.toString()));
             setTempMembers(prev => prev.filter(it => it.userId?.toString() !== selectedUser.userId.toString()));
@@ -574,9 +577,35 @@ const MembersProvider = (
           });
       }
     }
-  };
+  }, [organizationId, selectedUser, setLoading, showErrorNotification, showSuccessNotification, t, userType]);
 
-  const handleReInvite = () => {
+  const _handleUnlockUser = React.useCallback(() => {
+    setLoading(true);
+    let fTeamId = teamId;
+    if (["-1", "", null, undefined].includes(teamId?.toString())) {
+      fTeamId = teams?.[0].value;
+    }
+    if (["-1", "", null, undefined].includes(fTeamId?.toString())) return;
+
+    unlockUser({
+      teamId: fTeamId,
+      userId: selectedUser?.userId,
+    })
+      .then(() => {
+        handleWarningHide();
+        setConfirmModal({visible: true, title: t("unlock user confirmation title", {name: `${selectedUser?.firstName} ${selectedUser?.lastName}`})});
+        setMembers(prev => prev.map(it => it.userId?.toString() === selectedUser.userId.toString() ? {...it, locked: false} : it));
+        setTempMembers(prev => prev.map(it => it.userId?.toString() === selectedUser.userId.toString() ? {...it, locked: false} : it));
+      })
+      .catch(e => {
+        showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [teamId, selectedUser, setLoading, showErrorNotification, t, teams]);
+
+  const handleReInvite = React.useCallback(() => {
     const user = selectedUser;
     let requestHttp = null; let payload = null;
     if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) { // super or org admin
@@ -609,7 +638,7 @@ const MembersProvider = (
       setLoading(true);
       requestHttp(payload)
         .then(() => {
-          setVisibleReInviteModal(false);
+          handleWarningHide();
           setConfirmModal({
             visible: true,
             title: t("re-invite user confirmation title"),
@@ -625,7 +654,7 @@ const MembersProvider = (
           setLoading(false);
         });
     }
-  };
+  }, [allTeams, members, organizationId, selectedUser, setLoading, showErrorNotification, showSuccessNotification, t, userType]);
 
   const handlePhoneOptionClick = (value, user) => {
     switch (value?.toString()) {
@@ -633,7 +662,12 @@ const MembersProvider = (
         break;
       case "2":
         setSelectedUser(user);
-        setVisiblePhoneModal(true);
+        setWarningModal({
+          visible: true,
+          title: t("reset phone warning title"),
+          subtitle: null,
+          mode: 'reset-phone',
+        });
         break;
       default:
         console.log('please select valid phone action type');
@@ -644,19 +678,75 @@ const MembersProvider = (
     switch (value?.toString()) {
       case "1": // re-invite
         setSelectedUser(user);
-        setVisibleReInviteModal(true);
+        setWarningModal({
+          visible: true,
+          title: t("re-invite user warning title"),
+          subtitle: null,
+          mode: 're-invite',
+        });
         break;
       case "2": // remove from team
         setSelectedUser(user);
-        setVisibleRemoveModal(true);
+        setWarningModal({
+          visible: true,
+          title: t("remove user warning title"),
+          subtitle: null,
+          mode: 'remove',
+        });
         break;
       case "3": // delete
         setSelectedUser(user);
-        setVisibleDeleteModal(true);
+        setWarningModal({
+          visible: true,
+          title: t('delete user warning title'),
+          subtitle: t('delete user warning description'),
+          mode: 'delete',
+        });
         break;
       default:
         console.log('please select valid action type');
     }
+  };
+
+  const handleWarningHide = () => {
+    setWarningModal({
+      visible: false,
+      title: null,
+      subtitle: null,
+      mode: null,
+    });
+  };
+
+  const handleWarningOk = React.useCallback(() => {
+    switch (warningModal.mode) {
+      case 'reset-phone':
+        handleResetPhoneNumber().then();
+        break;
+      case 're-invite':
+        handleReInvite();
+        break;
+      case 'remove':
+        handleRemoveFromTeam().then();
+        break;
+      case 'delete':
+        handleDeleteUser();
+        break;
+      case 'unlock':
+        _handleUnlockUser();
+        break;
+      default:
+        console.log("not registered action");
+    }
+  }, [warningModal.mode, handleResetPhoneNumber, handleReInvite, handleRemoveFromTeam, handleDeleteUser, _handleUnlockUser]);
+
+  const handleUnlockUser = user => {
+    setSelectedUser(user);
+    setWarningModal({
+      visible: true,
+      title: t('unlock user warning title'),
+      subtitle: null,
+      mode: 'unlock',
+    });
   };
 
   const providerValue = {
@@ -681,34 +771,17 @@ const MembersProvider = (
     handleResetUpdates,
     handlePhoneOptionClick,
     handleActionOptionClick,
+    handleUnlockUser,
   };
 
   return (
     <MembersContext.Provider value={providerValue}>
       <ConfirmModalV2
-        show={visiblePhoneModal}
-        header={t("reset phone warning title")}
-        onOk={handleResetPhoneNumber}
-        onCancel={() => setVisiblePhoneModal(false)}
-      />
-      <ConfirmModalV2
-        show={visibleReInviteModal}
-        header={t("re-invite user warning title")}
-        onOk={handleReInvite}
-        onCancel={() => setVisibleReInviteModal(false)}
-      />
-      <ConfirmModalV2
-        show={visibleRemoveModal}
-        header={t('remove user warning title')}
-        onOk={handleRemoveFromTeam}
-        onCancel={() => setVisibleRemoveModal(false)}
-      />
-      <ConfirmModalV2
-        show={visibleDeleteModal}
-        header={t('delete user warning title')}
-        subheader={t('delete user warning description')}
-        onOk={handleDeleteUser}
-        onCancel={() => setVisibleDeleteModal(false)}
+        show={warningModal.visible}
+        header={warningModal.title}
+        subheader={warningModal.subtitle}
+        onOk={handleWarningOk}
+        onCancel={handleWarningHide}
       />
       <ConfirmModal
         show={confirmModal?.visible}

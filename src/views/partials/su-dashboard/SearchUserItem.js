@@ -13,6 +13,7 @@ import {
 import clsx from "clsx";
 import style from "./SearchUserItem.module.scss";
 import removeIcon from "../../../assets/images/remove.svg";
+import lockIcon from "../../../assets/images/lock.svg";
 import {get} from "lodash";
 import {useMembersContext} from "../../../providers/MembersProvider";
 
@@ -36,6 +37,7 @@ const SearchUserItem = (
     handleResetUpdates,
     handlePhoneOptionClick,
     handleActionOptionClick,
+    handleUnlockUser,
   } = useMembersContext();
 
   const approvalGreen = '#35EA6C';
@@ -117,6 +119,17 @@ const SearchUserItem = (
           />
         }
       </div>
+      {
+        user.locked &&
+        <div className={clsx(style.LockIconWrapper)}>
+          <img
+            className={clsx(style.LockIcon)}
+            src={lockIcon}
+            alt="lock icon"
+            onClick={() => handleUnlockUser(user)}
+          />
+        </div>
+      }
 
       <div className={clsx(style.UserRow)}>
         <div className="d-flex flex-column">

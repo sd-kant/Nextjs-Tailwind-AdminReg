@@ -305,6 +305,10 @@ export const updateProfileV2 = (payload, token) => {
   return patch("/user", payload, token);
 };
 
+export const unlockUser = ({teamId, userId}) => {
+  return patch(`/team/${teamId}/reset/${userId}`);
+};
+
 export const getProfileV2 = token => {
   return get("/user", token);
 };
