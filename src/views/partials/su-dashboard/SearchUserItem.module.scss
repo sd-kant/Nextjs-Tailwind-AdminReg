@@ -16,6 +16,20 @@
     cursor: pointer;
   }
 
+  .LockIconWrapper {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    top: 10px;
+    right: 40px;
+    cursor: pointer;
+
+    .LockIcon {
+      margin-top: 1px;
+      width: 18px;
+    }
+  }
+
   .UserRow {
     display: flex;
     flex-direction: column;
@@ -115,6 +129,11 @@
       right: 40px;
     }
 
+    .LockIconWrapper {
+      top: 20px;
+      right: 70px;
+    }
+
     .UserRow {
       .GroupWrapper {
         display: grid;
@@ -149,6 +168,11 @@
     .RemoveIconWrapper {
       top: 20px;
       right: 20px;
+    }
+
+    .LockIconWrapper {
+      top: 20px;
+      right: 50px;
     }
 
     .UserRow {
@@ -191,6 +215,11 @@
     .RemoveIconWrapper {
       top: 20px;
       right: 40px;
+    }
+
+    .LockIconWrapper {
+      top: 20px;
+      right: 70px;
     }
 
     .UserRow {

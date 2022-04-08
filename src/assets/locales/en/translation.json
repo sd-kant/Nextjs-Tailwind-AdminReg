@@ -469,5 +469,7 @@
   "leave administration 2": "Kenzen Team Dashboard will open in a new browser window",
   "error member with same email address": "There is already a team member with the same email address, please try again",
   "save & close": "save and close",
-  "support": "Support"
+  "support": "Support",
+  "unlock user warning title": "Unlock locked user?",
+  "unlock user confirmation title": "{{name}} has been unlocked. User will receive instructions to reactivate their account"
 }

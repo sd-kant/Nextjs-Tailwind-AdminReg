@@ -469,5 +469,7 @@
   "leave administration 2": "Kenzenチームダッシュボードが新しいブラウザウィンドウで開きます",
   "error member with same email address": "同じメールアドレスのチームメンバーがすでにいます。もう一度やり直してください",
   "save & close": "保存して閉じます",
-  "support": "サポート"
+  "support": "サポート",
+  "unlock user warning title": "ロックされたユーザーのロックを解除しますか？",
+  "unlock user confirmation title": "{{name}}のロックが解除されました。 ユーザーはアカウントを再開するための指示を受け取ります"
 }
