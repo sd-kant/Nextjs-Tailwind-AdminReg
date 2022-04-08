@@ -366,6 +366,7 @@ const MemberDetail = (
               <div className={clsx(style.AlertCardContent)}>
                 <ActivityLogs
                   logs={logs}
+                  gmt={data?.gmt}
                 />
               </div>
             </div>

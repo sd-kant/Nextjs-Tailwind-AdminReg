@@ -5,10 +5,10 @@ import thermometer from '../../../assets/images/thermometer-orange.svg';
 import heart from '../../../assets/images/heart.svg';
 import {formatHeartRate} from "../../../utils/dashboard";
 import {useUtilsContext} from "../../../providers/UtilsProvider";
+import {timeOnOtherZone} from "../../../utils";
 
-const ActivityLog = ({item}) => {
+const ActivityLog = ({item, gmt}) => {
   const {formatHeartCbt, formatAlertForDetail} = useUtilsContext();
-
   return (
     <div className={clsx(style.DataRow)}>
       <div className={clsx(style.DataLabel)}>
@@ -38,14 +38,8 @@ const ActivityLog = ({item}) => {
       </div>
 
       <div>
-        <span className={clsx('font-binary text-gray-2', style.Padding)}>
-          {new Date(item.utcTs).toLocaleString([], {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}
+        <span className={clsx('font-binary text-gray-2 mt-5', style.Padding)}>
+          {timeOnOtherZone(item.utcTs, gmt)}
         </span>
       </div>
     </div>

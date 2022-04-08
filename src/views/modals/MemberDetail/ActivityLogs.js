@@ -8,6 +8,7 @@ import ActivityLog from "./ActivityLog";
 const ActivityLogs = (
   {
     logs,
+    gmt,
   }) => {
   const {t} = useTranslation();
   const {activitiesFilter, loading: logsLoading} = useUserSubscriptionContext();
@@ -30,7 +31,7 @@ const ActivityLogs = (
                     <span className={clsx('font-binary', style.Padding)}>{t("cbt")}</span>
                     <span className={clsx('font-binary', style.Padding, 'ml-20')}>{t("hr")}</span>
                   </div>
-                  <span className={clsx('font-binary', style.Padding)}>{t("datetime")}</span>
+                  <span className={clsx('font-binary', style.Padding)}>{t("datetime")}{gmt ? ` (${gmt})` : ''}</span>
                 </div> :
                 <div className={clsx(style.DataRow, style.Header, 'font-button-label text-orange')}>
                   <span
@@ -40,7 +41,7 @@ const ActivityLogs = (
             {
               logs?.map((item, index) => {
                 return (
-                  <ActivityLog item={item} key={`user-alert-${index}`}/>
+                  <ActivityLog gmt={gmt} item={item} key={`user-alert-${index}`}/>
                 )
               })
             }
