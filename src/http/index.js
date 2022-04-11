@@ -267,6 +267,10 @@ export const inviteTeamMember = (teamId, payload) => {
   return patch(`team/${teamId}/members`, payload);
 };
 
+export const inviteTeamMemberV2 = (teamId, payload) => {
+  return patch(`team/${teamId}/member`, payload);
+};
+
 export const requestResetPassword = username => {
   return get(`/auth/forgot/${username}`);
 };

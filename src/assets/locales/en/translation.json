@@ -490,5 +490,6 @@
   "no activity logs in 24 hours": "No activity logs in 24 hours",
   "no activity logs in week": "No Activity logs in the week",
   "no activity logs in month": "No Activity logs in the month",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "email or phone number required": "Please enter an email or phone number"
 }

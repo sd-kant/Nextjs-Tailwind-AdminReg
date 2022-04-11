@@ -490,5 +490,6 @@
   "no activity logs in 24 hours": "24時間以内にアクティビティログがありません",
   "no activity logs in week": "その週のアクティビティログはありません",
   "no activity logs in month": "その月のアクティビティログはありません",
-  "loading": "読み込んでいます..."
+  "loading": "読み込んでいます...",
+  "email or phone number required": "メールアドレスまたは電話番号を入力してください"
 }
