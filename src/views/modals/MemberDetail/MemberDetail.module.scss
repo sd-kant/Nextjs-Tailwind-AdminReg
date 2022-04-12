@@ -55,10 +55,19 @@
             align-items: center;
             height: 100%;
             justify-content: space-between;
+            position: relative;
 
             .Avatar {
               width: 80px;
               height: 80px;
+            }
+
+            .LockIcon {
+              position: absolute;
+              width: 16px;
+              height: 16px;
+              right: 5px;
+              top: 0;
             }
           }
 
@@ -296,6 +305,14 @@
               .Avatar {
                 width: 100px;
                 height: 100px;
+              }
+
+              .LockIcon {
+                position: absolute;
+                width: 24px;
+                height: 24px;
+                right: 10px;
+                top: -5px;
               }
             }
           }

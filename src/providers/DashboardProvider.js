@@ -8,7 +8,7 @@ import {
   queryAllOrganizations,
   queryTeamMembers,
   queryTeams,
-  subscribeDataEvents
+  subscribeDataEvents, unlockUser
 } from "../http";
 import axios from "axios";
 import {
@@ -643,6 +643,34 @@ const DashboardProviderDraft = (
     });
   }, [setLoading, t, pickedTeams, addNotification]);
 
+  const unlockMember = React.useCallback(member => {
+    return new Promise((resolve, reject) => {
+      if (member?.locked && member?.userId && member?.teamId) {
+        setLoading(true)
+        unlockUser({
+          teamId: member?.teamId,
+          userId: member?.userId,
+        })
+          .then(() => {
+            const updated = valuesV2Ref.current.members?.map(it => it.userId?.toString() === member?.userId?.toString() ? ({...it, locked: false}) : it);
+            setValuesV2({
+              ...valuesV2Ref.current,
+              members: updated,
+            });
+            resolve();
+          })
+          .catch(e => {
+            console.error("unlock user error", e);
+            reject(e);
+          })
+          .finally(() => setLoading(false));
+      } else {
+        reject("not able to unlock");
+      }
+    })
+
+  }, [setLoading]);
+
   const providerValue = {
     pickedTeams,
     setPickedTeams,
@@ -669,6 +697,7 @@ const DashboardProviderDraft = (
     moveMember,
     setRefreshCount,
     removeMember,
+    unlockMember,
   };
 
   return (
