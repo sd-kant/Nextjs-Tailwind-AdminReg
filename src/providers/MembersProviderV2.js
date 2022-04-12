@@ -16,25 +16,13 @@ export const MembersProviderV2Draft = (
   }) => {
   const [selectedMembers, setSelectedMembers] = React.useState([]);
   const {moveMember, formattedTeams, removeMember} = useDashboardContext();
-  const [visibleMoveModal, setVisibleMoveModal] = React.useState(false);
-  const [visibleRemoveModal, setVisibleRemoveModal] = React.useState(false);
   const [confirmModal, setConfirmModal] = React.useState({visible: false, title: ''});
+  const [warningModal, setWarningModal] = React.useState({visible: false, title: '', mode: null}); // mode: move, remove, unlock
   const [selectedTeam, setSelectedTeam] = React.useState(null);
   const [selectedUsersTeams, setSelectedUsersTeams] = React.useState([]);
   const teamName = React.useMemo(() => {
     return formattedTeams?.find(it => it.value?.toString() === selectedTeam?.toString())?.label;
   }, [selectedTeam, formattedTeams]);
-
-  const handleMoveClick = async teamId => {
-    setSelectedTeam(teamId);
-    setVisibleMoveModal(true);
-  };
-
-  const handleRemoveClick = async () => {
-    const selectedMembersTeamIds = selectedMembers?.map(it => it.teamId) ?? [];
-    setSelectedUsersTeams([...new Set(selectedMembersTeamIds)]);
-    setVisibleRemoveModal(true);
-  };
 
   const teamNamePlaceholder = React.useMemo(() => {
     if (selectedUsersTeams?.length > 1) {
@@ -44,42 +32,90 @@ export const MembersProviderV2Draft = (
     }
   }, [selectedUsersTeams, formattedTeams]);
 
-  const handleMove = async () => {
-    moveMember(selectedMembers, selectedTeam)
-      .then(() => {
-        setVisibleMoveModal(false);
+  const handleMoveClick = async teamId => {
+    setSelectedTeam(teamId);
+    if (selectedMembers?.length > 0) {
+      setWarningModal({
+        visible: true,
+        title: t(
+          selectedMembers?.length > 1 ?
+            'move n users to team warning title' :
+            'move n user to team warning title',
+          {n: selectedMembers?.length, team: teamName}),
+        mode: 'move',
+      });
+    }
+  };
+
+  const handleRemoveClick = async () => {
+    const selectedMembersTeamIds = selectedMembers?.map(it => it.teamId) ?? [];
+    if (selectedMembersTeamIds?.length > 0) {
+      setWarningModal({
+        visible: true,
+        title: t(
+          selectedMembers?.length > 1 ?
+            'remove n users warning title' :
+            'remove n user warning title',
+          {n: selectedMembers?.length, team: teamNamePlaceholder}),
+        mode: 'remove',
+      });
+      setSelectedUsersTeams([...new Set(selectedMembersTeamIds)]);
+    }
+  };
+
+  const hideWarningModal = () => {
+    setWarningModal({visible: false, title: '', mode: null});
+  }
+
+  const handleWarningOk = React.useCallback(() => {
+    const handleMove = async () => {
+      moveMember(selectedMembers, selectedTeam)
+        .then(() => {
+          hideWarningModal();
+          setConfirmModal({
+            visible: true, title: t(
+              selectedMembers?.length > 1 ?
+                'move n users to team confirmation title' :
+                'move n user to team confirmation title',
+              {n: selectedMembers?.length, team: teamName}
+            )
+          });
+          setSelectedMembers([]);
+        })
+        .catch(e => {
+          console.log("moving member error", e);
+        });
+    };
+
+    const handleRemove = async () => {
+      try {
+        const {cnt} = await removeMember(selectedMembers);
+        hideWarningModal();
         setConfirmModal({
           visible: true, title: t(
-            selectedMembers?.length > 1 ?
-              'move n users to team confirmation title' :
-              'move n user to team confirmation title',
-            {n: selectedMembers?.length, team: teamName}
+            cnt > 1 ?
+              'remove n users confirmation title' :
+              'remove n user confirmation title',
+            {n: cnt, team: teamNamePlaceholder}
           )
         });
         setSelectedMembers([]);
-      })
-      .catch(e => {
+      } catch (e) {
         console.log("moving member error", e);
-      });
-  };
+      }
+    };
 
-  const handleRemove = async () => {
-    try {
-      const {cnt} = await removeMember(selectedMembers);
-      setVisibleRemoveModal(false);
-      setConfirmModal({
-        visible: true, title: t(
-          cnt > 1 ?
-            'remove n users confirmation title' :
-            'remove n user confirmation title',
-          {n: cnt, team: teamNamePlaceholder}
-        )
-      });
-      setSelectedMembers([]);
-    } catch (e) {
-      console.log("moving member error", e);
+    switch (warningModal.mode) {
+      case 'move':
+        handleMove().then();
+        break;
+      case 'remove':
+        handleRemove().then();
+        break;
+      default:
+        console.log("handle mode not registered");
     }
-  };
+  }, [warningModal, moveMember, removeMember, selectedMembers, selectedTeam, t, teamName, teamNamePlaceholder]);
 
   const providerValue = {
     selectedMembers,
@@ -92,28 +128,10 @@ export const MembersProviderV2Draft = (
     <MembersContextV2.Provider value={providerValue}>
       {children}
       <ConfirmModalV2
-        show={visibleMoveModal && selectedMembers?.length > 0}
-        header={
-          t(
-            selectedMembers?.length > 1 ?
-              'move n users to team warning title' :
-              'move n user to team warning title',
-            {n: selectedMembers?.length, team: teamName})
-        }
-        onOk={handleMove}
-        onCancel={() => setVisibleMoveModal(false)}
-      />
-      <ConfirmModalV2
-        show={visibleRemoveModal && selectedMembers?.length > 0}
-        header={
-          t(
-            selectedMembers?.length > 1 ?
-              'remove n users warning title' :
-              'remove n user warning title',
-            {n: selectedMembers?.length, team: teamNamePlaceholder})
-        }
-        onOk={handleRemove}
-        onCancel={() => setVisibleRemoveModal(false)}
+        show={warningModal.visible}
+        header={warningModal.title}
+        onOk={handleWarningOk}
+        onCancel={hideWarningModal}
       />
       <ConfirmModal
         show={confirmModal.visible}
