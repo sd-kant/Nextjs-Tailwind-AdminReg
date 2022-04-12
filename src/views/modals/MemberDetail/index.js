@@ -23,6 +23,7 @@ import {formatHeartRate} from "../../../utils/dashboard";
 import {useUtilsContext} from "../../../providers/UtilsProvider";
 import {useUserSubscriptionContext} from "../../../providers/UserSubscriptionProvider";
 import ActivityLogs from "./ActivityLogs";
+import lockIcon from "../../../assets/images/lock.svg";
 
 export const filters = [
   {
@@ -51,10 +52,11 @@ const MemberDetail = (
     formattedTeams,
     moveMember,
     setMember,
+    unlockMember,
   } = useDashboardContext();
   const {setUser, logs, activitiesFilters, activitiesFilter, setActivitiesFilter} = useUserSubscriptionContext();
-  const [visibleMoveModal, setVisibleMoveModal] = React.useState(false);
-  const [confirmModal, setConfirmModal] = React.useState({visible: false, title: ''});
+  const [warningModal, setWarningModal] = React.useState({visible: false, title: '', mode: null}); // mode: 'move', 'unlock'
+  const [confirmModal, setConfirmModal] = React.useState({visible: false, title: '', mode: null}); // mode: move, unlock
   const memberId = React.useRef(origin?.userId);
   const data = React.useMemo(() => {
     return origin ? origin : formattedMembers.find(it => it.userId?.toString() === memberId.current?.toString());
@@ -99,55 +101,112 @@ const MemberDetail = (
   const visibleHeartStats = numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
 
-  const handleMove = async () => {
-    moveMember([data], team?.value)
-      .then(() => {
-        setVisibleMoveModal(false);
-        setConfirmModal({
-          visible: true,
-          title: t("move user to team confirmation title", {
-            user: `${data?.firstName} ${data?.lastName}`,
-            team: team?.label
-          })
-        });
-      })
-      .catch(e => {
-        console.log("moving member error", e);
-      });
-  };
+  const hideWarningModal = () => {
+    setWarningModal({visible: false, title: '', mode: null});
+  }
 
-  const handleConfirm = () => {
-    setMember(null);
-    setConfirmModal({visible: false, title: ''});
-  };
+  const handleConfirm = React.useCallback(() => {
+    switch (confirmModal.mode) {
+      case 'move':
+        setMember(null);
+        setConfirmModal({visible: false, title: '', mode: null});
+        break;
+      case 'unlock':
+        setConfirmModal({visible: false, title: '', mode: null});
+        break;
+      default:
+        console.log("action not registered");
+    }
+  }, [confirmModal, setMember]);
 
   const renderActionContent = () => {
     return (
       <>
-        <div className={clsx(style.Control)}>
+        {/*<div className={clsx(style.Control)}>
           <Button
             size="sm"
             bgColor={'transparent'}
             borderColor={'orange'}
             title={t("send a message")}
           />
-        </div>
-
-        <div className={clsx(style.Control)}>
-          <Button
-            size="sm"
-            bgColor={'transparent'}
-            borderColor={'orange'}
-            title={t("reset password")}
-          />
-        </div>
+        </div>*/}
+        {
+          data?.locked ?
+            <div className={clsx(style.Control)}>
+              <Button
+                size="sm"
+                bgColor={'transparent'}
+                borderColor={'orange'}
+                title={t("unlock user")}
+                onClick={handleClickUnlock}
+              />
+            </div> : null
+        }
       </>
     );
   }
 
   const handleClickMoveTeam = () => {
-    setVisibleMoveModal(true);
+    setWarningModal({
+      visible: true,
+      title: t("move user to team warning title", {user: `${data?.firstName} ${data?.lastName}`, team: team?.label}),
+      mode: 'move',
+    });
   };
+
+  const handleClickUnlock = () => {
+    setWarningModal({
+      visible: true,
+      title: t('unlock user warning title'),
+      mode: 'unlock',
+    });
+  };
+
+  const handleWarningClick = React.useCallback(() => {
+    const handleMove = () => {
+      moveMember([data], team?.value)
+        .then(() => {
+          hideWarningModal();
+          setConfirmModal({
+            visible: true,
+            title: t("move user to team confirmation title", {
+              user: `${data?.firstName} ${data?.lastName}`,
+              team: team?.label
+            }),
+            mode: 'move',
+          });
+        })
+        .catch(e => {
+          console.log("moving member error", e);
+        });
+    };
+
+    const handleUnlock = () => {
+      unlockMember(data)
+        .then(() => {
+          hideWarningModal();
+          setConfirmModal({
+            visible: true,
+            title: t("unlock user confirmation title", {name: `${data?.firstName} ${data?.lastName}`}),
+            mode: 'unlock',
+          });
+        })
+        .catch(e => {
+          console.log("moving member error", e);
+        });
+    };
+
+    switch (warningModal.mode) {
+      case "move":
+        handleMove();
+        break;
+      case "unlock":
+        handleUnlock();
+        break;
+      default:
+        console.log("action moe not registered");
+    }
+  }, [data, moveMember, unlockMember, t, team, warningModal]);
 
   return (
     <React.Fragment>
@@ -176,7 +235,15 @@ const MemberDetail = (
                       className={clsx(style.Avatar)}
                       src={avatar} alt="avatar"
                     />
-
+                    {
+                      data?.locked ?
+                        <img
+                          className={clsx(style.LockIcon)}
+                          src={lockIcon}
+                          alt="lock icon"
+                          onClick={() => {}}
+                        /> : null
+                    }
                     <span className={clsx('text-orange cursor-pointer text-capitalize')}>
                     {t("edit")}
                   </span>
@@ -407,10 +474,10 @@ const MemberDetail = (
         </div>
       </Modal>
       <ConfirmModalV2
-        show={visibleMoveModal}
-        header={t("move user to team warning title", {user: `${data?.firstName} ${data?.lastName}`, team: team?.label})}
-        onOk={handleMove}
-        onCancel={() => setVisibleMoveModal(false)}
+        show={warningModal.visible}
+        header={warningModal.title}
+        onOk={handleWarningClick}
+        onCancel={hideWarningModal}
       />
       <ConfirmModal
         show={confirmModal.visible}
