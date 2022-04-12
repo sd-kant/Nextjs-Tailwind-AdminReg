@@ -19,7 +19,7 @@ import {
   getUsersUnderOrganization,
   deleteUser,
   reInviteOrganizationUser,
-  reInviteTeamUser, inviteTeamMember, unlockUser, inviteTeamMemberV2,
+  reInviteTeamUser, unlockUser, inviteTeamMemberV2,
 } from "../http";
 import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../views/components/ConfirmModalV2";
@@ -531,11 +531,11 @@ const MembersProvider = (
   }, [members, organizationId, selectedUser, setLoading, showErrorNotification, t, tempMembers]);
 
   const handleRemoveFromTeam = React.useCallback(async () => {
-    if (selectedUser?.teamId && selectedUser?.email) {
+    if (selectedUser?.teamId && selectedUser?.userId) {
       try {
         setLoading(true);
-        await inviteTeamMember(selectedUser?.teamId, {
-          remove: [selectedUser.email],
+        await inviteTeamMemberV2(selectedUser?.teamId, {
+          remove: [selectedUser.userId],
         });
         handleWarningHide();
         setConfirmModal({visible: true, title: t("remove user confirmation title")});
