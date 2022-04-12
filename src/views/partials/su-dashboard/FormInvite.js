@@ -46,7 +46,7 @@ export const defaultTeamMember = {
   },
 };
 
-const userSchema = (t) => {
+export const userSchema = (t) => {
   return Yup.object().shape({
     email: Yup.string()
       .email(t("email invalid"))

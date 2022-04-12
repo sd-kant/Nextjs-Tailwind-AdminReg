@@ -23,7 +23,6 @@ import {
 } from "./FormRepresentative";
 import style from "./FormInviteModify.module.scss";
 import clsx from "clsx";
-import {_handleSubmit} from "./FormInvite";
 import {
   permissionLevels,
 } from "../../../constant";
@@ -39,6 +38,7 @@ import SearchUserItem from "./SearchUserItem";
 import {formatJob, setUserType, userSchema} from "./FormSearch";
 import {useNavigate} from "react-router-dom";
 import InviteModal from "./modify/InviteModal";
+import {_handleSubmitV2} from "../../../utils/invite";
 
 export const defaultTeamMember = {
   email: '',
@@ -71,14 +71,12 @@ const FormInviteModify = (props) => {
     setLoading,
     setFieldValue,
     showErrorNotification,
-    showSuccessNotification,
     setRestBarClass,
     status,
     setStatus,
   } = props;
   const [newChanges, setNewChanges] = useState(0);
   const [visibleAddModal, setVisibleAddModal] = useState(false);
-  const [inviteMode, setInviteMode] = useState("invite-only"); // invite-only, register-invite
   const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
   const {setPage, users, admins, keyword, setKeyword, members, initializeMembers} = useMembersContext();
   const navigate = useNavigate();
@@ -126,60 +124,30 @@ const FormInviteModify = (props) => {
       return;
     }
 
-    if (inviteMode === 'invite-only') {
-      try {
-        setLoading(true);
-        const inviteResponse = await inviteTeamMember(id, {
-          add: [
-            {
-              email: user.email,
-              userTypes: [user.permissionLevel?.value?.toString() === "1" ? "TeamAdmin" : "Operator"],
-            },
-          ],
+    try {
+      setLoading(true);
+      const users = [user];
+      if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
+        navigate("/invite/company");
+        return;
+      }
+      const {numberOfSuccess} =
+        await _handleSubmitV2({
+          users,
+          setLoading,
+          organizationId,
+          teamId: id,
+          t,
         });
-        if (inviteResponse?.data?.added?.length !== 1) {
-          setInviteMode('register-invite');
-        } else {
-          initializeMembers();
-          setVisibleAddModal(false);
-          setVisibleAddMemberSuccessModal(true);
-        }
-      } catch (e) {
-        showErrorNotification(e.response?.data?.message)
-      } finally {
-        setLoading(false);
+      initializeMembers();
+      if (numberOfSuccess === 1) {
+        setVisibleAddModal(false);
+        setVisibleAddMemberSuccessModal(true);
       }
-    } else {
-      try {
-        setLoading(true);
-        const users = [{
-          ...user,
-          job: user.jobRole,
-          userType: user.permissionLevel,
-        }];
-        if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
-          navigate("/invite/company");
-          return;
-        }
-        const {numberOfSuccess} =
-          await _handleSubmit({
-            users,
-            setLoading,
-            showSuccessNotification,
-            organizationId,
-            teamId: id,
-            t,
-          });
-        initializeMembers();
-        if (numberOfSuccess === 1) {
-          setVisibleAddModal(false);
-          setVisibleAddMemberSuccessModal(true);
-        }
-      } catch (e) {
-        console.log('_handleSubmit error', e);
-      } finally {
-        setLoading(false);
-      }
+    } catch (e) {
+      console.log('_handleSubmit error', e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -196,31 +164,31 @@ const FormInviteModify = (props) => {
       <ConfirmModal
         show={visibleAddMemberSuccessModal}
         header={t('new team member added header')}
-        subheader={inviteMode !== 'invite-only' ? t('new team member added description') : null}
+        subheader={t('new team member added description')}
         onOk={() => {
-          setInviteMode('invite-only');
           setVisibleAddMemberSuccessModal(false);
         }}
         cancelText={t('add another member')}
         onCancel={() => {
-          setInviteMode('invite-only');
           setVisibleAddMemberSuccessModal(false);
           setVisibleAddModal(true);
         }}
       />
       <AddMemberModalV2
-        inviteOnly={inviteMode === 'invite-only'}
         isOpen={visibleAddModal}
         permissionLevels={permissionLevels}
         onAdd={addHandler}
         onClose={() => {
-          setInviteMode('invite-only');
           setVisibleAddModal(false);
         }}
       />
       <InviteModal
         isOpen={visibleInviteModal}
         onClose={() => setVisibleInviteModal(false)}
+        onClickCreate={() => {
+          setVisibleInviteModal(false);
+          setVisibleAddModal(true);
+        }}
       />
       <Form className='form-group mt-57'>
         <div>

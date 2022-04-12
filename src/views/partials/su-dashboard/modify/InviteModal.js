@@ -14,6 +14,7 @@ const InviteModal = (
     t,
     isOpen = false,
     onClose,
+    onClickCreate,
   }) => {
   const [visible, setVisible] = React.useState(false);
   const dropdownRef = React.useRef(null);
@@ -97,6 +98,7 @@ const InviteModal = (
               <Button
                 size={"sm"}
                 title={"create new team member"}
+                onClick={onClickCreate}
               />
             </div>
           </div>
