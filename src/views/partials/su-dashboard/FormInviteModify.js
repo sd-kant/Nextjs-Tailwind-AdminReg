@@ -38,6 +38,7 @@ import {useMembersContext} from "../../../providers/MembersProvider";
 import SearchUserItem from "./SearchUserItem";
 import {formatJob, setUserType, userSchema} from "./FormSearch";
 import {useNavigate} from "react-router-dom";
+import InviteModal from "./modify/InviteModal";
 
 export const defaultTeamMember = {
   email: '',
@@ -81,6 +82,7 @@ const FormInviteModify = (props) => {
   const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
   const {setPage, users, admins, keyword, setKeyword, members, initializeMembers} = useMembersContext();
   const navigate = useNavigate();
+  const [visibleInviteModal, setVisibleInviteModal] = React.useState(false);
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -107,7 +109,8 @@ const FormInviteModify = (props) => {
   }, [users, admins]);
 
   const addAnother = () => {
-    setVisibleAddModal(true);
+    // setVisibleAddModal(true);
+    setVisibleInviteModal(true);
   };
 
   const addHandler = async user => {
@@ -180,7 +183,6 @@ const FormInviteModify = (props) => {
     }
   };
 
-
   return (
     <>
       <ConfirmModal
@@ -215,6 +217,10 @@ const FormInviteModify = (props) => {
           setInviteMode('invite-only');
           setVisibleAddModal(false);
         }}
+      />
+      <InviteModal
+        isOpen={visibleInviteModal}
+        onClose={() => setVisibleInviteModal(false)}
       />
       <Form className='form-group mt-57'>
         <div>

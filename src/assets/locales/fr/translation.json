@@ -491,5 +491,8 @@
   "no activity logs in week": "Aucun journal d'activité dans la semaine",
   "no activity logs in month": "Aucun journal d'activité dans le mois",
   "loading": "Chargement...",
-  "email or phone number required": "Veuillez saisir un e-mail ou un numéro de téléphone"
+  "email or phone number required": "Veuillez saisir un e-mail ou un numéro de téléphone",
+  "create new team member": "créer un nouveau membre d'équipe",
+  "or": "ou alors",
+  "invite user": "Inviter {{user}} dans {{team}} ?"
 }

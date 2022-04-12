@@ -491,5 +491,8 @@
   "no activity logs in week": "その週のアクティビティログはありません",
   "no activity logs in month": "その月のアクティビティログはありません",
   "loading": "読み込んでいます...",
-  "email or phone number required": "メールアドレスまたは電話番号を入力してください"
+  "email or phone number required": "メールアドレスまたは電話番号を入力してください",
+  "create new team member": "新しいチームメンバーを作成する",
+  "or": "または",
+  "invite user": "{{user}}を{{team}}に招待しますか？"
 }

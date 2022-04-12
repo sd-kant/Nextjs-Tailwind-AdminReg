@@ -19,7 +19,7 @@ import {
   getUsersUnderOrganization,
   deleteUser,
   reInviteOrganizationUser,
-  reInviteTeamUser, inviteTeamMember, unlockUser,
+  reInviteTeamUser, inviteTeamMember, unlockUser, inviteTeamMemberV2,
 } from "../http";
 import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../views/components/ConfirmModalV2";
@@ -63,6 +63,7 @@ const MembersProvider = (
   {
     children,
     userType,
+    isAdmin,
     allTeams,
     queryAllTeams,
     t,
@@ -72,6 +73,8 @@ const MembersProvider = (
   }) => {
   const {organizationId, id} = useParams();
   const [keyword, setKeyword] = React.useState('');
+  const [keywordOnInvite, setKeywordOnInvite] = React.useState('');
+  const [searchedUsers, setSearchedUsers] = React.useState([]);
   const [members, setMembers] = React.useState([]);
   const [tempMembers, setTempMembers] = React.useState([]);
   const [users, setUsers] = React.useState([]);
@@ -84,7 +87,7 @@ const MembersProvider = (
     title: null,
     visible: false,
     subtitle: null,
-    mode: null, // reset-phone, re-invite, remove, delete, unlock
+    mode: null, // reset-phone, re-invite, remove, delete, unlock, invite
   });
   const [selectedUser, setSelectedUser] = React.useState(null);
   const [page, setPage] = React.useState('');
@@ -593,9 +596,18 @@ const MembersProvider = (
     })
       .then(() => {
         handleWarningHide();
-        setConfirmModal({visible: true, title: t("unlock user confirmation title", {name: `${selectedUser?.firstName} ${selectedUser?.lastName}`})});
-        setMembers(prev => prev.map(it => it.userId?.toString() === selectedUser.userId.toString() ? {...it, locked: false} : it));
-        setTempMembers(prev => prev.map(it => it.userId?.toString() === selectedUser.userId.toString() ? {...it, locked: false} : it));
+        setConfirmModal({
+          visible: true,
+          title: t("unlock user confirmation title", {name: `${selectedUser?.firstName} ${selectedUser?.lastName}`})
+        });
+        setMembers(prev => prev.map(it => it.userId?.toString() === selectedUser.userId.toString() ? {
+          ...it,
+          locked: false
+        } : it));
+        setTempMembers(prev => prev.map(it => it.userId?.toString() === selectedUser.userId.toString() ? {
+          ...it,
+          locked: false
+        } : it));
       })
       .catch(e => {
         showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
@@ -607,7 +619,8 @@ const MembersProvider = (
 
   const handleReInvite = React.useCallback(() => {
     const user = selectedUser;
-    let requestHttp = null; let payload = null;
+    let requestHttp = null;
+    let payload = null;
     if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) { // super or org admin
       if (!["-1", "", null, undefined].includes(organizationId?.toString()) && user?.userId) {
         requestHttp = reInviteOrganizationUser;
@@ -717,6 +730,48 @@ const MembersProvider = (
     });
   };
 
+  const handleInviteUser = React.useCallback(async () => {
+    return new Promise((resolve, reject) => {
+      const filteredUserTypes = selectedUser?.userTypes?.filter(it => [USER_TYPE_TEAM_ADMIN, USER_TYPE_OPERATOR].includes(it));
+      const userId = selectedUser?.userId;
+      if (teamId && userId && filteredUserTypes) {
+        const payload = {
+          add: [{
+            userId,
+            userTypes: filteredUserTypes?.length > 0 ? filteredUserTypes : [USER_TYPE_OPERATOR],
+          }]
+        };
+        setLoading(true);
+        inviteTeamMemberV2(teamId, payload)
+          .then(() => {
+            setWarningModal({
+              visible: false,
+              title: null,
+              subtitle: null,
+              mode: null,
+            });
+            setSearchedUsers(prev => (prev?.filter(it => it.userId?.toString() !== userId?.toString()) ?? []));
+            initializeMembers().then();
+            showSuccessNotification(t("msg user invite success", {
+              user: `${selectedUser?.firstName} ${selectedUser?.lastName}`,
+            }));
+            setSelectedUser(null);
+            resolve();
+          })
+          .catch(e => {
+            console.error("invite user error", e);
+            reject();
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      } else {
+        reject();
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ selectedUser, showSuccessNotification, t, teamId, setLoading]);
+
   const handleWarningOk = React.useCallback(() => {
     switch (warningModal.mode) {
       case 'reset-phone':
@@ -734,10 +789,13 @@ const MembersProvider = (
       case 'unlock':
         _handleUnlockUser();
         break;
+      case 'invite':
+        handleInviteUser().then();
+        break;
       default:
         console.log("not registered action");
     }
-  }, [warningModal.mode, handleResetPhoneNumber, handleReInvite, handleRemoveFromTeam, handleDeleteUser, _handleUnlockUser]);
+  }, [warningModal.mode, handleResetPhoneNumber, handleReInvite, handleRemoveFromTeam, handleDeleteUser, _handleUnlockUser, handleInviteUser]);
 
   const handleUnlockUser = user => {
     setSelectedUser(user);
@@ -748,6 +806,71 @@ const MembersProvider = (
       mode: 'unlock',
     });
   };
+
+  const handleInviteClick = userId => {
+    const user = searchedUsers?.find(it => it.userId?.toString() === userId?.toString());
+    if (teamId && user) {
+      setSelectedUser(user);
+      const teamName = teams?.find(it => it.value?.toString() === teamId?.toString())?.label;
+      const userName = `${user.firstName} ${user.lastName}`;
+
+      setWarningModal({
+        visible: true,
+        title: t('invite user', {user: userName, team: teamName}),
+        subtitle: null,
+        mode: 'invite',
+      });
+    }
+  };
+
+  const trimmedKeywordOnInvite = React.useMemo(() => keywordOnInvite?.trim()?.toLowerCase(), [keywordOnInvite]);
+  React.useEffect(() => {
+    if (trimmedKeywordOnInvite) {
+      let promise = null;
+      let promiseBody = {};
+      if (isAdmin && [undefined, "-1", null, ""].includes(organizationId?.toString())) {
+        promise = searchMembersUnderOrganization;
+        promiseBody = {organizationId, keyword: trimmedKeywordOnInvite};
+      } else {
+        promise = searchMembersAPI;
+        promiseBody = trimmedKeywordOnInvite;
+      }
+      if (promise) {
+        if (searchTimeout) {
+          clearTimeout(searchTimeout);
+        }
+
+        const load = () => {
+          return new Promise((resolve, reject) => {
+            searchTimeout = setTimeout(async () => {
+              try {
+                const res = await promise(promiseBody);
+                resolve(res.data);
+              } catch (e) {
+                reject(e);
+              }
+            }, 700);
+          })
+        };
+
+        try {
+          load().then(res => setSearchedUsers(res));
+        } catch (e) {
+          console.error("load based on keywordOnInvite error", e);
+          setSearchedUsers([]);
+        }
+      }
+    } else {
+      setSearchedUsers([]);
+    }
+  }, [trimmedKeywordOnInvite, isAdmin, organizationId]);
+  const dropdownItems = React.useMemo(() => {
+    return searchedUsers?.filter(it => users?.every(ele => ele.userId?.toString() !== it.userId?.toString()) && admins?.every(ele => ele.userId?.toString() !== it.userId?.toString()))?.map(it => ({
+      value: it.userId,
+      title: `${it.firstName} ${it.lastName}`,
+      subtitle: it.email ?? it.phoneNumber,
+    })) ?? [];
+  }, [searchedUsers, users, admins]);
 
   const providerValue = {
     userType,
@@ -764,6 +887,9 @@ const MembersProvider = (
     setTeamId,
     setPage,
     setSelectedUser,
+    dropdownItems,
+    keywordOnInvite,
+    setKeywordOnInvite,
     initializeMembers,
     handleMemberInfoChange,
     handleMemberTeamUserTypeChange,
@@ -772,6 +898,7 @@ const MembersProvider = (
     handlePhoneOptionClick,
     handleActionOptionClick,
     handleUnlockUser,
+    handleInviteClick,
   };
 
   return (
@@ -797,6 +924,7 @@ const mapStateToProps = (state) => ({
   allTeams: get(state, 'base.allTeams'),
   userType: get(state, 'auth.userType'),
   myOrganizationId: get(state, 'auth.organizationId'),
+  isAdmin: get(state, 'auth.isAdmin'),
 });
 
 const mapDispatchToProps = (dispatch) =>

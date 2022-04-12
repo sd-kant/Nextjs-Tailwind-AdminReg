@@ -491,5 +491,8 @@
   "no activity logs in week": "No Activity logs in the week",
   "no activity logs in month": "No Activity logs in the month",
   "loading": "Loading...",
-  "email or phone number required": "Please enter an email or phone number"
+  "email or phone number required": "Please enter an email or phone number",
+  "create new team member": "create new team member",
+  "or": "or",
+  "invite user": "Invite {{user}} to {{team}}?"
 }

@@ -1,0 +1,25 @@
+@import "src/assets/scss/colors";
+
+.Wrapper {
+  position: relative;
+
+  .Card {
+    background: $app-white;
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+
+    .Item {
+      padding: 5px 20px;
+
+      &:hover {
+        background: $app-active-blue;
+        cursor: pointer;
+      }
+    }
+  }
+}
