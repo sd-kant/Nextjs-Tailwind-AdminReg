@@ -47,7 +47,7 @@ export const defaultTeamMember = {
 export const userSchema = (t) => {
   return Yup.object().shape({
     email: Yup.string()
-      .required(t('email required'))
+      // .required(t('email required'))
       .email(t("email invalid"))
       .max(1024, t('email max error')),
     firstName: Yup.string()
@@ -206,6 +206,13 @@ export const formatJob = (users) => {
   return users && users.map((user) => ({
     ...user,
     job: user?.job?.value,
+  }));
+};
+
+export const formatEmail = (users) => {
+  return users && users.map((user) => ({
+    ...user,
+    email: user?.email ? user?.email?.toLowerCase() : null,
   }));
 };
 

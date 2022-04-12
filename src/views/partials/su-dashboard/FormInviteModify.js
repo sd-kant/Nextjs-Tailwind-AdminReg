@@ -15,12 +15,9 @@ import {
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import {
-  inviteTeamMember,
+  inviteTeamMemberV2,
   updateUserByAdmin,
 } from "../../../http";
-import {
-  lowercaseEmail,
-} from "./FormRepresentative";
 import style from "./FormInviteModify.module.scss";
 import clsx from "clsx";
 import {
@@ -35,8 +32,8 @@ import ConfirmModal from "../../components/ConfirmModal";
 import AddMemberModalV2 from "../../components/AddMemberModalV2";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import SearchUserItem from "./SearchUserItem";
-import {formatJob, setUserType, userSchema} from "./FormSearch";
 import {useNavigate} from "react-router-dom";
+import {formatEmail, formatJob, setUserType, userSchema} from "./FormSearch";
 import InviteModal from "./modify/InviteModal";
 import {_handleSubmitV2} from "../../../utils/invite";
 
@@ -327,7 +324,7 @@ const EnhancedForm = withFormik({
           usersToModify.push(it);
         }
       });
-      usersToModify = setUserType(formatJob(lowercaseEmail(usersToModify)));
+      usersToModify = setUserType(formatJob(formatEmail(usersToModify)));
       usersToModify = usersToModify?.map(it => ({
         userId: it.userId,
         firstName: it.firstName,
@@ -351,9 +348,9 @@ const EnhancedForm = withFormik({
               const isRemoved = !(userToModify?.accessibleTeams?.some(accessibleTeam => accessibleTeam.teamId?.toString() === originalAccessibleTeam.teamId?.toString()));
               if (isRemoved) {
                 if (inviteBody[originalAccessibleTeam.teamId]?.remove) {
-                  inviteBody[originalAccessibleTeam.teamId].remove.push(userToModify?.email);
+                  inviteBody[originalAccessibleTeam.teamId].remove.push(userToModify?.userId);
                 } else {
-                  inviteBody[originalAccessibleTeam.teamId] = {remove: [userToModify?.email]};
+                  inviteBody[originalAccessibleTeam.teamId] = {remove: [userToModify?.userId]};
                 }
               }
             });
@@ -364,14 +361,14 @@ const EnhancedForm = withFormik({
                 if (!isEqual(origin?.userTypes?.sort(), accessibleTeam?.userTypes?.sort())) {
                   if (inviteBody[accessibleTeam.teamId]?.add) {
                     inviteBody[accessibleTeam.teamId].add.push({
-                      email: userToModify?.email,
+                      userId: userToModify?.userId,
                       userTypes: accessibleTeam?.userTypes,
                     });
                   } else {
                     inviteBody[accessibleTeam.teamId] = {
                       add: [
                         {
-                          email: userToModify?.email,
+                          userId: userToModify?.userId,
                           userTypes: accessibleTeam?.userTypes,
                         }
                       ],
@@ -389,7 +386,7 @@ const EnhancedForm = withFormik({
           const invitePromises = [];
           if (inviteBody) {
             Object.keys(inviteBody).forEach((teamId, index) => {
-              invitePromises.push(inviteTeamMember(teamId, Object.values(inviteBody)?.[index]));
+              invitePromises.push(inviteTeamMemberV2(teamId, Object.values(inviteBody)?.[index]));
             });
           }
 
