@@ -88,7 +88,7 @@ const SearchUserItem = (
     wearingDeviceSelected = yesNoOptions?.[0];
   }
   const hiddenPhoneNumber = (user?.phoneNumber?.value) ? t('ends with', {number: user?.phoneNumber?.value?.slice(-4)}) : t("not registered");
-  const ableToResetPhoneNumber = (user?.phoneNumber?.value) && isAdmin;
+  const ableToResetPhoneNumber = isAdmin && (user?.phoneNumber?.value) && user?.email;
 
   const phoneDropdownOptions = React.useMemo(() => {
     if (ableToResetPhoneNumber) {
