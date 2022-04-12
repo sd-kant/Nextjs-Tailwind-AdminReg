@@ -157,7 +157,7 @@ const FormInviteModify = (props) => {
       <ConfirmModal
         show={visibleAddMemberSuccessModal}
         header={t('new team member added header')}
-        subheader={t('new team member added description')}
+        subheader={t('new team member added description 2')}
         onOk={() => {
           setVisibleAddMemberSuccessModal(false);
         }}

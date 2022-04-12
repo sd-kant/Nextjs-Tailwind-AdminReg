@@ -494,5 +494,6 @@
   "email or phone number required": "Veuillez saisir un e-mail ou un numéro de téléphone",
   "create new team member": "créer un nouveau membre d'équipe",
   "or": "ou alors",
-  "invite user": "Inviter {{user}} dans {{team}} ?"
+  "invite user": "Inviter {{user}} dans {{team}} ?",
+  "new team member added description 2": "La notification a été envoyée au nouveau membre de l'équipe"
 }

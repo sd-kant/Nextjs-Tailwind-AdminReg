@@ -494,5 +494,6 @@
   "email or phone number required": "メールアドレスまたは電話番号を入力してください",
   "create new team member": "新しいチームメンバーを作成する",
   "or": "または",
-  "invite user": "{{user}}を{{team}}に招待しますか？"
+  "invite user": "{{user}}を{{team}}に招待しますか？",
+  "new team member added description 2": "新しいチームメンバーに通知が送信されました"
 }
