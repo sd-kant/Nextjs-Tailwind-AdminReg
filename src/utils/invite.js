@@ -1,9 +1,10 @@
 import {
   searchMembersUnderOrganization,
   searchMembers,
-  inviteTeamMemberV2, createUserByAdmin,
+  inviteTeamMemberV2, createUserByAdmin, updateUserByAdmin,
 } from "../http";
-import {USER_TYPE_OPERATOR, USER_TYPE_TEAM_ADMIN} from "../constant";
+import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_OPERATOR, USER_TYPE_TEAM_ADMIN} from "../constant";
+import {isEqual} from "lodash";
 
 const setTeamIdToUsers = (users, teamId) => {
   return users && users.map((user) => ({
@@ -40,7 +41,7 @@ const formatEmail = (users) => {
     email: user.email ? user.email.toLowerCase() : null,
   }));
 }
-
+// create users
 export const _handleSubmitV2 = (
   {
     users: unFormattedUsers,
@@ -163,3 +164,157 @@ export const _handleSubmitV2 = (
       });
   });
 };
+
+const setUserType = (users) => {
+  return users && users.map((user) => {
+    const userTypes = user?.userTypes;
+    let userType = "";
+    if (userTypes?.includes(USER_TYPE_ADMIN)) {
+      userType = USER_TYPE_ADMIN;
+    } else if (userTypes?.includes(USER_TYPE_ORG_ADMIN)) {
+      userType = USER_TYPE_ORG_ADMIN;
+    }
+    return {
+      ...user,
+      userType: userType,
+    }
+  });
+};
+
+// update users
+export const handleModifyUsers = (
+  {
+    setLoading,
+    users,
+    organizationId,
+    isAdmin,
+    setStatus,
+    showErrorNotification,
+    showSuccessNotification,
+    t,
+  }) => {
+  // fixme optimize the code
+  try {
+    setLoading(true);
+    let usersToModify = [];
+    users?.forEach(it => {
+      if (it.userId) {
+        usersToModify.push(it);
+      }
+    });
+    usersToModify = setUserType(formatJob(formatEmail(usersToModify)));
+    usersToModify = usersToModify?.map(it => ({
+      userId: it.userId,
+      firstName: it.firstName,
+      lastName: it.lastName,
+      job: it.job,
+      email: it.email,
+      userType: it.userType,
+      accessibleTeams: it.accessibleTeams,
+      originalAccessibleTeams: it.originalAccessibleTeams,
+    }));
+
+    if (usersToModify?.length > 0) {
+      const updatePromises = [];
+      let inviteBody = {};
+      usersToModify?.forEach(userToModify => {
+        if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
+          if (isAdmin) {
+            updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
+          }
+          userToModify?.originalAccessibleTeams?.forEach(originalAccessibleTeam => {
+            const isRemoved = !(userToModify?.accessibleTeams?.some(accessibleTeam => accessibleTeam.teamId?.toString() === originalAccessibleTeam.teamId?.toString()));
+            if (isRemoved) {
+              if (inviteBody[originalAccessibleTeam.teamId]?.remove) {
+                inviteBody[originalAccessibleTeam.teamId].remove.push(userToModify?.userId);
+              } else {
+                inviteBody[originalAccessibleTeam.teamId] = {remove: [userToModify?.userId]};
+              }
+            }
+          });
+          userToModify?.accessibleTeams?.forEach(accessibleTeam => {
+            if (accessibleTeam.teamId && accessibleTeam.userTypes?.length > 0) {
+              // check if this is new change
+              const origin = userToModify?.originalAccessibleTeams?.find(item => item.teamId?.toString() === accessibleTeam?.teamId?.toString());
+              if (!isEqual(origin?.userTypes?.sort(), accessibleTeam?.userTypes?.sort())) {
+                if (inviteBody[accessibleTeam.teamId]?.add) {
+                  inviteBody[accessibleTeam.teamId].add.push({
+                    userId: userToModify?.userId,
+                    userTypes: accessibleTeam?.userTypes,
+                  });
+                } else {
+                  inviteBody[accessibleTeam.teamId] = {
+                    add: [
+                      {
+                        userId: userToModify?.userId,
+                        userTypes: accessibleTeam?.userTypes,
+                      }
+                    ],
+                  };
+                }
+              }
+            }
+          });
+        }
+      });
+      const failedEmails = [];
+      let totalSuccessForModify = 0;
+
+      const inviteFunc = () => {
+        const invitePromises = [];
+        if (inviteBody) {
+          Object.keys(inviteBody).forEach((teamId, index) => {
+            invitePromises.push(inviteTeamMemberV2(teamId, Object.values(inviteBody)?.[index]));
+          });
+        }
+
+        if (invitePromises?.length > 0) {
+          Promise.allSettled(invitePromises)
+            .finally(() => {
+              if (failedEmails?.length === 0) {
+                setStatus({visibleSuccessModal: true});
+              }
+              setLoading(false);
+            });
+        } else {
+          setStatus({visibleSuccessModal: true});
+          setLoading(false);
+        }
+      };
+
+      if (updatePromises?.length > 0) {
+        Promise.allSettled(updatePromises)
+          .then((results) => {
+            results?.forEach((result, index) => {
+              if (result.status === "fulfilled") {
+                totalSuccessForModify++;
+              } else {
+                // store failed emails
+                failedEmails.push(usersToModify[index]?.email);
+                showErrorNotification(result.reason?.response?.data?.message);
+                console.log("modifying team member failed", result.reason);
+              }
+            });
+
+            if (totalSuccessForModify > 0) {
+              showSuccessNotification(
+                t(totalSuccessForModify > 1 ? 'msg users modified success' : 'msg user modified success', {
+                  numberOfUsers: totalSuccessForModify,
+                })
+              );
+            }
+          })
+          .finally(async () => {
+            // finished promise
+            inviteFunc();
+          });
+      } else {
+        inviteFunc();
+      }
+    } else {
+      setLoading(false);
+    }
+  } catch (e) {
+    console.log('_handleSubmit error', e);
+  }
+}

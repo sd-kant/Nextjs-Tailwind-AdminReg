@@ -15,13 +15,6 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import {
-  createUserByAdmin,
-  inviteTeamMember,
-} from "../../../http";
-import {
-  lowercaseEmail,
-} from "./FormRepresentative";
 import style from "./FormInvite.module.scss";
 import clsx from "clsx";
 import {AVAILABLE_JOBS, permissionLevels} from "../../../constant";
@@ -510,104 +503,6 @@ const FormInvite = (props) => {
     </React.Fragment>
   )
 }
-
-
-const formatUserType = (users) => {
-  return users && users.map((user) => ({
-    ...user,
-    userTypes: [user?.userType?.value?.toString() === "1" ? "TeamAdmin" : "Operator"],
-    userType: user?.userType?.value?.toString() === "1" ? "TeamAdmin" : null,
-  }));
-}
-
-export const setTeamIdToUsers = (users, teamId) => {
-  return users && users.map((user) => ({
-    ...user,
-    teamId,
-  }));
-}
-
-const formatJob = (users) => {
-  return users && users.map((user) => ({
-    ...user,
-    job: user?.job?.value,
-  }));
-}
-
-const formatPhoneNumber = (users) => {
-  return users && users.map((user) => ({
-    ...user,
-    phoneNumber: user?.phoneNumber?.value ? `+${user?.phoneNumber?.value}` : null,
-  }));
-}
-
-export const _handleSubmit = (
-  {
-    users: unFormattedUsers,
-    setLoading,
-    showSuccessNotification,
-    organizationId,
-    teamId,
-    t,
-  }
-) => {
-  return new Promise((resolve) => {
-    setLoading(true);
-    const users = setTeamIdToUsers(formatUserType(formatPhoneNumber(formatJob(lowercaseEmail(unFormattedUsers)))), teamId);
-    const promises = [];
-    users?.forEach(it => {
-      promises.push(createUserByAdmin(organizationId, it));
-    });
-
-    const alreadyRegisteredUsers = [];
-    let totalSuccessForInvite = 0;
-    let inviteBody = {add: []};
-
-    Promise.allSettled(promises)
-      .then(items => {
-        items.forEach((item, index) => {
-          if (item.status === "fulfilled") {
-            totalSuccessForInvite++;
-          } else {
-            console.error("creating user failed", item.reason?.response?.data);
-            // fixme be sure if 409 is for already registered error
-            if (item?.reason?.response?.data?.status?.toString() === "409") {
-              alreadyRegisteredUsers.push({
-                email: users[index]?.email,
-              });
-              inviteBody.add.push({
-                email: users?.[index]?.email,
-                userTypes: users?.[index]?.userTypes,
-              });
-            }
-          }
-        });
-      })
-      .finally(async () => {
-        if (inviteBody.add?.length > 0) {
-          const inviteResponse = await inviteTeamMember(teamId, inviteBody);
-          const numberOfSuccess = (inviteResponse?.data?.added?.length) ?? 0;
-          totalSuccessForInvite += numberOfSuccess;
-          showSuccessNotification(t(
-            totalSuccessForInvite > 1 ?
-              'msg users invited success' : 'msg user invited success', {
-              numberOfSuccess: totalSuccessForInvite,
-            }));
-
-          resolve({
-            alreadyRegisteredUsers,
-            numberOfSuccess: totalSuccessForInvite,
-          });
-        } else {
-          resolve({
-            alreadyRegisteredUsers,
-            numberOfSuccess: totalSuccessForInvite,
-          });
-        }
-        setLoading(false);
-      });
-  })
-};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

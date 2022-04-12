@@ -14,10 +14,6 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import {
-  inviteTeamMemberV2,
-  updateUserByAdmin,
-} from "../../../http";
 import style from "./FormInviteModify.module.scss";
 import clsx from "clsx";
 import {
@@ -27,15 +23,15 @@ import {
   deleteUserAction,
   queryAllTeamsAction,
 } from "../../../redux/action/base";
-import {get, isEqual} from "lodash";
+import {get} from "lodash";
 import ConfirmModal from "../../components/ConfirmModal";
 import AddMemberModalV2 from "../../components/AddMemberModalV2";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import SearchUserItem from "./SearchUserItem";
 import {useNavigate} from "react-router-dom";
-import {formatEmail, formatJob, setUserType, userSchema} from "./FormSearch";
+import {userSchema} from "./FormSearch";
 import InviteModal from "./modify/InviteModal";
-import {_handleSubmitV2} from "../../../utils/invite";
+import {_handleSubmitV2, handleModifyUsers} from "../../../utils/invite";
 
 export const defaultTeamMember = {
   email: '',
@@ -315,130 +311,16 @@ const EnhancedForm = withFormik({
     } = props;
     // filter users that were modified to update
     let users = ([...(values?.users ?? []), ...(values?.admins ?? [])])?.filter(it => it.updated);
-    // fixme optimize
-    try {
-      setLoading(true);
-      let usersToModify = [];
-      users?.forEach(it => {
-        if (it.userId) {
-          usersToModify.push(it);
-        }
-      });
-      usersToModify = setUserType(formatJob(formatEmail(usersToModify)));
-      usersToModify = usersToModify?.map(it => ({
-        userId: it.userId,
-        firstName: it.firstName,
-        lastName: it.lastName,
-        job: it.job,
-        email: it.email,
-        userType: it.userType,
-        accessibleTeams: it.accessibleTeams,
-        originalAccessibleTeams: it.originalAccessibleTeams,
-      }));
-
-      if (usersToModify?.length > 0) {
-        const updatePromises = [];
-        let inviteBody = {};
-        usersToModify?.forEach(userToModify => {
-          if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
-            if (isAdmin) {
-              updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
-            }
-            userToModify?.originalAccessibleTeams?.forEach(originalAccessibleTeam => {
-              const isRemoved = !(userToModify?.accessibleTeams?.some(accessibleTeam => accessibleTeam.teamId?.toString() === originalAccessibleTeam.teamId?.toString()));
-              if (isRemoved) {
-                if (inviteBody[originalAccessibleTeam.teamId]?.remove) {
-                  inviteBody[originalAccessibleTeam.teamId].remove.push(userToModify?.userId);
-                } else {
-                  inviteBody[originalAccessibleTeam.teamId] = {remove: [userToModify?.userId]};
-                }
-              }
-            });
-            userToModify?.accessibleTeams?.forEach(accessibleTeam => {
-              if (accessibleTeam.teamId && accessibleTeam.userTypes?.length > 0) {
-                // check if this is new change
-                const origin = userToModify?.originalAccessibleTeams?.find(item => item.teamId?.toString() === accessibleTeam?.teamId?.toString());
-                if (!isEqual(origin?.userTypes?.sort(), accessibleTeam?.userTypes?.sort())) {
-                  if (inviteBody[accessibleTeam.teamId]?.add) {
-                    inviteBody[accessibleTeam.teamId].add.push({
-                      userId: userToModify?.userId,
-                      userTypes: accessibleTeam?.userTypes,
-                    });
-                  } else {
-                    inviteBody[accessibleTeam.teamId] = {
-                      add: [
-                        {
-                          userId: userToModify?.userId,
-                          userTypes: accessibleTeam?.userTypes,
-                        }
-                      ],
-                    };
-                  }
-                }
-              }
-            });
-          }
-        });
-        const failedEmails = [];
-        let totalSuccessForModify = 0;
-
-        const inviteFunc = () => {
-          const invitePromises = [];
-          if (inviteBody) {
-            Object.keys(inviteBody).forEach((teamId, index) => {
-              invitePromises.push(inviteTeamMemberV2(teamId, Object.values(inviteBody)?.[index]));
-            });
-          }
-
-          if (invitePromises?.length > 0) {
-            Promise.allSettled(invitePromises)
-              .finally(() => {
-                if (failedEmails?.length === 0) {
-                  setStatus({visibleSuccessModal: true});
-                }
-                setLoading(false);
-              });
-          } else {
-            setStatus({visibleSuccessModal: true});
-            setLoading(false);
-          }
-        };
-
-        if (updatePromises?.length > 0) {
-          Promise.allSettled(updatePromises)
-            .then((results) => {
-              results?.forEach((result, index) => {
-                if (result.status === "fulfilled") {
-                  totalSuccessForModify++;
-                } else {
-                  // store failed emails
-                  failedEmails.push(usersToModify[index]?.email);
-                  showErrorNotification(result.reason?.response?.data?.message);
-                  console.log("modifying team member failed", result.reason);
-                }
-              });
-
-              if (totalSuccessForModify > 0) {
-                showSuccessNotification(
-                  t(totalSuccessForModify > 1 ? 'msg users modified success' : 'msg user modified success', {
-                    numberOfUsers: totalSuccessForModify,
-                  })
-                );
-              }
-            })
-            .finally(async () => {
-              // finished promise
-              inviteFunc();
-            });
-        } else {
-          inviteFunc();
-        }
-      } else {
-        setLoading(false);
-      }
-    } catch (e) {
-      console.log('_handleSubmit error', e);
-    }
+    handleModifyUsers({
+      setLoading,
+      users,
+      organizationId,
+      isAdmin,
+      setStatus,
+      showErrorNotification,
+      showSuccessNotification,
+      t,
+    });
   }
 })(FormInviteModify);
 
