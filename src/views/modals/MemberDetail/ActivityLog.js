@@ -8,7 +8,7 @@ import {useUtilsContext} from "../../../providers/UtilsProvider";
 import {timeOnOtherZone} from "../../../utils";
 
 const ActivityLog = ({item, gmt}) => {
-  const {formatHeartCbt, formatAlertForDetail} = useUtilsContext();
+  const {formatHeartCbt, formatAlertForDetail, formatActivityLog} = useUtilsContext();
   return (
     <div className={clsx(style.DataRow)}>
       <div className={clsx(style.DataLabel)}>
@@ -16,7 +16,7 @@ const ActivityLog = ({item, gmt}) => {
           {
             item.type === "Alert" ?
               formatAlertForDetail(item.alertStageId)
-              : item.event
+              : formatActivityLog(item)
           }
         </div>
       </div>

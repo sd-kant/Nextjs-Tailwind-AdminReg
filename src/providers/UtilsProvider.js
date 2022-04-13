@@ -147,7 +147,7 @@ export const UtilsProviderDraft = (
         };
     }
   };
-
+  // fixme translation
   const formatAlertForDetail = stageId => {
     switch (stageId?.toString()) {
       case "1":
@@ -160,6 +160,43 @@ export const UtilsProviderDraft = (
         return "Alert Reset";
       default:
         return "N/A";
+    }
+  };
+
+  const formatActivityLog = activity => {
+    if (!activity?.event)
+      return "N/A";
+    switch (activity.event?.toLowerCase()?.trim()) {
+      case "createuser":
+        return t("activity create user");
+      case "login":
+        if (activity.data?.source?.toLowerCase() === "web") { // web
+          if (activity.data?.type?.toLowerCase() === "username") { // username
+            return t("activity login username web");
+          } else { // 2FA
+            return t("activity login 2fa web");
+          }
+        } else { // mobile
+          if (activity.data?.type?.toLowerCase() === "username") { // username
+            return t("activity login username mobile");
+          } else { // 2FA
+            return t("activity login 2fa mobile");
+          }
+        }
+      case "logout":
+        return t("activity password changed");
+      case "failedlogin":
+        return t("activity failed login");
+      case "usernameassigned":
+        return t("activity username assigned");
+      case "phoneassigned":
+        return t("activity phone assigned");
+      case "passwordchanged":
+        return t("activity password changed");
+      case "userdeleted":
+        return t("activity user deleted");
+      default:
+        return activity.event;
     }
   };
 
@@ -222,6 +259,7 @@ export const UtilsProviderDraft = (
     formatAlertForDetail,
     formatAlert,
     formatConnectionStatusV2,
+    formatActivityLog,
   };
 
   return (

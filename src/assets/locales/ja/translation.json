@@ -472,5 +472,16 @@
   "support": "サポート",
   "unlock user warning title": "ロックされたユーザーのロックを解除しますか？",
   "unlock user confirmation title": "{{name}}のロックが解除されました。 ユーザーはアカウントを再開するための指示を受け取ります",
-  "unlock user": "ユーザーのロックを解除する"
+  "unlock user": "ユーザーのロックを解除する",
+  "activity login username web": "ユーザー名ログイン（Web）",
+  "activity login 2fa web": "2FAログイン（Web）",
+  "activity login username mobile": "ユーザー名ログイン（モバイル）",
+  "activity login 2fa mobile": "2FAログイン（モバイル）",
+  "activity failed login": "ログインに失敗しました",
+  "activity create user": "ユーザー作成",
+  "activity logout": "ログアウトしたユーザー",
+  "activity password changed": "パスワード変更済み",
+  "activity phone assigned": "確認済みの電話番号",
+  "activity user deleted": "ユーザーが削除されました",
+  "activity username assigned": "割り当てられたユーザー名"
 }
