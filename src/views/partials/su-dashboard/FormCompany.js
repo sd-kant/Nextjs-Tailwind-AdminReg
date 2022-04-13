@@ -4,7 +4,6 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import history from "../../../history";
 import CreatableSelect from 'react-select/creatable';
 import {createCompany, createUserByAdmin, getUsersUnderOrganization, updateCompany} from "../../../http";
 import {
@@ -29,6 +28,7 @@ import countryRegions from 'country-region-data/data.json';
 import removeIcon from "../../../assets/images/remove.svg";
 import plusCircleFire from "../../../assets/images/plus-circle-fire.svg";
 import {defaultMember, lowercaseEmail, setUserTypeToUsers} from "./FormRepresentative";
+import {useNavigate} from "react-router-dom";
 
 export const customStyles = () => ({
   option: (provided, state) => ({
@@ -113,6 +113,7 @@ const FormCompany = (props) => {
     [countryRegions]
   );
   const [orgAdmins, setOrgAdmins] = React.useState([]);
+  const navigate = useNavigate();
   React.useEffect(() => {
     setFieldValue("users", []);
     if (!(values.companyName?.__isNew__) && values.companyName?.value) {
@@ -236,7 +237,7 @@ const FormCompany = (props) => {
     if (isEditing) {
       cancelEditing();
     } else {
-      history.push("/select-mode");
+      navigate("/select-mode");
     }
   };
 
@@ -644,7 +645,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue}) => {
-    const {isSuperAdmin} = props;
+    const {isSuperAdmin, navigate} = props;
     const data = {
       name: values.isEditing ? values?.editingCompanyName : values?.companyName?.label,
       country: values?.companyCountry?.label,
@@ -713,13 +714,13 @@ const EnhancedForm = withFormik({
       }
     } else {
       if (values?.companyName?.created) { // if selected already created company
-        history.push(`/invite/${values?.companyName?.value}/team-mode`);
+        navigate(`/invite/${values?.companyName?.value}/team-mode`);
       } else {
         try {
           props.setLoading(true);
           const apiRes = await createCompany(data);
           const companyData = apiRes.data;
-          isSuperAdmin ? history.push(`/invite/${companyData?.id}/representative`) : history.push(`/invite/${companyData?.id}/team-mode`);
+          isSuperAdmin ? navigate(`/invite/${companyData?.id}/representative`) : navigate(`/invite/${companyData?.id}/team-mode`);
         } catch (e) {
           console.log("creating company error", e);
           props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));

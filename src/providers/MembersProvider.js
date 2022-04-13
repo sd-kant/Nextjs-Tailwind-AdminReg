@@ -27,6 +27,7 @@ import {withTranslation} from "react-i18next";
 import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAction} from "../redux/action/ui";
 import {updateUrlParam} from "../utils";
 import ConfirmModal from "../views/components/ConfirmModal";
+import {useParams} from "react-router-dom";
 
 const MembersContext = React.createContext(null);
 let searchTimeout = null;
@@ -61,8 +62,6 @@ export const checkIfHigherThanMe = (myUserType, opponentPermissionLevel) => {
 const MembersProvider = (
   {
     children,
-    organizationId,
-    id,
     userType,
     allTeams,
     queryAllTeams,
@@ -71,6 +70,7 @@ const MembersProvider = (
     showErrorNotification,
     showSuccessNotification,
   }) => {
+  const {organizationId, id} = useParams();
   const [keyword, setKeyword] = React.useState('');
   const [members, setMembers] = React.useState([]);
   const [tempMembers, setTempMembers] = React.useState([]);

@@ -2,10 +2,12 @@ import React from 'react';
 import logo from "../../assets/images/logo_light.svg";
 import {useTranslation} from "react-i18next";
 import FormProfile from "../partials/FormProfile";
+import {useNavigate} from "react-router-dom";
 
 
 const Profile = () => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <div className='form-main'>
@@ -18,7 +20,7 @@ const Profile = () => {
         </span>
       </div>
 
-      <FormProfile/>
+      <FormProfile navigate={navigate}/>
     </div>
   )
 }

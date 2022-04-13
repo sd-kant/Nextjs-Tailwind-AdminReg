@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import {Form, withFormik} from "formik";
 import * as Yup from "yup";
+import {useNavigate} from "react-router-dom";
 
 export const formShape = t => ({
   workLength: Yup.string()
@@ -23,6 +23,7 @@ const formSchema = (t) => {
 
 const FormWorkLength = (props) => {
   const {t, values, errors, touched, setFieldValue, setRestBarClass, profile} = props;
+  const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass('progress-90');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,16 +36,12 @@ const FormWorkLength = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   return (
     <Form className='form-group mt-57'>
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/timezone')}
+          onClick={() => navigate('/create-account/timezone')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -100,11 +97,13 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
-      props.updateProfile({
+      const {updateProfile, navigate} = props;
+      updateProfile({
         body: {
           workDayLength: values.workLength,
         },
         nextPath: '/create-account/startWork',
+        navigate,
       });
     } catch (e) {
       console.log("storing values error", e);

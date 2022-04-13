@@ -4,7 +4,6 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import history from "../../../history";
 import {createTeam, getCompanyById} from "../../../http";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import backIcon from "../../../assets/images/back.svg";
@@ -13,6 +12,7 @@ import ResponsiveSelect from "../../components/ResponsiveSelect";
 import countryRegions from 'country-region-data/data.json';
 import {customStyles} from "./FormCompany";
 import CreatableSelect from "react-select/creatable/dist/react-select.esm";
+import {useNavigate} from "react-router-dom";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -32,8 +32,9 @@ const formSchema = (t) => {
 };
 
 const FormTeamCreate = (props) => {
-  const {values, errors, touched, t, setRestBarClass, setFieldValue, match: {params: {organizationId}}, isAdmin,} = props;
+  const {values, errors, touched, t, setRestBarClass, setFieldValue, isAdmin, organizationId} = props;
   const [organization, setOrganization] = React.useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass("progress-54 medical");
@@ -48,10 +49,6 @@ const FormTeamCreate = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
-
-  const navigateTo = (path) => {
-    history.push(path);
   }
 
   const regions = React.useMemo(() => {
@@ -83,7 +80,7 @@ const FormTeamCreate = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}
+          onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -209,9 +206,9 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
-    const {match: {params: {organizationId: orgId}}} = props;
+    const {organizationId: orgId, navigate} = props;
     if ([undefined, "-1", null, ""].includes(orgId?.toString())) {
-      history.push("/invite/company");
+      navigate("/invite/company");
       return;
     }
     const data = {
@@ -225,7 +222,7 @@ const EnhancedForm = withFormik({
       props.setLoading(true);
       const apiRes = await createTeam(data);
       const teamData = apiRes.data;
-      history.push(`/invite/${teamData?.orgId}/select/${teamData?.id}`);
+      navigate(`/invite/${teamData?.orgId}/select/${teamData?.id}`);
     } catch (e) {
       console.log("creating team error", e);
       props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));

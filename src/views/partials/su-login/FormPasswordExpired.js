@@ -10,13 +10,12 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import {loginAction, setPasswordExpiredAction, setTokenAction} from "../../../redux/action/auth";
+import {setPasswordExpiredAction, setTokenAction} from "../../../redux/action/auth";
 import {
   checkPasswordValidation,
 } from "../../../utils";
 import {resetPasswordWithToken} from "../../../http";
 import {get} from "lodash";
-import history from "../../../history";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -183,6 +182,7 @@ const EnhancedForm = withFormik({
       setLoading,
       showSuccessNotification,
       showErrorNotification,
+      navigate,
     } = props;
     try {
       setLoading(true);
@@ -194,8 +194,7 @@ const EnhancedForm = withFormik({
       showSuccessNotification(t("msg login again"));
       setToken(null);
       setPasswordExpired(false);
-      history.push("/login");
-      // loginAction(values.username, values.password);
+      navigate("/login");
     } catch (e) {
       showErrorNotification(e.response?.data.message || props.t("msg something went wrong"));
     } finally {
@@ -213,7 +212,6 @@ const mapDispatchToProps = (dispatch) =>
     {
       setLoading: setLoadingAction,
       setRestBarClass: setRestBarClassAction,
-      loginAction: loginAction,
       showErrorNotification: showErrorNotificationAction,
       showSuccessNotification: showSuccessNotificationAction,
       setToken: setTokenAction,

@@ -17,12 +17,13 @@ export const getMedicalResponsesAction = () => ({
   payload: {},
 });
 
-export const updateMyProfileAction = ({body, nextPath, apiCall = true}) => ({
+export const updateMyProfileAction = ({body, nextPath, apiCall = true, navigate}) => ({
   type: actionTypes.UPDATE_PROFILE,
   payload: {
     body,
     nextPath,
     apiCall,
+    navigate,
   },
 });
 

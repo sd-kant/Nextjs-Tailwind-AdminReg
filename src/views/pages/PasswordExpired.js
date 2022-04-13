@@ -2,9 +2,11 @@ import React from 'react';
 import logo from "../../assets/images/logo_light.svg";
 import FormPasswordExpired from "../partials/su-login/FormPasswordExpired";
 import {useTranslation} from "react-i18next";
+import {useNavigate} from "react-router-dom";
 
 const PasswordExpired = () => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <div className='form-main'>
@@ -16,7 +18,9 @@ const PasswordExpired = () => {
         </span>
       </div>
 
-      <FormPasswordExpired/>
+      <FormPasswordExpired
+        navigate={navigate}
+      />
     </div>
   )
 }

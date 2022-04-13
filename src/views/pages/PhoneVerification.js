@@ -2,11 +2,12 @@ import React from 'react';
 import logo from "../../assets/images/logo_light.svg";
 import {useTranslation} from "react-i18next";
 import FormPhoneVerification from "../partials/su-login/FormPhoneVerification";
+import {useParams} from "react-router-dom";
 
 
-const PhoneVerification = (props) => {
+const PhoneVerification = () => {
   const {t} = useTranslation();
-  const mode = props.match.params.mode;
+  const {mode} = useParams();
 
   return (
     <div className='form-main'>

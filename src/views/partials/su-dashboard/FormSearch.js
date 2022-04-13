@@ -4,7 +4,6 @@ import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import searchIcon from "../../../assets/images/search.svg";
 import {
@@ -35,6 +34,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import {getParamFromUrl} from "../../../utils";
 import SearchUserItem from "./SearchUserItem";
 import {useMembersContext} from "../../../providers/MembersProvider";
+import {useNavigate} from "react-router-dom";
 
 export const defaultTeamMember = {
   email: '',
@@ -81,11 +81,12 @@ const FormSearch = (props) => {
     setRestBarClass,
     status,
     setStatus,
-    match: {params: {organizationId}},
     isAdmin,
+    organizationId,
   } = props;
   const [newChanges, setNewChanges] = useState(0);
   const {users, setPage, keyword, setKeyword} = useMembersContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -120,14 +121,6 @@ const FormSearch = (props) => {
     }, 500);
   };
 
-  const navigateTo = (path) => {
-    history.push(path);
-  };
-
-  const goBack = () => {
-    navigateTo(`/invite/${isAdmin ? organizationId : -1}/team-mode`);
-  };
-
   return (
     <>
       <ConfirmModal
@@ -141,9 +134,9 @@ const FormSearch = (props) => {
       <Form className='form-group mt-57'>
         <div>
           <div className="d-flex align-center">
-            <img src={backIcon} alt="back" className={"cursor-pointer"} onClick={() => goBack()}/>
+            <img src={backIcon} alt="back" className={"cursor-pointer"} onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}/>
             &nbsp;&nbsp;
-            <span className='font-button-label text-orange cursor-pointer' onClick={() => goBack()}>
+            <span className='font-button-label text-orange cursor-pointer' onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
               {t("previous")}
             </span>
           </div>
@@ -243,8 +236,8 @@ const EnhancedForm = withFormik({
       showSuccessNotification,
       setLoading,
       t,
-      match: {params: {organizationId}},
       isAdmin,
+      organizationId,
     } = props;
     // filter users that were modified to update
     let users = (values?.users ?? [])?.filter(it => it.updated);

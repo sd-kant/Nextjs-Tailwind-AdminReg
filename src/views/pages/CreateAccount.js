@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import FormPassword from "../partials/create-account/FormPassword";
-import {Redirect, Route, Switch} from "react-router-dom";
+import {Navigate, Route, Routes, useLocation} from "react-router-dom";
 import logo from "../../assets/images/logo_light.svg";
 import {useTranslation} from "react-i18next";
 import FormName from "../partials/create-account/FormName";
@@ -18,8 +18,8 @@ import {bindActionCreators} from "redux";
 import {
   getMedicalQuestionsAction, getMedicalResponsesAction,
   getMyProfileAction,
+  updateMyProfileAction,
   setMedicalQuestionsAction,
-  updateMyProfileAction
 } from "../../redux/action/profile";
 import FormMedical from "../partials/medical-prompt/FormMedical";
 import {setRestBarClassAction, showErrorNotificationAction} from "../../redux/action/ui";
@@ -28,17 +28,20 @@ import FormTimezone from "../partials/create-account/FormTimezone";
 import FormPhoneRegister from "../partials/create-account/FormPhoneRegister";
 import FormPhoneVerification from "../partials/create-account/FormPhoneVerification";
 import {get} from "lodash";
+import {useNavigate} from "react-router-dom";
+import ParamsWrapper from "../partials/su-dashboard/ParamsWrapper";
 
 const CreateAccount = (
   {
     ...props
   }) => {
   const {t} = useTranslation();
-  const {token, getMyProfile, location, getMedicalQuestions, getMedicalResponses} = props;
-  const pathname = location.pathname;
+  const {token, getMyProfile, getMedicalQuestions, getMedicalResponses} = props;
+  const {pathname} = useLocation();
   const uris = pathname && pathname.split('/');
   const uri = uris && uris[uris.length - 1];
   const isMedical = (uri.indexOf('medical') !== -1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
@@ -60,207 +63,204 @@ const CreateAccount = (
         </span>
       </div>
 
-      <Switch>
-        {/* creating account */}
-        {/*<Route
-          exact
-          path='/create-account/resend'
-        >
-          <FormResend
-            {...props}
-          />
-        </Route>*/}
-
+      <Routes>
         <Route
-          exact
-          path='/create-account/password'
-        >
-          <FormPassword
-            {...props}
+          path='/password'
+          element={
+            <FormPassword
+              navigate={navigate}
+              {...props}
+            />
+          }
+        />
+
+        {
+          !!token &&
+          <Route
+            path='/name'
+            element={
+              <FormName
+                navigate={navigate}
+                {...props}
+              />
+            }
           />
-        </Route>
-        {
-          !!token &&
-          <Route
-            exact
-            path='/create-account/name'
-          >
-            <FormName
-              {...props}
-            />
-          </Route>
         }
         {
           !!token &&
           <Route
-            exact
-            path='/create-account/phone-register'
-          >
-            <FormPhoneRegister
-              {...props}
-            />
-          </Route>
+            path='/phone-register'
+            element={
+              <FormPhoneRegister
+                navigate={navigate}
+                {...props}
+              />
+            }
+          />
         }
         {
           !!token &&
           <Route
-            exact
-            path='/create-account/phone-verification'
-          >
-            <FormPhoneVerification
-              {...props}
-            />
-          </Route>
+            path='/phone-verification'
+            element={
+              <FormPhoneVerification
+                {...props}
+              />
+            }
+          />
         }
         {
           !!token &&
           <Route
-            exact
-            path='/create-account/gender'
-          >
-            <FormGender
-              {...props}
-            />
-          </Route>
+            path='/gender'
+            element={
+              <FormGender
+                navigate={navigate}
+                {...props}
+              />
+            }
+          />
         }
         {
           !!token &&
           <Route
-            exact
-            path='/create-account/dob'
-          >
-            <FormBirth
-              {...props}
-            />
-          </Route>
+            path='/dob'
+            element={
+              <FormBirth
+                navigate={navigate}
+                {...props}
+              />
+            }
+          />
         }
         {
           !!token &&
           <Route
-            exact
-            path='/create-account/unit'
-          >
-            <FormUnit
-              {...props}
-            />
-          </Route>
+            path='/unit'
+            element={
+              <FormUnit
+                navigate={navigate}
+                {...props}
+              />
+            }
+          />
         }
         {
           !!token &&
           <Route
-            exact
-            path='/create-account/height'
-          >
-            <FormHeight
-              {...props}
-            />
-          </Route>
+            path='/height'
+            element={
+              <FormHeight
+                navigate={navigate}
+                {...props}
+              />
+            }
+          />
         }
         {
           !!token &&
           <Route
-            exact
-            path='/create-account/weight'
-          >
-            <FormWeight
-              {...props}
-            />
-          </Route>
-        }
-        {/*{
-          !!token &&
-          <Route
-            exact
-            path='/create-account/country'
-          >
-            <FormCountry
-              {...props}
-            />
-          </Route>
-        }*/}
-        {
-          !!token &&
-          <Route
-            exact
-            path='/create-account/timezone'
-          >
-            <FormTimezone
-              {...props}
-            />
-          </Route>
+            path='/weight'
+            element={
+              <FormWeight
+                navigate={navigate}
+                {...props}
+              />
+            }
+          />
         }
         {
           !!token &&
           <Route
-            exact
-            path='/create-account/workLength'
-          >
-            <FormWorkLength
-              {...props}
-            />
-          </Route>
+            path='/timezone'
+            element={
+              <FormTimezone
+                navigate={navigate}
+                {...props}
+              />
+            }
+          />
         }
         {
           !!token &&
           <Route
-            exact
-            path='/create-account/startWork'
-          >
-            <FormStartWork
-              {...props}
-            />
-          </Route>
+            path='/workLength'
+            element={
+              <FormWorkLength
+                navigate={navigate}
+                {...props}
+              />
+            }
+          />
         }
         {
           !!token &&
           <Route
-            exact
-            path='/create-account/photoUpload'
-          >
-            <FormPhotoUpload
-              {...props}
-            />
-          </Route>
+            path='/startWork'
+            element={
+              <FormStartWork
+                navigate={navigate}
+                {...props}
+              />
+            }
+          />
         }
         {
           !!token &&
           <Route
-            exact
-            path="/create-account/medical-initial"
-          >
-            <FormInitial
-              {...props}
-            />
-          </Route>
+            path='/photoUpload'
+            element={
+              <FormPhotoUpload
+                navigate={navigate}
+                {...props}
+              />
+            }
+          />
+        }
+        {
+          !!token &&
+          <Route
+            path="/medical-initial"
+            element={
+              <FormInitial
+                {...props}
+              />
+            }
+          />
         }
         {/* medical questions */}
         {
           !!token &&
           <Route
-            exact
-            path="/create-account/medical/:order"
-            render={matchProps => (
-              <FormMedical
-                {...props}
-                {...matchProps}
-              />
-            )}
+            path="/medical/:order"
+            element={
+              <ParamsWrapper>
+                <FormMedical
+                  {...props}
+                />
+              </ParamsWrapper>
+            }
           />
         }
         {
           !!token &&
           <Route
-            exact
-            path="/create-account/medical-complete"
-          >
-            <FormComplete
-              {...props}
-            />
-          </Route>
+            path="/medical-complete"
+            element={
+              <FormComplete
+                {...props}
+              />
+            }
+          />
         }
 
-        <Redirect to='/create-account/password'/>
-      </Switch>
+        <Route
+          path="/*"
+          element={
+            <Navigate to='/password' replace/>
+          }
+        />
+      </Routes>
     </div>
   )
 }

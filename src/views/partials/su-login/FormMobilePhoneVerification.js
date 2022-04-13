@@ -9,8 +9,8 @@ import {get} from 'lodash';
 import {requestSmsCode} from "../../../http";
 import {getParamFromUrl} from "../../../utils";
 import backIcon from "../../../assets/images/back.svg";
-import history from "../../../history";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const FormMobilePhoneVerification = (props) => {
   const {
@@ -25,6 +25,7 @@ const FormMobilePhoneVerification = (props) => {
   } = props;
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [code, setCode] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     setClassName();
@@ -109,10 +110,6 @@ const FormMobilePhoneVerification = (props) => {
     setRestBarClass(`progress-50`);
   }
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   const resendCode = async () => {
     if (phoneNumber) {
       try {
@@ -134,7 +131,7 @@ const FormMobilePhoneVerification = (props) => {
           className="d-inline-flex align-center cursor-pointer"
           onClick={() => {
             setToken(null);
-            navigateTo('/mobile-login');
+            navigate('/mobile-login');
           }}
         >
           <img src={backIcon} alt="back"/>

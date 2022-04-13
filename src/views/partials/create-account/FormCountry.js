@@ -1,11 +1,11 @@
 import React, {useMemo, useEffect} from 'react';
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import Select from 'react-select';
 import * as Yup from "yup";
 import {Form, withFormik} from "formik";
 import {AVAILABLE_COUNTRIES} from "../../../constant";
+import {useNavigate} from "react-router-dom";
 
 export const customStyles = {
   option: (provided, state) => ({
@@ -29,7 +29,7 @@ const formSchema = (t) => {
 const FormCountry = (props) => {
   const {t, values, setFieldValue, setRestBarClass, profile} = props;
   const options = useMemo(() => AVAILABLE_COUNTRIES, []);
-
+  const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass('progress-72');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,7 +46,7 @@ const FormCountry = (props) => {
   }, [profile]);
 
   const navigateTo = (path) => {
-    history.push(path);
+    navigate(path);
   }
 
   const changeHandler = value => {
@@ -110,11 +110,13 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
-      props.updateProfile({
+      const {updateProfile, navigate} = props;
+      updateProfile({
         body: {
           countryOfResidence: values.country?.label,
         },
         nextPath: '/create-account/timezone',
+        navigate,
       });
     } catch (e) {
       console.log("storing values error", e);

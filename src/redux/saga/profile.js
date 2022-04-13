@@ -7,7 +7,6 @@ import {
 import {actionTypes} from '../type';
 import i18n from '../../i18nextInit';
 import {getMedicalQuestionsV2, getMedicalResponsesV2, getProfileV2, updateProfileV2} from "../../http";
-import history from "../../history";
 import {get} from "lodash";
 
 function* actionWatcher() {
@@ -23,6 +22,7 @@ function* updateProfileSaga(
       body,
       nextPath,
       apiCall,
+      navigate,
     }
   }) {
   try {
@@ -59,7 +59,7 @@ function* updateProfileSaga(
       });
     }
     if (nextPath) {
-      history.push(nextPath);
+      navigate(nextPath);
     }
   } catch (e) {
     console.log("update profile error", e);

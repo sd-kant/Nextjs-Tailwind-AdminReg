@@ -15,7 +15,7 @@ import ConfirmModalV2 from "../ConfirmModalV2";
 import {useWidthContext} from "../../../providers/WidthProvider";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERSION} from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
-import history from "../../../history";
+import {useNavigate} from "react-router-dom";
 
 const popupContentStyle = {
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
@@ -36,6 +36,7 @@ const Settings = (
   }
 ) => {
   const ref = React.useRef();
+  const navigate = useNavigate();
   const [visiblePopup, setVisiblePopup] = React.useState(false);
   const [visibleLeavePopup, setVisibleLeavePopup] = React.useState(false);
   const {width} = useWidthContext();
@@ -62,7 +63,7 @@ const Settings = (
       title: t("user profile"),
       handleClick: () => {
         ref.current.close();
-        history.push("/profile");
+        navigate("/profile");
       },
     },
     {

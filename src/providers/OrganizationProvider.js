@@ -6,6 +6,7 @@ import {withTranslation} from "react-i18next";
 import {setLoadingAction, showErrorNotificationAction} from "../redux/action/ui";
 import {getCompanyById, getUsersUnderOrganization} from "../http";
 import countryRegions from 'country-region-data/data.json';
+import {useParams} from "react-router-dom";
 
 const OrganizationContext = React.createContext(null);
 
@@ -14,12 +15,12 @@ const OrganizationProvider = (
     t,
     children,
     isAdmin,
-    organizationId,
     showErrorNotification,
     setLoading,
   }) => {
   const [orgAdmins, setOrgAdmins] = React.useState([]);
   const [organization, setOrganization] = React.useState(null);
+  const {organizationId} = useParams();
   React.useEffect(() => {
     if (organizationId) {
       fetchOrgAdmins();

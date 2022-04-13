@@ -2,10 +2,12 @@ import React from 'react';
 import logo from "../../assets/images/logo_light.svg";
 import {useTranslation} from "react-i18next";
 import FormSULogin from "../partials/su-login/FormSULogin";
+import {useNavigate} from "react-router-dom";
 
 
 const SULogin = () => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <div className='form-main'>
@@ -18,7 +20,9 @@ const SULogin = () => {
         </span>
       </div>
 
-      <FormSULogin/>
+      <FormSULogin
+        navigate={navigate}
+      />
     </div>
   )
 }

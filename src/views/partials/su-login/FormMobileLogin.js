@@ -8,7 +8,6 @@ import {setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth
 // import MicrosoftLogin from "react-microsoft-login";
 import {apiBaseUrl} from "../../../config";
 import axios from "axios";
-import history from "../../../history";
 import {formSchema} from "./FormSULogin";
 
 const FormMobileLogin = (props) => {
@@ -130,7 +129,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
-    const {t, showErrorNotification, setLoading, setBaseUri, setMobileToken} = props;
+    const {t, showErrorNotification, setLoading, setBaseUri, setMobileToken, navigate} = props;
     if (values.username?.includes("@")) {
       showErrorNotification(t("use your username"));
       return;
@@ -165,9 +164,9 @@ const EnhancedForm = withFormik({
         setMobileToken(accessToken);
 
         if (havePhone) {
-          history.push('/mobile-phone-verification/1');
+          navigate('/mobile-phone-verification/1');
         } else {
-          history.push('/mobile-phone-register');
+          navigate('/mobile-phone-register');
         }
       }
     } catch (e) {

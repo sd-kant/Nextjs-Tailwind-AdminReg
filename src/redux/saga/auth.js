@@ -6,7 +6,6 @@ import {
 import {actionTypes} from '../type';
 import {instance, login, lookupByUsername} from "../../http";
 import i18n from '../../i18nextInit';
-import history from "../../history";
 import {ableToLogin} from "../../utils";
 
 function* actionWatcher() {
@@ -19,6 +18,7 @@ function* loginSaga({payload: {
   phoneNumber,
   loginCode,
   fromRegister = false,
+  navigate,
 }}) {
   let mode = 1; // 1: username, 2: sms
   try {
@@ -85,9 +85,9 @@ function* loginSaga({payload: {
         localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
 
         if (!mfa) { // if multi-factor authentication off
-          history.push("/create-account/name");
+          navigate("/create-account/name");
         } else {
-          history.push('/create-account/phone-register');
+          navigate('/create-account/phone-register');
         }
       } else {
         localStorage.setItem("kop-v2-logged-in", !mfa ? "true" : "false");
@@ -99,22 +99,22 @@ function* loginSaga({payload: {
           localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
           localStorage.setItem("kop-v2-picked-organization-id", orgId);
           if (ableToLogin(userType)) {
-            history.push("/select-mode");
+            navigate("/select-mode");
           } else {
-            history.push("/create-account/name");
+            navigate("/create-account/name");
           }
 
           localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
         } else {
           if (havePhone) {
-            history.push('/phone-verification/1');
+            navigate('/phone-verification/1');
           } else {
-            history.push('/phone-register');
+            navigate('/phone-register');
           }
         }
       }
     } else {
-      history.push("/password-expired");
+      navigate("/password-expired");
     }
   } catch (e) {
     console.log("login error", e);

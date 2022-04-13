@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import * as Yup from "yup";
 import {Form, withFormik} from "formik";
@@ -13,6 +12,7 @@ import {
 } from "../../../redux/action/ui";
 import {format2Digits} from "../../../utils";
 import useTimeOptions from "../../../hooks/useTimeOptions";
+import {useNavigate} from "react-router-dom";
 
 export const formShape = t => ({
   hour: Yup.string()
@@ -54,6 +54,7 @@ export const options = [
 const FormStartWork = (props) => {
   const {t, values, profile, setFieldValue, setRestBarClass, errors, touched} = props;
   const [hourOptions, minuteOptions] = useTimeOptions();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass('progress-100');
@@ -84,16 +85,12 @@ const FormStartWork = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   return (
     <Form className='form-group mt-57'>
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/workLength')}
+          onClick={() => navigate('/create-account/workLength')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -217,11 +214,13 @@ const EnhancedForm = withFormik({
     } = values;
     const hour24 = hourTo24Hour({startTimeOption, hour});
     try {
-      props.updateProfile({
+      const {updateProfile, navigate} = props;
+      updateProfile({
         body: {
           workDayStart: `${format2Digits(hour24)}:${minute}`,
         },
         nextPath: '/create-account/medical-initial',
+        navigate,
       })
     } catch (e) {
       console.log("storing values error", e);

@@ -165,12 +165,16 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
-    const {loginAction} = props;
+    const {loginAction, navigate} = props;
     if (values.username?.includes("@")) {
       props.showErrorNotification(props.t("use your username"));
       return;
     }
-    loginAction(values.username, values.password);
+    loginAction({
+      username: values.username,
+      password: values.password,
+      navigate,
+    });
   }
 })(FormSULogin);
 

@@ -4,7 +4,6 @@ import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {withTranslation, Trans} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
 import removeIcon from "../../../assets/images/remove.svg";
@@ -30,6 +29,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import SuccessModal from "../../components/SuccessModal";
 import {logout} from "../../layouts/MainLayout";
+import {useNavigate} from "react-router-dom";
 
 export const defaultTeamMember = {
   email: '',
@@ -113,8 +113,9 @@ const FormInvite = (props) => {
     status,
     setStatus,
     userType,
-    match: {params: {organizationId}},
+    organizationId,
   } = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -138,10 +139,6 @@ const FormInvite = (props) => {
     localStorage.removeItem("kop-csv-data");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const navigateTo = (path) => {
-    history.push(path);
-  };
 
   const changeFormField = (e) => {
     const {value, name} = e.target;
@@ -171,10 +168,6 @@ const FormInvite = (props) => {
 
   const pathname = window.location.pathname;
   const isManual = pathname.split("/").includes("manual");
-
-  const goBack = () => {
-    history.back();
-  };
 
   const isAdmin = userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
 
@@ -373,7 +366,7 @@ const FormInvite = (props) => {
         show={status?.visibleSuccessModal}
         onCancel={() => {
           setStatus({visibleSuccessModal: false});
-          history.push((`/invite/${organizationId}/team-mode`));
+          navigate((`/invite/${organizationId}/team-mode`));
         }}
         onOk={() => {
           setStatus({visibleSuccessModal: false});
@@ -385,7 +378,7 @@ const FormInvite = (props) => {
         <div>
           <div
             className="d-flex align-center cursor-pointer"
-            onClick={() => goBack()}
+            onClick={() => navigate(-1)}
           >
             <img src={backIcon} alt="back"/>
             &nbsp;&nbsp;
@@ -452,7 +445,7 @@ const FormInvite = (props) => {
             <Trans
               i18nKey={"reupload csv"}
               components={{
-                a: (<span className={"text-orange"} onClick={() => navigateTo("/invite/upload")}/>)
+                a: (<span className={"text-orange"} onClick={() => navigate("/invite/upload")}/>)
               }}
             />
         </span>
@@ -567,13 +560,17 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {
-    const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId, id: teamId}}} = props;
+    const {
+      showErrorNotification, showSuccessNotification, setLoading,
+      t, organizationId, id: teamId,
+      navigate,
+    } = props;
     let users = values?.users;
     if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
       showErrorNotification(
         t("msg create organization before inviting users"),
       );
-      history.push("/invite/company");
+      navigate("/invite/company");
     } else {
       if (users?.length > 0) {
         const {alreadyRegisteredUsers, numberOfSuccess} =
