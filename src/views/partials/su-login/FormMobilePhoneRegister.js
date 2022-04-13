@@ -10,10 +10,10 @@ import CustomPhoneInput from "../../components/PhoneInput";
 import style from "./FormPhoneRegister.module.scss";
 import clsx from "clsx";
 import {get} from "lodash";
-import history from "../../../history";
 import {setMobileTokenAction} from "../../../redux/action/auth";
 import backIcon from "../../../assets/images/back.svg";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -31,6 +31,7 @@ const formSchema = (t) => {
 
 const MobileFormPhoneRegister = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass, setToken} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setClassName();
@@ -41,10 +42,6 @@ const MobileFormPhoneRegister = (props) => {
     setRestBarClass(`progress-50`);
   }
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   return (
     <Form className='form-group mt-57'>
       <div>
@@ -52,7 +49,7 @@ const MobileFormPhoneRegister = (props) => {
           className="d-inline-flex align-center cursor-pointer"
           onClick={() => {
             setToken(null);
-            navigateTo('/mobile-login');
+            navigate('/mobile-login');
           }}
         >
           <img src={backIcon} alt="back"/>
@@ -115,7 +112,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
-    const {baseUri, token, setLoading, showErrorNotification} = props;
+    const {baseUri, token, setLoading, showErrorNotification, navigate} = props;
     if (token && baseUri) {
       try {
         setLoading(true);
@@ -127,14 +124,14 @@ const EnhancedForm = withFormik({
             Authorization: `Bearer ${token}`,
           },
         });
-        history.push(`/mobile-phone-verification/0?phoneNumber=${phoneNumber}`);
+        navigate(`/mobile-phone-verification/0?phoneNumber=${phoneNumber}`);
       } catch (e) {
         showErrorNotification(e.response?.data?.message);
       } finally {
         setLoading(false);
       }
     } else {
-      history.push(`/mobile-login`);
+      navigate(`/mobile-login`);
     }
   }
 })(MobileFormPhoneRegister);

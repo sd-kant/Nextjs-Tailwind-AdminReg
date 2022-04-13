@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import {get} from "lodash";
 import {QUESTION_TYPE_BOOLEAN, QUESTION_TYPE_RADIO} from "../../../constant";
@@ -14,6 +13,7 @@ import {
   showSuccessNotificationAction,
 } from "../../../redux/action/ui";
 import {answerMedicalQuestionsV2} from "../../../http";
+import {useNavigate} from "react-router-dom";
 
 export const formatAnswersToOptions = (answers) => {
   let temp = JSON.parse(JSON.stringify(answers));
@@ -32,13 +32,14 @@ export const formatAnswersToOptions = (answers) => {
 
 const FormMedical = (props) => {
   const {
-    t, medicalQuestions, match, setLoading,
+    t, medicalQuestions, order, setLoading,
     showErrorNotification, showSuccessNotification, setRestBarClass,
     token, profile, medicalResponses,
   } = props;
   const [questionOrder, setQuestionOrder] = useState(null);
   const [questionContent, setQuestionContent] = useState(null);
   const [answer, setAnswer] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (medicalResponses) {
@@ -50,7 +51,7 @@ const FormMedical = (props) => {
   useEffect(() => {
     initialize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [match.params.order]);
+  }, [order]);
 
   useEffect(() => {
     if (questionOrder !== null && medicalQuestions) {
@@ -60,7 +61,6 @@ const FormMedical = (props) => {
   }, [questionOrder, medicalQuestions]);
 
   const initialize = () => {
-    const order = match?.params?.order;
     setRestBarClass(`progress-${parseInt(order) * 9} medical`);
     setQuestionOrder(order && parseInt(order));
     const medicalQuestionsStr = localStorage.getItem("medicalQuestions");
@@ -90,9 +90,9 @@ const FormMedical = (props) => {
     const prevQuestion = orderedPrevQuestions && orderedPrevQuestions[0];
 
     if (prevQuestion) {
-      history.push(`/create-account/medical/${prevQuestion.id}`);
+      navigate(`/create-account/medical/${prevQuestion.id}`);
     } else {
-      history.push(`/create-account/medical-initial`);
+      navigate(`/create-account/medical-initial`);
     }
   }
 
@@ -125,7 +125,7 @@ const FormMedical = (props) => {
     const nextQuestion = orderedRemainingQuestions && orderedRemainingQuestions[0];
 
     if (nextQuestion) {
-      history.push(`/create-account/medical/${nextQuestion.id}`);
+      navigate(`/create-account/medical/${nextQuestion.id}`);
     } else { // all question answered
       submit().then();
     }
@@ -148,7 +148,7 @@ const FormMedical = (props) => {
         await answerMedicalQuestionsV2(formData, token);
         showSuccessNotification(t("msg medical answers submitted success"));
         localStorage.removeItem("medicalQuestions");
-        history.push('/create-account/medical-complete');
+        navigate('/create-account/medical-complete');
       } catch (e) {
         console.log("submitting medical answers error", e);
         showErrorNotification(e.response?.data?.message);

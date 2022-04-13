@@ -4,7 +4,12 @@ import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
-import {checkUsernameValidation2, checkUsernameValidation1, checkPasswordValidation, getTokenFromUrl} from "../../../utils";
+import {
+  checkUsernameValidation2,
+  checkUsernameValidation1,
+  checkPasswordValidation,
+  getTokenFromUrl
+} from "../../../utils";
 import {instance, lookupByToken, resetPasswordV2} from "../../../http";
 import {
   setLoadingAction,
@@ -12,7 +17,7 @@ import {
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import {loginAction} from "../../../redux/action/auth";
-import history from "../../../history";
+import {useNavigate} from "react-router-dom";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -68,14 +73,14 @@ const FormPassword = (props) => {
     t,
     token,
   } = props;
-
+  const navigate = useNavigate();
   useEffect(() => {
     const tokenFromUrl = getTokenFromUrl();
     if (!tokenFromUrl) {
       if (token) {
-        history.push("/create-account/name");
+        navigate("/create-account/name");
       } else {
-        history.push("/");
+        navigate("/");
       }
     } else {
       setFieldValue("token", tokenFromUrl);
@@ -196,6 +201,7 @@ const EnhancedForm = withFormik({
       login,
       t,
       showErrorNotification,
+      navigate,
     } = props;
 
     try {
@@ -207,7 +213,12 @@ const EnhancedForm = withFormik({
       }
       await resetPasswordV2(data);
       showSuccessNotification(t("msg password updated success"));
-      login(values["username"], values["password"], true);
+      login({
+        username: values["username"],
+        password: values["password"],
+        fromRegister: true,
+        navigate: navigate,
+      });
     } catch (e) {
       if (e?.response?.data?.status?.toString() === "404") {
         showErrorNotification(t("msg token expired"));

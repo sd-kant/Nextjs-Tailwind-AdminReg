@@ -1,13 +1,13 @@
 import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import maleIcon from "../../../assets/images/male.svg";
 import femaleIcon from "../../../assets/images/female.svg";
 import {Form, withFormik} from "formik";
 import * as Yup from "yup";
 import {bindActionCreators} from "redux";
+import {useNavigate} from "react-router-dom";
 
 export const formShape = t => ({
   gender: Yup.number()
@@ -26,6 +26,7 @@ const formSchema = (t) => {
 
 const FormGender = (props) => {
   const {t, values, setFieldValue, setRestBarClass, profile} = props;
+  const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass("progress-27");
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -38,7 +39,7 @@ const FormGender = (props) => {
   }, [profile]);
 
   const navigateTo = (path) => {
-    history.push(path);
+    navigate(path);
   }
 
   return (
@@ -108,11 +109,13 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
-      props.updateProfile({
+      const {updateProfile, navigate} = props;
+      updateProfile({
         body: {
           sex: values["gender"],
         },
         nextPath: '/create-account/dob',
+        navigate,
       })
     } catch (e) {
       console.log("storing values error", e);

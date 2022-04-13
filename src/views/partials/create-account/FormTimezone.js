@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import * as Yup from "yup";
 import {Form, withFormik} from "formik";
 import Select from 'react-select';
 import {customStyles} from "./FormCountry";
 import useTimezone from "../../../hooks/useTimezone";
+import {useNavigate} from "react-router-dom";
 
 export const formShape = t => ({
   timezone: Yup.object()
@@ -24,6 +24,7 @@ const formSchema = (t) => {
 const FormTimezone = (props) => {
   const [timezones] = useTimezone();
   const {t, values, setFieldValue, setRestBarClass, profile} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass('progress-81');
@@ -38,10 +39,6 @@ const FormTimezone = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile, timezones]);
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   const changeHandler = value => {
     setFieldValue("timezone", value);
   }
@@ -51,7 +48,7 @@ const FormTimezone = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/weight')}
+          onClick={() => navigate('/create-account/weight')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -103,11 +100,13 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
-      props.updateProfile({
+      const {updateProfile, navigate} = props;
+      updateProfile({
         body: {
           gmt: values.timezone?.gmtTz ?? "GMT+00:00",
         },
         nextPath: '/create-account/workLength',
+        navigate,
       })
     } catch (e) {
       console.log("storing values error", e);

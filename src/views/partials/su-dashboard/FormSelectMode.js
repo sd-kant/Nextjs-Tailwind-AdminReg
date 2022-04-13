@@ -8,15 +8,16 @@ import workerOrange1 from "../../../assets/images/worker-orange.svg";
 import settings from "../../../assets/images/settings-orange.svg";
 import clsx from "clsx";
 import style from "./FormSelectMode.module.scss";
-import history from "../../../history";
 import queryString from "query-string";
 import {concatAsUrlParam} from "../../../utils";
+import {useNavigate} from "react-router-dom";
 
 const FormSelectMode = (props) => {
   const {t, setRestBarClass} = props;
   const cachedSearchUrl = localStorage.getItem("kop-params");
   const q = queryString.parse(cachedSearchUrl);
   const flattened = concatAsUrlParam(q);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass(`progress-50`);
@@ -37,7 +38,7 @@ const FormSelectMode = (props) => {
         <div className={clsx(style.Row, 'mt-40')}>
           <div
             className={clsx(style.OptionWrapper)}
-            onClick={() => history.push("/invite")}
+            onClick={() => navigate("/invite")}
           >
             <div>
               <span className={clsx('font-button-label')}>{t("administration")}</span>
@@ -55,7 +56,7 @@ const FormSelectMode = (props) => {
 
           <div
             className={clsx(style.OptionWrapper)}
-            onClick={() => history.push(`/dashboard/multi?${flattened}`)}
+            onClick={() => navigate(`/dashboard/multi?${flattened}`)}
           >
             <div>
               <span className={clsx('font-button-label')}>{t("dashboard")}</span>

@@ -7,7 +7,6 @@ import {Form, withFormik} from "formik";
 import InputMask from 'react-input-mask';
 import {bindActionCreators} from "redux";
 import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
-import {loginAction} from "../../../redux/action/auth";
 import maleIcon from "../../../assets/images/male.svg";
 import maleGrayIcon from "../../../assets/images/male-gray.svg";
 import femaleIcon from "../../../assets/images/female.svg";
@@ -46,9 +45,9 @@ import clsx from "clsx";
 import style from "./FormProfile.module.scss";
 import TrueFalse from "../../components/TrueFalse";
 import Button from "../../components/Button";
-import history from "../../../history";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 import {answerMedicalQuestionsV2} from "../../../http";
+import {useNavigate} from "react-router-dom";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -82,6 +81,7 @@ const FormProfile = (props) => {
   const [timezones] = useTimezone();
   const [hourOptions, minuteOptions] = useTimeOptions();
   const [cnt, setCnt] = React.useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getMedicalResponses();
@@ -637,7 +637,7 @@ const FormProfile = (props) => {
               bgColor="gray"
               borderColor="gray"
               title={t("cancel")}
-              onClick={() => history.back()}
+              onClick={() => navigate(-1)}
             />
         }
       </div>
@@ -674,6 +674,7 @@ const EnhancedForm = withFormik({
     const {
       updateProfile, token, t,
       getMedicalResponses, showErrorNotification,
+      navigate,
     } = props;
     try {
       const {
@@ -709,7 +710,7 @@ const EnhancedForm = withFormik({
         workDayLength: workLength,
         workDayStart: `${format2Digits(hour24)}:${minute}`,
       };
-      updateProfile({body, apiCall: true});
+      updateProfile({body, apiCall: true, navigate});
       const medicalQuestionData = {
         category: 'medical',
         ts: new Date().toISOString(),
@@ -718,7 +719,7 @@ const EnhancedForm = withFormik({
       };
       await answerMedicalQuestionsV2(medicalQuestionData, token);
       getMedicalResponses();
-      history.back();
+      navigate(-1);
     } catch (e) {
       console.error("save profile error", e);
       showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
@@ -736,7 +737,6 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       setRestBarClass: setRestBarClassAction,
-      loginAction: loginAction,
       showErrorNotification: showErrorNotificationAction,
       getMedicalResponses: getMedicalResponsesAction,
       updateProfile: updateMyProfileAction,

@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import {withTranslation} from "react-i18next";
 import InputMask from 'react-input-mask';
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import {Form, withFormik} from "formik";
 import * as Yup from "yup";
 import {IMPERIAL, METRIC} from "../../../constant";
 import {convertCmToImperial, convertCmToMetric, convertImperialToMetric} from "../../../utils";
+import {useNavigate} from "react-router-dom";
 
 export const ftOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 export const inOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -70,9 +70,7 @@ const formSchema = (t) => {
 
 const FormHeight = (props) => {
   const {t, values, setFieldValue, setRestBarClass, errors, touched, profile} = props;
-  const navigateTo = (path) => {
-    history.push(path);
-  }
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass('progress-54');
@@ -92,7 +90,7 @@ const FormHeight = (props) => {
         setFieldValue("height", `${m}m${cm}cm`);
         setFieldValue("heightUnit", "2");
       } else {
-        history.push("/create-account/unit");
+        navigate("/create-account/unit");
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -107,7 +105,7 @@ const FormHeight = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/unit')}
+          onClick={() => navigate('/create-account/unit')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -233,18 +231,20 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
+      const {updateProfile, navigate, profile} = props;
       let payload = {
-        measure: props.profile?.measure,
+        measure: profile?.measure,
       };
       const height = getHeightAsMetric({
-        measure: props.profile?.measure,
+        measure: profile?.measure,
         height: values.height,
         feet: values.feet,
         inch: values.inch,
       });
-      props.updateProfile({
+      updateProfile({
         body: {...payload, height},
         nextPath: '/create-account/weight',
+        navigate,
       });
     } catch (e) {
       console.log("storing values error", e);

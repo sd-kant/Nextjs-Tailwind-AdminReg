@@ -14,7 +14,7 @@ import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERS
 import {logout} from "../../layouts/MainLayout";
 import queryString from "query-string";
 import {ableToLogin, concatAsUrlParam} from "../../../utils";
-import history from "../../../history";
+import {useNavigate} from "react-router-dom";
 
 const popupContentStyle = {
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
@@ -38,6 +38,7 @@ const SettingsAdmin = (
   const [visibleLeavePopup, setVisibleLeavePopup] = React.useState(false);
   const cachedSearchUrl = localStorage.getItem("kop-params");
   const q = queryString.parse(cachedSearchUrl);
+  const navigate = useNavigate();
   const flattened = concatAsUrlParam(q);
   const role = React.useMemo(() => {
     if (userType?.includes(USER_TYPE_ADMIN)) {
@@ -63,7 +64,7 @@ const SettingsAdmin = (
         title: t("user profile"),
         handleClick: () => {
           ref.current.close();
-          history.push("/profile");
+          navigate("/profile");
         },
       },
       {

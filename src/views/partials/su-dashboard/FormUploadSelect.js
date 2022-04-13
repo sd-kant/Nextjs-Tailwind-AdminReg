@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import editIcon from "../../../assets/images/edit-fire.svg";
 import uploadIcon from "../../../assets/images/upload-fire.svg";
@@ -12,25 +11,23 @@ import {
   setVisibleSuccessModalAction,
   showErrorNotificationAction, showSuccessNotificationAction
 } from "../../../redux/action/ui";
+import {useNavigate} from "react-router-dom";
 
 const FormUploadSelect = (props) => {
-  const {t, setRestBarClass, match: {params: {id, organizationId}}} = props;
+  const {t, setRestBarClass, id, organizationId} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   return (
     <div className='form-group mt-57'>
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo(`/invite/${organizationId}/team-create`)}
+          onClick={() => navigate(`/invite/${organizationId}/team-create`)}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -49,7 +46,7 @@ const FormUploadSelect = (props) => {
           <div
             className={`tap cursor-pointer`}
             onClick={() => {
-              history.push(`/invite/${organizationId}/edit/manual/${id}`);
+              navigate(`/invite/${organizationId}/edit/manual/${id}`);
             }}
           >
             <img src={editIcon} alt="male icon"/>
@@ -61,7 +58,7 @@ const FormUploadSelect = (props) => {
 
           <div
               className={`ml-40 cursor-pointer tap`}
-              onClick={() => navigateTo(`/invite/${organizationId}/upload/${id}`)}
+              onClick={() => navigate(`/invite/${organizationId}/upload/${id}`)}
             >
               <img src={uploadIcon} alt="female icon"/>
 

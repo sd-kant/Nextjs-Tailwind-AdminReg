@@ -20,7 +20,7 @@ export const countString = (str, letter) => {
   let count = 0;
 
   // looping through the items
-  for (let i = 0; i < str.length; i++) {
+  for (let i = 0; i < str?.length; i++) {
 
     // check if the character is at that position
     if (str.charAt(i) === letter) {
@@ -41,7 +41,7 @@ export const checkUsernameValidation1 = str => {
 }
 
 export const checkUsernameValidation2 = str => {
-  return str.charAt(str.length - 1) !== '.';
+  return str?.charAt(str.length - 1) !== '.';
 }
 
 export const getParamFromUrl = key => {

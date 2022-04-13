@@ -4,7 +4,6 @@ import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
 import searchIcon from "../../../assets/images/search.svg";
@@ -38,6 +37,7 @@ import AddMemberModalV2 from "../../components/AddMemberModalV2";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import SearchUserItem from "./SearchUserItem";
 import {formatJob, setUserType, userSchema} from "./FormSearch";
+import {useNavigate} from "react-router-dom";
 
 export const defaultTeamMember = {
   email: '',
@@ -66,7 +66,7 @@ const FormInviteModify = (props) => {
     errors,
     touched,
     t,
-    match: {params: {id, organizationId}},
+    id, organizationId,
     setLoading,
     setFieldValue,
     showErrorNotification,
@@ -80,6 +80,7 @@ const FormInviteModify = (props) => {
   const [inviteMode, setInviteMode] = useState("invite-only"); // invite-only, register-invite
   const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
   const {setPage, users, admins, keyword, setKeyword, members, initializeMembers} = useMembersContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -105,17 +106,8 @@ const FormInviteModify = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users, admins]);
 
-
-  const navigateTo = (path) => {
-    history.push(path);
-  };
-
   const addAnother = () => {
     setVisibleAddModal(true);
-  };
-
-  const goBack = () => {
-    navigateTo(`/invite/${organizationId}/team-modify`);
   };
 
   const addHandler = async user => {
@@ -163,7 +155,7 @@ const FormInviteModify = (props) => {
           userType: user.permissionLevel,
         }];
         if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
-          history.push("/invite/company");
+          navigate("/invite/company");
           return;
         }
         const {numberOfSuccess} =
@@ -227,9 +219,9 @@ const FormInviteModify = (props) => {
       <Form className='form-group mt-57'>
         <div>
           <div className="d-flex align-center">
-            <img src={backIcon} alt="back" className={"cursor-pointer"} onClick={() => goBack()}/>
+            <img src={backIcon} alt="back" className={"cursor-pointer"} onClick={() => navigate(`/invite/${organizationId}/team-modify`)}/>
             &nbsp;&nbsp;
-            <span className='font-button-label text-orange cursor-pointer' onClick={() => goBack()}>
+            <span className='font-button-label text-orange cursor-pointer' onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
               {t("previous")}
             </span>
           </div>
@@ -347,7 +339,7 @@ const EnhancedForm = withFormik({
       showSuccessNotification,
       setLoading,
       t,
-      match: {params: {organizationId}},
+      organizationId,
       isAdmin,
     } = props;
     // filter users that were modified to update

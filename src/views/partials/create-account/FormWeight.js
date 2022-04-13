@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import * as Yup from "yup";
 import {Form, withFormik} from "formik";
 import {IMPERIAL, METRIC} from "../../../constant";
 import {convertKilosToLbs, convertLbsToKilos} from "../../../utils";
+import {useNavigate} from "react-router-dom";
 
 export const formShape = t => ({
   weightUnit: Yup.string(),
@@ -34,6 +34,7 @@ const formSchema = (t) => {
 
 const FormWeight = (props) => {
   const {t, values, setFieldValue, setRestBarClass, errors, touched, profile} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass('progress-63');
@@ -50,15 +51,11 @@ const FormWeight = (props) => {
         setFieldValue("weight", weight);
         setFieldValue("weightUnit", "2");
       } else {
-        history.push("/create-account/unit");
+        navigate("/create-account/unit");
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
-
-  const navigateTo = (path) => {
-    history.push(path);
-  }
 
   const onChange = (value) => {
     setFieldValue("weight", value);
@@ -69,7 +66,7 @@ const FormWeight = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/height')}
+          onClick={() => navigate('/create-account/height')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -129,16 +126,18 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
-      const measure = props.profile?.measure;
+      const {updateProfile, navigate, profile} = props;
+      const measure = profile?.measure;
       let weight = values.weight;
       if (measure === IMPERIAL) {
         weight = convertLbsToKilos(values['weight']);
       }
-      props.updateProfile({
+      updateProfile({
         body: {
           weight: weight,
         },
-        nextPath: '/create-account/timezone'
+        nextPath: '/create-account/timezone',
+        navigate,
       })
     } catch (e) {
       console.log("storing values error", e);

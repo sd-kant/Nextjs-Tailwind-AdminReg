@@ -2,12 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import {
   getTokenFromUrl,
 } from "../../../utils";
 import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAction} from "../../../redux/action/ui";
+import {useNavigate} from "react-router-dom";
 
 const FormPhotoUpload = (props) => {
   const {t, setRestBarClass} = props;
@@ -15,6 +15,7 @@ const FormPhotoUpload = (props) => {
   const [photo, setPhoto] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [token, setToken] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = getTokenFromUrl();
@@ -26,10 +27,6 @@ const FormPhotoUpload = (props) => {
     setRestBarClass('progress-100');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const navigateTo = (path) => {
-    history.push(path);
-  }
 
   const submit = async () => {
   }
@@ -45,7 +42,7 @@ const FormPhotoUpload = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/startWork')}
+          onClick={() => navigate('/create-account/startWork')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;

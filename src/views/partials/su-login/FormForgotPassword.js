@@ -8,8 +8,8 @@ import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} fr
 import ConfirmModal from "../../components/ConfirmModal";
 import {instance, lookupByUsername, requestResetPassword} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
-import history from "../../../history";
 import {checkUsernameValidation2, checkUsernameValidation1} from "../../../utils";
+import {useNavigate} from "react-router-dom";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -36,6 +36,7 @@ const formSchema = (t) => {
 
 const FormForgotPassword = (props) => {
   const {values, errors, touched, t, setFieldValue, status, setStatus} = props;
+  const navigate = useNavigate();
 
   const changeFormField = (e) => {
     const {value, name} = e.target;
@@ -49,7 +50,7 @@ const FormForgotPassword = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange' onClick={() => {
-            history.push('/login');
+            navigate('/login');
           }}>
               {t("previous")}
             </span>
@@ -101,7 +102,7 @@ const FormForgotPassword = (props) => {
           onOk={(e) => {
             e.preventDefault();
             setStatus({visibleModal: false});
-            history.push("/login");
+            navigate("/login");
           }}
         />
       }

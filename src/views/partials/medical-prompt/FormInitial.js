@@ -1,24 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {withTranslation, Trans} from "react-i18next";
-import history from "../../../history";
 import {get} from "lodash";
 import {bindActionCreators} from "redux";
 import {showErrorNotificationAction} from "../../../redux/action/ui";
+import {useNavigate} from "react-router-dom";
 
 const FormInitial = (props) => {
   const {t, medicalQuestions, showErrorNotification, setRestBarClass} = props;
   const [understandTerms, setUnderstandTerms] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass('progress-0 medical');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const navigateTo = (path) => {
-    history.push(path);
-  }
 
   const submit = () => {
     if (medicalQuestions && medicalQuestions.length > 0) {
@@ -27,7 +24,7 @@ const FormInitial = (props) => {
         return a.id - b.id;
       });
       const firstMedicalQuestion = sortedMedicalQuestions[0];
-      navigateTo(`/create-account/medical/${firstMedicalQuestion.id}`);
+      navigate(`/create-account/medical/${firstMedicalQuestion.id}`);
     } else {
       showErrorNotification(t("msg no medical questions"));
     }

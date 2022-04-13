@@ -2,7 +2,6 @@ import React, {useState, useEffect, useRef} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {withTranslation, Trans} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import uploadIcon from "../../../assets/images/upload-fire.svg";
 import readXlsxFile from 'read-excel-file'
@@ -14,26 +13,24 @@ import {
 } from "../../../redux/action/ui";
 import clsx from "clsx";
 import style from "./FormUpload.module.scss";
+import {useNavigate} from "react-router-dom";
 
 const FormUpload = (props) => {
-  const {t, setRestBarClass, showErrorNotification, match: {params: {id, organizationId}}} = props;
+  const {t, setRestBarClass, showErrorNotification, id, organizationId} = props;
   const [hover, setHover] = useState(false);
   const [csvLoaded, setCsvLoaded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (csvLoaded) {
-      navigateTo(`/invite/${organizationId}/edit/upload/${id}`);
+      navigate(`/invite/${organizationId}/edit/upload/${id}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [csvLoaded]);
@@ -97,7 +94,7 @@ const FormUpload = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo(`/invite/${organizationId}/select/${id}`)}
+          onClick={() => navigate(`/invite/${organizationId}/select/${id}`)}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;

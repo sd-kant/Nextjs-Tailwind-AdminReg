@@ -1,5 +1,6 @@
 import React from "react";
-import {Redirect, Route, Switch} from "react-router-dom";
+import {connect} from "react-redux";
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import logo from "../../assets/images/logo_light.svg";
 import FormCompany from "../partials/su-dashboard/FormCompany";
 import FormRepresentative from "../partials/su-dashboard/FormRepresentative";
@@ -9,12 +10,13 @@ import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
 import FormInvite from "../partials/su-dashboard/FormInvite";
 import FormTeamMode from "../partials/su-dashboard/FormTeamMode";
 import FormUpload from "../partials/su-dashboard/FormUpload";
-import FormReInvite from "../partials/su-dashboard/FormReInvite";
 import FormTeamModify from "../partials/su-dashboard/FormTeamModify";
 import FormInviteModify from "../partials/su-dashboard/FormInviteModify";
-import FormSearch from "../partials/su-dashboard/FormSearch";
 import {WrappedMembersProvider} from "../../providers/MembersProvider";
 import {WrappedOrganizationProvider} from "../../providers/OrganizationProvider";
+import {get} from "lodash";
+import ParamsWrapper from "../partials/su-dashboard/ParamsWrapper";
+import FormSearch from "../partials/su-dashboard/FormSearch";
 
 const Invite = (
   {
@@ -24,6 +26,7 @@ const Invite = (
   const isOrgAdmin = userType?.includes(USER_TYPE_ORG_ADMIN);
   // fixme orgAdmin will be redirected to organization modify page
   let redirectPath = (isSuperAdmin || isOrgAdmin) ? "/invite/company" : "/invite/-1/team-mode";
+  const navigate = useNavigate();
 
   return (
     <div className='form-main'>
@@ -31,150 +34,142 @@ const Invite = (
         <img className='form-header-logo' src={logo} alt='kenzen logo'/>
       </div>
 
-      <Switch>
+      <Routes>
         {
           (isSuperAdmin || isOrgAdmin) &&
           <Route
-            exact
-            path='/invite/company'
-          >
-            <FormCompany
-              isSuperAdmin={isSuperAdmin}
-              isOrgAdmin={isOrgAdmin}
-            />
-          </Route>
+            path='/company'
+            element={
+              <FormCompany
+                isSuperAdmin={isSuperAdmin}
+                isOrgAdmin={isOrgAdmin}
+                navigate={navigate}
+              />
+            }
+          />
         }
         {
           (isSuperAdmin || isOrgAdmin) &&
           <Route
-            exact
-            path='/invite/:organizationId/representative'
-            render={matchProps => (
-              <WrappedOrganizationProvider
-                organizationId={matchProps.match.params.organizationId}
-              >
-                <FormRepresentative
-                  {...matchProps}
-                />
+            path='/:organizationId/representative'
+            element={
+              <WrappedOrganizationProvider>
+                <ParamsWrapper>
+                  <FormRepresentative
+                    navigate={navigate}
+                  />
+                </ParamsWrapper>
               </WrappedOrganizationProvider>
-            )}
+            }
           />
         }
         <Route
-          exact
-          path='/invite/:organizationId/team-create'
-          render={matchProps => (
-            <FormTeam
-              {...matchProps}
-            />
-          )}
+          path='/:organizationId/team-create'
+          element={
+            <ParamsWrapper>
+              <FormTeam
+                navigate={navigate}
+              />
+            </ParamsWrapper>
+          }
         />
 
         <Route
-          exact
-          path='/invite/:organizationId/team-modify'
-          render={matchProps => (
-            <WrappedOrganizationProvider
-              organizationId={matchProps.match.params.organizationId}
-            >
-              <FormTeamModify
-                {...matchProps}
-              />
+          path='/:organizationId/team-modify'
+          element={
+            <WrappedOrganizationProvider>
+              <ParamsWrapper>
+                <FormTeamModify
+                  navigate={navigate}
+                />
+              </ParamsWrapper>
             </WrappedOrganizationProvider>
-          )}
+          }
         />
 
         <Route
-          exact
-          path='/invite/:organizationId/select/:id'
-          render={matchProps => (
-            <FormUploadSelect
-              {...matchProps}
-            />
-          )}
+          path='/:organizationId/select/:id'
+          element={
+            <ParamsWrapper>
+              <FormUploadSelect/>
+            </ParamsWrapper>
+          }
         />
 
         <Route
-          exact
-          path='/invite/:organizationId/upload/:id'
-          render={matchProps => (
-            <FormUpload
-              {...matchProps}
-            />
-          )}
+          path='/:organizationId/upload/:id'
+          element={
+            <ParamsWrapper>
+              <FormUpload/>
+            </ParamsWrapper>
+          }
         />
 
         <Route
-          exact
-          path='/invite/:organizationId/team-mode'
-          render={matchProps => (
-            <FormTeamMode
-              {...matchProps}
-            />
-          )}
+          path='/:organizationId/team-mode'
+          element={
+            <ParamsWrapper>
+              <FormTeamMode/>
+            </ParamsWrapper>
+          }
         />
 
         <Route
-          exact
-          path='/invite/:organizationId/edit/upload/:id'
-          render={matchProps => (
-            <FormInvite
-              {...matchProps}
-            />
-          )}
-        />
-
-        <Route
-          exact
-          path='/invite/:organizationId/edit/manual/:id'
-          render={matchProps => (
-            <FormInvite
-              {...matchProps}
-            />
-          )}
-        />
-
-        <Route
-          exact
-          path='/invite/:organizationId/edit/modify/:id'
-          render={matchProps => (
-            <WrappedMembersProvider
-              organizationId={matchProps.match.params.organizationId}
-              id={matchProps.match.params.id}
-            >
-              <FormInviteModify
-                {...matchProps}
+          path='/:organizationId/edit/upload/:id'
+          element={
+            <ParamsWrapper>
+              <FormInvite
+                navigate={navigate}
               />
-            </WrappedMembersProvider>
-          )}
+            </ParamsWrapper>
+          }
         />
 
         <Route
-          exact
-          path='/invite/:organizationId/search'
-          render={matchProps => (
-            <WrappedMembersProvider
-              organizationId={matchProps.match.params.organizationId}
-              id={null}
-            >
-              <FormSearch
-                {...matchProps}
+          path='/:organizationId/edit/manual/:id'
+          element={
+            <ParamsWrapper>
+              <FormInvite
+                navigate={navigate}
               />
-            </WrappedMembersProvider>
-          )}
+            </ParamsWrapper>
+          }
         />
 
         <Route
-          exact
-          path='/invite/re-invite'
-        >
-          <FormReInvite/>
-        </Route>
+          path='/:organizationId/edit/modify/:id'
+          element={
+            <WrappedMembersProvider
+            >
+              <ParamsWrapper>
+                <FormInviteModify/>
+              </ParamsWrapper>
+            </WrappedMembersProvider>
+          }
+        />
 
-        <Redirect to={redirectPath}/>
-      </Switch>
+        <Route
+          path='/:organizationId/search'
+          element={
+            <WrappedMembersProvider>
+              <ParamsWrapper>
+                <FormSearch/>
+              </ParamsWrapper>
+            </WrappedMembersProvider>
+          }
+        />
+
+        <Route
+          path='/*'
+          element={<Navigate to={redirectPath} replace/>}
+        />
+      </Routes>
     </div>
   )
 }
 
-export default Invite;
+const mapStateToProps = (state) => ({
+  userType: get(state, 'auth.userType'),
+});
+
+export default connect(mapStateToProps, null)(Invite);
