@@ -13,7 +13,7 @@ import ConfirmModalV2 from "../ConfirmModalV2";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERSION} from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
 import queryString from "query-string";
-import {concatAsUrlParam} from "../../../utils";
+import {ableToLogin, concatAsUrlParam} from "../../../utils";
 import history from "../../../history";
 
 const popupContentStyle = {
@@ -84,7 +84,7 @@ const SettingsAdmin = (
         >{t('privacy policy')}</a>,
       },
     ];
-    if (isEntry) {
+    if (isEntry || !ableToLogin(userType)) {
       ret.splice(0, 1);
     }
     return ret;

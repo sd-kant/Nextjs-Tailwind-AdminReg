@@ -158,6 +158,7 @@ const Router = (
                 />
               }
               {
+                ableToLogin(userType) &&
                 loggedIn &&
                 <MainRouteV2
                   exact
