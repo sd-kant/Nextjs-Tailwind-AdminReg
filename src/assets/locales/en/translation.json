@@ -472,5 +472,16 @@
   "support": "Support",
   "unlock user warning title": "Unlock locked user?",
   "unlock user confirmation title": "{{name}} has been unlocked. User will receive instructions to reactivate their account",
-  "unlock user": "Unlock User"
+  "unlock user": "Unlock User",
+  "activity login username web": "Username Login (web)",
+  "activity login 2fa web": "2FA Login (web)",
+  "activity login username mobile": "Username Login (mobile)",
+  "activity login 2fa mobile": "2FA Login (mobile)",
+  "activity failed login": "Failed Login",
+  "activity create user": "User Created",
+  "activity logout": "User Logged Out",
+  "activity password changed": "Password Changed",
+  "activity phone assigned": "Phone Number Confirmed",
+  "activity user deleted": "User Deleted",
+  "activity username assigned": "Username Assigned"
 }
