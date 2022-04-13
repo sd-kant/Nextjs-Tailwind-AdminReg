@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {getTeamMemberEvents, getTeamMemberAlerts, subscribeDataEvents} from "../http";
 import axios from "axios";
+import {useTranslation} from "react-i18next";
 import {useDashboardContext} from "./DashboardProvider";
 
 const UserSubscriptionContext = React.createContext(null);
@@ -9,20 +10,24 @@ export const UserSubscriptionProvider = (
   {
     children,
   }) => {
+  const {t} = useTranslation();
   const {organization} = useDashboardContext();
   const [duration] = React.useState(30); // 1, 7, or 30 days
   const activitiesFilters = [
     {
       value: 1,
-      label: "24 HR",
+      label: t("24 hours"),
+      noText: t("no activity logs in 24 hours"),
     },
     {
       value: 7,
-      label: "W",
+      label: t("week"),
+      noText: t("no activity logs in week"),
     },
     {
       value: 30,
-      label: "M",
+      label: t("month"),
+      noText: t("no activity logs in month"),
     },
   ];
   const [activitiesFilter, setActivitiesFilter] = React.useState(activitiesFilters[0]);
