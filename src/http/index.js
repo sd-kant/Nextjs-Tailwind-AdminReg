@@ -358,3 +358,7 @@ export const getTeamMemberAlerts = ({teamId, userId, since}) => {
     "If-None-Match": since,
   });
 };
+
+export const logoutAPI = () => {
+  return get(`/user/logout`);
+};
