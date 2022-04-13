@@ -17,25 +17,12 @@ export const UtilsProviderDraft = (
   }) => {
 
   const formatConnectionStatusV2 = ({flag, deviceId, connected, stat, alert}) => {
-    if (!deviceId || deviceId?.toString().includes("none")) { // if no device
-      return {
-        label: t("never connected"),
-        value: 1,
-      };
-    }
-    if (stat?.chargingFlag) {
-      return {
-        label: t("charging"),
-        value: 2,
-      };
-    }
-
-    if (flag && connected) {
+    const calc = () => {
       if (
         numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 60 ||
         numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60
       ) {
-        if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
+        if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 20) {
           return {
             label: t('device connected'),
             value: 3,
@@ -75,24 +62,30 @@ export const UtilsProviderDraft = (
       }
     }
 
-    if (!flag) {
-      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
-        return {
-          label: t('no connection'),
-          value: 7,
-        };
-      } else {
-        return {
-          label: t('no connection'),
-          value: 8,
-        };
-      }
+    if (!deviceId || deviceId?.toString().includes("none")) { // if no device
+      return {
+        label: t("never connected"),
+        value: 1,
+      };
+    }
+    if (stat?.chargingFlag) {
+      return {
+        label: t("charging"),
+        value: 2,
+      };
     }
 
-    if (
-      !connected
-    ) {
-      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 30) {
+    if (connected) {
+      return calc();
+    }
+
+    if (!flag || !connected) {
+      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 5) {
+        return calc();
+      } else if (
+        numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 5 &&
+        numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 20
+      ) {
         return {
           label: t('no connection'),
           value: 7,
