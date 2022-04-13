@@ -483,5 +483,12 @@
   "activity password changed": "パスワード変更済み",
   "activity phone assigned": "確認済みの電話番号",
   "activity user deleted": "ユーザーが削除されました",
-  "activity username assigned": "割り当てられたユーザー名"
+  "activity username assigned": "割り当てられたユーザー名",
+  "24 hours": "24時間",
+  "week": "週",
+  "month": "月",
+  "no activity logs in 24 hours": "24時間以内にアクティビティログがありません",
+  "no activity logs in week": "その週のアクティビティログはありません",
+  "no activity logs in month": "その月のアクティビティログはありません",
+  "loading": "読み込んでいます..."
 }

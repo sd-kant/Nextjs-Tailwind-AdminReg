@@ -483,5 +483,12 @@
   "activity password changed": "Mot de passe changé",
   "activity phone assigned": "Numéro de téléphone confirmé",
   "activity user deleted": "Utilisateur supprimé",
-  "activity username assigned": "Nom d'utilisateur attribué"
+  "activity username assigned": "Nom d'utilisateur attribué",
+  "24 hours": "24 heures",
+  "week": "La semaine",
+  "month": "Mois",
+  "no activity logs in 24 hours": "Aucune activité ne se connecte en 24 heures",
+  "no activity logs in week": "Aucun journal d'activité dans la semaine",
+  "no activity logs in month": "Aucun journal d'activité dans le mois",
+  "loading": "Chargement..."
 }

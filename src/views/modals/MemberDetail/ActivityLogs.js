@@ -12,14 +12,13 @@ const ActivityLogs = (
   }) => {
   const {t} = useTranslation();
   const {activitiesFilter, loading: logsLoading} = useUserSubscriptionContext();
-/*todo translation*/
   return (
     <React.Fragment>
       {
         logsLoading ? (
           <div className={clsx(style.DataRow, style.Header, 'font-binary text-white')}>
                   <span
-                    className={clsx('text-capitalize', style.Padding)}>Loading...</span>
+                    className={clsx('text-capitalize', style.Padding)}>{t("loading")}</span>
           </div>
         ) : (
           <React.Fragment>
@@ -35,7 +34,7 @@ const ActivityLogs = (
                 </div> :
                 <div className={clsx(style.DataRow, style.Header, 'font-button-label text-orange')}>
                   <span
-                    className={clsx('font-binary text-capitalize', style.Padding)}>No Activity Logs in {activitiesFilter?.label}</span>
+                    className={clsx('font-binary text-capitalize', style.Padding)}>{activitiesFilter?.noText}</span>
                 </div>
             }
             {

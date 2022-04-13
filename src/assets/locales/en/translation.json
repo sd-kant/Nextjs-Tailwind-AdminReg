@@ -483,5 +483,12 @@
   "activity password changed": "Password Changed",
   "activity phone assigned": "Phone Number Confirmed",
   "activity user deleted": "User Deleted",
-  "activity username assigned": "Username Assigned"
+  "activity username assigned": "Username Assigned",
+  "24 hours": "24 Hours",
+  "week": "Week",
+  "month": "Month",
+  "no activity logs in 24 hours": "No activity logs in 24 hours",
+  "no activity logs in week": "No Activity logs in the week",
+  "no activity logs in month": "No Activity logs in the month",
+  "loading": "Loading..."
 }
