@@ -9,13 +9,16 @@ import {setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth
 import {apiBaseUrl} from "../../../config";
 import axios from "axios";
 import {formSchema} from "./FormSULogin";
+import {getParamFromUrl} from "../../../utils";
 
 const FormMobileLogin = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
 
   useEffect(() => {
     setClassName();
-    // todo get deviceId
+    const deviceId = getParamFromUrl("deviceId")
+    if (deviceId)
+      setFieldValue("deviceId", deviceId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -126,6 +129,7 @@ const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     username: '',
     password: '',
+    deviceId: '',
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
@@ -164,9 +168,9 @@ const EnhancedForm = withFormik({
         setMobileToken(accessToken);
 
         if (havePhone) {
-          navigate('/mobile-phone-verification/1');
+          navigate(`/mobile-phone-verification/1?deviceId=${values?.deviceId}`);
         } else {
-          navigate('/mobile-phone-register');
+          navigate(`/mobile-phone-register?deviceId=${values?.deviceId}`);
         }
       }
     } catch (e) {

@@ -70,9 +70,11 @@ const FormMobilePhoneVerification = (props) => {
   const submitCode = async () => {
     try {
       setLoading(true);
+      const deviceId = getParamFromUrl("deviceId");
       const loginRes = await axios.post(`${baseUri}/auth/login`, {
         phoneNumber,
         loginCode: code,
+        deviceId,
       });
       const {mfa, accessToken, refreshToken} = loginRes.data;
       if (!mfa) {
