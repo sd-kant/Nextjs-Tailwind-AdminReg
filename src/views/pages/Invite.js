@@ -1,22 +1,24 @@
-import React from "react";
+import React, {lazy, Suspense} from "react";
 import {connect} from "react-redux";
 import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import logo from "../../assets/images/logo_light.svg";
-import FormCompany from "../partials/su-dashboard/FormCompany";
-import FormRepresentative from "../partials/su-dashboard/FormRepresentative";
-import FormTeam from "../partials/su-dashboard/FormTeamCreate";
-import FormUploadSelect from "../partials/su-dashboard/FormUploadSelect";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
-import FormInvite from "../partials/su-dashboard/FormInvite";
-import FormTeamMode from "../partials/su-dashboard/FormTeamMode";
-import FormUpload from "../partials/su-dashboard/FormUpload";
-import FormTeamModify from "../partials/su-dashboard/FormTeamModify";
-import FormInviteModify from "../partials/su-dashboard/FormInviteModify";
-import {WrappedMembersProvider} from "../../providers/MembersProvider";
-import {WrappedOrganizationProvider} from "../../providers/OrganizationProvider";
 import {get} from "lodash";
-import ParamsWrapper from "../partials/su-dashboard/ParamsWrapper";
-import FormSearch from "../partials/su-dashboard/FormSearch";
+import Loader from "../components/Loader";
+
+const FormCompany = lazy(() => import("../partials/su-dashboard/FormCompany"));
+const FormRepresentative = lazy(() => import("../partials/su-dashboard/FormRepresentative"));
+const FormTeam = lazy(() => import("../partials/su-dashboard/FormTeamCreate"));
+const FormUploadSelect = lazy(() => import("../partials/su-dashboard/FormUploadSelect"));
+const FormInvite = lazy(() => import("../partials/su-dashboard/FormInvite"));
+const FormTeamMode = lazy(() => import("../partials/su-dashboard/FormTeamMode"));
+const FormUpload = lazy(() => import("../partials/su-dashboard/FormUpload"));
+const FormTeamModify = lazy(() => import("../partials/su-dashboard/FormTeamModify"));
+const FormInviteModify = lazy(() => import("../partials/su-dashboard/FormInviteModify"));
+const WrappedMembersProvider = lazy(() => import("../../providers/MembersProvider").then(module => ({default: module.WrappedMembersProvider})));
+const WrappedOrganizationProvider = lazy(() => import("../../providers/OrganizationProvider").then(module => ({default: module.WrappedOrganizationProvider})));
+const ParamsWrapper = lazy(() => import("../partials/su-dashboard/ParamsWrapper"));
+const FormSearch = lazy(() => import("../partials/su-dashboard/FormSearch"));
 
 const Invite = (
   {
@@ -34,136 +36,139 @@ const Invite = (
         <img className='form-header-logo' src={logo} alt='kenzen logo'/>
       </div>
 
-      <Routes>
-        {
-          (isSuperAdmin || isOrgAdmin) &&
+      <Suspense fallback={<Loader/>}>
+        <Routes>
+          {
+            (isSuperAdmin || isOrgAdmin) &&
+            <Route
+              path='/company'
+              element={
+                <FormCompany
+                  isSuperAdmin={isSuperAdmin}
+                  isOrgAdmin={isOrgAdmin}
+                  navigate={navigate}
+                />
+              }
+            />
+          }
+          {
+            (isSuperAdmin || isOrgAdmin) &&
+            <Route
+              path='/:organizationId/representative'
+              element={
+                <WrappedOrganizationProvider>
+                  <ParamsWrapper>
+                    <FormRepresentative
+                      navigate={navigate}
+                    />
+                  </ParamsWrapper>
+                </WrappedOrganizationProvider>
+              }
+            />
+          }
           <Route
-            path='/company'
+            path='/:organizationId/team-create'
             element={
-              <FormCompany
-                isSuperAdmin={isSuperAdmin}
-                isOrgAdmin={isOrgAdmin}
-                navigate={navigate}
-              />
+              <ParamsWrapper>
+                <FormTeam
+                  navigate={navigate}
+                />
+              </ParamsWrapper>
             }
           />
-        }
-        {
-          (isSuperAdmin || isOrgAdmin) &&
+
           <Route
-            path='/:organizationId/representative'
+            path='/:organizationId/team-modify'
             element={
               <WrappedOrganizationProvider>
                 <ParamsWrapper>
-                  <FormRepresentative
+                  <FormTeamModify
                     navigate={navigate}
                   />
                 </ParamsWrapper>
               </WrappedOrganizationProvider>
             }
           />
-        }
-        <Route
-          path='/:organizationId/team-create'
-          element={
-            <ParamsWrapper>
-              <FormTeam
-                navigate={navigate}
-              />
-            </ParamsWrapper>
-          }
-        />
 
-        <Route
-          path='/:organizationId/team-modify'
-          element={
-            <WrappedOrganizationProvider>
+          <Route
+            path='/:organizationId/select/:id'
+            element={
               <ParamsWrapper>
-                <FormTeamModify
+                <FormUploadSelect/>
+              </ParamsWrapper>
+            }
+          />
+
+          <Route
+            path='/:organizationId/upload/:id'
+            element={
+              <ParamsWrapper>
+                <FormUpload/>
+              </ParamsWrapper>
+            }
+          />
+
+          <Route
+            path='/:organizationId/team-mode'
+            element={
+              <ParamsWrapper>
+                <FormTeamMode/>
+              </ParamsWrapper>
+            }
+          />
+
+          <Route
+            path='/:organizationId/edit/upload/:id'
+            element={
+              <ParamsWrapper>
+                <FormInvite
                   navigate={navigate}
                 />
               </ParamsWrapper>
-            </WrappedOrganizationProvider>
-          }
-        />
+            }
+          />
 
-        <Route
-          path='/:organizationId/select/:id'
-          element={
-            <ParamsWrapper>
-              <FormUploadSelect/>
-            </ParamsWrapper>
-          }
-        />
-
-        <Route
-          path='/:organizationId/upload/:id'
-          element={
-            <ParamsWrapper>
-              <FormUpload/>
-            </ParamsWrapper>
-          }
-        />
-
-        <Route
-          path='/:organizationId/team-mode'
-          element={
-            <ParamsWrapper>
-              <FormTeamMode/>
-            </ParamsWrapper>
-          }
-        />
-
-        <Route
-          path='/:organizationId/edit/upload/:id'
-          element={
-            <ParamsWrapper>
-              <FormInvite
-                navigate={navigate}
-              />
-            </ParamsWrapper>
-          }
-        />
-
-        <Route
-          path='/:organizationId/edit/manual/:id'
-          element={
-            <ParamsWrapper>
-              <FormInvite
-                navigate={navigate}
-              />
-            </ParamsWrapper>
-          }
-        />
-
-        <Route
-          path='/:organizationId/edit/modify/:id'
-          element={
-            <WrappedMembersProvider
-            >
+          <Route
+            path='/:organizationId/edit/manual/:id'
+            element={
               <ParamsWrapper>
-                <FormInviteModify/>
+                <FormInvite
+                  navigate={navigate}
+                />
               </ParamsWrapper>
-            </WrappedMembersProvider>
-          }
-        />
+            }
+          />
 
-        <Route
-          path='/:organizationId/search'
-          element={
-            <WrappedMembersProvider>
-              <ParamsWrapper>
-                <FormSearch/>
-              </ParamsWrapper>
-            </WrappedMembersProvider>
-          }
-        />
+          <Route
+            path='/:organizationId/edit/modify/:id'
+            element={
+              <WrappedMembersProvider
+              >
+                <ParamsWrapper>
+                  <FormInviteModify/>
+                </ParamsWrapper>
+              </WrappedMembersProvider>
+            }
+          />
 
-        <Route
-          path='/*'
-          element={<Navigate to={redirectPath} replace/>}
-        />
-      </Routes>
+          <Route
+            path='/:organizationId/search'
+            element={
+              <WrappedMembersProvider>
+                <ParamsWrapper>
+                  <FormSearch/>
+                </ParamsWrapper>
+              </WrappedMembersProvider>
+            }
+          />
+
+          <Route
+            path='/*'
+            element={<Navigate to={redirectPath} replace/>}
+          />
+        </Routes>
+
+      </Suspense>
     </div>
   )
 }
