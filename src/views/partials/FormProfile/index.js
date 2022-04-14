@@ -73,10 +73,9 @@ const FormProfile = (props) => {
     profile,
     medicalResponses,
     getMedicalResponses,
-    status: {confirmedCnt},
+    status: {confirmedCnt = 0, edit = false},
     setStatus,
   } = props;
-  const [edit, setEdit] = React.useState(false);
   const [selectedDay, setSelectedDay] = React.useState(null);
   const [timezones] = useTimezone();
   const [hourOptions, minuteOptions] = useTimeOptions();
@@ -92,7 +91,7 @@ const FormProfile = (props) => {
   }, [medicalResponses, confirmedCnt, setFieldValue]);
   useEffect(() => {
     if (profile) {
-      setEdit(false);
+      setStatus({edit: false, confirmedCnt});
       setFieldValue("firstName", profile.firstName ?? "");
       setFieldValue("lastName", profile.lastName ?? "");
       setFieldValue("gender", profile.sex ?? "");
@@ -143,7 +142,7 @@ const FormProfile = (props) => {
         setFieldValue("minute", minute);
       }
     }
-  }, [setFieldValue, profile, timezones, confirmedCnt]);
+  }, [setFieldValue, profile, timezones, confirmedCnt, setStatus]);
   React.useLayoutEffect(() => {
     setCnt(cnt => cnt + 1);
     if (cnt > 1) { // according to length of dependency array of this useLayoutEffect
@@ -290,7 +289,7 @@ const FormProfile = (props) => {
           </div> :
           <div className={clsx('form-header-medium', style.HeadLeft)}><span
             className='font-button-label d-block text-orange'
-            onClick={() => setEdit(true)}
+            onClick={() => setStatus({edit: true, confirmedCnt})}
           >Edit</span></div>
       }
       <div className={clsx(style.ContentWrapper, 'form-header-medium')}>
@@ -625,7 +624,7 @@ const FormProfile = (props) => {
                 className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
                 type={"button"}
                 onClick={() => {
-                  setStatus({confirmedCnt: confirmedCnt + 1});
+                  setStatus({edit, confirmedCnt: confirmedCnt + 1});
                 }}
               ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
               </button>
@@ -670,7 +669,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   enableReinitialize: true,
-  handleSubmit: async (values, {props}) => {
+  handleSubmit: async (values, {props, setStatus}) => {
     const {
       updateProfile, token, t,
       getMedicalResponses, showErrorNotification,
@@ -719,7 +718,7 @@ const EnhancedForm = withFormik({
       };
       await answerMedicalQuestionsV2(medicalQuestionData, token);
       getMedicalResponses();
-      navigate(-1);
+      setStatus({confirmedCnt: 0, edit: false});
     } catch (e) {
       console.error("save profile error", e);
       showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
