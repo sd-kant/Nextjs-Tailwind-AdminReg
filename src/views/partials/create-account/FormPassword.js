@@ -18,6 +18,7 @@ import {
 } from "../../../redux/action/ui";
 import {loginAction} from "../../../redux/action/auth";
 import {useNavigate} from "react-router-dom";
+import {apiBaseUrl} from "../../../config";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -206,6 +207,7 @@ const EnhancedForm = withFormik({
 
     try {
       setLoading(true);
+      instance.defaults.baseURL = apiBaseUrl;
       const lookupRes = await lookupByToken(values?.token);
       const {baseUri} = lookupRes.data;
       if (baseUri) {

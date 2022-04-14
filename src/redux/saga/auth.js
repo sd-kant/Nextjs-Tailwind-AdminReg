@@ -7,6 +7,7 @@ import {actionTypes} from '../type';
 import {instance, login, lookupByUsername} from "../../http";
 import i18n from '../../i18nextInit';
 import {ableToLogin} from "../../utils";
+import {apiBaseUrl} from "../../config";
 
 function* actionWatcher() {
   yield takeLatest(actionTypes.LOGIN, loginSaga);
@@ -34,6 +35,7 @@ function* loginSaga({payload: {
         username,
         password,
       };
+      instance.defaults.baseURL = apiBaseUrl;
       const lookupRes = yield call(lookupByUsername, username);
       if (lookupRes.data?.baseUri) {
         instance.defaults.baseURL = lookupRes.data?.baseUri;
