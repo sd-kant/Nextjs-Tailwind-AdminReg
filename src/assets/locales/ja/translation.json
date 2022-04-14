@@ -478,7 +478,7 @@
   "activity login username mobile": "ユーザー名ログイン（モバイル）",
   "activity login 2fa mobile": "2FAログイン（モバイル）",
   "activity failed login": "ログインに失敗しました",
-  "activity create user": "ユーザー作成",
+  "activity create user": "新しいユーザーが作成されました",
   "activity logout": "ログアウトしたユーザー",
   "activity password changed": "パスワード変更済み",
   "activity phone assigned": "確認済みの電話番号",
