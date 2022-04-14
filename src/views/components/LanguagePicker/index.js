@@ -12,7 +12,7 @@ const LanguagePicker = () => {
     i18n.changeLanguage(lang);
     setLang(lang);
     localStorage.setItem("kop-v2-lang", lang);
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (
