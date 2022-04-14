@@ -9,6 +9,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import {instance, lookupByEmail, recoverUsername} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
 import {useNavigate} from "react-router-dom";
+import {apiBaseUrl} from "../../../config";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -108,6 +109,7 @@ const EnhancedForm = withFormik({
   handleSubmit: async (values, {props, setStatus}) => {
     try {
       props.setLoading(true);
+      instance.defaults.baseURL = apiBaseUrl;
       const lookupRes = await lookupByEmail(values?.email);
       const {baseUri} = lookupRes.data;
       if (baseUri) {
