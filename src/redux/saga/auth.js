@@ -103,7 +103,7 @@ function* loginSaga({payload: {
           if (ableToLogin(userType)) {
             navigate("/select-mode");
           } else {
-            navigate("/create-account/name");
+            navigate("/profile");
           }
 
           localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
