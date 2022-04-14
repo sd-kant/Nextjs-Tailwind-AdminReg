@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
-import {checkPhoneNumberValidation} from "../../../utils";
+import {checkPhoneNumberValidation, getParamFromUrl} from "../../../utils";
 import CustomPhoneInput from "../../components/PhoneInput";
 import style from "./FormPhoneRegister.module.scss";
 import clsx from "clsx";
@@ -124,7 +124,8 @@ const EnhancedForm = withFormik({
             Authorization: `Bearer ${token}`,
           },
         });
-        navigate(`/mobile-phone-verification/0?phoneNumber=${phoneNumber}`);
+        const deviceId = getParamFromUrl("deviceId");
+        navigate(`/mobile-phone-verification/0?phoneNumber=${phoneNumber}&deviceId=${deviceId}`);
       } catch (e) {
         showErrorNotification(e.response?.data?.message);
       } finally {
