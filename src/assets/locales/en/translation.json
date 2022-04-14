@@ -478,7 +478,7 @@
   "activity login username mobile": "Username Login (mobile)",
   "activity login 2fa mobile": "2FA Login (mobile)",
   "activity failed login": "Failed Login",
-  "activity create user": "User Created",
+  "activity create user": "New User Created",
   "activity logout": "User Logged Out",
   "activity password changed": "Password Changed",
   "activity phone assigned": "Phone Number Confirmed",
