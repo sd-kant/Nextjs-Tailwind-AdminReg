@@ -31,6 +31,7 @@ const SearchUserItem = (
     userType,
     teams,
     jobs,
+    members,
     doableActions,
     handleMemberInfoChange,
     handleMemberTeamChange,
@@ -89,7 +90,10 @@ const SearchUserItem = (
     wearingDeviceSelected = yesNoOptions?.[0];
   }
   const hiddenPhoneNumber = (user?.phoneNumber?.value) ? t('ends with', {number: user?.phoneNumber?.value?.slice(-4)}) : t("not registered");
-  const ableToResetPhoneNumber = isAdmin && (user?.phoneNumber?.value) && user?.email;
+  const ableToResetPhoneNumber = React.useMemo(() => {
+    const member = members?.find(it => it.userId?.toString() === user.userId?.toString());
+    return isAdmin && (user?.phoneNumber?.value) && member?.email;
+  }, [isAdmin, user, members]);
 
   const phoneDropdownOptions = React.useMemo(() => {
     if (ableToResetPhoneNumber) {

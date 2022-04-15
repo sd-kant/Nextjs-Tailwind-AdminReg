@@ -38,6 +38,7 @@ const formatPhoneNumber = (users) => {
 const formatEmail = (users) => {
   return users && users.map((user) => ({
     ...user,
+    // fixme admin can set user's email as empty, in this case how to un-assign email from user
     email: user.email ? user.email.toLowerCase() : null,
   }));
 }
