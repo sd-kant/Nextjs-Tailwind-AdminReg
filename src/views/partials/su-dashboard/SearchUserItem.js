@@ -22,6 +22,7 @@ const SearchUserItem = (
     user,
     index,
     isAdmin,
+    id,
     errorField,
     touchField,
     t,
@@ -140,6 +141,7 @@ const SearchUserItem = (
           <input
             className={clsx(style.Input, (!isAdmin || !hasRightToEdit) ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
             value={user?.firstName}
+            name={`${id}.firstName`}
             disabled={!isAdmin || !hasRightToEdit}
             type="text"
             onChange={(e) => handleMemberInfoChange(e.target.value, user?.originIndex, 'firstName')}
@@ -160,6 +162,7 @@ const SearchUserItem = (
 
           <input
             className={clsx(style.Input, (!isAdmin || !hasRightToEdit) ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
+            name={`${id}.lastName`}
             value={user?.lastName}
             type="text"
             disabled={!isAdmin || !hasRightToEdit}
@@ -182,10 +185,10 @@ const SearchUserItem = (
           </label>
 
           <input
-            className={clsx(style.Input, style.DisabledInput, 'input mt-10 font-heading-small text-white')}
+            className={clsx(style.Input, 'input mt-10 font-heading-small text-white')}
             value={user?.email}
             type="text"
-            disabled={true}
+            name={`${id}.email`}
             onChange={(e) => handleMemberInfoChange(e.target.value, user?.originIndex, 'email')}
           />
 
@@ -234,6 +237,7 @@ const SearchUserItem = (
             isDisabled={!isAdmin || !hasRightToEdit}
             menuPortalTarget={document.body}
             menuPosition={'fixed'}
+            name={`${id}.job`}
             onChange={(e) => handleMemberInfoChange(e?.value, user?.originIndex, 'job')}
           />
           {

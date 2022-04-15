@@ -32,6 +32,7 @@ import {useNavigate} from "react-router-dom";
 import {userSchema} from "./FormSearch";
 import InviteModal from "./modify/InviteModal";
 import {_handleSubmitV2, handleModifyUsers} from "../../../utils/invite";
+import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 
 export const defaultTeamMember = {
   email: '',
@@ -116,6 +117,7 @@ const FormInviteModify = (props) => {
       );
       return;
     }
+    // fixme check if phone number conflicts under the team
 
     try {
       setLoading(true);
@@ -232,7 +234,7 @@ const FormInviteModify = (props) => {
                 </span>
               </div>
             }
-
+            <ScrollToFieldError/>
             {
               values?.users?.length > 0 &&
               <div className="mt-28">
@@ -248,6 +250,7 @@ const FormInviteModify = (props) => {
                   user={user}
                   index={index}
                   key={`user-${index}`}
+                  id={`users.${index}`}
                   errorField={errors?.users}
                   touchField={touched?.users}
                 />
@@ -269,6 +272,7 @@ const FormInviteModify = (props) => {
                   user={user}
                   index={index}
                   key={`admin-${index}`}
+                  id={`admins.${index}`}
                   errorField={errors?.admins}
                   touchField={touched?.admins}
                 />
@@ -321,7 +325,8 @@ const EnhancedForm = withFormik({
       showSuccessNotification,
       t,
     });
-  }
+  },
+  enableReinitialize: true,
 })(FormInviteModify);
 
 const mapStateToProps = (state) => ({

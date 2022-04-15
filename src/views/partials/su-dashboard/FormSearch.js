@@ -16,10 +16,6 @@ import {
 import style from "./FormSearch.module.scss";
 import clsx from "clsx";
 import {
-  USER_TYPE_ADMIN,
-  USER_TYPE_ORG_ADMIN,
-} from "../../../constant";
-import {
   queryAllTeamsAction,
 } from "../../../redux/action/base";
 import {get} from "lodash";
@@ -29,6 +25,7 @@ import SearchUserItem from "./SearchUserItem";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import {useNavigate} from "react-router-dom";
 import {handleModifyUsers} from "../../../utils/invite";
+import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 
 export const defaultTeamMember = {
   email: '',
@@ -36,14 +33,22 @@ export const defaultTeamMember = {
   lastName: '',
   job: "",
   action: 1,
+  phoneNumber: null,
 };
 
 export const userSchema = (t) => {
   return Yup.object().shape({
     email: Yup.string()
-      // .required(t('email required'))
       .email(t("email invalid"))
-      .max(1024, t('email max error')),
+      .max(1024, t('email max error'))
+      .test(
+        'required',
+        t('email or phone number required'),
+        function (value) {
+          if (value) return true;
+          return !!(this.parent.phoneNumber?.value);
+        }
+      ),
     firstName: Yup.string()
       .required(t('firstName required'))
       .max(1024, t("firstName max error")),
@@ -52,6 +57,7 @@ export const userSchema = (t) => {
       .max(1024, t("lastName max error")),
     job: Yup.object()
       .required(t('role required')),
+    phoneNumber: Yup.object(),
   }).required();
 }
 
@@ -136,6 +142,7 @@ const FormSearch = (props) => {
           </div>
 
           <div className={clsx(style.FormHeader, "mt-40 d-flex flex-column")}>
+            <ScrollToFieldError/>
             <div className={clsx(style.Header)}>
               <div className={"d-flex align-center"}>
               <span className='font-header-medium d-block text-capitalize'>
@@ -171,6 +178,7 @@ const FormSearch = (props) => {
                   user={user}
                   index={index}
                   key={`user-${index}`}
+                  id={`users.${index}`}
                   errorField={errors?.users}
                   touchField={touched?.users}
                 />
@@ -195,22 +203,6 @@ const FormSearch = (props) => {
     </>
   )
 }
-
-export const setUserType = (users) => {
-  return users && users.map((user) => {
-    const userTypes = user?.userTypes;
-    let userType = "";
-    if (userTypes?.includes(USER_TYPE_ADMIN)) {
-      userType = USER_TYPE_ADMIN;
-    } else if (userTypes?.includes(USER_TYPE_ORG_ADMIN)) {
-      userType = USER_TYPE_ORG_ADMIN;
-    }
-    return {
-      ...user,
-      userType: userType,
-    }
-  });
-};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
