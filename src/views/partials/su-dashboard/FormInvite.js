@@ -138,6 +138,7 @@ const FormInvite = (props) => {
     status,
     setStatus,
     organizationId,
+    id: teamId,
     isAdmin,
   } = props;
   const navigate = useNavigate();
@@ -479,24 +480,39 @@ const FormInvite = (props) => {
         </div>
 
         <div className={clsx(style.Footer)}>
-          <button
-            className={`button ${values['users']?.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'}`}
-            type={values['users']?.length > 0 ? "submit" : "button"}
-          >
+          <div>
+            <button
+              className={`button ${values['users']?.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'}`}
+              type={values['users']?.length > 0 ? "submit" : "button"}
+            >
             <span className='font-button-label text-white'>
               {t("finish")}
             </span>
-          </button>
+            </button>
+
+            <button
+              className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
+              type={"button"}
+              onClick={() => navigate(`/invite/${organizationId}/team-mode`)}
+            >
+            <span className='font-button-label text-orange text-uppercase'>
+              {t("cancel")}
+            </span>
+            </button>
+          </div>
+
           {
-            !isManual &&
-            <span className={clsx("font-binary", style.Reupload)}>
+            !isManual ?
+              <div className={clsx('mt-15')}>
+                <span className={clsx("font-binary", style.Reupload)}>
             <Trans
               i18nKey={"reupload csv"}
               components={{
-                a: (<span className={"text-orange"} onClick={() => navigate("/invite/upload")}/>)
+                a: (<span className={"text-orange"} onClick={() => navigate(`/invite/${organizationId}/upload/${teamId}`)}/>)
               }}
             />
         </span>
+              </div> : null
           }
         </div>
       </Form>
