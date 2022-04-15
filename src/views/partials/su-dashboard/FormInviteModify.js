@@ -29,18 +29,10 @@ import AddMemberModalV2 from "../../components/AddMemberModalV2";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import SearchUserItem from "./SearchUserItem";
 import {useNavigate} from "react-router-dom";
-import {userSchema} from "./FormSearch";
+import {defaultTeamMember, userSchema} from "./FormSearch";
 import InviteModal from "./modify/InviteModal";
 import {_handleSubmitV2, handleModifyUsers} from "../../../utils/invite";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
-
-export const defaultTeamMember = {
-  email: '',
-  firstName: '',
-  lastName: '',
-  job: "",
-  action: 1,
-};
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -63,11 +55,11 @@ const FormInviteModify = (props) => {
     t,
     id, organizationId,
     setLoading,
-    setFieldValue,
     showErrorNotification,
     setRestBarClass,
     status,
     setStatus,
+    setValues,
   } = props;
   const [newChanges, setNewChanges] = useState(0);
   const [visibleAddModal, setVisibleAddModal] = useState(false);
@@ -80,6 +72,9 @@ const FormInviteModify = (props) => {
     setRestBarClass("progress-72 medical");
     setPage("modify");
     countChanges();
+    setValues({
+      users, admins,
+    });
 
     return () => {
       clearInterval(intervalForChangesDetect);
@@ -95,13 +90,13 @@ const FormInviteModify = (props) => {
   };
 
   useEffect(() => {
-    setFieldValue("users", users);
-    setFieldValue("admins", admins);
+    setValues({
+      users, admins,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users, admins]);
 
   const addAnother = () => {
-    // setVisibleAddModal(true);
     setVisibleInviteModal(true);
   };
 
@@ -196,6 +191,7 @@ const FormInviteModify = (props) => {
           </div>
 
           <div className={clsx(style.FormHeader, "mt-40 d-flex flex-column")}>
+            <ScrollToFieldError/>
             <div className={clsx(style.Header)}>
               <div className={"d-flex align-center"}>
               <span className='font-header-medium d-block'>
@@ -234,7 +230,6 @@ const FormInviteModify = (props) => {
                 </span>
               </div>
             }
-            <ScrollToFieldError/>
             {
               values?.users?.length > 0 &&
               <div className="mt-28">
@@ -302,6 +297,7 @@ const FormInviteModify = (props) => {
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     users: [defaultTeamMember],
+    admins: [defaultTeamMember],
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {
