@@ -654,6 +654,7 @@ const EnhancedForm = withFormik({
         twoFA: values.twoFA,
         passwordMinimumLength: values.passwordMinimumLength,
         passwordExpirationDays: values.passwordExpirationDays,
+        expirationDaysEnable: values.passwordExpirationDays?.toString() !== "0",
       },
     };
 
