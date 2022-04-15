@@ -189,10 +189,11 @@ const SearchUserItem = (
           </label>
 
           <input
-            className={clsx(style.Input, 'input mt-10 font-heading-small text-white')}
+            className={clsx(style.Input, (!isAdmin || !hasRightToEdit) ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
             value={user?.email}
             type="text"
             name={`${id}.email`}
+            disabled={!isAdmin || !hasRightToEdit}
             onChange={(e) => handleMemberInfoChange(e.target.value, user?.originIndex, 'email')}
           />
 
