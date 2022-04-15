@@ -231,6 +231,10 @@ export const searchMembers = keyword => {
   return get(`user/find/${keyword}`);
 }
 
+export const searchMembersByPhone = phoneNumber => {
+  return get(`user/phone/${phoneNumber}`);
+}
+
 export const searchMembersUnderOrganization = ({keyword, organizationId}) => {
   return get(`organization/${organizationId}/user/find/${keyword}`);
 }

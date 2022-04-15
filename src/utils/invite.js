@@ -1,7 +1,7 @@
 import {
   searchMembersUnderOrganization,
   searchMembers,
-  inviteTeamMemberV2, createUserByAdmin, updateUserByAdmin,
+  inviteTeamMemberV2, createUserByAdmin, updateUserByAdmin, searchMembersByPhone,
 } from "../http";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_OPERATOR, USER_TYPE_TEAM_ADMIN} from "../constant";
 import {isEqual} from "lodash";
@@ -67,7 +67,7 @@ export const _handleSubmitV2 = (
                 findPromises.push(searchMembers(item.email));
               }
             } else if (item.mode === "phoneNumber") {
-              // todo find user by phone number
+              findPromises.push(searchMembersByPhone(item.phoneNumber));
             }
           });
         }
@@ -76,16 +76,23 @@ export const _handleSubmitV2 = (
           Promise.allSettled(findPromises)
             .then(items => {
               items.forEach((item, index) => {
+                let userItem = null;
                 if (item.status === "fulfilled") {
-                  if (item.value?.data?.length === 1) {
-                    const userItem = item.value?.data?.[0];
-                    ret[index] = {
-                      ...ret[index],
-                      userId: userItem?.userId,
-                    };
+                  if (item.value?.config?.url?.includes("user/phone")) { // if find by phone number
+                    userItem = item.value?.data;
+                  } else { // if find by keyword
+                    if (item.value?.data?.length === 1) {
+                      userItem = item.value?.data?.[0];
+                    }
                   }
                 } else { //
                   // this is because the member is not in the scope of current logged-in user
+                }
+                if (userItem) {
+                  ret[index] = {
+                    ...ret[index],
+                    userId: userItem?.userId,
+                  };
                 }
               });
             })
