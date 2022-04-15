@@ -15,21 +15,17 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import {
-  createUserByAdmin,
-  inviteTeamMember,
-} from "../../../http";
-import {
-  lowercaseEmail,
-} from "./FormRepresentative";
 import style from "./FormInvite.module.scss";
 import clsx from "clsx";
-import {AVAILABLE_JOBS, permissionLevels, USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../../constant";
+import {AVAILABLE_JOBS, permissionLevels} from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
+import CustomPhoneInput from "../../components/PhoneInput";
+import {checkPhoneNumberValidation} from "../../../utils";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import SuccessModal from "../../components/SuccessModal";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
+import {_handleSubmitV2} from "../../../utils/invite";
 
 export const defaultTeamMember = {
   email: '',
@@ -37,14 +33,25 @@ export const defaultTeamMember = {
   lastName: '',
   userType: '',
   job: "",
+  phoneNumber: {
+    value: '',
+    countryCode: '',
+  },
 };
 
-const userSchema = (t) => {
+export const userSchema = (t) => {
   return Yup.object().shape({
     email: Yup.string()
-      .required(t('email required'))
       .email(t("email invalid"))
-      .max(1024, t('email max error')),
+      .max(1024, t('email max error'))
+      .test(
+        'required',
+        t('email or phone number required'),
+        function (value) {
+          if (value) return true;
+          return !!(this.parent.phoneNumber.value);
+        }
+      ),
     firstName: Yup.string()
       .required(t('firstName required'))
       .max(1024, t("firstName max error")),
@@ -55,6 +62,24 @@ const userSchema = (t) => {
       .required(t('role required')),
     job: Yup.object()
       .required(t('role required')),
+    phoneNumber: Yup.object()
+      .test(
+        'required',
+        t('email or phone number required'),
+        function (obj) {
+          if (obj?.value) return true;
+          return !!this.parent.email;
+        }
+      )
+      .test(
+        'is-valid',
+        t('phone number invalid'),
+        function (obj) {
+          if (!obj?.value)
+            return true;
+          return checkPhoneNumberValidation(obj.value, obj.countryCode);
+        },
+      ),
   }).required();
 };
 
@@ -112,8 +137,8 @@ const FormInvite = (props) => {
     setRestBarClass,
     status,
     setStatus,
-    userType,
     organizationId,
+    isAdmin,
   } = props;
   const navigate = useNavigate();
 
@@ -168,8 +193,6 @@ const FormInvite = (props) => {
 
   const pathname = window.location.pathname;
   const isManual = pathname.split("/").includes("manual");
-
-  const isAdmin = userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
 
   const options = useMemo(() => {
     if (isAdmin) {
@@ -306,6 +329,31 @@ const FormInvite = (props) => {
                 )
               }
             </div>
+          </div>
+        </div>
+
+        <div className={clsx(style.UserRow)}>
+          <div>
+            <label className='font-input-label'>
+              {t("phone number")}
+            </label>
+            <CustomPhoneInput
+              containerClass={style.PhoneNumberContainer}
+              inputClass={style.PhoneNumberInput}
+              dropdownClass={style.PhoneNumberDropdown}
+              value={user?.phoneNumber?.value}
+              onChange={(value, countryCode) => changeHandler(`${formInputName}.phoneNumber`, {value, countryCode})}
+            />
+            {
+              (touchField?.phoneNumber &&
+                errorField?.phoneNumber) ? (
+                <span className="font-helper-text text-error mt-10">{errorField.phoneNumber}</span>
+              ) : null
+            }
+          </div>
+
+          <div>
+
           </div>
         </div>
       </div>
@@ -456,104 +504,6 @@ const FormInvite = (props) => {
   )
 }
 
-
-const formatUserType = (users) => {
-  return users && users.map((user) => ({
-    ...user,
-    userTypes: [user?.userType?.value?.toString() === "1" ? "TeamAdmin" : "Operator"],
-    userType: user?.userType?.value?.toString() === "1" ? "TeamAdmin" : null,
-  }));
-}
-
-export const setTeamIdToUsers = (users, teamId) => {
-  return users && users.map((user) => ({
-    ...user,
-    teamId,
-  }));
-}
-
-const formatJob = (users) => {
-  return users && users.map((user) => ({
-    ...user,
-    job: user?.job?.value,
-  }));
-}
-
-// eslint-disable-next-line no-unused-vars
-const onTryAgain = (failedEmails, setFieldValue, values) => {
-  const users = values["users"];
-  const failedUsers = users && users.filter(entity => failedEmails.includes(entity.email));
-  setFieldValue("users", failedUsers);
-}
-
-export const _handleSubmit = (
-  {
-    users: unFormattedUsers,
-    setLoading,
-    showSuccessNotification,
-    organizationId,
-    teamId,
-    t,
-  }
-) => {
-  return new Promise((resolve) => {
-    setLoading(true);
-    const users = setTeamIdToUsers(formatUserType(formatJob(lowercaseEmail(unFormattedUsers))), teamId);
-    const promises = [];
-    users?.forEach(it => {
-      promises.push(createUserByAdmin(organizationId, it));
-    });
-
-    const alreadyRegisteredUsers = [];
-    let totalSuccessForInvite = 0;
-    let inviteBody = {add: []};
-
-    Promise.allSettled(promises)
-      .then(items => {
-        items.forEach((item, index) => {
-          if (item.status === "fulfilled") {
-            totalSuccessForInvite++;
-          } else {
-            console.error("creating user failed", item.reason?.response?.data);
-            // fixme be sure if 409 is for already registered error
-            if (item?.reason?.response?.data?.status?.toString() === "409") {
-              alreadyRegisteredUsers.push({
-                email: users[index]?.email,
-              });
-              inviteBody.add.push({
-                email: users?.[index]?.email,
-                userTypes: users?.[index]?.userTypes,
-              });
-            }
-          }
-        });
-      })
-      .finally(async () => {
-        if (inviteBody.add?.length > 0) {
-          const inviteResponse = await inviteTeamMember(teamId, inviteBody);
-          const numberOfSuccess = (inviteResponse?.data?.added?.length) ?? 0;
-          totalSuccessForInvite += numberOfSuccess;
-          showSuccessNotification(t(
-            totalSuccessForInvite > 1 ?
-              'msg users invited success' : 'msg user invited success', {
-              numberOfSuccess: totalSuccessForInvite,
-            }));
-
-          resolve({
-            alreadyRegisteredUsers,
-            numberOfSuccess: totalSuccessForInvite,
-          });
-        } else {
-          resolve({
-            alreadyRegisteredUsers,
-            numberOfSuccess: totalSuccessForInvite,
-          });
-        }
-        setLoading(false);
-      });
-  })
-};
-
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     users: [defaultTeamMember],
@@ -561,9 +511,10 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {
     const {
-      showErrorNotification, showSuccessNotification, setLoading,
+      showErrorNotification, setLoading,
       t, organizationId, id: teamId,
       navigate,
+      isAdmin,
     } = props;
     let users = values?.users;
     if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
@@ -574,13 +525,12 @@ const EnhancedForm = withFormik({
     } else {
       if (users?.length > 0) {
         const {alreadyRegisteredUsers, numberOfSuccess} =
-          await _handleSubmit({
+          await _handleSubmitV2({
             users,
             setLoading,
-            showSuccessNotification,
             organizationId,
             teamId,
-            t,
+            isAdmin,
           });
 
         if (alreadyRegisteredUsers?.length > 0) {
@@ -603,6 +553,7 @@ const EnhancedForm = withFormik({
 
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
+  isAdmin: get(state, 'auth.isAdmin'),
 });
 
 const mapDispatchToProps = (dispatch) =>

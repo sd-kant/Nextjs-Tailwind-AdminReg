@@ -22,6 +22,7 @@ const SearchUserItem = (
     user,
     index,
     isAdmin,
+    id,
     errorField,
     touchField,
     t,
@@ -30,6 +31,7 @@ const SearchUserItem = (
     userType,
     teams,
     jobs,
+    members,
     doableActions,
     handleMemberInfoChange,
     handleMemberTeamChange,
@@ -88,7 +90,10 @@ const SearchUserItem = (
     wearingDeviceSelected = yesNoOptions?.[0];
   }
   const hiddenPhoneNumber = (user?.phoneNumber?.value) ? t('ends with', {number: user?.phoneNumber?.value?.slice(-4)}) : t("not registered");
-  const ableToResetPhoneNumber = (user?.phoneNumber?.value) && isAdmin;
+  const ableToResetPhoneNumber = React.useMemo(() => {
+    const member = members?.find(it => it.userId?.toString() === user.userId?.toString());
+    return isAdmin && (user?.phoneNumber?.value) && member?.email;
+  }, [isAdmin, user, members]);
 
   const phoneDropdownOptions = React.useMemo(() => {
     if (ableToResetPhoneNumber) {
@@ -140,6 +145,7 @@ const SearchUserItem = (
           <input
             className={clsx(style.Input, (!isAdmin || !hasRightToEdit) ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
             value={user?.firstName}
+            name={`${id}.firstName`}
             disabled={!isAdmin || !hasRightToEdit}
             type="text"
             onChange={(e) => handleMemberInfoChange(e.target.value, user?.originIndex, 'firstName')}
@@ -160,6 +166,7 @@ const SearchUserItem = (
 
           <input
             className={clsx(style.Input, (!isAdmin || !hasRightToEdit) ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
+            name={`${id}.lastName`}
             value={user?.lastName}
             type="text"
             disabled={!isAdmin || !hasRightToEdit}
@@ -182,10 +189,10 @@ const SearchUserItem = (
           </label>
 
           <input
-            className={clsx(style.Input, style.DisabledInput, 'input mt-10 font-heading-small text-white')}
+            className={clsx(style.Input, 'input mt-10 font-heading-small text-white')}
             value={user?.email}
             type="text"
-            disabled={true}
+            name={`${id}.email`}
             onChange={(e) => handleMemberInfoChange(e.target.value, user?.originIndex, 'email')}
           />
 
@@ -234,6 +241,7 @@ const SearchUserItem = (
             isDisabled={!isAdmin || !hasRightToEdit}
             menuPortalTarget={document.body}
             menuPosition={'fixed'}
+            name={`${id}.job`}
             onChange={(e) => handleMemberInfoChange(e?.value, user?.originIndex, 'job')}
           />
           {

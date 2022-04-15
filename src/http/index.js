@@ -231,6 +231,10 @@ export const searchMembers = keyword => {
   return get(`user/find/${keyword}`);
 }
 
+export const searchMembersByPhone = phoneNumber => {
+  return get(`user/phone/${phoneNumber}`);
+}
+
 export const searchMembersUnderOrganization = ({keyword, organizationId}) => {
   return get(`organization/${organizationId}/user/find/${keyword}`);
 }
@@ -265,6 +269,10 @@ export const updateUserByAdmin = (orgId, userId, user) => {
 
 export const inviteTeamMember = (teamId, payload) => {
   return patch(`team/${teamId}/members`, payload);
+};
+
+export const inviteTeamMemberV2 = (teamId, payload) => {
+  return patch(`team/${teamId}/member`, payload);
 };
 
 export const requestResetPassword = username => {

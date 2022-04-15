@@ -490,5 +490,10 @@
   "no activity logs in 24 hours": "Aucune activité ne se connecte en 24 heures",
   "no activity logs in week": "Aucun journal d'activité dans la semaine",
   "no activity logs in month": "Aucun journal d'activité dans le mois",
-  "loading": "Chargement..."
+  "loading": "Chargement...",
+  "email or phone number required": "Veuillez saisir un e-mail ou un numéro de téléphone",
+  "create new team member": "créer un nouveau membre d'équipe",
+  "or": "ou alors",
+  "invite user": "Inviter {{user}} dans {{team}} ?",
+  "new team member added description 2": "La notification a été envoyée au nouveau membre de l'équipe"
 }

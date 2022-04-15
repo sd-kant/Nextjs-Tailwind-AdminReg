@@ -13,28 +13,19 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction,
 } from "../../../redux/action/ui";
-import {
-  inviteTeamMember,
-  updateUserByAdmin,
-} from "../../../http";
-import {
-  lowercaseEmail,
-} from "./FormRepresentative";
 import style from "./FormSearch.module.scss";
 import clsx from "clsx";
 import {
-  USER_TYPE_ADMIN,
-  USER_TYPE_ORG_ADMIN,
-} from "../../../constant";
-import {
   queryAllTeamsAction,
 } from "../../../redux/action/base";
-import {get, isEqual} from "lodash";
+import {get} from "lodash";
 import ConfirmModal from "../../components/ConfirmModal";
 import {getParamFromUrl} from "../../../utils";
 import SearchUserItem from "./SearchUserItem";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import {useNavigate} from "react-router-dom";
+import {handleModifyUsers} from "../../../utils/invite";
+import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 
 export const defaultTeamMember = {
   email: '',
@@ -42,14 +33,22 @@ export const defaultTeamMember = {
   lastName: '',
   job: "",
   action: 1,
+  phoneNumber: null,
 };
 
 export const userSchema = (t) => {
   return Yup.object().shape({
     email: Yup.string()
-      .required(t('email required'))
       .email(t("email invalid"))
-      .max(1024, t('email max error')),
+      .max(1024, t('email max error'))
+      .test(
+        'required',
+        t('email or phone number required'),
+        function (value) {
+          if (value) return true;
+          return !!(this.parent.phoneNumber?.value);
+        }
+      ),
     firstName: Yup.string()
       .required(t('firstName required'))
       .max(1024, t("firstName max error")),
@@ -58,6 +57,7 @@ export const userSchema = (t) => {
       .max(1024, t("lastName max error")),
     job: Yup.object()
       .required(t('role required')),
+    phoneNumber: Yup.object(),
   }).required();
 }
 
@@ -142,6 +142,7 @@ const FormSearch = (props) => {
           </div>
 
           <div className={clsx(style.FormHeader, "mt-40 d-flex flex-column")}>
+            <ScrollToFieldError/>
             <div className={clsx(style.Header)}>
               <div className={"d-flex align-center"}>
               <span className='font-header-medium d-block text-capitalize'>
@@ -177,6 +178,7 @@ const FormSearch = (props) => {
                   user={user}
                   index={index}
                   key={`user-${index}`}
+                  id={`users.${index}`}
                   errorField={errors?.users}
                   touchField={touched?.users}
                 />
@@ -202,29 +204,6 @@ const FormSearch = (props) => {
   )
 }
 
-export const formatJob = (users) => {
-  return users && users.map((user) => ({
-    ...user,
-    job: user?.job?.value,
-  }));
-};
-
-export const setUserType = (users) => {
-  return users && users.map((user) => {
-    const userTypes = user?.userTypes;
-    let userType = "";
-    if (userTypes?.includes(USER_TYPE_ADMIN)) {
-      userType = USER_TYPE_ADMIN;
-    } else if (userTypes?.includes(USER_TYPE_ORG_ADMIN)) {
-      userType = USER_TYPE_ORG_ADMIN;
-    }
-    return {
-      ...user,
-      userType: userType,
-    }
-  });
-};
-
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     users: [defaultTeamMember],
@@ -241,130 +220,16 @@ const EnhancedForm = withFormik({
     } = props;
     // filter users that were modified to update
     let users = (values?.users ?? [])?.filter(it => it.updated);
-    // fixme optimize
-    try {
-      setLoading(true);
-      let usersToModify = [];
-      users?.forEach(it => {
-        if (it.userId) {
-          usersToModify.push(it);
-        }
-      });
-      usersToModify = setUserType(formatJob(lowercaseEmail(usersToModify)));
-      usersToModify = usersToModify?.map(it => ({
-        userId: it.userId,
-        firstName: it.firstName,
-        lastName: it.lastName,
-        job: it.job,
-        email: it.email,
-        userType: it.userType,
-        accessibleTeams: it.accessibleTeams,
-        originalAccessibleTeams: it.originalAccessibleTeams,
-      }));
-
-      if (usersToModify?.length > 0) {
-        const updatePromises = [];
-        let inviteBody = {};
-        usersToModify?.forEach(userToModify => {
-          if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
-            if (isAdmin) {
-              updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
-            }
-            userToModify?.originalAccessibleTeams?.forEach(originalAccessibleTeam => {
-              const isRemoved = !(userToModify?.accessibleTeams?.some(accessibleTeam => accessibleTeam.teamId?.toString() === originalAccessibleTeam.teamId?.toString()));
-              if (isRemoved) {
-                if (inviteBody[originalAccessibleTeam.teamId]?.remove) {
-                  inviteBody[originalAccessibleTeam.teamId].remove.push(userToModify?.email);
-                } else {
-                  inviteBody[originalAccessibleTeam.teamId] = {remove: [userToModify?.email]};
-                }
-              }
-            });
-            userToModify?.accessibleTeams?.forEach(accessibleTeam => {
-              if (accessibleTeam.teamId && accessibleTeam.userTypes?.length > 0) {
-                // check if this is new change
-                const origin = userToModify?.originalAccessibleTeams?.find(item => item.teamId?.toString() === accessibleTeam?.teamId?.toString());
-                if (!isEqual(origin?.userTypes?.sort(), accessibleTeam?.userTypes?.sort())) {
-                  if (inviteBody[accessibleTeam.teamId]?.add) {
-                    inviteBody[accessibleTeam.teamId].add.push({
-                      email: userToModify?.email,
-                      userTypes: accessibleTeam?.userTypes,
-                    });
-                  } else {
-                    inviteBody[accessibleTeam.teamId] = {
-                      add: [
-                        {
-                          email: userToModify?.email,
-                          userTypes: accessibleTeam?.userTypes,
-                        }
-                      ],
-                    };
-                  }
-                }
-              }
-            });
-          }
-        });
-        const failedEmails = [];
-        let totalSuccessForModify = 0;
-
-        const inviteFunc = () => {
-          const invitePromises = [];
-          if (inviteBody) {
-            Object.keys(inviteBody).forEach((teamId, index) => {
-              invitePromises.push(inviteTeamMember(teamId, Object.values(inviteBody)?.[index]));
-            });
-          }
-
-          if (invitePromises?.length > 0) {
-            Promise.allSettled(invitePromises)
-              .finally(() => {
-                if (failedEmails?.length === 0) {
-                  setStatus({visibleSuccessModal: true});
-                }
-                setLoading(false);
-              });
-          } else {
-            setStatus({visibleSuccessModal: true});
-            setLoading(false);
-          }
-        };
-
-        if (updatePromises?.length > 0) {
-          Promise.allSettled(updatePromises)
-            .then((results) => {
-              results?.forEach((result, index) => {
-                if (result.status === "fulfilled") {
-                  totalSuccessForModify++;
-                } else {
-                  // store failed emails
-                  failedEmails.push(usersToModify[index]?.email);
-                  showErrorNotification(result.reason?.response?.data?.message);
-                  console.log("modifying team member failed", result.reason);
-                }
-              });
-
-              if (totalSuccessForModify > 0) {
-                showSuccessNotification(
-                  t(totalSuccessForModify > 1 ? 'msg users modified success' : 'msg user modified success', {
-                    numberOfUsers: totalSuccessForModify,
-                  })
-                );
-              }
-            })
-            .finally(async () => {
-              // finished promise
-              inviteFunc();
-            });
-        } else {
-          inviteFunc();
-        }
-      } else {
-        setLoading(false);
-      }
-    } catch (e) {
-      console.log('_handleSubmit error', e);
-    }
+    handleModifyUsers({
+      setLoading,
+      users,
+      organizationId,
+      isAdmin,
+      setStatus,
+      showErrorNotification,
+      showSuccessNotification,
+      t,
+    });
   },
   enableReinitialize: true,
 })(FormSearch);
