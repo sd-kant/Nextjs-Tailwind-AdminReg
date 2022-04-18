@@ -11,7 +11,7 @@ import {useNavigate} from "react-router-dom";
 export const formShape = t => ({
   timezone: Yup.object()
     .shape({
-      gmtTz: Yup.string()
+      value: Yup.string()
         .required(t("timezone required")),
     })
     .required(t("timezone required")),
@@ -33,7 +33,7 @@ const FormTimezone = (props) => {
 
   useEffect(() => {
     if (profile) {
-      const option = timezones?.find(it => it.gmtTz === profile.gmt);
+      const option = timezones?.find(it => it.value === profile.gmt);
       setFieldValue("timezone", option);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,7 +103,7 @@ const EnhancedForm = withFormik({
       const {updateProfile, navigate} = props;
       updateProfile({
         body: {
-          gmt: values.timezone?.gmtTz ?? "GMT+00:00",
+          gmt: values.timezone?.value,
         },
         nextPath: '/create-account/workLength',
         navigate,
