@@ -39,7 +39,7 @@ const ActivityLog = ({item, timezone}) => {
 
       <div>
         <span className={clsx('font-binary text-gray-2 mt-5', style.Padding)}>
-          {timeOnOtherZone(item.utcTs, timezone)}
+          {timeOnOtherZone(item.utcTs, timezone)} <span className={clsx(style.MobileOnly)}>({timezone.displayName})</span>
         </span>
       </div>
     </div>
