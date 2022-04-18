@@ -121,7 +121,7 @@ const FormProfile = (props) => {
       setFieldValue("inch", inch ?? "");
       const {m, cm} = convertCmToMetric(height);
       setFieldValue("height", `${m}m${cm}cm`);
-      const option = timezones?.find(it => it.gmtTz === profile.gmt);
+      const option = timezones?.find(it => it.value === profile.gmt);
       setFieldValue("timezone", option ?? "");
       setFieldValue("workLength", profile.workDayLength ?? "");
       if (workDayStart) {
@@ -226,8 +226,8 @@ const FormProfile = (props) => {
         }
       }
     }
-    const option = timezones?.find(it => it.gmtTz === profile?.gmt);
-    if (timezone?.gmtTz !== option?.gmtTz) {
+    const option = timezones?.find(it => it.value === profile?.gmt);
+    if (timezone?.value !== option?.value) {
       ret.push("timezone");
     }
     if (workLength?.toString() !== profile?.workDayLength?.toString()) {
@@ -507,7 +507,7 @@ const FormProfile = (props) => {
           />
           {
             errors?.timezone && touched?.timezone && (
-              <span className="font-helper-text text-error mt-10">{errors?.timezone?.gmtTz}</span>
+              <span className="font-helper-text text-error mt-10">{errors?.timezone?.value}</span>
             )
           }
         </div>
@@ -681,7 +681,7 @@ const EnhancedForm = withFormik({
         startTimeOption, hour, minute,
         dob: {year, month, day},
         measureType, height, feet, inch, weight,
-        timezone: {gmtTz},
+        timezone: {value, gmtTz},
         workLength,
         responses,
       } = values;
@@ -705,7 +705,7 @@ const EnhancedForm = withFormik({
         measure: measure,
         height: heightAsMetric,
         weight: weightAsMetric,
-        gmt: gmtTz ?? "GMT+00:00",
+        gmt: value,
         workDayLength: workLength,
         workDayStart: `${format2Digits(hour24)}:${minute}`,
       };
