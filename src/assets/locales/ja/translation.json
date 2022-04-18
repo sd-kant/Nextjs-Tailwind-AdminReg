@@ -495,5 +495,6 @@
   "create new team member": "新しいチームメンバーを作成する",
   "or": "または",
   "invite user": "{{user}}を{{team}}に招待しますか？",
-  "new team member added description 2": "新しいチームメンバーに通知が送信されました"
+  "new team member added description 2": "新しいチームメンバーに通知が送信されました",
+  "exit": "出口"
 }
