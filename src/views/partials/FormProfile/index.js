@@ -635,7 +635,7 @@ const FormProfile = (props) => {
               color="white"
               bgColor="gray"
               borderColor="gray"
-              title={t("cancel")}
+              title={t("exit")}
               onClick={() => navigate(-1)}
             />
         }
