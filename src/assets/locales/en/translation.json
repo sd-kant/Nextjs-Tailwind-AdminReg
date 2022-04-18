@@ -496,5 +496,8 @@
   "or": "or",
   "invite user": "Invite {{user}} to {{team}}?",
   "new team member added description 2": "Notification  has been sent to the New Team Member",
-  "exit": "exit"
+  "exit": "exit",
+  "no new team member": "no new team member",
+  "n new team member": "{{n}} new team member",
+  "n new team members": "{{n}} new team members"
 }
