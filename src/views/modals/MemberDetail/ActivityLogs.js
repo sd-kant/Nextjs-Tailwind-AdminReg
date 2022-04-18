@@ -4,6 +4,7 @@ import style from "./ActivityLogs.module.scss";
 import {useTranslation} from "react-i18next";
 import {useUserSubscriptionContext} from "../../../providers/UserSubscriptionProvider";
 import ActivityLog from "./ActivityLog";
+import soft from "timezone-soft";
 
 const ActivityLogs = (
   {
@@ -12,6 +13,22 @@ const ActivityLogs = (
   }) => {
   const {t} = useTranslation();
   const {activitiesFilter, loading: logsLoading} = useUserSubscriptionContext();
+  const timezone = React.useMemo(() => {
+    const a = soft(gmt)[0];
+    if (a) {
+      return {
+        name: gmt,
+        valid: true,
+        displayName: a.standard?.abbr,
+      };
+    } else {
+      return {
+        name: gmt,
+        valid: false,
+        displayName: gmt,
+      };
+    }
+  }, [gmt]);
   return (
     <React.Fragment>
       {
@@ -30,7 +47,7 @@ const ActivityLogs = (
                     <span className={clsx('font-binary', style.Padding)}>{t("cbt")}</span>
                     <span className={clsx('font-binary', style.Padding, 'ml-20')}>{t("hr")}</span>
                   </div>
-                  <span className={clsx('font-binary', style.Padding)}>{t("datetime")}{gmt ? ` (${gmt})` : ''}</span>
+                  <span className={clsx('font-binary', style.Padding)}>{t("datetime")}{gmt ? ` (${timezone.displayName})` : ''}</span>
                 </div> :
                 <div className={clsx(style.DataRow, style.Header, 'font-button-label text-orange')}>
                   <span
@@ -40,7 +57,7 @@ const ActivityLogs = (
             {
               logs?.map((item, index) => {
                 return (
-                  <ActivityLog gmt={gmt} item={item} key={`user-alert-${index}`}/>
+                  <ActivityLog timezone={timezone} item={item} key={`user-alert-${index}`}/>
                 )
               })
             }
