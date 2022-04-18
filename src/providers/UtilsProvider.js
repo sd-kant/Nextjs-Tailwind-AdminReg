@@ -177,7 +177,7 @@ export const UtilsProviderDraft = (
           }
         }
       case "logout":
-        return t("activity password changed");
+        return t("activity logout");
       case "failedlogin":
         return t("activity failed login");
       case "usernameassigned":
