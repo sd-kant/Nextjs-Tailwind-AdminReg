@@ -183,14 +183,16 @@ const FormInviteModify = (props) => {
       <Form className='form-group mt-57'>
         <div>
           <div className="d-flex align-center">
-            <img src={backIcon} alt="back" className={"cursor-pointer"} onClick={() => navigate(`/invite/${organizationId}/team-modify`)}/>
+            <img src={backIcon} alt="back" className={"cursor-pointer"}
+                 onClick={() => navigate(`/invite/${organizationId}/team-modify`)}/>
             &nbsp;&nbsp;
-            <span className='font-button-label text-orange cursor-pointer' onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
+            <span className='font-button-label text-orange cursor-pointer'
+                  onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
               {t("previous")}
             </span>
           </div>
 
-          <div className={clsx(style.FormHeader, "mt-40 d-flex flex-column")}>
+          <div className={clsx(style.FormHeader, "d-flex flex-column")}>
             <ScrollToFieldError/>
             <div className={clsx(style.Header)}>
               <div className={"d-flex align-center"}>
@@ -208,28 +210,42 @@ const FormInviteModify = (props) => {
               </div>
             </div>
 
-            <div className={clsx(style.SearchWrapper)}>
-              <img className={clsx(style.SearchIcon)} src={searchIcon} alt="search icon"/>
-              <input
-                className={clsx(style.SearchInput, 'input mt-10 font-heading-small text-white')}
-                placeholder={t("search user")}
-                type="text"
-                value={keyword}
-                onChange={e => setKeyword(e.target.value)}
-              />
-            </div>
-          </div>
+            <div className={clsx(style.Tools)}>
+              <div className={clsx(style.SearchWrapper)}>
+                <img className={clsx(style.SearchIcon)} src={searchIcon} alt="search icon"/>
+                <input
+                  className={clsx(style.SearchInput, 'input mt-10 font-heading-small text-white')}
+                  placeholder={t("search user")}
+                  type="text"
+                  value={keyword}
+                  onChange={e => setKeyword(e.target.value)}
+                />
+              </div>
 
-          <div className={clsx(style.FormBody, "mt-40 d-flex flex-column")}>
+              {
+                newChanges ?
+                  <div className={clsx(style.SubmitWrapper)}>
+                    <button
+                      className={`button active cursor-pointer`}
+                      type={"submit"}
+                    ><span className='font-button-label text-white'>{t("save & update")}</span>
+                    </button>
+                  </div> : <></>
+              }
+            </div>
+
             {
               !(["-1"].includes(id?.toString())) &&
-              <div className={clsx(style.AddButton, "mt-28")} onClick={addAnother}>
+              <div className={clsx(style.AddButton, "mt-15")} onClick={addAnother}>
                 <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
                 <span className="font-heading-small text-capitalize">
                   {t("add another member")}
                 </span>
               </div>
             }
+          </div>
+
+          <div className={clsx(style.FormBody, "d-flex flex-column")}>
             {
               values?.users?.length > 0 &&
               <div className="mt-28">
@@ -276,19 +292,6 @@ const FormInviteModify = (props) => {
 
           </div>
         </div>
-        {
-          newChanges ?
-            <div className={clsx(style.Footer)}>
-              <button
-                className={`button active cursor-pointer`}
-                type={"submit"}
-              >
-                <span className='font-button-label text-white'>
-                  {t("save & update")}
-                </span>
-              </button>
-            </div> : <></>
-        }
       </Form>
     </>
   )

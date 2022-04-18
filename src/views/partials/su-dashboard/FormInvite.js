@@ -100,7 +100,7 @@ export const customStyles = (disabled = false) => ({
   },
   option: (provided, state) => ({
     ...provided,
-    backgroundColor: state.isSelected ? '#DE7D2C' : (state.isFocused ? '#5BAEB6': (state.data.color ?? 'white')),
+    backgroundColor: state.isSelected ? '#DE7D2C' : (state.isFocused ? '#5BAEB6' : (state.data.color ?? 'white')),
     zIndex: 1,
     color: 'black',
     fontSize: '21px',
@@ -383,6 +383,10 @@ const FormInvite = (props) => {
     return ret;
   }, []);
 
+  const num = React.useMemo(() => {
+    return values.users?.length ?? 0;
+  }, [values.users]);
+
   return (
     <React.Fragment>
       <ConfirmModal
@@ -436,20 +440,55 @@ const FormInvite = (props) => {
             </span>
           </div>
 
-          <div className='mt-28 form-header-medium'>
-            <span className='font-header-medium d-block'>
-              {t("create team")}
-            </span>
-          </div>
+          <div className={clsx(style.FormHeader, "d-flex flex-column")}>
+            <div className={clsx(style.Header)}>
+              <div className='d-flex align-center'><span
+                className='font-header-medium d-block'>{t("create team")}</span></div>
+              <div/>
+              <div className={clsx("d-flex align-center", style.ChangeNote)}><span className="font-header-medium text-capitalize">{num === 0 ? (t("no new team member")) : (num > 1 ? (t("n new team members", {n: num})) : (t("n new team member", {n: 1})))}</span>
+              </div>
+            </div>
 
-          <div className={clsx(style.FormBody, "mt-40 d-flex flex-column")}>
+            <div className={clsx(style.Tools)}>
+              <div className={clsx(style.ReUploadWrapper)}>
+                {
+                  !isManual ? <span className={clsx("font-binary", style.ReUpload)}>
+                  <Trans
+                    i18nKey={"reupload csv"}
+                    components={{
+                      a: (<span className={"text-orange"}
+                                onClick={() => navigate(`/invite/${organizationId}/upload/${teamId}`)}/>)
+                    }}
+                  /></span>
+                    : null
+                }
+              </div>
+
+              <div>
+                <button
+                  className={`button ${values['users']?.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'}`}
+                  type={values['users']?.length > 0 ? "submit" : "button"}
+                ><span className='font-button-label text-white'>{t("finish")}</span>
+                </button>
+
+                <button
+                  className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
+                  type={"button"}
+                  onClick={() => navigate(`/invite/${organizationId}/team-mode`)}
+                ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
+                </button>
+              </div>
+            </div>
+
             <div className={clsx(style.AddButton)} onClick={addAnother}>
               <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
               <span className="font-heading-small text-capitalize">
                     {t("add another member")}
                 </span>
             </div>
+          </div>
 
+          <div className={clsx(style.FormBody, "d-flex flex-column")}>
             {
               operators?.length > 0 &&
               <div className="mt-28">
@@ -480,40 +519,7 @@ const FormInvite = (props) => {
         </div>
 
         <div className={clsx(style.Footer)}>
-          <div>
-            <button
-              className={`button ${values['users']?.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'}`}
-              type={values['users']?.length > 0 ? "submit" : "button"}
-            >
-            <span className='font-button-label text-white'>
-              {t("finish")}
-            </span>
-            </button>
 
-            <button
-              className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
-              type={"button"}
-              onClick={() => navigate(`/invite/${organizationId}/team-mode`)}
-            >
-            <span className='font-button-label text-orange text-uppercase'>
-              {t("cancel")}
-            </span>
-            </button>
-          </div>
-
-          {
-            !isManual ?
-              <div className={clsx('mt-15')}>
-                <span className={clsx("font-binary", style.Reupload)}>
-            <Trans
-              i18nKey={"reupload csv"}
-              components={{
-                a: (<span className={"text-orange"} onClick={() => navigate(`/invite/${organizationId}/upload/${teamId}`)}/>)
-              }}
-            />
-        </span>
-              </div> : null
-          }
         </div>
       </Form>
     </React.Fragment>
