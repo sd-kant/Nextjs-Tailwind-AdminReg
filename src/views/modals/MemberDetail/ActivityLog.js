@@ -7,7 +7,7 @@ import {formatHeartRate} from "../../../utils/dashboard";
 import {useUtilsContext} from "../../../providers/UtilsProvider";
 import {timeOnOtherZone} from "../../../utils";
 
-const ActivityLog = ({item, gmt}) => {
+const ActivityLog = ({item, timezone}) => {
   const {formatHeartCbt, formatAlertForDetail, formatActivityLog} = useUtilsContext();
   return (
     <div className={clsx(style.DataRow)}>
@@ -39,7 +39,7 @@ const ActivityLog = ({item, gmt}) => {
 
       <div>
         <span className={clsx('font-binary text-gray-2 mt-5', style.Padding)}>
-          {timeOnOtherZone(item.utcTs, gmt)}
+          {timeOnOtherZone(item.utcTs, timezone)}
         </span>
       </div>
     </div>
