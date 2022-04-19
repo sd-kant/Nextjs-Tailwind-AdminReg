@@ -323,6 +323,9 @@ const MembersProvider = (
         }
 
         it['index'] = index;
+        it['email'] = it.email ?? "";
+        it['firstName'] = it.firstName ?? "";
+        it['lastName'] = it.lastName ?? "";
         it['action'] = null;
         it['phoneAction'] = 1;
         it['accessibleTeams'] = accessibleTeams;
