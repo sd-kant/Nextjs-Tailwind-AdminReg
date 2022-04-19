@@ -501,5 +501,6 @@
   "n new team member": "{{n}}新しいチームメンバー",
   "n new team members": "{{n}}新しいチームメンバー",
   "org admin invite sent": "会社管理者の招待状が送信されました",
-  "profile changes saved": "プロファイルの変更が保存されました"
+  "profile changes saved": "プロファイルの変更が保存されました",
+  "must include email or phone": "メールアドレスまたは電話番号を含める必要があります"
 }

@@ -75,6 +75,8 @@ const AddMemberModalV2 = (
 
           <div className={clsx(style.Header)}>
             <span className={'font-modal-header text-white'}>{t('enter new team member information')}</span>
+            <br/>
+            <span className={'font-modal-header text-white'}>{t('must include email or phone')}</span>
           </div>
           <div className={clsx(style.User)}>
             <div className={clsx(style.UserRow)}>
