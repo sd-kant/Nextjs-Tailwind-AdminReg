@@ -500,5 +500,6 @@
   "no new team member": "no new team member",
   "n new team member": "{{n}} new team member",
   "n new team members": "{{n}} new team members",
-  "org admin invite sent": "Company Administrator Invitation Sent"
+  "org admin invite sent": "Company Administrator Invitation Sent",
+  "profile changes saved": "Profile changes have been saved"
 }

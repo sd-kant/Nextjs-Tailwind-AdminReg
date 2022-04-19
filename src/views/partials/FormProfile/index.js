@@ -48,6 +48,7 @@ import Button from "../../components/Button";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 import {answerMedicalQuestionsV2} from "../../../http";
 import {useNavigate} from "react-router-dom";
+import ConfirmModal from "../../components/ConfirmModal";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -73,7 +74,7 @@ const FormProfile = (props) => {
     profile,
     medicalResponses,
     getMedicalResponses,
-    status: {confirmedCnt = 0, edit = false},
+    status: {confirmedCnt = 0, edit = false, visibleModal},
     setStatus,
   } = props;
   const [selectedDay, setSelectedDay] = React.useState(null);
@@ -280,374 +281,380 @@ const FormProfile = (props) => {
     },
   ];
 
+  const onOkModal = () => setStatus({edit: edit, confirmedCnt: confirmedCnt, visibleModal: false});
+
   return (
-    <Form className='form-group mt-10'>
-      {
-        edit ?
-          <div className={clsx('form-header-medium', style.Head)}><span
-            className='font-heading-small d-block'>{changes?.length > 0 ? changes?.length : 'No'} New Change</span>
-          </div> :
-          <div className={clsx('form-header-medium', style.HeadLeft)}><span
-            className='font-button-label d-block text-orange'
-            onClick={() => setStatus({edit: true, confirmedCnt})}
-          >Edit</span></div>
-      }
-      <div className={clsx(style.ContentWrapper, 'form-header-medium')}>
-        <ScrollToFieldError/>
-        {/*name section*/}
-        <div className='mt-10 form-header-medium'><span
-          className='font-header-medium d-block'>{t("name description")}</span></div>
-        <div className='mt-15 d-flex flex-column'>
-          <label className='font-input-label'>
-            {t("firstName")}
-          </label>
-
-          <input
-            className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
-            name="firstName"
-            value={values["firstName"]}
-            disabled={!edit}
-            type='text'
-            onChange={changeFormField}
-          />
-
-          {
-            errors.firstName && touched.firstName && (
-              <span className="font-helper-text text-error mt-10">{errors.firstName}</span>
-            )
-          }
-        </div>
-        <div className='mt-10 d-flex flex-column'>
-          <label className='font-input-label'>
-            {t("lastName")}
-          </label>
-
-          <input
-            className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
-            name="lastName"
-            disabled={!edit}
-            type='text'
-            value={values["lastName"]}
-            onChange={changeFormField}
-          />
-
-          {
-            errors.lastName && touched.lastName && (
-              <span className="font-helper-text text-error mt-10">{errors.lastName}</span>
-            )
-          }
-        </div>
-        {/*gender section*/}
-        <div className='mt-28 form-header-medium'><span
-          className='font-header-medium d-block'>{t("gender question")}</span></div>
-        <div className="mt-15 d-flex">
-          <TrueFalse
-            disabled={!edit}
-            answer={values["gender"]}
-            options={genderOptions}
-            onChange={v => changeFormField({target: {name: 'gender', value: v}})}
-          />
-        </div>
-        {/*birthday section*/}
-        <div className='mt-28 form-header-medium'><span
-          className='font-header-medium d-block'>{t("dob question")}</span></div>
-        <div className="mt-15 d-flex flex-column">
-          <label className='font-input-label'>
-            {t("dob")}
-          </label>
-          <DatePicker
-            value={selectedDay}
-            colorPrimary={'#DE7D2C'}
-            renderInput={({ref}) => {
-              return <CustomInput ref={ref} selectedDay={selectedDay} disabled={!edit} name="dob"/>
-            }}
-            onChange={setSelectedDay}
-          />
-          {
-            errors.dob && touched.dob && (
-              <span className="font-helper-text text-error mt-10">{errors.dob}</span>
-            )
-          }
-        </div>
-        {/*unit section*/}
-        <div className='mt-28 form-header-medium'><span
-          className='font-header-medium d-block'>{t("unit description")}</span></div>
-        <div className="mt-15 d-flex">
-          <TrueFalse
-            disabled={!edit}
-            answer={values["measureType"]}
-            options={unitOptions}
-            onChange={v => changeFormField({target: {name: 'measureType', value: v}})}
-          />
-        </div>
-        {/*height section*/}
-        <div className='mt-28 form-header-medium'><span
-          className='font-header-medium d-block'>{t("height question")}</span></div>
-        <div className="mt-15 d-flex flex-column">
-          <div className="d-flex align-center">
-            <label className='font-input-label'>
-              {t("height")}
-            </label>
-          </div>
-
-          {
-            values["heightUnit"] === "1" ? (
-              <div className="d-flex mt-25">
-                <div className="unit-picker">
-                  <select
-                    className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
-                    value={values["feet"]}
-                    name="feet"
-                    disabled={!edit}
-                    onChange={changeFormField}
-                  >
-                    {
-                      ftOptions && ftOptions.map(ftOption => (
-                        <option value={ftOption} key={`ft-${ftOption}`}>
-                          {ftOption}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-                &nbsp;&nbsp;
-                <label>
-                  {t("feet")}
-                </label>
-                &nbsp;&nbsp;
-                <div className="unit-picker">
-                  <select
-                    className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
-                    value={values["inch"]}
-                    name="inch"
-                    disabled={!edit}
-                    onChange={changeFormField}
-                  >
-                    {
-                      inOptions && inOptions.map(inOption => (
-                        <option value={inOption} key={`ft-${inOption}`}>
-                          {inOption}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-                &nbsp;&nbsp;
-                <label>
-                  {t("inch")}
-                </label>
-              </div>
-            ) : (
-              <InputMask
-                className={`d-block input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
-                placeholder={`_m__cm`}
-                mask={`9m99cm`}
-                value={values["height"]}
-                disabled={!edit}
-                name="height"
-                onChange={changeFormField}
-              />
-            )
-          }
-
-          {
-            (errors.height && touched.height) && (
-              <span className="font-helper-text text-error mt-10">{errors.height}</span>
-            )
-          }
-
-          {
-            ((errors.feet && touched.feet) || (errors.inch && touched.inch)) &&
-            <span className="font-helper-text text-error mt-10">{t("height invalid")}</span>
-          }
-        </div>
-        {/*weight section*/}
-        <div className='mt-28 form-header-medium'><span
-          className='font-header-medium d-block'>{t("weight question")}</span></div>
-        <div className="mt-15 d-flex flex-column">
-          <div className="d-flex align-center">
-            <label className='font-input-label'>
-              {t("weight")}
-            </label>
-          </div>
-
-          <input
-            className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
-            type='number'
-            disabled={!edit}
-            value={values["weight"]}
-            name="weight"
-            step={1}
-            onChange={changeFormField}
-          />
-
-          {
-            errors.weight && touched.weight && (
-              <span className="font-helper-text text-error mt-10">{errors.weight}</span>
-            )
-          }
-        </div>
-        {/*timezone section*/}
-        <div className='mt-28 form-form-header-medium'><span
-          className='font-header-medium d-block'>{t("timezone question")}</span></div>
-        <div className="mt-15 d-flex flex-column">
-          <label className='font-input-label'>
-            {t("timezone")}
-          </label>
-
-          <Select
-            className='mt-10 font-heading-small text-black input-field'
-            options={timezones}
-            value={values["timezone"]}
-            name="timezone"
-            isDisabled={!edit}
-            placeholder={t("select")}
-            styles={customStyles}
-            onChange={v => setFieldValue("timezone", v)}
-          />
-          {
-            errors?.timezone && touched?.timezone && (
-              <span className="font-helper-text text-error mt-10">{errors?.timezone?.value}</span>
-            )
-          }
-        </div>
-        {/*work length section*/}
-        <div className='mt-28 form-header-medium'><span
-          className='font-header-medium d-block'>{t("work length question")}</span></div>
-        <div className="mt-15 d-flex flex-column">
-          <label className='font-input-label'>
-            {t("work length")}
-          </label>
-          <input
-            className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
-            type='number'
-            name="workLength"
-            disabled={!edit}
-            value={values["workLength"]}
-            onChange={changeFormField}
-          />
-          {
-            errors.workLength && touched.workLength && (
-              <span className="font-helper-text text-error mt-10">{errors.workLength}</span>
-            )
-          }
-        </div>
-        {/*start work section*/}
-        <div className='mt-28 form-header-medium'><span
-          className='font-header-medium d-block'>{t("start work question")}</span></div>
-        <div className="mt-15 d-flex flex-column">
-          <label className='font-input-label'>
-            {t("start work")}
-          </label>
-          <div className="d-flex mt-25">
-            <div className="unit-picker">
-              <select
-                className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
-                value={values["hour"]}
-                name="hour"
-                disabled={!edit}
-                onChange={changeFormField}
-              >
-                {
-                  hourOptions && hourOptions.map(hourOption => (
-                    <option value={hourOption} key={`hour-${hourOption}`}>
-                      {hourOption}
-                    </option>
-                  ))
-                }
-              </select>
-            </div>
-            &nbsp;&nbsp;:&nbsp;&nbsp;
-            <div className="unit-picker">
-              <select
-                className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
-                value={values["minute"]}
-                name="minute"
-                disabled={!edit}
-                onChange={changeFormField}
-              >
-                {
-                  minuteOptions && minuteOptions.map(minuteOption => (
-                    <option value={minuteOption} key={`minute-${minuteOption}`}>
-                      {minuteOption}
-                    </option>
-                  ))
-                }
-              </select>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <div className="unit-picker">
-              <select
-                className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
-                value={values["startTimeOption"]}
-                name="startTimeOption"
-                disabled={!edit}
-                onChange={changeFormField}
-              >
-                {
-                  mOptions?.map(option => (
-                    <option value={option.value} key={`option-${option.value}`}>
-                      {option.title}
-                    </option>
-                  ))
-                }
-              </select>
-            </div>
-          </div>
-
-          {
-            (errors.hour && touched.hour) || (errors.minute && touched.minute) ? (
-              <span className="font-helper-text text-error mt-10">{t('start work invalid')}</span>
-            ) : null
-          }
-        </div>
-        {/*medical questions*/}
-        <MedicalQuestions
-          edit={edit}
-          responses={values?.responses}
-          setResponses={v => setFieldValue("responses", v)}
-        />
-      </div>
-
-
-      <div className='mt-40'>
+    <React.Fragment>
+      <Form className='form-group mt-10'>
         {
           edit ?
-            <div>
-              <button
-                className={"button active cursor-pointer"}
-                type={"submit"}
-              ><span className='font-button-label text-white text-uppercase'>{t("save & close")}</span>
-              </button>
-
-              <button
-                className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
-                type={"button"}
-                onClick={() => {
-                  setStatus({edit, confirmedCnt: confirmedCnt + 1});
-                }}
-              ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
-              </button>
-            </div>
-            :
-            <Button
-              size='md'
-              color="white"
-              bgColor="gray"
-              borderColor="gray"
-              title={t("exit")}
-              onClick={() => navigate(-1)}
-            />
+            <div className={clsx('form-header-medium', style.Head)}><span
+              className='font-heading-small d-block'>{changes?.length > 0 ? changes?.length : 'No'} New Change</span>
+            </div> :
+            <div className={clsx('form-header-medium', style.HeadLeft)}><span
+              className='font-button-label d-block text-orange'
+              onClick={() => setStatus({edit: true, confirmedCnt})}
+            >Edit</span></div>
         }
-      </div>
+        <div className={clsx(style.ContentWrapper, 'form-header-medium')}>
+          <ScrollToFieldError/>
+          {/*name section*/}
+          <div className='mt-10 form-header-medium'><span
+            className='font-header-medium d-block'>{t("name description")}</span></div>
+          <div className='mt-15 d-flex flex-column'>
+            <label className='font-input-label'>
+              {t("firstName")}
+            </label>
 
-    </Form>
+            <input
+              className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
+              name="firstName"
+              value={values["firstName"]}
+              disabled={!edit}
+              type='text'
+              onChange={changeFormField}
+            />
+
+            {
+              errors.firstName && touched.firstName && (
+                <span className="font-helper-text text-error mt-10">{errors.firstName}</span>
+              )
+            }
+          </div>
+          <div className='mt-10 d-flex flex-column'>
+            <label className='font-input-label'>
+              {t("lastName")}
+            </label>
+
+            <input
+              className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
+              name="lastName"
+              disabled={!edit}
+              type='text'
+              value={values["lastName"]}
+              onChange={changeFormField}
+            />
+
+            {
+              errors.lastName && touched.lastName && (
+                <span className="font-helper-text text-error mt-10">{errors.lastName}</span>
+              )
+            }
+          </div>
+          {/*gender section*/}
+          <div className='mt-28 form-header-medium'><span
+            className='font-header-medium d-block'>{t("gender question")}</span></div>
+          <div className="mt-15 d-flex">
+            <TrueFalse
+              disabled={!edit}
+              answer={values["gender"]}
+              options={genderOptions}
+              onChange={v => changeFormField({target: {name: 'gender', value: v}})}
+            />
+          </div>
+          {/*birthday section*/}
+          <div className='mt-28 form-header-medium'><span
+            className='font-header-medium d-block'>{t("dob question")}</span></div>
+          <div className="mt-15 d-flex flex-column">
+            <label className='font-input-label'>
+              {t("dob")}
+            </label>
+            <DatePicker
+              value={selectedDay}
+              colorPrimary={'#DE7D2C'}
+              renderInput={({ref}) => {
+                return <CustomInput ref={ref} selectedDay={selectedDay} disabled={!edit} name="dob"/>
+              }}
+              onChange={setSelectedDay}
+            />
+            {
+              errors.dob && touched.dob && (
+                <span className="font-helper-text text-error mt-10">{errors.dob}</span>
+              )
+            }
+          </div>
+          {/*unit section*/}
+          <div className='mt-28 form-header-medium'><span
+            className='font-header-medium d-block'>{t("unit description")}</span></div>
+          <div className="mt-15 d-flex">
+            <TrueFalse
+              disabled={!edit}
+              answer={values["measureType"]}
+              options={unitOptions}
+              onChange={v => changeFormField({target: {name: 'measureType', value: v}})}
+            />
+          </div>
+          {/*height section*/}
+          <div className='mt-28 form-header-medium'><span
+            className='font-header-medium d-block'>{t("height question")}</span></div>
+          <div className="mt-15 d-flex flex-column">
+            <div className="d-flex align-center">
+              <label className='font-input-label'>
+                {t("height")}
+              </label>
+            </div>
+
+            {
+              values["heightUnit"] === "1" ? (
+                <div className="d-flex mt-25">
+                  <div className="unit-picker">
+                    <select
+                      className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
+                      value={values["feet"]}
+                      name="feet"
+                      disabled={!edit}
+                      onChange={changeFormField}
+                    >
+                      {
+                        ftOptions && ftOptions.map(ftOption => (
+                          <option value={ftOption} key={`ft-${ftOption}`}>
+                            {ftOption}
+                          </option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                  &nbsp;&nbsp;
+                  <label>
+                    {t("feet")}
+                  </label>
+                  &nbsp;&nbsp;
+                  <div className="unit-picker">
+                    <select
+                      className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
+                      value={values["inch"]}
+                      name="inch"
+                      disabled={!edit}
+                      onChange={changeFormField}
+                    >
+                      {
+                        inOptions && inOptions.map(inOption => (
+                          <option value={inOption} key={`ft-${inOption}`}>
+                            {inOption}
+                          </option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                  &nbsp;&nbsp;
+                  <label>
+                    {t("inch")}
+                  </label>
+                </div>
+              ) : (
+                <InputMask
+                  className={`d-block input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
+                  placeholder={`_m__cm`}
+                  mask={`9m99cm`}
+                  value={values["height"]}
+                  disabled={!edit}
+                  name="height"
+                  onChange={changeFormField}
+                />
+              )
+            }
+
+            {
+              (errors.height && touched.height) && (
+                <span className="font-helper-text text-error mt-10">{errors.height}</span>
+              )
+            }
+
+            {
+              ((errors.feet && touched.feet) || (errors.inch && touched.inch)) &&
+              <span className="font-helper-text text-error mt-10">{t("height invalid")}</span>
+            }
+          </div>
+          {/*weight section*/}
+          <div className='mt-28 form-header-medium'><span
+            className='font-header-medium d-block'>{t("weight question")}</span></div>
+          <div className="mt-15 d-flex flex-column">
+            <div className="d-flex align-center">
+              <label className='font-input-label'>
+                {t("weight")}
+              </label>
+            </div>
+
+            <input
+              className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
+              type='number'
+              disabled={!edit}
+              value={values["weight"]}
+              name="weight"
+              step={1}
+              onChange={changeFormField}
+            />
+
+            {
+              errors.weight && touched.weight && (
+                <span className="font-helper-text text-error mt-10">{errors.weight}</span>
+              )
+            }
+          </div>
+          {/*timezone section*/}
+          <div className='mt-28 form-form-header-medium'><span
+            className='font-header-medium d-block'>{t("timezone question")}</span></div>
+          <div className="mt-15 d-flex flex-column">
+            <label className='font-input-label'>
+              {t("timezone")}
+            </label>
+
+            <Select
+              className='mt-10 font-heading-small text-black input-field'
+              options={timezones}
+              value={values["timezone"]}
+              name="timezone"
+              isDisabled={!edit}
+              placeholder={t("select")}
+              styles={customStyles}
+              onChange={v => setFieldValue("timezone", v)}
+            />
+            {
+              errors?.timezone && touched?.timezone && (
+                <span className="font-helper-text text-error mt-10">{errors?.timezone?.value}</span>
+              )
+            }
+          </div>
+          {/*work length section*/}
+          <div className='mt-28 form-header-medium'><span
+            className='font-header-medium d-block'>{t("work length question")}</span></div>
+          <div className="mt-15 d-flex flex-column">
+            <label className='font-input-label'>
+              {t("work length")}
+            </label>
+            <input
+              className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
+              type='number'
+              name="workLength"
+              disabled={!edit}
+              value={values["workLength"]}
+              onChange={changeFormField}
+            />
+            {
+              errors.workLength && touched.workLength && (
+                <span className="font-helper-text text-error mt-10">{errors.workLength}</span>
+              )
+            }
+          </div>
+          {/*start work section*/}
+          <div className='mt-28 form-header-medium'><span
+            className='font-header-medium d-block'>{t("start work question")}</span></div>
+          <div className="mt-15 d-flex flex-column">
+            <label className='font-input-label'>
+              {t("start work")}
+            </label>
+            <div className="d-flex mt-25">
+              <div className="unit-picker">
+                <select
+                  className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
+                  value={values["hour"]}
+                  name="hour"
+                  disabled={!edit}
+                  onChange={changeFormField}
+                >
+                  {
+                    hourOptions && hourOptions.map(hourOption => (
+                      <option value={hourOption} key={`hour-${hourOption}`}>
+                        {hourOption}
+                      </option>
+                    ))
+                  }
+                </select>
+              </div>
+              &nbsp;&nbsp;:&nbsp;&nbsp;
+              <div className="unit-picker">
+                <select
+                  className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
+                  value={values["minute"]}
+                  name="minute"
+                  disabled={!edit}
+                  onChange={changeFormField}
+                >
+                  {
+                    minuteOptions && minuteOptions.map(minuteOption => (
+                      <option value={minuteOption} key={`minute-${minuteOption}`}>
+                        {minuteOption}
+                      </option>
+                    ))
+                  }
+                </select>
+              </div>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <div className="unit-picker">
+                <select
+                  className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
+                  value={values["startTimeOption"]}
+                  name="startTimeOption"
+                  disabled={!edit}
+                  onChange={changeFormField}
+                >
+                  {
+                    mOptions?.map(option => (
+                      <option value={option.value} key={`option-${option.value}`}>
+                        {option.title}
+                      </option>
+                    ))
+                  }
+                </select>
+              </div>
+            </div>
+
+            {
+              (errors.hour && touched.hour) || (errors.minute && touched.minute) ? (
+                <span className="font-helper-text text-error mt-10">{t('start work invalid')}</span>
+              ) : null
+            }
+          </div>
+          {/*medical questions*/}
+          <MedicalQuestions
+            edit={edit}
+            responses={values?.responses}
+            setResponses={v => setFieldValue("responses", v)}
+          />
+        </div>
+
+
+        <div className='mt-40'>
+          {
+            edit ?
+              <div>
+                <button
+                  className={`button ${changes.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'}`}
+                  type={changes?.length > 0 ? "submit" : "button"}
+                ><span className='font-button-label text-white text-uppercase'>{t("save & close")}</span>
+                </button>
+
+                <button
+                  className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
+                  type={"button"}
+                  onClick={() => {
+                    setStatus({edit, confirmedCnt: confirmedCnt + 1});
+                  }}
+                ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
+                </button>
+              </div>
+              :
+              <Button
+                size='md'
+                color="white"
+                bgColor="gray"
+                borderColor="gray"
+                title={t("exit")}
+                onClick={() => navigate(-1)}
+              />
+          }
+        </div>
+      </Form>
+      <ConfirmModal show={visibleModal} header={t("profile changes saved")} onOk={onOkModal}/>
+    </React.Fragment>
   )
 }
 
 const EnhancedForm = withFormik({
   mapPropsToStatus: () => ({
     confirmedCnt: 0,
+    edit: false,
+    visibleModal: false,
   }),
   mapPropsToValues: () => ({
     firstName: '',
@@ -718,7 +725,7 @@ const EnhancedForm = withFormik({
       };
       await answerMedicalQuestionsV2(medicalQuestionData, token);
       getMedicalResponses();
-      setStatus({confirmedCnt: 0, edit: false});
+      setStatus({confirmedCnt: 0, edit: false, visibleModal: true});
     } catch (e) {
       console.error("save profile error", e);
       showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
