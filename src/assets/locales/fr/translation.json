@@ -499,5 +499,6 @@
   "exit": "sortie",
   "no new team member": "pas de nouveau membre de l'équipe",
   "n new team member": "{{n}} nouveau membre de l'équipe",
-  "n new team members": "{{n}} nouveaux membres de l'équipe"
+  "n new team members": "{{n}} nouveaux membres de l'équipe",
+  "org admin invite sent": "Invitation envoyée à l'administrateur de la société"
 }
