@@ -109,6 +109,30 @@ export const AVAILABLE_JOBS = [
     value: "14",
     label: i18n.t("job no role defined"),
   },
+  {
+    value: "15",
+    label: i18n.t("job firefighter"),
+  },
+  {
+    value: "16",
+    label: i18n.t("job miner"),
+  },
+  {
+    value: "17",
+    label: i18n.t("job remediation"),
+  },
+  {
+    value: "18",
+    label: i18n.t("job contractor"),
+  },
+  {
+    value: "19",
+    label: i18n.t("job temp hire"),
+  },
+  {
+    value: "20",
+    label: i18n.t("job machine operator"),
+  },
 ];
 export const permissionLevels = [
   {

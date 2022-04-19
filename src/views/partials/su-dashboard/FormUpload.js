@@ -67,8 +67,10 @@ const FormUpload = (props) => {
             firstName: it[0],
             lastName: it[1],
             email: it[2],
-            jobRole: it[3],
-            permissionLevel: it[4],
+            countryCode: it[3],
+            phoneNumber: it[4],
+            jobRole: it[5],
+            permissionLevel: it[6],
           }));
           localStorage.setItem("kop-csv-data", JSON.stringify(xlsxData));
           setCsvLoaded(true);

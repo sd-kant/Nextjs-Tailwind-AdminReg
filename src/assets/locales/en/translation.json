@@ -502,5 +502,11 @@
   "org admin invite sent": "Company Administrator Invitation Sent",
   "profile changes saved": "Profile changes have been saved",
   "must include email or phone": "Must include an email or a phone number",
-  "add a team member": "Add a Team Member"
+  "add a team member": "Add a Team Member",
+  "job firefighter": "Firefighter",
+  "job miner": "Miner",
+  "job remediation": "Remediation",
+  "job contractor": "Contractor",
+  "job temp hire": "Temp Hire",
+  "job machine operator": "Machine Operator"
 }

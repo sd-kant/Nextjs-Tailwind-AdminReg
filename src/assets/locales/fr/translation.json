@@ -502,5 +502,11 @@
   "org admin invite sent": "Invitation envoyée à l'administrateur de la société",
   "profile changes saved": "Les modifications de profil ont été enregistrées",
   "must include email or phone": "Doit inclure un email ou un numéro de téléphone",
-  "add a team member": "Ajouter un membre de l'équipe"
+  "add a team member": "Ajouter un membre de l'équipe",
+  "job firefighter": "Sapeur pompier",
+  "job miner": "Mineur",
+  "job remediation": "Remédiation",
+  "job contractor": "Prestataire",
+  "job temp hire": "Embauche temporaire",
+  "job machine operator": "Opérateur"
 }
