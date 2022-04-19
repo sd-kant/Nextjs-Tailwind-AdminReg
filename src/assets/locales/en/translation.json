@@ -501,5 +501,6 @@
   "n new team member": "{{n}} new team member",
   "n new team members": "{{n}} new team members",
   "org admin invite sent": "Company Administrator Invitation Sent",
-  "profile changes saved": "Profile changes have been saved"
+  "profile changes saved": "Profile changes have been saved",
+  "must include email or phone": "Must include an email or a phone number"
 }

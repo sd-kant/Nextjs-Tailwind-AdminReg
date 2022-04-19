@@ -501,5 +501,6 @@
   "n new team member": "{{n}} nouveau membre de l'équipe",
   "n new team members": "{{n}} nouveaux membres de l'équipe",
   "org admin invite sent": "Invitation envoyée à l'administrateur de la société",
-  "profile changes saved": "Les modifications de profil ont été enregistrées"
+  "profile changes saved": "Les modifications de profil ont été enregistrées",
+  "must include email or phone": "Doit inclure un email ou un numéro de téléphone"
 }
