@@ -29,6 +29,7 @@
 }
 
 .Control {
+  position: relative;
   display: flex;
   align-items: center;
   background-color: $app-ts;
@@ -42,6 +43,29 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  .Indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+    padding-right: 7px;
+    display: flex;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 2;
+    background-color: $app-ts;
+
+    .Line {
+      align-self: stretch;
+      background-color: hsl(0, 0%, 80%);
+      width: 1px;
+      height: 30px;
+      box-sizing: border-box;
+    }
+  }
 }
 
 .No {
