@@ -92,7 +92,7 @@ const FormProfile = (props) => {
   }, [medicalResponses, confirmedCnt, setFieldValue]);
   useEffect(() => {
     if (profile) {
-      setStatus({edit: false, confirmedCnt});
+      setStatus({edit: false, confirmedCnt, visibleModal});
       setFieldValue("firstName", profile.firstName ?? "");
       setFieldValue("lastName", profile.lastName ?? "");
       setFieldValue("gender", profile.sex ?? "");
@@ -293,7 +293,7 @@ const FormProfile = (props) => {
             </div> :
             <div className={clsx('form-header-medium', style.HeadLeft)}><span
               className='font-button-label d-block text-orange'
-              onClick={() => setStatus({edit: true, confirmedCnt})}
+              onClick={() => setStatus({edit: true, confirmedCnt, visibleModal})}
             >Edit</span></div>
         }
         <div className={clsx(style.ContentWrapper, 'form-header-medium')}>
@@ -628,7 +628,7 @@ const FormProfile = (props) => {
                   className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
                   type={"button"}
                   onClick={() => {
-                    setStatus({edit, confirmedCnt: confirmedCnt + 1});
+                    setStatus({edit, confirmedCnt: confirmedCnt + 1, visibleModal});
                   }}
                 ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
                 </button>
