@@ -158,7 +158,7 @@ const FormInviteModify = (props) => {
         onOk={() => {
           setVisibleAddMemberSuccessModal(false);
         }}
-        cancelText={t('add another member')}
+        cancelText={t('add a team member')}
         onCancel={() => {
           setVisibleAddMemberSuccessModal(false);
           setVisibleAddModal(true);
@@ -239,7 +239,7 @@ const FormInviteModify = (props) => {
               <div className={clsx(style.AddButton, "mt-15")} onClick={addAnother}>
                 <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
                 <span className="font-heading-small text-capitalize">
-                  {t("add another member")}
+                  {t("add a team member")}
                 </span>
               </div>
             }
