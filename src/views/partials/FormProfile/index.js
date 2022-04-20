@@ -143,7 +143,7 @@ const FormProfile = (props) => {
         setFieldValue("minute", minute);
       }
     }
-  }, [setFieldValue, profile, timezones, confirmedCnt, setStatus]);
+  }, [setFieldValue, profile, timezones, confirmedCnt, setStatus, visibleModal]);
   React.useLayoutEffect(() => {
     setCnt(cnt => cnt + 1);
     if (cnt > 1) { // according to length of dependency array of this useLayoutEffect
