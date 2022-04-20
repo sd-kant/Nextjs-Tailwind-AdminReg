@@ -26,6 +26,7 @@ import SuccessModal from "../../components/SuccessModal";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
 import {_handleSubmitV2} from "../../../utils/invite";
+import {AsYouType} from "libphonenumber-js";
 
 export const defaultTeamMember = {
   email: '',
@@ -142,7 +143,6 @@ const FormInvite = (props) => {
     isAdmin,
   } = props;
   const navigate = useNavigate();
-
   useEffect(() => {
     setRestBarClass("progress-72 medical");
     const csvDataStr = localStorage.getItem("kop-csv-data");
@@ -153,12 +153,22 @@ const FormInvite = (props) => {
       const job = it.jobRole?.split(":")?.[0]?.trim();
       const selectedLevel = permissionLevels.find(ele => parseInt(ele.value) === parseInt(level));
       const selectedJob = AVAILABLE_JOBS.find(ele => parseInt(ele.value) === parseInt(job));
+      const phoneNumber = `${it.countryCode ?? ""}${it.phoneNumber ?? ""}`;
+      const phoneNumberWithPlus = `+${it.countryCode ?? ""}${it.phoneNumber ?? ""}`;
+      const asYouType = new AsYouType()
+      asYouType.input(phoneNumberWithPlus)
+      const country = asYouType?.getCountry();
+
       return {
         email: it.email,
         firstName: it.firstName,
         lastName: it.lastName,
         userType: selectedLevel || "",
         job: selectedJob || "",
+        phoneNumber: {
+          value: phoneNumber,
+          countryCode: country,
+        }
       };
     });
     d && setFieldValue("users", d);

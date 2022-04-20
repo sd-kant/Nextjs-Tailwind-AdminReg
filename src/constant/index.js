@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.7.15";
+export const CURRENT_VERSION = "3.7.16";
 export const AVAILABLE_COUNTRIES = [
   {
     "value": "AU",
@@ -108,6 +108,30 @@ export const AVAILABLE_JOBS = [
   {
     value: "14",
     label: i18n.t("job no role defined"),
+  },
+  {
+    value: "15",
+    label: i18n.t("job firefighter"),
+  },
+  {
+    value: "16",
+    label: i18n.t("job miner"),
+  },
+  {
+    value: "17",
+    label: i18n.t("job remediation"),
+  },
+  {
+    value: "18",
+    label: i18n.t("job contractor"),
+  },
+  {
+    value: "19",
+    label: i18n.t("job temp hire"),
+  },
+  {
+    value: "20",
+    label: i18n.t("job machine operator"),
   },
 ];
 export const permissionLevels = [

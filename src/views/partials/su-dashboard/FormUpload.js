@@ -62,14 +62,34 @@ const FormUpload = (props) => {
             console.log("file content empty");
           }
 
-          rows.splice(0, 1);
-          const xlsxData = rows.map(it => ({
-            firstName: it[0],
-            lastName: it[1],
-            email: it[2],
-            jobRole: it[3],
-            permissionLevel: it[4],
-          }));
+          const columns = rows.splice(0, 1);
+          let columnMap = {};
+          columns?.[0]?.forEach((it, index) => {
+            const str = it.toLowerCase();
+            if (str.includes("first")) {
+              columnMap["firstName"] = index;
+            } else if (str.includes("last")) {
+              columnMap["lastName"] = index;
+            } else if (str.includes("email")) {
+              columnMap["email"] = index;
+            } else if (str.includes("job")) {
+              columnMap["jobRole"] = index;
+            } else if (str.includes("permission")) {
+              columnMap["permissionLevel"] = index;
+            } else if (str.includes("country")) {
+              columnMap["countryCode"] = index;
+            } else if (str.includes("phone")) {
+              columnMap["phoneNumber"] = index;
+            }
+          })
+
+          const xlsxData = rows.map(it => {
+            const ret = {};
+            Object.keys(columnMap)?.forEach(key => {
+              ret[key] = it[columnMap[key]];
+            });
+            return ret;
+          });
           localStorage.setItem("kop-csv-data", JSON.stringify(xlsxData));
           setCsvLoaded(true);
         });

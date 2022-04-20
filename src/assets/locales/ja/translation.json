@@ -502,5 +502,11 @@
   "org admin invite sent": "会社管理者の招待状が送信されました",
   "profile changes saved": "プロファイルの変更が保存されました",
   "must include email or phone": "メールアドレスまたは電話番号を含める必要があります",
-  "add a team member": "チームメンバーを追加する"
+  "add a team member": "チームメンバーを追加する",
+  "job firefighter": "消防士",
+  "job miner": "鉱夫",
+  "job remediation": "修復",
+  "job contractor": "請負業者",
+  "job temp hire": "臨時雇用",
+  "job machine operator": "機械オペレータ"
 }
