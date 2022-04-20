@@ -109,7 +109,6 @@
   "create team": "Créer une équipe",
   "phone number invalid": "s'il vous plaît entrer un numéro de téléphone valide",
   "required for 2fa": "Requis pour l'authentification à 2 facteurs",
-  "add another member": "ajouter un autre membre d’équipe",
   "modify team": "Modifier l’équipe",
   "search user": "Recherche d’un utilisateur par nom ou par e-mail",
   "no new change": "Aucun nouveau changement",
@@ -502,5 +501,6 @@
   "n new team members": "{{n}} nouveaux membres de l'équipe",
   "org admin invite sent": "Invitation envoyée à l'administrateur de la société",
   "profile changes saved": "Les modifications de profil ont été enregistrées",
-  "must include email or phone": "Doit inclure un email ou un numéro de téléphone"
+  "must include email or phone": "Doit inclure un email ou un numéro de téléphone",
+  "add a team member": "Ajouter un membre de l'équipe"
 }

@@ -468,7 +468,7 @@ const FormInvite = (props) => {
                 <button
                   className={`button ${values['users']?.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'}`}
                   type={values['users']?.length > 0 ? "submit" : "button"}
-                ><span className='font-button-label text-white'>{t("finish")}</span>
+                ><span className='font-button-label text-white text-uppercase'>{t("save")}</span>
                 </button>
 
                 <button
@@ -482,8 +482,8 @@ const FormInvite = (props) => {
 
             <div className={clsx(style.AddButton)} onClick={addAnother}>
               <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
-              <span className="font-heading-small text-capitalize">
-                    {t("add another member")}
+              <span className="font-heading-small">
+                    {t("add a team member")}
                 </span>
             </div>
           </div>
@@ -528,7 +528,7 @@ const FormInvite = (props) => {
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
-    users: [defaultTeamMember],
+    users: [],
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {

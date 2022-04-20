@@ -109,7 +109,6 @@
   "create team": "チームを作成する",
   "phone number invalid": "有効な電話番号を入力して下さい",
   "required for 2fa": "2要素認証に必要",
-  "add another member": "別のチームメンバーを追加する",
   "modify team": "更新チーム",
   "search user": "名前またはメールアドレスでユーザーを検索する",
   "no new change": "新しい変更はありません",
@@ -502,5 +501,6 @@
   "n new team members": "{{n}}新しいチームメンバー",
   "org admin invite sent": "会社管理者の招待状が送信されました",
   "profile changes saved": "プロファイルの変更が保存されました",
-  "must include email or phone": "メールアドレスまたは電話番号を含める必要があります"
+  "must include email or phone": "メールアドレスまたは電話番号を含める必要があります",
+  "add a team member": "チームメンバーを追加する"
 }

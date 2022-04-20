@@ -109,7 +109,6 @@
   "create team": "Create a Team",
   "phone number invalid": "Please enter a valid phone number",
   "required for 2fa": "Required for 2-factor Authentication",
-  "add another member": "add another team member",
   "modify team": "Modify Team",
   "search user": "Search for a user by their name or email",
   "no new change": "No New Changes",
@@ -502,5 +501,6 @@
   "n new team members": "{{n}} new team members",
   "org admin invite sent": "Company Administrator Invitation Sent",
   "profile changes saved": "Profile changes have been saved",
-  "must include email or phone": "Must include an email or a phone number"
+  "must include email or phone": "Must include an email or a phone number",
+  "add a team member": "Add a Team Member"
 }
