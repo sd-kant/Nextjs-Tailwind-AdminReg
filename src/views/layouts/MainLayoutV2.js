@@ -16,7 +16,7 @@ const MenuContent = () => {
     <>
       {/*<SearchInput/>*/}
       <LanguagePickerV2/>
-      <Settings/>
+      <Settings mode="dashboard"/>
     </>
   )
 };

@@ -16,6 +16,9 @@ import {useWidthContext} from "../../../providers/WidthProvider";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERSION} from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
+import queryString from "query-string";
+import {ableToLogin, concatAsUrlParam} from "../../../utils";
+import {getCompanyById} from "../../../http";
 
 const popupContentStyle = {
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
@@ -30,16 +33,35 @@ const Settings = (
   {
     userType,
     t,
+    profile,
     metric,
     setMetric,
-    profile,
+    isEntry,
+    myOrgId,
+    mode = "dashboard" // or admin
   }
 ) => {
   const ref = React.useRef();
   const navigate = useNavigate();
   const [visiblePopup, setVisiblePopup] = React.useState(false);
-  const [visibleLeavePopup, setVisibleLeavePopup] = React.useState(false);
   const {width} = useWidthContext();
+  const [orgLabel, setOrgLabel] = React.useState("");
+
+  React.useEffect(() => {
+    getCompanyById(myOrgId)
+      .then(res => {
+        setOrgLabel(res.data?.name);
+      });
+  }, [myOrgId]);
+
+  const cachedSearchUrl = localStorage.getItem("kop-params");
+  const q = queryString.parse(cachedSearchUrl);
+  const flattened = concatAsUrlParam(q);
+
+  const [leavePopup, setLeavePopup] = React.useState({
+    visible: false, title: '',
+  });
+
   const role = React.useMemo(() => {
     if (userType?.includes(USER_TYPE_ADMIN)) {
       return t("administrator super");
@@ -52,47 +74,69 @@ const Settings = (
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userType]);
-  const items = [
-    {
-      title: t("administration"),
-      handleClick: () => {
-        setVisibleLeavePopup(true);
+  const items = React.useMemo(() => {
+    const ret = [
+      {
+        title: mode === "dashboard" ? t("administration") : t("dashboard"),
+        handleClick: () => {
+          setLeavePopup({
+            visible: true,
+            title: mode === "dashboard" ? t("leave team dashboard 2") : t("leave administration 2")
+          });
+        },
       },
-    },
-    {
-      title: t("user profile"),
-      handleClick: () => {
-        ref.current.close();
-        navigate("/profile");
+      {
+        title: t("user profile"),
+        handleClick: () => {
+          ref.current.close();
+          navigate("/profile");
+        },
       },
-    },
-    {
-      title:
-        <a
-          href={"https://kenzen.com/support/"}
-          target="_blank"
-          rel="noreferrer"
-          className="text-black no-underline no-outline"
-        >{t('support')}</a>,
-    },
-    {
-      title:
-        <a
-          href={"https://kenzen.com/kenzen-solution-privacy-policy/"}
-          target="_blank"
-          rel="noreferrer"
-          className="text-black no-underline no-outline"
-        >{t('privacy policy')}</a>,
-    },
-  ];
+      {
+        title:
+          <a
+            href={"https://kenzen.com/support/"}
+            target="_blank"
+            rel="noreferrer"
+            className="text-black no-underline no-outline"
+          >{t('support')}</a>,
+      },
+      {
+        title:
+          <a
+            href={"https://kenzen.com/kenzen-solution-privacy-policy/"}
+            target="_blank"
+            rel="noreferrer"
+            className="text-black no-underline no-outline"
+          >{t('privacy policy')}</a>,
+      },
+    ];
+    if (isEntry || !ableToLogin(userType)) {
+      ret.splice(0, 1);
+    }
+    return ret;
+  }, [mode, isEntry, t, userType, navigate]);
+
   const direction = React.useMemo(() => {
     return width < 768 ? 'bottom left' : 'bottom right';
   }, [width]);
+
   React.useEffect(() => {
-    if (visiblePopup || visibleLeavePopup) {
+    if (visiblePopup || leavePopup.visible) {
       ref.current.close();
     }
-  }, [visiblePopup, visibleLeavePopup]);
+  }, [visiblePopup, leavePopup]);
+
+  const handleLeave = React.useCallback(() => {
+    setLeavePopup({visible: false, title: ''});
+    if (mode === "dashboard") {
+      const win = window.open("/invite", "_blank");
+      win.focus();
+    } else {
+      const win = window.open(`/dashboard/multi?${flattened}`, "_blank");
+      win.focus();
+    }
+  }, [mode, flattened]);
 
   return (
     <>
@@ -125,6 +169,11 @@ const Settings = (
                 </span>
               </div>
               <div>
+                <span className={clsx('font-button-label')}>
+                  {orgLabel}
+                </span>
+              </div>
+              <div>
                 <span className={clsx('font-binary')}>
                   {role}
                 </span>
@@ -150,20 +199,18 @@ const Settings = (
               </div>
             ))
           }
+          {
+            mode === "dashboard" ?
+              <div className={clsx(style.MenuItem)}><span className={clsx('font-binary')}>{t("units")}</span>
 
-          <div className={clsx(style.MenuItem)}>
-          <span className={clsx('font-binary')}>
-            {t("units")}
-          </span>
-
-            <Toggle
-              on={metric}
-              titleOn={t("imperial")}
-              titleOff={t('metric')}
-              handleSwitch={v => setMetric(v)}
-            />
-          </div>
-
+                <Toggle
+                  on={metric}
+                  titleOn={t("imperial")}
+                  titleOff={t('metric')}
+                  handleSwitch={v => setMetric(v)}
+                />
+              </div> : null
+          }
           <div
             className={clsx(style.MenuItem, 'cursor-pointer')}
             onClick={() => setVisiblePopup(true)}
@@ -189,21 +236,17 @@ const Settings = (
           logout();
         }}
         onCancel={() => {
-          setVisiblePopup(false);
+          setVisiblePopup(false)
         }}
       />
       <ConfirmModalV2
-        show={visibleLeavePopup}
-        header={t("leave team dashboard 2")}
+        show={leavePopup.visible}
+        header={leavePopup.title}
         visibleCancel={false}
         okText={t("ok")}
-        onOk={() => {
-          setVisibleLeavePopup(false);
-          const win = window.open("/invite", "_blank");
-          win.focus();
-        }}
+        onOk={handleLeave}
         onCancel={() => {
-          setVisibleLeavePopup(false);
+          setLeavePopup({visible: false, title: ''})
         }}
       />
     </>
@@ -214,6 +257,7 @@ const mapStateToProps = (state) => ({
   metric: get(state, "ui.metric"),
   userType: get(state, 'auth.userType'),
   profile: get(state, 'profile.profile'),
+  myOrgId: get(state, "auth.organizationId"),
 });
 
 const mapDispatchToProps = (dispatch) =>
