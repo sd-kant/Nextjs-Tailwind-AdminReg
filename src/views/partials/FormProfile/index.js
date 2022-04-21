@@ -629,9 +629,8 @@ const FormProfile = (props) => {
             }
           </div>
           {/*hide cbt hr section*/}
-          {/*unit section*/}
           <div className='mt-28 form-header-medium'><span
-            className='font-header-medium d-block'>{t("Hide CBT & HR")}</span></div>
+            className='font-header-medium d-block'>{t("user hide hr & cbt")}</span></div>
           <div className="mt-15 d-flex">
             <TrueFalse
               disabled={!edit}

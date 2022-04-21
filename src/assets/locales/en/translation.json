@@ -509,5 +509,6 @@
   "job contractor": "Contractor",
   "job temp hire": "Temp Hire",
   "job machine operator": "Machine Operator",
-  "org hide hr & cbt": "Hide HR and CBT with user Alerts?"
+  "org hide hr & cbt": "Hide HR and CBT with user Alerts?",
+  "user hide hr & cbt": "Hide HR and CBT?"
 }
