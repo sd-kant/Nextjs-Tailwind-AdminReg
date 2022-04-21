@@ -223,7 +223,9 @@ export const hideCbtHROptions = [
   },
 ];
 
-export const IMPERIAL = "Imperial";
-export const METRIC = "Metric";
+export const IMPERIAL = "imperial";
+export const METRIC = "metric";
+export const MALE = "male";
+export const FEMALE = "female";
 export const QUESTION_TYPE_RADIO = "radio";
 export const QUESTION_TYPE_BOOLEAN = "boolean";
