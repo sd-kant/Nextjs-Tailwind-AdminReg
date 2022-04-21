@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.7.18";
+export const CURRENT_VERSION = "3.7.19";
 export const AVAILABLE_COUNTRIES = [
   {
     "value": "AU",
@@ -210,6 +210,16 @@ export const passwordExpirationDaysOptions = [
   },{
     title: i18n.t('off'),
     value: 0,
+  },
+];
+export const hideCbtHROptions = [
+  {
+    value: true,
+    title: i18n.t('yes'),
+  },
+  {
+    value: false,
+    title: i18n.t('no'),
   },
 ];
 
