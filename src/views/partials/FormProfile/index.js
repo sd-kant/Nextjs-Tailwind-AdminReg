@@ -13,7 +13,7 @@ import femaleIcon from "../../../assets/images/female.svg";
 import femaleGrayIcon from "../../../assets/images/female-gray.svg";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 import DatePicker from "react-modern-calendar-datepicker";
-import {IMPERIAL, METRIC} from "../../../constant";
+import {FEMALE, IMPERIAL, MALE, METRIC} from "../../../constant";
 import imperialIcon from "../../../assets/images/imperial.svg";
 import imperialGrayIcon from "../../../assets/images/imperial-gray.svg";
 import metricIcon from "../../../assets/images/metric.svg";
@@ -49,6 +49,10 @@ import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 import {answerMedicalQuestionsV2} from "../../../http";
 import {useNavigate} from "react-router-dom";
 import ConfirmModal from "../../components/ConfirmModal";
+import yesIcon from "../../../assets/images/yes.svg";
+import yesGrayIcon from "../../../assets/images/yes-gray.svg";
+import noIcon from "../../../assets/images/no.svg";
+import noGrayIcon from "../../../assets/images/no-gray.svg";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -61,6 +65,7 @@ export const formSchema = (t) => {
     ...timezoneFormShape(t),
     ...workLengthFormShape(t),
     ...startWorkFormLength(t),
+    hideCbtHR: Yup.boolean(),
   });
 };
 
@@ -142,6 +147,7 @@ const FormProfile = (props) => {
         }
         setFieldValue("minute", minute);
       }
+      setFieldValue("hideCbtHR", profile.settings?.hideCbtHR || false);
     }
   }, [setFieldValue, profile, timezones, confirmedCnt, setStatus, visibleModal]);
   React.useLayoutEffect(() => {
@@ -183,7 +189,7 @@ const FormProfile = (props) => {
       firstName, lastName, gender,
       measureType, timezone, workLength,
       startTimeOption, hour, minute,
-      responses,
+      responses, hideCbtHR,
     } = values;
 
     if (firstName !== profile?.firstName) {
@@ -238,6 +244,11 @@ const FormProfile = (props) => {
     if (`${format2Digits(hour24)}:${minute}` !== profile?.workDayStart) {
       ret.push("workDayStart");
     }
+    if (hideCbtHR !== profile?.settings?.hideCbtHR) {
+      if (profile?.settings?.hideCbtHR || hideCbtHR) {
+        ret.push("workLength");
+      }
+    }
     responses?.forEach(it => {
       if (!medicalResponses?.responses?.some(ele => ele.questionId?.toString() === it.questionId?.toString() && ele.answerId?.toString() === it.answerId?.toString())) {
         ret.push(`medicalQuestion-${it.questionId}`);
@@ -268,14 +279,26 @@ const FormProfile = (props) => {
       icons: {active: metricIcon, inactive: metricGrayIcon},
     },
   ];
+  const hideCbtHROptions = [
+    {
+      value: true,
+      title: t('yes'),
+      icons: {active: yesIcon, inactive: yesGrayIcon},
+    },
+    {
+      value: false,
+      title: t('no'),
+      icons: {active: noIcon, inactive: noGrayIcon},
+    },
+  ];
   const genderOptions = [
     {
-      value: 0,
+      value: MALE,
       title: t('male'),
       icons: {active: maleIcon, inactive: maleGrayIcon},
     },
     {
-      value: 1,
+      value: FEMALE,
       title: t('female'),
       icons: {active: femaleIcon, inactive: femaleGrayIcon},
     },
@@ -605,6 +628,17 @@ const FormProfile = (props) => {
               ) : null
             }
           </div>
+          {/*hide cbt hr section*/}
+          <div className='mt-28 form-header-medium'><span
+            className='font-header-medium d-block'>{t("user hide hr & cbt")}</span></div>
+          <div className="mt-15 d-flex">
+            <TrueFalse
+              disabled={!edit}
+              answer={values["hideCbtHR"]}
+              options={hideCbtHROptions}
+              onChange={v => changeFormField({target: {name: 'hideCbtHR', value: v}})}
+            />
+          </div>
           {/*medical questions*/}
           <MedicalQuestions
             edit={edit}
@@ -673,6 +707,7 @@ const EnhancedForm = withFormik({
     startTimeOption: "AM",
     hour: "09",
     minute: "00",
+    hideCbtHR: false,
   }),
   validationSchema: ((props) => formSchema(props.t)),
   enableReinitialize: true,
@@ -715,6 +750,9 @@ const EnhancedForm = withFormik({
         gmt: value,
         workDayLength: workLength,
         workDayStart: `${format2Digits(hour24)}:${minute}`,
+        settings: {
+          hideCbtHR: values.hideCbtHR,
+        },
       };
       updateProfile({body, apiCall: true, navigate});
       const medicalQuestionData = {

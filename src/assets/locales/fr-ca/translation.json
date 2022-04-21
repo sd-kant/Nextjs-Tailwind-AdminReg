@@ -509,5 +509,6 @@
   "job contractor": "Prestataire",
   "job temp hire": "Embauche temporaire",
   "job machine operator": "Opérateur",
-  "org hide hr & cbt": "Masquer RH et CBT avec des alertes utilisateur ?"
+  "org hide hr & cbt": "Masquer RH et CBT avec des alertes utilisateur ?",
+  "user hide hr & cbt": "Cacher RH et CBT ?"
 }

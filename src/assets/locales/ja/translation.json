@@ -509,5 +509,6 @@
   "job contractor": "請負業者",
   "job temp hire": "臨時雇用",
   "job machine operator": "機械オペレータ",
-  "org hide hr & cbt": "ユーザーアラートでHRとCBTを非表示にしますか？"
+  "org hide hr & cbt": "ユーザーアラートでHRとCBTを非表示にしますか？",
+  "user hide hr & cbt": "HRとCBTを非表示にしますか？"
 }

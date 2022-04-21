@@ -8,9 +8,10 @@ import {Form, withFormik} from "formik";
 import * as Yup from "yup";
 import {bindActionCreators} from "redux";
 import {useNavigate} from "react-router-dom";
+import {FEMALE, MALE} from "../../../constant";
 
 export const formShape = t => ({
-  gender: Yup.number()
+  gender: Yup.string()
     .test(
       'is-valid',
       t('gender required'),
@@ -64,8 +65,8 @@ const FormGender = (props) => {
 
         <div className="mt-40 d-flex">
           <div
-            className={`tap cursor-pointer ${values["gender"]?.toString() === "0" ? 'active' : ''}`}
-            onClick={() => setFieldValue("gender", 0)}
+            className={`tap cursor-pointer ${values["gender"]?.toString() === MALE ? 'active' : ''}`}
+            onClick={() => setFieldValue("gender", MALE)}
           >
             <img src={maleIcon} alt="male icon"/>
 
@@ -75,8 +76,8 @@ const FormGender = (props) => {
           </div>
 
           <div
-            className={`ml-40 cursor-pointer tap ${values["gender"]?.toString() === "1" ? 'active' : ''}`}
-            onClick={() => setFieldValue("gender", 1)}
+            className={`ml-40 cursor-pointer tap ${values["gender"]?.toString() === FEMALE ? 'active' : ''}`}
+            onClick={() => setFieldValue("gender", FEMALE)}
           >
             <img src={femaleIcon} alt="female icon"/>
 
@@ -90,8 +91,8 @@ const FormGender = (props) => {
       <div className='mt-80'>
 
         <button
-          className={`button ${["0", "1"].includes(values["gender"]?.toString()) ? "active cursor-pointer" : "inactive cursor-default"}`}
-          type={["0", "1"].includes(values["gender"]?.toString()) ? "submit" : "button"}
+          className={`button ${[MALE, FEMALE].includes(values["gender"]?.toString()) ? "active cursor-pointer" : "inactive cursor-default"}`}
+          type={[MALE, FEMALE].includes(values["gender"]?.toString()) ? "submit" : "button"}
         >
           <span className='font-button-label text-white'>
             {t("next")}
