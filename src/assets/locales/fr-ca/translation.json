@@ -508,5 +508,6 @@
   "job remediation": "Remédiation",
   "job contractor": "Prestataire",
   "job temp hire": "Embauche temporaire",
-  "job machine operator": "Opérateur"
+  "job machine operator": "Opérateur",
+  "org hide hr & cbt": "Masquer RH et CBT avec des alertes utilisateur ?"
 }

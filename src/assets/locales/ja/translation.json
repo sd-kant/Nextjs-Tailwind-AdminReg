@@ -508,5 +508,6 @@
   "job remediation": "修復",
   "job contractor": "請負業者",
   "job temp hire": "臨時雇用",
-  "job machine operator": "機械オペレータ"
+  "job machine operator": "機械オペレータ",
+  "org hide hr & cbt": "ユーザーアラートでHRとCBTを非表示にしますか？"
 }

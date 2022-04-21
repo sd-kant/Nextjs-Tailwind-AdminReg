@@ -212,6 +212,16 @@ export const passwordExpirationDaysOptions = [
     value: 0,
   },
 ];
+export const hideCbtHROptions = [
+  {
+    value: true,
+    title: i18n.t('yes'),
+  },
+  {
+    value: false,
+    title: i18n.t('no'),
+  },
+];
 
 export const IMPERIAL = "Imperial";
 export const METRIC = "Metric";

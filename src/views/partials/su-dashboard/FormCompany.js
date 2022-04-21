@@ -15,7 +15,7 @@ import {
 import {
   passwordExpirationDaysOptions,
   passwordMinLengthOptions,
-  twoFAOptions, USER_TYPE_ORG_ADMIN
+  twoFAOptions, USER_TYPE_ORG_ADMIN, hideCbtHROptions
 } from "../../../constant";
 import {queryAllOrganizationsAction} from "../../../redux/action/base";
 import {get} from "lodash";
@@ -77,6 +77,7 @@ const formSchema = (t) => {
     twoFA: Yup.boolean(),
     passwordMinimumLength: Yup.number(),
     passwordExpirationDays: Yup.number(),
+    hideCbtHR: Yup.boolean(),
     users: Yup.array().of(
       Yup.object().shape({
         email: Yup.string()
@@ -165,7 +166,7 @@ const FormCompany = (props) => {
         } else {
           setFieldValue("companyCountry", options?.[0]);
         }
-        const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays'];
+        const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays', 'hideCbtHR'];
         fields?.forEach(item => setFieldValue(item, value[item]))
       }
     }
@@ -181,6 +182,7 @@ const FormCompany = (props) => {
       twoFA: organization.settings?.twoFA ?? false,
       passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 6,
       passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
+      hideCbtHR: organization.settings?.hideCbtHR ?? false,
       created: true,
     }))) || []);
   }, [allOrganizations]);
@@ -610,6 +612,22 @@ const FormCompany = (props) => {
                   />
                 </div>
               </div>
+
+              <div className='d-flex flex-column mt-25'>
+                <label className='font-input-label'>
+                  {t("org hide hr & cbt")}
+                </label>
+
+                <div className='d-inline-block mt-10'>
+                  <ButtonGroup
+                    options={hideCbtHROptions}
+                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                    value={values["hideCbtHR"]}
+                    id={'hide-cbt-option'}
+                    setValue={(v) => changeHandler("hideCbtHR", v)}
+                  />
+                </div>
+              </div>
             </React.Fragment>
           }
         </div>
@@ -649,6 +667,7 @@ const EnhancedForm = withFormik({
     twoFA: false,
     passwordMinimumLength: 6,
     passwordExpirationDays: 0,
+    hideCbtHR: false,
     users: [],
   }),
   validationSchema: ((props) => formSchema(props.t)),
@@ -663,6 +682,7 @@ const EnhancedForm = withFormik({
         passwordMinimumLength: values.passwordMinimumLength,
         passwordExpirationDays: values.passwordExpirationDays,
         expirationDaysEnable: values.passwordExpirationDays?.toString() !== "0",
+        hideCbtHR: values.hideCbtHR,
       },
     };
 
