@@ -75,11 +75,9 @@ export const UtilsProviderDraft = (
       };
     }
 
-    if (connected) {
+    if (connected && flag) {
       return calc();
-    }
-
-    if (!flag || !connected) {
+    } else {
       if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 2) {
         return calc();
       } else if (
@@ -97,11 +95,6 @@ export const UtilsProviderDraft = (
         };
       }
     }
-
-    return {
-      label: t('no connection'),
-      value: 8,
-    };
   };
 
   const formatAlert = stageId => {
