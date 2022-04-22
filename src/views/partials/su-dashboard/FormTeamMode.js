@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
 import editIcon from "../../../assets/images/edit.svg";
@@ -15,19 +14,21 @@ import {
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import {get} from 'lodash';
+import {useNavigate} from "react-router-dom";
 
 const FormTeamMode = (props) => {
-  const {t, setRestBarClass, match: {params: {organizationId}}, myOrganizationId, isAdmin} = props;
+  const {t, setRestBarClass, organizationId, myOrganizationId, isAdmin} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
   const orgId = [undefined, "-1", null, ""].includes(organizationId?.toString()) ? myOrganizationId : organizationId;
+  const handleCancel = () => {
+    navigate("/select-mode");
+  };
 
   return (
     <div className='form-group mt-57'>
@@ -36,7 +37,7 @@ const FormTeamMode = (props) => {
           isAdmin &&
           <div
             className="d-flex align-center cursor-pointer"
-            onClick={() => navigateTo('/invite/company')}
+            onClick={() => navigate('/invite/company')}
           >
             <img src={backIcon} alt="back"/>
             &nbsp;&nbsp;
@@ -62,7 +63,7 @@ const FormTeamMode = (props) => {
           <div
             className={`tap cursor-pointer`}
             onClick={() => {
-              history.push(`/invite/${orgId}/team-create`);
+              navigate(`/invite/${orgId}/team-create`);
             }}
           >
             <img src={plusIcon} alt="male icon"/>
@@ -75,7 +76,7 @@ const FormTeamMode = (props) => {
           <div
             className={`ml-40 cursor-pointer tap`}
             onClick={() => {
-              history.push(`/invite/${organizationId}/team-modify`);
+              navigate(`/invite/${organizationId}/team-modify`);
             }}
           >
             <img src={editIcon} alt="female icon"/>
@@ -88,7 +89,7 @@ const FormTeamMode = (props) => {
           <div
             className={`ml-40 tap cursor-pointer`}
             onClick={() => {
-              history.push(`/invite/${organizationId}/search`);
+              navigate(`/invite/${organizationId}/search`);
             }}
           >
             <img src={searchIcon} alt="search icon"/>
@@ -100,9 +101,19 @@ const FormTeamMode = (props) => {
         </div>
       </div>
 
-      <div className='mt-80 form-header-medium'>
-        <span className='font-binary mt-8'>
-        </span>
+      <div className='mt-80'>
+        {
+          !isAdmin ?
+            <button
+              className={`button cursor-pointer cancel`}
+              type={"button"}
+              onClick={handleCancel}
+            >
+              <span className='font-button-label text-orange text-uppercase'>
+                {t("cancel")}
+              </span>
+            </button> : null
+        }
       </div>
     </div>
   )

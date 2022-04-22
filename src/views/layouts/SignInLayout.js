@@ -10,23 +10,24 @@ import Footer from "./Footer";
 import LanguagePicker from "../components/LanguagePicker";
 import clsx from "clsx";
 import style from "./SignInLayout.module.scss";
-import SettingsAdmin from "../components/SettingsAdmin";
+import Settings from "../components/Settings";
 
 const SignInLayout = (props) => {
   const {loggedIn, isEntry} = props;
   return (
-    <div className='wrapper'>
+    <div className='wrapper content'>
       <LanguagePicker/>
       {
         loggedIn &&
         <div className={clsx(style.MenuWrapper)}>
-          <SettingsAdmin
+          <Settings
             isEntry={isEntry}
+            mode="admin"
           />
         </div>
       }
 
-      <div className='content-wrapper'>
+      <div className='content-wrapper content--inner'>
         <div className="desktop-stripes">
           <img src={stripes} alt="stripes"/>
         </div>

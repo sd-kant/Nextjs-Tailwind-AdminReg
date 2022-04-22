@@ -1,60 +1,30 @@
 import React, {useEffect} from 'react';
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import * as Yup from "yup";
 import {Form, withFormik} from "formik";
 import Select from 'react-select';
 import {customStyles} from "./FormCountry";
-import spacetime from "spacetime";
-import soft from "timezone-soft";
-import timezoneList from '../../../constant/timezone-list';
+import useTimezone from "../../../hooks/useTimezone";
+import {useNavigate} from "react-router-dom";
+
+export const formShape = t => ({
+  timezone: Yup.object()
+    .shape({
+      value: Yup.string()
+        .required(t("timezone required")),
+    })
+    .required(t("timezone required")),
+})
 
 const formSchema = (t) => {
-  return Yup.object().shape({
-    timezone: Yup.object()
-      .required(t("timezone required")),
-  });
+  return Yup.object().shape(formShape(t));
 };
 
 const FormTimezone = (props) => {
-
-  const options = React.useMemo(() => {
-    return Object.entries(timezoneList)
-      .reduce((selectOptions, zone) => {
-      const now = spacetime.now(zone[0]);
-      const tz = now.timezone();
-      const tzStrings = soft(zone[0]);
-
-      let abbr = now.isDST() ? tzStrings[0].daylight?.abbr : tzStrings[0].standard?.abbr;
-      let altName = now.isDST() ? tzStrings[0].daylight?.name : tzStrings[0].standard?.name;
-
-      const min = tz.current.offset * 60;
-      const hr =
-        `${(min / 60) ^ 0}:` + (min % 60 === 0 ? "00" : Math.abs(min % 60));
-      const prefix = `(GMT${hr.includes("-") ? hr : `+${hr}`}) ${zone[1]}`;
-      const label = `${prefix}`;
-      const formattedHr = `${((min / 60) ^ 0).toLocaleString('en-US', {
-        minimumIntegerDigits: 2,
-        useGrouping: false
-      })}:` + (min % 60 === 0 ? "00" : Math.abs(min % 60));
-      const gmtTz = `GMT${formattedHr.includes("-") ? formattedHr : `+${formattedHr}`}`;
-
-      selectOptions.push({
-        value: tz.name,
-        label: label,
-        offset: tz.current.offset,
-        abbrev: abbr,
-        altName: altName,
-        gmtTz,
-      });
-
-      return selectOptions;
-    }, [])
-      .sort((a, b) => a.offset - b.offset)
-  }, []);
-
+  const [timezones] = useTimezone();
   const {t, values, setFieldValue, setRestBarClass, profile} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass('progress-81');
@@ -63,15 +33,11 @@ const FormTimezone = (props) => {
 
   useEffect(() => {
     if (profile) {
-      const option = options?.find(it => it.gmtTz === profile.gmt);
+      const option = timezones?.find(it => it.value === profile.gmt);
       setFieldValue("timezone", option);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, options]);
-
-  const navigateTo = (path) => {
-    history.push(path);
-  }
+  }, [profile, timezones]);
 
   const changeHandler = value => {
     setFieldValue("timezone", value);
@@ -82,7 +48,7 @@ const FormTimezone = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/weight')}
+          onClick={() => navigate('/create-account/weight')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -104,7 +70,7 @@ const FormTimezone = (props) => {
 
           <Select
             className='mt-10 font-heading-small text-black input-field'
-            options={options}
+            options={timezones}
             value={values["timezone"]}
             styles={customStyles}
             onChange={changeHandler}
@@ -134,11 +100,13 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
-      props.updateProfile({
+      const {updateProfile, navigate} = props;
+      updateProfile({
         body: {
-          gmt: values.timezone?.gmtTz ?? "GMT+00:00",
+          gmt: values.timezone?.value,
         },
         nextPath: '/create-account/workLength',
+        navigate,
       })
     } catch (e) {
       console.log("storing values error", e);

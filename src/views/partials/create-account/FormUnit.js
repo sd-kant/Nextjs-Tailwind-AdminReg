@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import metricIcon from "../../../assets/images/metric.svg";
 import imperialIcon from "../../../assets/images/imperial.svg";
@@ -9,9 +8,9 @@ import {Form, withFormik} from "formik";
 import * as Yup from "yup";
 import {bindActionCreators} from "redux";
 import {IMPERIAL, METRIC} from "../../../constant";
+import {useNavigate} from "react-router-dom";
 
-const formSchema = (t) => {
-  return Yup.object().shape({
+export const formShape = t => ({
     measureType: Yup.string()
       .test(
         'is-valid',
@@ -20,11 +19,15 @@ const formSchema = (t) => {
           return (value !== "");
         }
       ),
-  });
+});
+
+const formSchema = (t) => {
+  return Yup.object().shape(formShape(t));
 };
 
 const FormUnit = (props) => {
   const {t, values, setFieldValue, setRestBarClass, profile} = props;
+  const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass("progress-45");
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,16 +40,12 @@ const FormUnit = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   return (
     <Form className='form-group mt-57'>
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/dob')}
+          onClick={() => navigate('/create-account/dob')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -108,12 +107,14 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
-      props.updateProfile({
+      const {updateProfile, navigate} = props;
+      updateProfile({
         body: {
           measure: values["measureType"],
         },
         nextPath: "/create-account/height",
         apiCall: false,
+        navigate,
       })
     } catch (e) {
       console.log("storing values error", e);

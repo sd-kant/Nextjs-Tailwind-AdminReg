@@ -1,13 +1,50 @@
 @import "../../../assets/scss/colors";
 
-.FormBody {
+.FormHeader {
   width: 100%;
   max-width: 924px;
-  padding-right: 14px;
-  height: auto;
-  overflow-y: unset;
-  z-index: 1;
-  margin-bottom: 50px;
+  padding: 40px 14px 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: $app-bg;
+
+  .Header {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    margin-top: -10px;
+
+    .ChangeNote {
+      display: inline-block;
+      margin-top: 5px;
+      z-index: 2;
+    }
+  }
+
+  .Tools {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    .ReUploadWrapper {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+
+      .ReUpload {
+        position: relative;
+        z-index: 1;
+        cursor: pointer;
+        opacity: 1;
+      }
+    }
+
+    .CancelBtn {
+      margin-top: 15px;
+      margin-left: 0;
+    }
+  }
 
   .AddButton {
     display: flex;
@@ -20,11 +57,22 @@
     cursor: pointer;
     z-index: 1;
     background-color: $app-bg;
+    margin-top: 10px;
 
     .PlusIcon {
       margin-right: 24px;
     }
   }
+}
+
+.FormBody {
+  width: 100%;
+  max-width: 924px;
+  padding-right: 14px;
+  height: auto;
+  overflow-y: unset;
+  z-index: 1;
+  margin-bottom: 50px;
 
   .User {
     background: #313131;
@@ -107,23 +155,33 @@
   margin-top: 20px;
 }
 
-.Footer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 50px;
-
-  .Reupload {
-    position: relative;
-    margin: 10px 0;
-    z-index: 1;
-    cursor: pointer;
-    opacity: 1;
-  }
-}
-
 @media only screen and (min-width: 768px) {
+  .FormHeader {
+    width: calc(100vw - 130px);
+
+    .Header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-column-gap: 40px;
+      margin-top: -10px;
+    }
+
+    .Tools {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-column-gap: 40px;
+
+      .ReUploadWrapper {
+        margin-bottom: 0;
+      }
+
+      .CancelBtn {
+        margin-left: 15px;
+        margin-top: 0;
+      }
+    }
+  }
+
   .FormBody {
     width: calc(100vw - 130px);
 
@@ -162,19 +220,13 @@
       }
     }
   }
-
-  .Footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-
-    .Reupload {
-      margin-left: 76px;
-    }
-  }
 }
 
 @media only screen and (min-width: 1024px) {
+  .FormHeader {
+    width: calc(100vw - 210px);
+  }
+
   .FormBody {
     width: calc(100vw - 210px);
 
@@ -210,10 +262,12 @@
 }
 
 @media only screen and (min-width: 1400px) {
+  .FormHeader {
+    width: 910px;
+  }
+
   .FormBody {
     width: 910px;
-    height: 500px;
-    overflow-y: auto;
 
     .User {
       border-radius: 24px;

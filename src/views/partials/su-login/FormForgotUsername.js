@@ -8,7 +8,8 @@ import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} fr
 import ConfirmModal from "../../components/ConfirmModal";
 import {instance, lookupByEmail, recoverUsername} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
-import history from "../../../history";
+import {useNavigate} from "react-router-dom";
+import {apiBaseUrl} from "../../../config";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -21,6 +22,7 @@ const formSchema = (t) => {
 
 const FormForgotUsername = (props) => {
   const {values, errors, touched, t, setFieldValue, status, setStatus} = props;
+  const navigate = useNavigate();
 
   const changeFormField = (e) => {
     const {value, name} = e.target;
@@ -34,7 +36,7 @@ const FormForgotUsername = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange' onClick={() => {
-            history.push('/login');
+            navigate('/login');
           }}>
               {t("previous")}
             </span>
@@ -91,7 +93,7 @@ const FormForgotUsername = (props) => {
           onOk={(e) => {
             e.preventDefault();
             setStatus({visibleModal: false});
-            history.push("/login");
+            navigate("/login");
           }}
         />
       }
@@ -107,6 +109,7 @@ const EnhancedForm = withFormik({
   handleSubmit: async (values, {props, setStatus}) => {
     try {
       props.setLoading(true);
+      instance.defaults.baseURL = apiBaseUrl;
       const lookupRes = await lookupByEmail(values?.email);
       const {baseUri} = lookupRes.data;
       if (baseUri) {

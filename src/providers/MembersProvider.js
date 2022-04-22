@@ -19,7 +19,7 @@ import {
   getUsersUnderOrganization,
   deleteUser,
   reInviteOrganizationUser,
-  reInviteTeamUser, inviteTeamMember,
+  reInviteTeamUser, unlockUser, inviteTeamMemberV2,
 } from "../http";
 import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../views/components/ConfirmModalV2";
@@ -27,6 +27,7 @@ import {withTranslation} from "react-i18next";
 import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAction} from "../redux/action/ui";
 import {updateUrlParam} from "../utils";
 import ConfirmModal from "../views/components/ConfirmModal";
+import {useParams} from "react-router-dom";
 
 const MembersContext = React.createContext(null);
 let searchTimeout = null;
@@ -61,9 +62,8 @@ export const checkIfHigherThanMe = (myUserType, opponentPermissionLevel) => {
 const MembersProvider = (
   {
     children,
-    organizationId,
-    id,
     userType,
+    isAdmin,
     allTeams,
     queryAllTeams,
     t,
@@ -71,18 +71,23 @@ const MembersProvider = (
     showErrorNotification,
     showSuccessNotification,
   }) => {
+  const {organizationId, id} = useParams();
   const [keyword, setKeyword] = React.useState('');
+  const [keywordOnInvite, setKeywordOnInvite] = React.useState('');
+  const [searchedUsers, setSearchedUsers] = React.useState([]);
   const [members, setMembers] = React.useState([]);
   const [tempMembers, setTempMembers] = React.useState([]);
   const [users, setUsers] = React.useState([]);
   const [admins, setAdmins] = React.useState([]);
-  const [visibleDeleteModal, setVisibleDeleteModal] = React.useState(false);
-  const [visibleRemoveModal, setVisibleRemoveModal] = React.useState(false);
-  const [visibleReInviteModal, setVisibleReInviteModal] = React.useState(false);
-  const [visiblePhoneModal, setVisiblePhoneModal] = React.useState(false);
   const [confirmModal, setConfirmModal] = React.useState({
     title: null,
     visible: false,
+  });
+  const [warningModal, setWarningModal] = React.useState({
+    title: null,
+    visible: false,
+    subtitle: null,
+    mode: null, // reset-phone, re-invite, remove, delete, unlock, invite
   });
   const [selectedUser, setSelectedUser] = React.useState(null);
   const [page, setPage] = React.useState('');
@@ -168,7 +173,10 @@ const MembersProvider = (
           !trimmedKeyword ||
           [it.email?.toLowerCase(), it.firstName?.toLowerCase(), it.lastName?.toLowerCase()].some(item => item?.includes(trimmedKeyword))
         ) {
-          if ([USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN].some(ele => memberItem?.userTypesOrigin?.includes(ele))) { // if member has admin role
+          if (
+            [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].some(ele => memberItem?.userTypesOrigin?.includes(ele)) || // if super or org admin
+            memberItem?.originalAccessibleTeams?.some(ele => ele.teamId?.toString() === teamId?.toString() && ele.userTypes?.includes(USER_TYPE_TEAM_ADMIN)) // if this team's team admin
+          ) { // if member has admin role
             admins.push(memberItem);
           } else {
             users.push(memberItem);
@@ -192,12 +200,13 @@ const MembersProvider = (
       firstName: it.firstName,
       lastName: it.lastName,
       email: it.email,
-      job: jobs?.find(ele => ele.value?.toString() === (it?.job?.toString() ?? "14")),
+      job: jobs?.find(ele => ele.value?.toString() === (it?.job?.toString() ?? "no-role")),
       userTypes: it.userTypes,
       userTypesOrigin: it.userTypesOrigin,
       accessibleTeams: it.accessibleTeams,
       originalAccessibleTeams: it.originalAccessibleTeams,
       action: it.action,
+      locked: it.locked,
       phoneAction: it.phoneAction,
       phoneNumber: {
         value: it.phoneNumber,
@@ -233,7 +242,7 @@ const MembersProvider = (
         }
         // No Role Defined will be selected as default when user's job role is null, and this will not be considered as updated
         if (get(user, "job.value") !== get(origin, "job")) {
-          if (!(get(user, "job.value") === "14" && [null, undefined, ""].includes(get(origin, "job")))) {
+          if (!(get(user, "job.value") === "no-role" && [null, undefined, ""].includes(get(origin, "job")))) {
             ret = true;
           }
         }
@@ -314,11 +323,14 @@ const MembersProvider = (
         }
 
         it['index'] = index;
+        it['email'] = it.email ?? "";
+        it['firstName'] = it.firstName ?? "";
+        it['lastName'] = it.lastName ?? "";
         it['action'] = null;
         it['phoneAction'] = 1;
         it['accessibleTeams'] = accessibleTeams;
         it['originalAccessibleTeams'] = accessibleTeams;
-        it['job'] = (parseInt(it['job']) > 0 && parseInt(it['job']) <= 14) ? it['job'] : "14";
+        it['job'] = it['job'] ?? "no-role";
         it['userTypesOrigin'] = it.userTypes;
         if (!(["", "-1", null, undefined].includes(teamId))) {
           it['teamId'] = teamId;
@@ -485,7 +497,7 @@ const MembersProvider = (
     }
   };
 
-  const handleResetPhoneNumber = async () => {
+  const handleResetPhoneNumber = React.useCallback(async () => {
     if (!selectedUser?.userId)
       return;
 
@@ -508,7 +520,7 @@ const MembersProvider = (
         temp[index]['phoneNumber'] = null;
         setTempMembers(temp);
       }
-      setVisiblePhoneModal(false);
+      handleWarningHide();
       setConfirmModal({
         title: t("reset phone confirmation title"),
         visible: true,
@@ -519,16 +531,16 @@ const MembersProvider = (
     } finally {
       setLoading(false);
     }
-  };
+  }, [members, organizationId, selectedUser, setLoading, showErrorNotification, t, tempMembers]);
 
-  const handleRemoveFromTeam = async () => {
-    if (selectedUser?.teamId && selectedUser?.email) {
+  const handleRemoveFromTeam = React.useCallback(async () => {
+    if (selectedUser?.teamId && selectedUser?.userId) {
       try {
         setLoading(true);
-        await inviteTeamMember(selectedUser?.teamId, {
-          remove: [selectedUser.email],
+        await inviteTeamMemberV2(selectedUser?.teamId, {
+          remove: [selectedUser.userId],
         });
-        setVisibleRemoveModal(false);
+        handleWarningHide();
         setConfirmModal({visible: true, title: t("remove user confirmation title")});
         showSuccessNotification(t('msg user removed success', {
           user: `${selectedUser?.firstName} ${selectedUser?.firstName}`,
@@ -543,9 +555,9 @@ const MembersProvider = (
         setLoading(false);
       }
     }
-  };
+  }, [selectedUser, setLoading, showErrorNotification, showSuccessNotification, t, teamId]);
 
-  const handleDeleteUser = () => {
+  const handleDeleteUser = React.useCallback(() => {
     // only super or org admin can do this
     if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) {
       if (!(["-1", "", null, undefined].includes(organizationId?.toString())) && selectedUser?.userId) {
@@ -555,7 +567,7 @@ const MembersProvider = (
           userId: selectedUser?.userId,
         })
           .then(() => {
-            setVisibleDeleteModal(false);
+            handleWarningHide();
             setConfirmModal({visible: true, title: t("delete user confirmation title")});
             setMembers(prev => prev.filter(it => it.userId?.toString() !== selectedUser.userId.toString()));
             setTempMembers(prev => prev.filter(it => it.userId?.toString() !== selectedUser.userId.toString()));
@@ -571,11 +583,47 @@ const MembersProvider = (
           });
       }
     }
-  };
+  }, [organizationId, selectedUser, setLoading, showErrorNotification, showSuccessNotification, t, userType]);
 
-  const handleReInvite = () => {
+  const _handleUnlockUser = React.useCallback(() => {
+    setLoading(true);
+    let fTeamId = teamId;
+    if (["-1", "", null, undefined].includes(teamId?.toString())) {
+      fTeamId = teams?.[0].value;
+    }
+    if (["-1", "", null, undefined].includes(fTeamId?.toString())) return;
+
+    unlockUser({
+      teamId: fTeamId,
+      userId: selectedUser?.userId,
+    })
+      .then(() => {
+        handleWarningHide();
+        setConfirmModal({
+          visible: true,
+          title: t("unlock user confirmation title", {name: `${selectedUser?.firstName} ${selectedUser?.lastName}`})
+        });
+        setMembers(prev => prev.map(it => it.userId?.toString() === selectedUser.userId.toString() ? {
+          ...it,
+          locked: false
+        } : it));
+        setTempMembers(prev => prev.map(it => it.userId?.toString() === selectedUser.userId.toString() ? {
+          ...it,
+          locked: false
+        } : it));
+      })
+      .catch(e => {
+        showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [teamId, selectedUser, setLoading, showErrorNotification, t, teams]);
+
+  const handleReInvite = React.useCallback(() => {
     const user = selectedUser;
-    let requestHttp = null; let payload = null;
+    let requestHttp = null;
+    let payload = null;
     if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) { // super or org admin
       if (!["-1", "", null, undefined].includes(organizationId?.toString()) && user?.userId) {
         requestHttp = reInviteOrganizationUser;
@@ -606,7 +654,7 @@ const MembersProvider = (
       setLoading(true);
       requestHttp(payload)
         .then(() => {
-          setVisibleReInviteModal(false);
+          handleWarningHide();
           setConfirmModal({
             visible: true,
             title: t("re-invite user confirmation title"),
@@ -622,7 +670,7 @@ const MembersProvider = (
           setLoading(false);
         });
     }
-  };
+  }, [allTeams, members, organizationId, selectedUser, setLoading, showErrorNotification, showSuccessNotification, t, userType]);
 
   const handlePhoneOptionClick = (value, user) => {
     switch (value?.toString()) {
@@ -630,7 +678,12 @@ const MembersProvider = (
         break;
       case "2":
         setSelectedUser(user);
-        setVisiblePhoneModal(true);
+        setWarningModal({
+          visible: true,
+          title: t("reset phone warning title"),
+          subtitle: null,
+          mode: 'reset-phone',
+        });
         break;
       default:
         console.log('please select valid phone action type');
@@ -641,20 +694,186 @@ const MembersProvider = (
     switch (value?.toString()) {
       case "1": // re-invite
         setSelectedUser(user);
-        setVisibleReInviteModal(true);
+        setWarningModal({
+          visible: true,
+          title: t("re-invite user warning title"),
+          subtitle: null,
+          mode: 're-invite',
+        });
         break;
       case "2": // remove from team
         setSelectedUser(user);
-        setVisibleRemoveModal(true);
+        setWarningModal({
+          visible: true,
+          title: t("remove user warning title"),
+          subtitle: null,
+          mode: 'remove',
+        });
         break;
       case "3": // delete
         setSelectedUser(user);
-        setVisibleDeleteModal(true);
+        setWarningModal({
+          visible: true,
+          title: t('delete user warning title'),
+          subtitle: t('delete user warning description'),
+          mode: 'delete',
+        });
         break;
       default:
         console.log('please select valid action type');
     }
   };
+
+  const handleWarningHide = () => {
+    setWarningModal({
+      visible: false,
+      title: null,
+      subtitle: null,
+      mode: null,
+    });
+  };
+
+  const handleInviteUser = React.useCallback(async () => {
+    return new Promise((resolve, reject) => {
+      const filteredUserTypes = selectedUser?.userTypes?.filter(it => [USER_TYPE_TEAM_ADMIN, USER_TYPE_OPERATOR].includes(it));
+      const userId = selectedUser?.userId;
+      if (teamId && userId && filteredUserTypes) {
+        const payload = {
+          add: [{
+            userId,
+            userTypes: filteredUserTypes?.length > 0 ? filteredUserTypes : [USER_TYPE_OPERATOR],
+          }]
+        };
+        setLoading(true);
+        inviteTeamMemberV2(teamId, payload)
+          .then(() => {
+            setWarningModal({
+              visible: false,
+              title: null,
+              subtitle: null,
+              mode: null,
+            });
+            setSearchedUsers(prev => (prev?.filter(it => it.userId?.toString() !== userId?.toString()) ?? []));
+            initializeMembers().then();
+            showSuccessNotification(t("msg user invite success", {
+              user: `${selectedUser?.firstName} ${selectedUser?.lastName}`,
+            }));
+            setSelectedUser(null);
+            resolve();
+          })
+          .catch(e => {
+            console.error("invite user error", e);
+            reject();
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      } else {
+        reject();
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ selectedUser, showSuccessNotification, t, teamId, setLoading]);
+
+  const handleWarningOk = React.useCallback(() => {
+    switch (warningModal.mode) {
+      case 'reset-phone':
+        handleResetPhoneNumber().then();
+        break;
+      case 're-invite':
+        handleReInvite();
+        break;
+      case 'remove':
+        handleRemoveFromTeam().then();
+        break;
+      case 'delete':
+        handleDeleteUser();
+        break;
+      case 'unlock':
+        _handleUnlockUser();
+        break;
+      case 'invite':
+        handleInviteUser().then();
+        break;
+      default:
+        console.log("not registered action");
+    }
+  }, [warningModal.mode, handleResetPhoneNumber, handleReInvite, handleRemoveFromTeam, handleDeleteUser, _handleUnlockUser, handleInviteUser]);
+
+  const handleUnlockUser = user => {
+    setSelectedUser(user);
+    setWarningModal({
+      visible: true,
+      title: t('unlock user warning title'),
+      subtitle: null,
+      mode: 'unlock',
+    });
+  };
+
+  const handleInviteClick = userId => {
+    const user = searchedUsers?.find(it => it.userId?.toString() === userId?.toString());
+    if (teamId && user) {
+      setSelectedUser(user);
+      const teamName = teams?.find(it => it.value?.toString() === teamId?.toString())?.label;
+      const userName = `${user.firstName} ${user.lastName}`;
+
+      setWarningModal({
+        visible: true,
+        title: t('invite user', {user: userName, team: teamName}),
+        subtitle: null,
+        mode: 'invite',
+      });
+    }
+  };
+
+  const trimmedKeywordOnInvite = React.useMemo(() => keywordOnInvite?.trim()?.toLowerCase(), [keywordOnInvite]);
+  React.useEffect(() => {
+    if (trimmedKeywordOnInvite) {
+      let promise = null;
+      let promiseBody = {};
+      if (isAdmin && [undefined, "-1", null, ""].includes(organizationId?.toString())) {
+        promise = searchMembersUnderOrganization;
+        promiseBody = {organizationId, keyword: trimmedKeywordOnInvite};
+      } else {
+        promise = searchMembersAPI;
+        promiseBody = trimmedKeywordOnInvite;
+      }
+      if (promise) {
+        if (searchTimeout) {
+          clearTimeout(searchTimeout);
+        }
+
+        const load = () => {
+          return new Promise((resolve, reject) => {
+            searchTimeout = setTimeout(async () => {
+              try {
+                const res = await promise(promiseBody);
+                resolve(res.data);
+              } catch (e) {
+                reject(e);
+              }
+            }, 700);
+          })
+        };
+
+        try {
+          load().then(res => setSearchedUsers(res));
+        } catch (e) {
+          console.error("load based on keywordOnInvite error", e);
+          setSearchedUsers([]);
+        }
+      }
+    } else {
+      setSearchedUsers([]);
+    }
+  }, [trimmedKeywordOnInvite, isAdmin, organizationId]);
+  const dropdownItems = React.useMemo(() => {
+    return searchedUsers?.filter(it => users?.every(ele => ele.userId?.toString() !== it.userId?.toString()) && admins?.every(ele => ele.userId?.toString() !== it.userId?.toString()))?.map(it => ({
+      value: it.userId,
+      title: `${it.firstName} ${it.lastName}`,
+      subtitle: it.email ?? it.phoneNumber,
+    })) ?? [];
+  }, [searchedUsers, users, admins]);
 
   const providerValue = {
     userType,
@@ -671,6 +890,9 @@ const MembersProvider = (
     setTeamId,
     setPage,
     setSelectedUser,
+    dropdownItems,
+    keywordOnInvite,
+    setKeywordOnInvite,
     initializeMembers,
     handleMemberInfoChange,
     handleMemberTeamUserTypeChange,
@@ -678,34 +900,18 @@ const MembersProvider = (
     handleResetUpdates,
     handlePhoneOptionClick,
     handleActionOptionClick,
+    handleUnlockUser,
+    handleInviteClick,
   };
 
   return (
     <MembersContext.Provider value={providerValue}>
       <ConfirmModalV2
-        show={visiblePhoneModal}
-        header={t("reset phone warning title")}
-        onOk={handleResetPhoneNumber}
-        onCancel={() => setVisiblePhoneModal(false)}
-      />
-      <ConfirmModalV2
-        show={visibleReInviteModal}
-        header={t("re-invite user warning title")}
-        onOk={handleReInvite}
-        onCancel={() => setVisibleReInviteModal(false)}
-      />
-      <ConfirmModalV2
-        show={visibleRemoveModal}
-        header={t('remove user warning title')}
-        onOk={handleRemoveFromTeam}
-        onCancel={() => setVisibleRemoveModal(false)}
-      />
-      <ConfirmModalV2
-        show={visibleDeleteModal}
-        header={t('delete user warning title')}
-        subheader={t('delete user warning description')}
-        onOk={handleDeleteUser}
-        onCancel={() => setVisibleDeleteModal(false)}
+        show={warningModal.visible}
+        header={warningModal.title}
+        subheader={warningModal.subtitle}
+        onOk={handleWarningOk}
+        onCancel={handleWarningHide}
       />
       <ConfirmModal
         show={confirmModal?.visible}
@@ -721,6 +927,7 @@ const mapStateToProps = (state) => ({
   allTeams: get(state, 'base.allTeams'),
   userType: get(state, 'auth.userType'),
   myOrganizationId: get(state, 'auth.organizationId'),
+  isAdmin: get(state, 'auth.isAdmin'),
 });
 
 const mapDispatchToProps = (dispatch) =>

@@ -40,4 +40,4 @@ const Checkbox = (
   )
 }
 
-export default Checkbox;
+export default React.memo(Checkbox);

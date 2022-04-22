@@ -1,43 +1,45 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, forwardRef} from 'react';
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import {Form, withFormik} from "formik";
 import * as Yup from "yup";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
 import DatePicker from "react-modern-calendar-datepicker";
+import {useNavigate} from "react-router-dom";
+
+export const formShape = t => ({
+  dob: Yup.object()
+    .required(t("dob required"))
+    .test(
+      'is-valid',
+      t('dob invalid'),
+      function (value) {
+        if (!value) {
+          return false;
+        }
+        const {year: selectedYear, month: selectedMonth, day: selectedDay} = value;
+        if (selectedYear < 1900) {
+          return false;
+        }
+        return (new Date(selectedYear, selectedMonth - 1, selectedDay) < new Date());
+      }
+    )
+    .test(
+      'is-18',
+      t('dob less 18'),
+      function (value) {
+        if (!value) {
+          return false;
+        }
+        const {year: selectedYear, month: selectedMonth, day: selectedDay} = value;
+        const age = getAge(new Date(selectedYear, selectedMonth - 1, selectedDay));
+        return age >= 18;
+      }
+    ),
+});
 
 const formSchema = (t) => {
-  return Yup.object().shape({
-    dob: Yup.object()
-      .required(t("dob required"))
-      .test(
-        'is-valid',
-        t('dob invalid'),
-        function (value) {
-          if (!value) {
-            return false;
-          }
-          const {year: selectedYear, month: selectedMonth, day: selectedDay} = value;
-          if (selectedYear < 1900) {
-            return false;
-          }
-          return (new Date(selectedYear, selectedMonth - 1, selectedDay) < new Date());
-        }
-      )
-      .test(
-        'is-18',
-        t('dob less 18'),
-        function (value) {
-          if (!value) {
-            return false;
-          }
-          const {year: selectedYear, month: selectedMonth, day: selectedDay} = value;
-          const age = getAge(new Date(selectedYear, selectedMonth - 1, selectedDay));
-          return age >= 18;
-        }
-      ),
-  });
+  return Yup.object().shape(formShape(t));
 };
 
 const getAge = (dateString) => {
@@ -52,9 +54,28 @@ const getAge = (dateString) => {
   return age;
 }
 
+export const CustomInput = forwardRef((props, ref) => {
+  const {selectedDay, disabled, name} = props;
+  return (
+    <input
+      readOnly
+      ref={ref} // necessary
+      name={name}
+      className={`input input-field mt-10 font-heading-small ${disabled ? 'text-gray' : 'text-white'}`}
+      disabled={disabled}
+      placeholder="Please pick your birthday"
+      value={selectedDay ? new Date(selectedDay.year, selectedDay.month - 1, selectedDay.day).toLocaleDateString() : ''}
+      type='text'
+    />
+  )
+});
+
+CustomInput.displayName = 'CustomInput';
+
 const FormBirth = (props) => {
   const {t, values, setFieldValue, setRestBarClass, errors, touched, profile} = props;
   const [selectedDay, setSelectedDay] = React.useState(null);
+  const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass('progress-36');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,23 +94,12 @@ const FormBirth = (props) => {
     }
   }, [profile]);
   const navigateTo = (path) => {
-    history.push(path);
+    navigate(path);
   }
   useEffect(() => {
     setFieldValue("dob", selectedDay);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDay]);
-
-  const renderCustomInput = ({ref}) => (
-    <input
-      readOnly
-      ref={ref} // necessary
-      className='input input-field mt-10 font-heading-small text-white'
-      placeholder="Please pick your birthday"
-      value={selectedDay ? new Date(selectedDay.year, selectedDay.month - 1, selectedDay.day).toLocaleDateString() : ''}
-      type='text'
-    />
-  )
 
   return (
     <Form className='form-group mt-57'>
@@ -119,7 +129,9 @@ const FormBirth = (props) => {
           <DatePicker
             value={selectedDay}
             colorPrimary={'#DE7D2C'}
-            renderInput={renderCustomInput}
+            renderInput={({ref}) => {
+              return <CustomInput ref={ref} selectedDay={selectedDay}/>
+            }}
             onChange={setSelectedDay}
           />
 
@@ -145,6 +157,16 @@ const FormBirth = (props) => {
   )
 }
 
+export const makeDobStr = ({year, month, day}) => {
+  return `${year}-${month.toLocaleString("en-US", {
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+  })}-${day.toLocaleString("en-US", {
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+  })}`;
+}
+
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     dob: '',
@@ -152,24 +174,16 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
+      const {updateProfile, navigate} = props;
       const dob = values["dob"];
-      const {
-        year,
-        month,
-        day
-      } = dob;
-      const dobStr = `${year}-${month.toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      })}-${day.toLocaleString("en-US", {
-        minimumIntegerDigits: 2,
-        useGrouping: false,
-      })}`;
-      props.updateProfile({
+      const {year, month, day} = dob;
+      const dobStr = makeDobStr({year, month, day});
+      updateProfile({
         body: {
           dateOfBirth: dobStr,
         },
         nextPath: '/create-account/unit',
+        navigate,
       })
     } catch (e) {
       console.log("storing values error", e);

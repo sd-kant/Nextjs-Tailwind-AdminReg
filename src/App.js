@@ -3,12 +3,18 @@ import {connect} from "react-redux";
 import './App.scss';
 import Router from "./Router";
 import "./i18nextInit";
-import {Backdrop} from "./views/components/Backdrop";
-import {Loader} from "./views/components/Loader";
+import Backdrop from "./views/components/Backdrop";
+import Loader from "./views/components/Loader";
 import {get} from 'lodash';
 import {WidthProvider} from "./providers/WidthProvider";
+import {GlobalDebug} from "./utils/remove-console";
 
 function App({loading}) {
+  React.useEffect(() => {
+    (process.env.REACT_APP_ENV === "PRODUCTION") &&
+    GlobalDebug(false);
+  }, []);
+
   return (
     <WidthProvider>
       <div>

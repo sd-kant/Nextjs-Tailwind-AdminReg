@@ -1,29 +1,33 @@
 import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import maleIcon from "../../../assets/images/male.svg";
 import femaleIcon from "../../../assets/images/female.svg";
 import {Form, withFormik} from "formik";
 import * as Yup from "yup";
 import {bindActionCreators} from "redux";
+import {useNavigate} from "react-router-dom";
+import {FEMALE, MALE} from "../../../constant";
+
+export const formShape = t => ({
+  gender: Yup.string()
+    .test(
+      'is-valid',
+      t('gender required'),
+      function (value) {
+        return (value !== "");
+      }
+    ),
+});
 
 const formSchema = (t) => {
-  return Yup.object().shape({
-    gender: Yup.number()
-      .test(
-        'is-valid',
-        t('gender required'),
-        function (value) {
-          return (value !== "");
-        }
-      ),
-  });
+  return Yup.object().shape(formShape(t));
 };
 
 const FormGender = (props) => {
   const {t, values, setFieldValue, setRestBarClass, profile} = props;
+  const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass("progress-27");
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -36,7 +40,7 @@ const FormGender = (props) => {
   }, [profile]);
 
   const navigateTo = (path) => {
-    history.push(path);
+    navigate(path);
   }
 
   return (
@@ -61,8 +65,8 @@ const FormGender = (props) => {
 
         <div className="mt-40 d-flex">
           <div
-            className={`tap cursor-pointer ${values["gender"]?.toString() === "0" ? 'active' : ''}`}
-            onClick={() => setFieldValue("gender", 0)}
+            className={`tap cursor-pointer ${values["gender"]?.toString() === MALE ? 'active' : ''}`}
+            onClick={() => setFieldValue("gender", MALE)}
           >
             <img src={maleIcon} alt="male icon"/>
 
@@ -72,8 +76,8 @@ const FormGender = (props) => {
           </div>
 
           <div
-            className={`ml-40 cursor-pointer tap ${values["gender"]?.toString() === "1" ? 'active' : ''}`}
-            onClick={() => setFieldValue("gender", 1)}
+            className={`ml-40 cursor-pointer tap ${values["gender"]?.toString() === FEMALE ? 'active' : ''}`}
+            onClick={() => setFieldValue("gender", FEMALE)}
           >
             <img src={femaleIcon} alt="female icon"/>
 
@@ -87,8 +91,8 @@ const FormGender = (props) => {
       <div className='mt-80'>
 
         <button
-          className={`button ${["0", "1"].includes(values["gender"]?.toString()) ? "active cursor-pointer" : "inactive cursor-default"}`}
-          type={["0", "1"].includes(values["gender"]?.toString()) ? "submit" : "button"}
+          className={`button ${[MALE, FEMALE].includes(values["gender"]?.toString()) ? "active cursor-pointer" : "inactive cursor-default"}`}
+          type={[MALE, FEMALE].includes(values["gender"]?.toString()) ? "submit" : "button"}
         >
           <span className='font-button-label text-white'>
             {t("next")}
@@ -106,11 +110,13 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
-      props.updateProfile({
+      const {updateProfile, navigate} = props;
+      updateProfile({
         body: {
           sex: values["gender"],
         },
         nextPath: '/create-account/dob',
+        navigate,
       })
     } catch (e) {
       console.log("storing values error", e);

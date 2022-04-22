@@ -4,18 +4,20 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import backIcon from "../../../assets/images/back.svg";
-import history from "../../../history";
 import {bindActionCreators} from "redux";
+import {useNavigate} from "react-router-dom";
+
+export const formShape = t => ({
+  firstName: Yup.string()
+    .required(t('your firstName required'))
+    .max(1024, t('firstName max error')),
+  lastName: Yup.string()
+    .required(t('your lastName required'))
+    .max(1024, t('lastName max error')),
+});
 
 const formSchema = (t) => {
-  return Yup.object().shape({
-    firstName: Yup.string()
-      .required(t('your firstName required'))
-      .max(1024, t('firstName max error')),
-    lastName: Yup.string()
-      .required(t('your lastName required'))
-      .max(1024, t('lastName max error')),
-  });
+  return Yup.object().shape(formShape(t));
 };
 
 const FormName = (props) => {
@@ -26,6 +28,7 @@ const FormName = (props) => {
     setFieldValue,
     setRestBarClass,
   } = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass('progress-18');
@@ -46,16 +49,12 @@ const FormName = (props) => {
     setFieldValue(name, value);
   }
 
-  const goBack = () => {
-    history.back();
-  };
-
   return (
     <Form className='form-group mt-57'>
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => goBack()}
+          onClick={() => navigate(-1)}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -133,13 +132,14 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
-      const {updateProfile} = props;
+      const {updateProfile, navigate} = props;
       updateProfile({
         body: {
           firstName: values["firstName"],
           lastName: values["lastName"],
         },
-        nextPath: "/create-account/gender"
+        nextPath: "/create-account/gender",
+        navigate,
       });
     } catch (e) {
       console.log("storing values error", e);

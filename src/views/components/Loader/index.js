@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Loader = () => {
+const Loader = () => {
   return (
     <div className="lds-roller-wrapper">
       <div className="lds-roller">

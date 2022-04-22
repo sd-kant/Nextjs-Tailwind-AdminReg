@@ -4,7 +4,6 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import history from "../../../history";
 import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
 import {queryAllTeamsAction} from "../../../redux/action/base";
 import {get} from "lodash";
@@ -14,6 +13,7 @@ import ResponsiveSelect from "../../components/ResponsiveSelect";
 import {getUsersUnderOrganization, queryTeamMembers, updateTeam} from "../../../http";
 import {useOrganizationContext} from "../../../providers/OrganizationProvider";
 import CreatableSelect from "react-select/creatable/dist/react-select.esm";
+import {useNavigate} from "react-router-dom";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -36,9 +36,10 @@ const formSchema = (t) => {
 };
 
 const FormTeamModify = (props) => {
-  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams, match: {params: {organizationId}}, isAdmin, showErrorNotification,} = props;
+  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams, organizationId, isAdmin, showErrorNotification,} = props;
   const [hasUnassignedMember, setHasUnassignedMember] = React.useState(false);
   const {regions, locations} = useOrganizationContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass("progress-54 medical");
@@ -102,16 +103,12 @@ const FormTeamModify = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTeams, hasUnassignedMember]);
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   return (
     <Form className='form mt-57'>
       <div>
         <div
           className="d-inline-flex align-center cursor-pointer"
-          onClick={() => navigateTo(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}
+          onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -243,11 +240,12 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue}) => {
     const teamId = values?.name?.value;
+    const {setLoading, showErrorNotification} = props;
+    const {organizationId, navigate} = props;
+
     if (teamId?.toString() === "-1") { // if selected "no team assigned"
-      const {match: {params: {organizationId}}} = props;
-      history.push(`/invite/${organizationId}/edit/modify/-1`);
+      navigate(`/invite/${organizationId}/edit/modify/-1`);
     } else {
-      const {setLoading, showErrorNotification} = props;
       try {
         setLoading(true);
 
@@ -266,9 +264,9 @@ const EnhancedForm = withFormik({
           const {allTeams} = props;
           const team = allTeams.find(it => it.id?.toString() === values?.name?.value?.toString());
           if (teamMembers?.length > 0 && team) {
-            history.push(`/invite/${team.orgId}/edit/modify/${team.id}`);
+            navigate(`/invite/${team.orgId}/edit/modify/${team.id}`);
           } else {
-            history.push(`/invite/${team.orgId}/edit/manual/${team.id}`);
+            navigate(`/invite/${team.orgId}/edit/manual/${team.id}`);
           }
         }
       } catch (e) {

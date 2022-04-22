@@ -9,7 +9,7 @@ import {get} from 'lodash';
 import {getMyProfileWithToken, requestSmsCode} from "../../../http";
 import {getParamFromUrl} from "../../../utils";
 import backIcon from "../../../assets/images/back.svg";
-import history from "../../../history";
+import {useNavigate} from "react-router-dom";
 
 const FormPhoneVerification = (props) => {
   const {
@@ -25,6 +25,7 @@ const FormPhoneVerification = (props) => {
   } = props;
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [code, setCode] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     setClassName();
@@ -34,7 +35,11 @@ const FormPhoneVerification = (props) => {
 
   useEffect(() => {
     if (code?.length === 6) {
-      login(phoneNumber, code);
+      login({
+        phoneNumber,
+        loginCode: code,
+        navigate,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
@@ -72,10 +77,6 @@ const FormPhoneVerification = (props) => {
     setRestBarClass(`progress-50`);
   }
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   const resendCode = async () => {
     if (phoneNumber) {
       try {
@@ -97,7 +98,7 @@ const FormPhoneVerification = (props) => {
           className="d-inline-flex align-center cursor-pointer"
           onClick={() => {
             setToken(null);
-            navigateTo('/login');
+            navigate('/login');
           }}
         >
           <img src={backIcon} alt="back"/>

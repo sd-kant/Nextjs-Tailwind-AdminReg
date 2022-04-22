@@ -1,35 +1,40 @@
 import React from 'react';
 
 const Radio = (props) => {
+  const {title, answer, value, disabled, onChange} = props;
+  const checked = answer === value;
   return (
     <div className="mt-25">
-      <label className="radio-container font-binary">
-        {props.title}
+      <label className={`radio-container font-binary ${disabled ? 'text-gray cursor-default' : 'text-white'}`}>
+        {title}
         <input
           type="radio"
           name="radio"
-          checked={props.answer === props.value}
-          value={props.value}
-          onChange={() => props.onChange(props.value)}
+          checked={checked}
+          value={value}
+          onChange={() => {
+            if (!disabled) onChange(value);
+          }}
         />
-        <span className="checkmark"/>
+        <span className={`checkmark ${!checked && disabled ? 'disabled' : ''}`}/>
       </label>
     </div>
   )
 }
 
 const RadioGroup = (props) => {
-  const options = props.options;
+  const {options, disabled, onChange, answer} = props;
   return (
     <div>
       {
         options && options.map((option, index) => (
           <Radio
             key={`radio-${index}`}
+            disabled={disabled}
             value={option.value}
             title={option.title}
-            onChange={props.onChange}
-            answer={props.answer}
+            onChange={onChange}
+            answer={answer}
           />
         ))
       }

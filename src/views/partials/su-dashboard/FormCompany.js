@@ -4,7 +4,6 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import history from "../../../history";
 import CreatableSelect from 'react-select/creatable';
 import {createCompany, createUserByAdmin, getUsersUnderOrganization, updateCompany} from "../../../http";
 import {
@@ -16,7 +15,7 @@ import {
 import {
   passwordExpirationDaysOptions,
   passwordMinLengthOptions,
-  twoFAOptions, USER_TYPE_ORG_ADMIN
+  twoFAOptions, USER_TYPE_ORG_ADMIN, hideCbtHROptions
 } from "../../../constant";
 import {queryAllOrganizationsAction} from "../../../redux/action/base";
 import {get} from "lodash";
@@ -29,6 +28,8 @@ import countryRegions from 'country-region-data/data.json';
 import removeIcon from "../../../assets/images/remove.svg";
 import plusCircleFire from "../../../assets/images/plus-circle-fire.svg";
 import {defaultMember, lowercaseEmail, setUserTypeToUsers} from "./FormRepresentative";
+import {useNavigate} from "react-router-dom";
+import ConfirmModal from "../../components/ConfirmModal";
 
 export const customStyles = () => ({
   option: (provided, state) => ({
@@ -76,6 +77,7 @@ const formSchema = (t) => {
     twoFA: Yup.boolean(),
     passwordMinimumLength: Yup.number(),
     passwordExpirationDays: Yup.number(),
+    hideCbtHR: Yup.boolean(),
     users: Yup.array().of(
       Yup.object().shape({
         email: Yup.string()
@@ -105,6 +107,8 @@ const FormCompany = (props) => {
     queryAllOrganizations,
     isOrgAdmin,
     isSuperAdmin,
+    setStatus,
+    status: {visibleModal},
   } = props;
   // const options = useMemo(() => AVAILABLE_COUNTRIES, []);
   const options = useMemo(() =>
@@ -113,6 +117,7 @@ const FormCompany = (props) => {
     [countryRegions]
   );
   const [orgAdmins, setOrgAdmins] = React.useState([]);
+  const navigate = useNavigate();
   React.useEffect(() => {
     setFieldValue("users", []);
     if (!(values.companyName?.__isNew__) && values.companyName?.value) {
@@ -161,7 +166,7 @@ const FormCompany = (props) => {
         } else {
           setFieldValue("companyCountry", options?.[0]);
         }
-        const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays'];
+        const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays', 'hideCbtHR'];
         fields?.forEach(item => setFieldValue(item, value[item]))
       }
     }
@@ -177,6 +182,7 @@ const FormCompany = (props) => {
       twoFA: organization.settings?.twoFA ?? false,
       passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 6,
       passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
+      hideCbtHR: organization.settings?.hideCbtHR ?? false,
       created: true,
     }))) || []);
   }, [allOrganizations]);
@@ -232,402 +238,428 @@ const FormCompany = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formattedRegions, values.companyName]);
 
+  const handleCancel = () => {
+    if (isEditing) {
+      cancelEditing();
+    } else {
+      navigate("/select-mode");
+    }
+  };
+
   return (
-    <Form className='form mt-57'>
-      <div className={clsx(style.TopWrapper)}>
-        <div className='grouped-form'>
-          <label className="font-header-medium">
-            {values.isEditing ? t("edit company") : (isSuperAdmin ? t("create or select company") : t("welcome"))}
-          </label>
-          {
-            (values.companyName?.created && !values.isEditing) ?
-              <label
-                className={`font-binary d-block mt-8 text-capitalize text-orange cursor-pointer`}
-                onClick={enableEditing}
-              >
-                {t("edit")}
-              </label> : null
-            /*<label className={`font-binary d-block mt-8 text-capitalize text-white`}>
-              {isSuperAdmin ? t("create or select company description") : t("select company description")}
-            </label>*/
-          }
-        </div>
-
-        <div className='d-flex flex-column mt-40'>
-          <label className='font-input-label'>
-            {t("company name")}
-          </label>
-          {
-            values.isEditing ?
-              <input
-                className='input input-field mt-10 font-heading-small text-white'
-                name="editingCompanyName"
-                value={values["editingCompanyName"]}
-                type='text'
-                onChange={changeFormField}
-              /> :
-              (
-                isSuperAdmin ?
-                  <CreatableSelect
-                    className='mt-10 font-heading-small text-black input-field'
-                    isClearable
-                    options={organizations}
-                    value={values["companyName"]}
-                    name="companyName"
-                    styles={customStyles()}
-                    placeholder={t("enter name")}
-                    menuPortalTarget={document.body}
-                    menuPosition={'fixed'}
-                    onChange={(value) => changeHandler("companyName", value)}
-                  /> :
-                  <ResponsiveSelect
-                    className='mt-10 font-heading-small text-black input-field'
-                    options={organizations}
-                    value={values["companyName"]}
-                    name="companyName"
-                    styles={customStyles()}
-                    menuPortalTarget={document.body}
-                    menuPosition={'fixed'}
-                    placeholder={t("enter name")}
-                    onChange={(value) => changeHandler("companyName", value)}
-                  />
-              )
-          }
-          {
-            values["isEditing"] ?
-              touched.editingCompanyName && errors.editingCompanyName && (
-                <span className="font-helper-text text-error mt-10">{errors.editingCompanyName}</span>
-              )
-              :
-              touched.companyName && errors.companyName && (
-                <span className="font-helper-text text-error mt-10">{errors.companyName?.label}</span>
-              )
-          }
-        </div>
-        {
-          isEditing &&
-          <div className='mt-40 d-flex flex-column'>
-            <label className='font-input-label'>
-              {t("company country")}
+    <React.Fragment>
+      <Form className='form mt-57'>
+        <div className={clsx(style.TopWrapper)}>
+          <div className='grouped-form'>
+            <label className="font-header-medium">
+              {values.isEditing ? t("edit company") : (isSuperAdmin ? t("create or select company") : t("welcome"))}
             </label>
-
-            <ResponsiveSelect
-              className='mt-10 font-heading-small text-black input-field'
-              options={options}
-              value={values["companyCountry"]}
-              name="companyCountry"
-              styles={customStyles()}
-              onChange={(value) => changeHandler("companyCountry", value)}
-              menuPortalTarget={document.body}
-              menuPosition={'fixed'}
-              placeholder={t("select")}
-            />
-
             {
-              touched.companyCountry && errors.companyCountry && (
-                <span className="font-helper-text text-error mt-10">{errors.companyCountry}</span>
-              )
+              (values.companyName?.created && !values.isEditing) ?
+                <label
+                  className={`font-binary d-block mt-8 text-capitalize text-orange cursor-pointer`}
+                  onClick={enableEditing}
+                >
+                  {t("edit")}
+                </label> : null
+              /*<label className={`font-binary d-block mt-8 text-capitalize text-white`}>
+                {isSuperAdmin ? t("create or select company description") : t("select company description")}
+              </label>*/
             }
           </div>
-        }
-        {
-          (isEditing && values["companyCountry"]?.value) &&
-          <div className='mt-40 d-flex flex-column'>
+
+          <div className='d-flex flex-column mt-40'>
+            <label className='font-input-label'>
+              {t("company name")}
+            </label>
+            {
+              values.isEditing ?
+                <input
+                  className='input input-field mt-10 font-heading-small text-white'
+                  name="editingCompanyName"
+                  value={values["editingCompanyName"]}
+                  type='text'
+                  onChange={changeFormField}
+                /> :
+                (
+                  isSuperAdmin ?
+                    <CreatableSelect
+                      className='mt-10 font-heading-small text-black input-field'
+                      isClearable
+                      options={organizations}
+                      value={values["companyName"]}
+                      name="companyName"
+                      styles={customStyles()}
+                      placeholder={t("enter name")}
+                      menuPortalTarget={document.body}
+                      menuPosition={'fixed'}
+                      onChange={(value) => changeHandler("companyName", value)}
+                    /> :
+                    <ResponsiveSelect
+                      className='mt-10 font-heading-small text-black input-field'
+                      options={organizations}
+                      value={values["companyName"]}
+                      name="companyName"
+                      styles={customStyles()}
+                      menuPortalTarget={document.body}
+                      menuPosition={'fixed'}
+                      placeholder={t("enter name")}
+                      onChange={(value) => changeHandler("companyName", value)}
+                    />
+                )
+            }
+            {
+              values["isEditing"] ?
+                touched.editingCompanyName && errors.editingCompanyName && (
+                  <span className="font-helper-text text-error mt-10">{errors.editingCompanyName}</span>
+                )
+                :
+                touched.companyName && errors.companyName && (
+                  <span className="font-helper-text text-error mt-10">{errors.companyName?.label}</span>
+                )
+            }
+          </div>
+          {
+            isEditing &&
+            <div className='mt-40 d-flex flex-column'>
+              <label className='font-input-label'>
+                {t("company country")}
+              </label>
+
+              <ResponsiveSelect
+                className='mt-10 font-heading-small text-black input-field'
+                options={options}
+                value={values["companyCountry"]}
+                name="companyCountry"
+                styles={customStyles()}
+                onChange={(value) => changeHandler("companyCountry", value)}
+                menuPortalTarget={document.body}
+                menuPosition={'fixed'}
+                placeholder={t("select")}
+              />
+
+              {
+                touched.companyCountry && errors.companyCountry && (
+                  <span className="font-helper-text text-error mt-10">{errors.companyCountry}</span>
+                )
+              }
+            </div>
+          }
+          {
+            (isEditing && values["companyCountry"]?.value) &&
+            <div className='mt-40 d-flex flex-column'>
             <span className='font-input-label'>
               {t("company region")}
             </span>
 
-            <div className='mt-10 input-field'>
-              <MultiSelectPopup
-                label={regionSelectorLabel}
-                options={formattedRegions}
-                value={values["regions"]}
-                onChange={value => changeHandler('regions', value)}
-              />
-            </div>
-            {
-              touched.regions && errors.regions && (
-                <span className="font-helper-text text-error mt-10">{errors.regions}</span>
-              )
-            }
-          </div>
-        }
-
-        {
-          values.isEditing &&
-          <React.Fragment>
-            <div className='grouped-form mt-40'>
-              <label className="font-header-medium">
-                {t("company administrators")}
-              </label>
-            </div>
-            <div className='grouped-form mt-25'
-                 style={{maxWidth: '700px', overFlowY: 'auto'}}>
+              <div className='mt-10 input-field'>
+                <MultiSelectPopup
+                  label={regionSelectorLabel}
+                  options={formattedRegions}
+                  value={values["regions"]}
+                  onChange={value => changeHandler('regions', value)}
+                />
+              </div>
               {
-                orgAdmins?.map((user, index) => (
-                  <div
-                    className={`team-representative-wrapper d-flex ${index !== 0 ? "mt-25" : ""}`}
-                    key={`already-registered-member-${index}`}
-                  >
-                    <div className="d-flex flex-column">
-                      {
-                        index === 0 &&
-                        <label className="font-input-label text-white">
-                          {t("firstName")}
-                        </label>
-                      }
-
-                      <input
-                        className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
-                        defaultValue={user?.firstName}
-                        disabled
-                        type="text"
-                        style={{width: "145px"}}
-                      />
-                    </div>
-
-                    <div className="d-flex flex-column ml-25">
-                      {
-                        index === 0 &&
-                        <label className="font-input-label text-white">
-                          {t("lastName")}
-                        </label>
-                      }
-
-                      <input
-                        className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
-                        defaultValue={user?.lastName}
-                        disabled
-                        type="text"
-                        style={{width: "145px"}}
-                      />
-                    </div>
-
-                    <div className="d-flex flex-column ml-25">
-                      {
-                        index === 0 &&
-                        <label className="font-input-label text-white">
-                          {t("administrator email")}
-                        </label>
-                      }
-
-                      <input
-                        className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
-                        defaultValue={user?.email}
-                        disabled
-                        type="text"
-                        style={{width: "195px"}}
-                      />
-                    </div>
-                  </div>
-                ))
+                touched.regions && errors.regions && (
+                  <span className="font-helper-text text-error mt-10">{errors.regions}</span>
+                )
               }
-              {
-                values && values["users"] && values["users"].map((user, index) => {
-                  return (
+            </div>
+          }
+
+          {
+            values.isEditing &&
+            <React.Fragment>
+              <div className='grouped-form mt-40'>
+                <label className="font-header-medium">
+                  {t("company administrators")}
+                </label>
+              </div>
+              <div className='grouped-form mt-25'
+                   style={{maxWidth: '700px', overFlowY: 'auto'}}>
+                {
+                  orgAdmins?.map((user, index) => (
                     <div
-                      className={`team-representative-wrapper d-flex ${orgAdmins.length !== 0 || index !== 0 ? "mt-25" : ""}`}
-                      key={`member-${index}`}
+                      className={`team-representative-wrapper d-flex ${index !== 0 ? "mt-25" : ""}`}
+                      key={`already-registered-member-${index}`}
                     >
                       <div className="d-flex flex-column">
                         {
-                          (orgAdmins?.length === 0 && index === 0) &&
+                          index === 0 &&
                           <label className="font-input-label text-white">
                             {t("firstName")}
                           </label>
                         }
 
                         <input
-                          className="input font-binary text-white mt-10 px-15"
-                          name={`users[${index}].firstName`}
-                          value={values?.users && values.users[index] && values.users[index]?.firstName}
+                          className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
+                          defaultValue={user?.firstName}
+                          disabled
                           type="text"
                           style={{width: "145px"}}
-                          onChange={changeFormField}
                         />
-
-                        {
-                          touched?.users && touched.users[index] && touched.users[index]?.firstName &&
-                          errors?.users && errors.users[index] && errors.users[index]?.firstName && (
-                            <span className="font-helper-text text-error mt-10">{errors.users[index].firstName}</span>
-                          )
-                        }
                       </div>
 
                       <div className="d-flex flex-column ml-25">
                         {
-                          (orgAdmins?.length === 0 && index === 0) &&
+                          index === 0 &&
                           <label className="font-input-label text-white">
                             {t("lastName")}
                           </label>
                         }
 
                         <input
-                          className="input font-binary text-white mt-10 px-15"
-                          name={`users[${index}].lastName`}
-                          value={values?.users && values.users[index] && values.users[index]?.lastName}
+                          className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
+                          defaultValue={user?.lastName}
+                          disabled
                           type="text"
                           style={{width: "145px"}}
-                          onChange={changeFormField}
                         />
-
-                        {
-                          touched?.users && touched.users[index] && touched.users[index]?.lastName &&
-                          errors?.users && errors.users[index] && errors.users[index]?.lastName && (
-                            <span className="font-helper-text text-error mt-10">{errors.users[index].lastName}</span>
-                          )
-                        }
                       </div>
 
                       <div className="d-flex flex-column ml-25">
                         {
-                          (orgAdmins?.length === 0 && index === 0) &&
+                          index === 0 &&
                           <label className="font-input-label text-white">
                             {t("administrator email")}
                           </label>
                         }
 
                         <input
-                          className="input font-binary text-white mt-10 px-15"
-                          name={`users[${index}].email`}
-                          value={values?.users && values.users[index] && values.users[index]?.email}
+                          className={clsx(style.DisabledInput, "input font-binary text-white mt-10 px-15")}
+                          defaultValue={user?.email}
+                          disabled
                           type="text"
                           style={{width: "195px"}}
-                          onChange={changeFormField}
-                        />
-
-                        {
-                          touched?.users && touched.users[index] && touched.users[index]?.email &&
-                          errors?.users && errors.users[index] && errors.users[index]?.email && (
-                            <span className="font-helper-text text-error mt-10">{errors.users[index].email}</span>
-                          )
-                        }
-                      </div>
-
-                      <div className="d-flex align-center ml-25" style={{height: '45px'}}>
-                        <img
-                          className={`${(orgAdmins?.length === 0 && index === 0) ? 'mt-57' : 'mt-25'} cursor-pointer`}
-                          style={{zIndex: 1}}
-                          src={removeIcon}
-                          width={30}
-                          height={30}
-                          alt="close icon"
-                          onClick={() => deleteMember(index)}
                         />
                       </div>
                     </div>
-                  )
-                })
-              }
-            </div>
+                  ))
+                }
+                {
+                  values && values["users"] && values["users"].map((user, index) => {
+                    return (
+                      <div
+                        className={`team-representative-wrapper d-flex ${orgAdmins.length !== 0 || index !== 0 ? "mt-25" : ""}`}
+                        key={`member-${index}`}
+                      >
+                        <div className="d-flex flex-column">
+                          {
+                            (orgAdmins?.length === 0 && index === 0) &&
+                            <label className="font-input-label text-white">
+                              {t("firstName")}
+                            </label>
+                          }
 
-            <div className={`d-flex align-center mt-15 mb-15`} style={{zIndex: 1, position: "relative"}}>
-              <img
-                src={plusCircleFire} className="cursor-pointer"
-                onClick={addAnother}
-                alt="add icon"
-              />
-              <span
-                className="font-binary cursor-pointer"
-                onClick={addAnother}
-              >
+                          <input
+                            className="input font-binary text-white mt-10 px-15"
+                            name={`users[${index}].firstName`}
+                            value={values?.users && values.users[index] && values.users[index]?.firstName}
+                            type="text"
+                            style={{width: "145px"}}
+                            onChange={changeFormField}
+                          />
+
+                          {
+                            touched?.users && touched.users[index] && touched.users[index]?.firstName &&
+                            errors?.users && errors.users[index] && errors.users[index]?.firstName && (
+                              <span className="font-helper-text text-error mt-10">{errors.users[index].firstName}</span>
+                            )
+                          }
+                        </div>
+
+                        <div className="d-flex flex-column ml-25">
+                          {
+                            (orgAdmins?.length === 0 && index === 0) &&
+                            <label className="font-input-label text-white">
+                              {t("lastName")}
+                            </label>
+                          }
+
+                          <input
+                            className="input font-binary text-white mt-10 px-15"
+                            name={`users[${index}].lastName`}
+                            value={values?.users && values.users[index] && values.users[index]?.lastName}
+                            type="text"
+                            style={{width: "145px"}}
+                            onChange={changeFormField}
+                          />
+
+                          {
+                            touched?.users && touched.users[index] && touched.users[index]?.lastName &&
+                            errors?.users && errors.users[index] && errors.users[index]?.lastName && (
+                              <span className="font-helper-text text-error mt-10">{errors.users[index].lastName}</span>
+                            )
+                          }
+                        </div>
+
+                        <div className="d-flex flex-column ml-25">
+                          {
+                            (orgAdmins?.length === 0 && index === 0) &&
+                            <label className="font-input-label text-white">
+                              {t("administrator email")}
+                            </label>
+                          }
+
+                          <input
+                            className="input font-binary text-white mt-10 px-15"
+                            name={`users[${index}].email`}
+                            value={values?.users && values.users[index] && values.users[index]?.email}
+                            type="text"
+                            style={{width: "195px"}}
+                            onChange={changeFormField}
+                          />
+
+                          {
+                            touched?.users && touched.users[index] && touched.users[index]?.email &&
+                            errors?.users && errors.users[index] && errors.users[index]?.email && (
+                              <span className="font-helper-text text-error mt-10">{errors.users[index].email}</span>
+                            )
+                          }
+                        </div>
+
+                        <div className="d-flex align-center ml-25" style={{height: '45px'}}>
+                          <img
+                            className={`${(orgAdmins?.length === 0 && index === 0) ? 'mt-57' : 'mt-25'} cursor-pointer`}
+                            style={{zIndex: 1}}
+                            src={removeIcon}
+                            width={30}
+                            height={30}
+                            alt="close icon"
+                            onClick={() => deleteMember(index)}
+                          />
+                        </div>
+                      </div>
+                    )
+                  })
+                }
+              </div>
+
+              <div className={`d-flex align-center mt-15 mb-15`} style={{zIndex: 1, position: "relative"}}>
+                <img
+                  src={plusCircleFire} className="cursor-pointer"
+                  onClick={addAnother}
+                  alt="add icon"
+                />
+                <span
+                  className="font-binary cursor-pointer"
+                  onClick={addAnother}
+                >
                 &nbsp;&nbsp;{values.users?.length > 0 || orgAdmins?.length > 0 ? t("add another company admin") : t("add company admin")}
               </span>
-            </div>
-          </React.Fragment>
-        }
-
-        {
-          isEditing &&
-          <React.Fragment>
-            <div className='grouped-form mt-40'>
-              <label className="font-header-medium">
-                {t("security")}
-              </label>
-            </div>
-
-            <div className='d-flex flex-column mt-25'>
-              <label className='font-input-label'>
-                {t("2fa")}
-              </label>
-
-              <div className='d-inline-block mt-10'>
-                <ButtonGroup
-                  options={twoFAOptions}
-                  disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-                  value={values["twoFA"]}
-                  id={'2fa-option'}
-                  setValue={(v) => changeHandler("twoFA", v)}
-                />
               </div>
-            </div>
+            </React.Fragment>
+          }
 
-            <div className='d-flex flex-column mt-25'>
-              <label className='font-input-label'>
-                {t("password min length")}
-              </label>
-
-              <div className='d-inline-block mt-10'>
-                <ButtonGroup
-                  size={'sm'}
-                  rounded={true}
-                  disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-                  options={passwordMinLengthOptions}
-                  value={values["passwordMinimumLength"]}
-                  id={'password-min-length-option'}
-                  setValue={(v) => changeHandler("passwordMinimumLength", v)}
-                />
+          {
+            isEditing &&
+            <React.Fragment>
+              <div className='grouped-form mt-40'>
+                <label className="font-header-medium">
+                  {t("security")}
+                </label>
               </div>
-            </div>
 
-            <div className='d-flex flex-column mt-25'>
-              <label className='font-input-label'>
-                {t("Password Expiration (Days)")}
-              </label>
+              <div className='d-flex flex-column mt-25'>
+                <label className='font-input-label'>
+                  {t("2fa")}
+                </label>
 
-              <div className='d-inline-block mt-10'>
-                <ButtonGroup
-                  size={'sm'}
-                  rounded={true}
-                  disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-                  options={passwordExpirationDaysOptions}
-                  value={values["passwordExpirationDays"]}
-                  id={'password-expiration-days-option'}
-                  setValue={(v) => changeHandler("passwordExpirationDays", v)}
-                />
+                <div className='d-inline-block mt-10'>
+                  <ButtonGroup
+                    options={twoFAOptions}
+                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                    value={values["twoFA"]}
+                    id={'2fa-option'}
+                    setValue={(v) => changeHandler("twoFA", v)}
+                  />
+                </div>
               </div>
-            </div>
-          </React.Fragment>
-        }
-      </div>
 
-      <div className='mt-80'>
-        <button
-          className={"button active cursor-pointer"}
-          type={"submit"}
-        >
+              <div className='d-flex flex-column mt-25'>
+                <label className='font-input-label'>
+                  {t("password min length")}
+                </label>
+
+                <div className='d-inline-block mt-10'>
+                  <ButtonGroup
+                    size={'sm'}
+                    rounded={true}
+                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                    options={passwordMinLengthOptions}
+                    value={values["passwordMinimumLength"]}
+                    id={'password-min-length-option'}
+                    setValue={(v) => changeHandler("passwordMinimumLength", v)}
+                  />
+                </div>
+              </div>
+
+              <div className='d-flex flex-column mt-25'>
+                <label className='font-input-label'>
+                  {t("Password Expiration (Days)")}
+                </label>
+
+                <div className='d-inline-block mt-10'>
+                  <ButtonGroup
+                    size={'sm'}
+                    rounded={true}
+                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                    options={passwordExpirationDaysOptions}
+                    value={values["passwordExpirationDays"]}
+                    id={'password-expiration-days-option'}
+                    setValue={(v) => changeHandler("passwordExpirationDays", v)}
+                  />
+                </div>
+              </div>
+
+              <div className='d-flex flex-column mt-25'>
+                <label className='font-input-label'>
+                  {t("org hide hr & cbt")}
+                </label>
+
+                <div className='d-inline-block mt-10'>
+                  <ButtonGroup
+                    options={hideCbtHROptions}
+                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                    value={values["hideCbtHR"]}
+                    id={'hide-cbt-option'}
+                    setValue={(v) => changeHandler("hideCbtHR", v)}
+                  />
+                </div>
+              </div>
+            </React.Fragment>
+          }
+        </div>
+        <div className='mt-80'>
+          <button
+            className={"button active cursor-pointer"}
+            type={"submit"}
+          >
           <span className='font-button-label text-white text-uppercase'>
             {values["isEditing"] ? t("save") : t("next")}
           </span>
-        </button>
-        {
-          isEditing &&
+          </button>
           <button
-            className={`button cursor-pointer cancel ml-15`}
+            className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
             type={"button"}
-            onClick={cancelEditing}
+            onClick={handleCancel}
           >
             <span className='font-button-label text-orange text-uppercase'>
               {t("cancel")}
             </span>
           </button>
-        }
-      </div>
-    </Form>
+        </div>
+      </Form>
+      <ConfirmModal header={t("org admin invite sent")} show={visibleModal} onOk={() => setStatus({visibleModal: false})}/>
+    </React.Fragment>
   )
 }
 
 const EnhancedForm = withFormik({
+  mapPropsToStatus: () => ({
+    visibleModal: false,
+  }),
   mapPropsToValues: () => ({
     companyName: '',
     companyCountry: '',
@@ -635,11 +667,12 @@ const EnhancedForm = withFormik({
     twoFA: false,
     passwordMinimumLength: 6,
     passwordExpirationDays: 0,
+    hideCbtHR: false,
     users: [],
   }),
   validationSchema: ((props) => formSchema(props.t)),
-  handleSubmit: async (values, {props, setFieldValue}) => {
-    const {isSuperAdmin} = props;
+  handleSubmit: async (values, {props, setFieldValue, setStatus}) => {
+    const {isSuperAdmin, navigate, setLoading} = props;
     const data = {
       name: values.isEditing ? values?.editingCompanyName : values?.companyName?.label,
       country: values?.companyCountry?.label,
@@ -648,18 +681,26 @@ const EnhancedForm = withFormik({
         twoFA: values.twoFA,
         passwordMinimumLength: values.passwordMinimumLength,
         passwordExpirationDays: values.passwordExpirationDays,
+        expirationDaysEnable: values.passwordExpirationDays?.toString() !== "0",
+        hideCbtHR: values.hideCbtHR,
       },
     };
 
     if (values.isEditing) {
+      const initialize = () => {
+        setFieldValue("isEditing", false);
+        setFieldValue("selectedItem", null);
+        props.queryAllOrganizations();
+      };
+
       if (values.selectedItem) {
         try {
-          props.setLoading(true);
           const organizationId = values.selectedItem;
           await updateCompany(organizationId, data);
 
           // creating org admins
           let users = values?.users;
+          setLoading(true);
           users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
           const promises = [];
           let totalSuccessForInvite = 0;
@@ -686,40 +727,40 @@ const EnhancedForm = withFormik({
               })
               .finally(() => {
                 if (totalSuccessForInvite > 0) {
+                  setStatus({visibleModal: true});
                   props.showSuccessNotification(props.t(
                     totalSuccessForInvite ?
                       'msg users created success' : 'msg user created success', {
                       numberOfSuccess: totalSuccessForInvite,
                     }));
                 }
+                initialize();
+                setLoading(false);
               });
+          } else {
+             initialize();
+             setLoading(false);
           }
-
-          setFieldValue("isEditing", false);
-          setFieldValue("selectedItem", null);
-
-          props.queryAllOrganizations();
         } catch (e) {
           console.log("update company error", e);
           props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
-        } finally {
-          props.setLoading(false);
+          setLoading(false);
         }
       }
     } else {
       if (values?.companyName?.created) { // if selected already created company
-        history.push(`/invite/${values?.companyName?.value}/team-mode`);
+        navigate(`/invite/${values?.companyName?.value}/team-mode`);
       } else {
         try {
-          props.setLoading(true);
+          setLoading(true);
           const apiRes = await createCompany(data);
           const companyData = apiRes.data;
-          isSuperAdmin ? history.push(`/invite/${companyData?.id}/representative`) : history.push(`/invite/${companyData?.id}/team-mode`);
+          isSuperAdmin ? navigate(`/invite/${companyData?.id}/representative`) : navigate(`/invite/${companyData?.id}/team-mode`);
         } catch (e) {
           console.log("creating company error", e);
           props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
         } finally {
-          props.setLoading(false);
+          setLoading(false);
         }
       }
     }

@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import * as Yup from "yup";
 import {Form, withFormik} from "formik";
@@ -12,48 +11,53 @@ import {
   showSuccessNotificationAction,
 } from "../../../redux/action/ui";
 import {format2Digits} from "../../../utils";
+import useTimeOptions from "../../../hooks/useTimeOptions";
+import {useNavigate} from "react-router-dom";
+
+export const formShape = t => ({
+  hour: Yup.string()
+    .required(t("start work invalid"))
+    .test(
+      'is-valid',
+      t('start work invalid'),
+      function (value) {
+        return parseInt(value) >= 0 && parseInt(value) <= 23;
+      }
+    ),
+  minute: Yup.string()
+    .required(t("start work invalid"))
+    .test(
+      'is-valid',
+      t('start work invalid'),
+      function (value) {
+        return parseInt(value) >= 0 && parseInt(value) <= 59;
+      }
+    ),
+  startTimeOption: Yup.string(),
+});
 
 const formSchema = (t) => {
-  return Yup.object().shape({
-    hour: Yup.string()
-      .required(t("start work invalid"))
-      .test(
-        'is-valid',
-        t('start work invalid'),
-        function (value) {
-          return parseInt(value) >= 0 && parseInt(value) <= 23;
-        }
-      ),
-    minute: Yup.string()
-      .required(t("start work invalid"))
-      .test(
-        'is-valid',
-        t('start work invalid'),
-        function (value) {
-          return parseInt(value) >= 0 && parseInt(value) <= 59;
-        }
-      ),
-    startTimeOption: Yup.string(),
-  });
+  return Yup.object().shape(formShape(t));
 };
+
+export const options = [
+  {
+    value: 'AM',
+    title: 'AM',
+  },
+  {
+    value: 'PM',
+    title: 'PM',
+  },
+];
 
 const FormStartWork = (props) => {
   const {t, values, profile, setFieldValue, setRestBarClass, errors, touched} = props;
-  const [hourOptions, setHourOptions] = useState([]);
-  const [minuteOptions, setMinuteOptions] = useState([]);
+  const [hourOptions, minuteOptions] = useTimeOptions();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass('progress-100');
-
-    let i = 1;
-    let options = [];
-    while (i <= 12) {
-      options.push(String(i).padStart(2, '0'));
-      i++;
-    }
-    setHourOptions(options);
-    options = ["00", "15", "30", "45"];
-    setMinuteOptions(options);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -80,26 +84,13 @@ const FormStartWork = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
-  const options = [
-    {
-      value: 'AM',
-      title: 'AM',
-    },
-    {
-      value: 'PM',
-      title: 'PM',
-    },
-  ]
-  const navigateTo = (path) => {
-    history.push(path);
-  }
 
   return (
     <Form className='form-group mt-57'>
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/workLength')}
+          onClick={() => navigate('/create-account/workLength')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -197,6 +188,17 @@ const FormStartWork = (props) => {
   )
 }
 
+export const hourTo24Hour = ({hour, startTimeOption}) => {
+  let hour24;
+  if (startTimeOption === "AM") {
+    hour24 = parseInt(hour) === 12 ? parseInt(hour) - 12: parseInt(hour);
+  } else {
+    hour24 = parseInt(hour) === 12 ? parseInt(hour): parseInt(hour) + 12;
+  }
+
+  return hour24;
+}
+
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     startTimeOption: "AM",
@@ -210,18 +212,15 @@ const EnhancedForm = withFormik({
       hour,
       minute,
     } = values;
-    let hour24;
-    if (startTimeOption === "AM") {
-      hour24 = parseInt(hour) === 12 ? parseInt(hour) - 12: parseInt(hour);
-    } else {
-      hour24 = parseInt(hour) === 12 ? parseInt(hour): parseInt(hour) + 12;
-    }
+    const hour24 = hourTo24Hour({startTimeOption, hour});
     try {
-      props.updateProfile({
+      const {updateProfile, navigate} = props;
+      updateProfile({
         body: {
           workDayStart: `${format2Digits(hour24)}:${minute}`,
         },
         nextPath: '/create-account/medical-initial',
+        navigate,
       })
     } catch (e) {
       console.log("storing values error", e);

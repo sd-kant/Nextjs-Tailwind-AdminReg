@@ -4,7 +4,6 @@ import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {withTranslation, Trans} from "react-i18next";
-import history from "../../../history";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
 import removeIcon from "../../../assets/images/remove.svg";
@@ -16,20 +15,18 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import {
-  createUserByAdmin,
-  inviteTeamMember,
-} from "../../../http";
-import {
-  lowercaseEmail,
-} from "./FormRepresentative";
 import style from "./FormInvite.module.scss";
 import clsx from "clsx";
-import {AVAILABLE_JOBS, permissionLevels, USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../../constant";
+import {AVAILABLE_JOBS, permissionLevels} from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
+import CustomPhoneInput from "../../components/PhoneInput";
+import {checkPhoneNumberValidation} from "../../../utils";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import SuccessModal from "../../components/SuccessModal";
 import {logout} from "../../layouts/MainLayout";
+import {useNavigate} from "react-router-dom";
+import {_handleSubmitV2} from "../../../utils/invite";
+import {AsYouType} from "libphonenumber-js";
 
 export const defaultTeamMember = {
   email: '',
@@ -37,14 +34,25 @@ export const defaultTeamMember = {
   lastName: '',
   userType: '',
   job: "",
+  phoneNumber: {
+    value: '',
+    countryCode: '',
+  },
 };
 
-const userSchema = (t) => {
+export const userSchema = (t) => {
   return Yup.object().shape({
     email: Yup.string()
-      .required(t('email required'))
       .email(t("email invalid"))
-      .max(1024, t('email max error')),
+      .max(1024, t('email max error'))
+      .test(
+        'required',
+        t('email or phone number required'),
+        function (value) {
+          if (value) return true;
+          return !!(this.parent.phoneNumber.value);
+        }
+      ),
     firstName: Yup.string()
       .required(t('firstName required'))
       .max(1024, t("firstName max error")),
@@ -55,6 +63,24 @@ const userSchema = (t) => {
       .required(t('role required')),
     job: Yup.object()
       .required(t('role required')),
+    phoneNumber: Yup.object()
+      .test(
+        'required',
+        t('email or phone number required'),
+        function (obj) {
+          if (obj?.value) return true;
+          return !!this.parent.email;
+        }
+      )
+      .test(
+        'is-valid',
+        t('phone number invalid'),
+        function (obj) {
+          if (!obj?.value)
+            return true;
+          return checkPhoneNumberValidation(obj.value, obj.countryCode);
+        },
+      ),
   }).required();
 };
 
@@ -75,7 +101,7 @@ export const customStyles = (disabled = false) => ({
   },
   option: (provided, state) => ({
     ...provided,
-    backgroundColor: state.isSelected ? '#DE7D2C' : (state.isFocused ? '#5BAEB6': (state.data.color ?? 'white')),
+    backgroundColor: state.isSelected ? '#DE7D2C' : (state.isFocused ? '#5BAEB6' : (state.data.color ?? 'white')),
     zIndex: 1,
     color: 'black',
     fontSize: '21px',
@@ -112,10 +138,11 @@ const FormInvite = (props) => {
     setRestBarClass,
     status,
     setStatus,
-    userType,
-    match: {params: {organizationId}},
+    organizationId,
+    id: teamId,
+    isAdmin,
   } = props;
-
+  const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass("progress-72 medical");
     const csvDataStr = localStorage.getItem("kop-csv-data");
@@ -123,25 +150,31 @@ const FormInvite = (props) => {
 
     const d = csvData?.map(it => {
       const level = it.permissionLevel?.split(":")?.[0]?.trim();
-      const job = it.jobRole?.split(":")?.[0]?.trim();
+      const job = it.jobRole?.toLowerCase()?.trim();
       const selectedLevel = permissionLevels.find(ele => parseInt(ele.value) === parseInt(level));
-      const selectedJob = AVAILABLE_JOBS.find(ele => parseInt(ele.value) === parseInt(job));
+      const selectedJob = AVAILABLE_JOBS.find(ele => ele.value === job);
+      const phoneNumber = `${it.countryCode ?? ""}${it.phoneNumber ?? ""}`;
+      const phoneNumberWithPlus = `+${it.countryCode ?? ""}${it.phoneNumber ?? ""}`;
+      const asYouType = new AsYouType()
+      asYouType.input(phoneNumberWithPlus)
+      const country = asYouType?.getCountry();
+
       return {
         email: it.email,
         firstName: it.firstName,
         lastName: it.lastName,
         userType: selectedLevel || "",
         job: selectedJob || "",
+        phoneNumber: {
+          value: phoneNumber,
+          countryCode: country,
+        }
       };
     });
     d && setFieldValue("users", d);
     localStorage.removeItem("kop-csv-data");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const navigateTo = (path) => {
-    history.push(path);
-  };
 
   const changeFormField = (e) => {
     const {value, name} = e.target;
@@ -171,12 +204,6 @@ const FormInvite = (props) => {
 
   const pathname = window.location.pathname;
   const isManual = pathname.split("/").includes("manual");
-
-  const goBack = () => {
-    history.back();
-  };
-
-  const isAdmin = userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
 
   const options = useMemo(() => {
     if (isAdmin) {
@@ -315,6 +342,31 @@ const FormInvite = (props) => {
             </div>
           </div>
         </div>
+
+        <div className={clsx(style.UserRow)}>
+          <div>
+            <label className='font-input-label'>
+              {t("phone number")}
+            </label>
+            <CustomPhoneInput
+              containerClass={style.PhoneNumberContainer}
+              inputClass={style.PhoneNumberInput}
+              dropdownClass={style.PhoneNumberDropdown}
+              value={user?.phoneNumber?.value}
+              onChange={(value, countryCode) => changeHandler(`${formInputName}.phoneNumber`, {value, countryCode})}
+            />
+            {
+              (touchField?.phoneNumber &&
+                errorField?.phoneNumber) ? (
+                <span className="font-helper-text text-error mt-10">{errorField.phoneNumber}</span>
+              ) : null
+            }
+          </div>
+
+          <div>
+
+          </div>
+        </div>
       </div>
     );
   };
@@ -340,6 +392,10 @@ const FormInvite = (props) => {
 
     return ret;
   }, []);
+
+  const num = React.useMemo(() => {
+    return values.users?.length ?? 0;
+  }, [values.users]);
 
   return (
     <React.Fragment>
@@ -373,7 +429,7 @@ const FormInvite = (props) => {
         show={status?.visibleSuccessModal}
         onCancel={() => {
           setStatus({visibleSuccessModal: false});
-          history.push((`/invite/${organizationId}/team-mode`));
+          navigate((`/invite/${organizationId}/team-mode`));
         }}
         onOk={() => {
           setStatus({visibleSuccessModal: false});
@@ -385,7 +441,7 @@ const FormInvite = (props) => {
         <div>
           <div
             className="d-flex align-center cursor-pointer"
-            onClick={() => goBack()}
+            onClick={() => navigate(-1)}
           >
             <img src={backIcon} alt="back"/>
             &nbsp;&nbsp;
@@ -394,20 +450,55 @@ const FormInvite = (props) => {
             </span>
           </div>
 
-          <div className='mt-28 form-header-medium'>
-            <span className='font-header-medium d-block'>
-              {t("create team")}
-            </span>
-          </div>
-
-          <div className={clsx(style.FormBody, "mt-40 d-flex flex-column")}>
-            <div className={clsx(style.AddButton)} onClick={addAnother}>
-              <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
-              <span className="font-heading-small text-capitalize">
-                    {t("add another member")}
-                </span>
+          <div className={clsx(style.FormHeader, "d-flex flex-column")}>
+            <div className={clsx(style.Header)}>
+              <div className='d-flex align-center'><span
+                className='font-header-medium d-block'>{t("create team")}</span></div>
+              <div/>
+              <div className={clsx("d-flex align-center", style.ChangeNote)}><span className="font-header-medium text-capitalize">{num === 0 ? (t("no new team member")) : (num > 1 ? (t("n new team members", {n: num})) : (t("n new team member", {n: 1})))}</span>
+              </div>
             </div>
 
+            <div className={clsx(style.Tools)}>
+              <div className={clsx(style.ReUploadWrapper)}>
+                {
+                  !isManual ? <span className={clsx("font-binary", style.ReUpload)}>
+                  <Trans
+                    i18nKey={"reupload csv"}
+                    components={{
+                      a: (<span className={"text-orange"}
+                                onClick={() => navigate(`/invite/${organizationId}/upload/${teamId}`)}/>)
+                    }}
+                  /></span>
+                    : null
+                }
+              </div>
+
+              <div>
+                <button
+                  className={`button ${values['users']?.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'}`}
+                  type={values['users']?.length > 0 ? "submit" : "button"}
+                ><span className='font-button-label text-white text-uppercase'>{t("save")}</span>
+                </button>
+
+                <button
+                  className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
+                  type={"button"}
+                  onClick={() => navigate(`/invite/${organizationId}/team-mode`)}
+                ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
+                </button>
+              </div>
+            </div>
+
+            <div className={clsx(style.AddButton)} onClick={addAnother}>
+              <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
+              <span className="font-heading-small">
+                    {t("add a team member")}
+                </span>
+            </div>
+          </div>
+
+          <div className={clsx(style.FormBody, "d-flex flex-column")}>
             {
               operators?.length > 0 &&
               <div className="mt-28">
@@ -438,152 +529,40 @@ const FormInvite = (props) => {
         </div>
 
         <div className={clsx(style.Footer)}>
-          <button
-            className={`button ${values['users']?.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'}`}
-            type={values['users']?.length > 0 ? "submit" : "button"}
-          >
-            <span className='font-button-label text-white'>
-              {t("finish")}
-            </span>
-          </button>
-          {
-            !isManual &&
-            <span className={clsx("font-binary", style.Reupload)}>
-            <Trans
-              i18nKey={"reupload csv"}
-              components={{
-                a: (<span className={"text-orange"} onClick={() => navigateTo("/invite/upload")}/>)
-              }}
-            />
-        </span>
-          }
+
         </div>
       </Form>
     </React.Fragment>
   )
 }
 
-
-const formatUserType = (users) => {
-  return users && users.map((user) => ({
-    ...user,
-    userTypes: [user?.userType?.value?.toString() === "1" ? "TeamAdmin" : "Operator"],
-    userType: user?.userType?.value?.toString() === "1" ? "TeamAdmin" : null,
-  }));
-}
-
-export const setTeamIdToUsers = (users, teamId) => {
-  return users && users.map((user) => ({
-    ...user,
-    teamId,
-  }));
-}
-
-const formatJob = (users) => {
-  return users && users.map((user) => ({
-    ...user,
-    job: user?.job?.value,
-  }));
-}
-
-// eslint-disable-next-line no-unused-vars
-const onTryAgain = (failedEmails, setFieldValue, values) => {
-  const users = values["users"];
-  const failedUsers = users && users.filter(entity => failedEmails.includes(entity.email));
-  setFieldValue("users", failedUsers);
-}
-
-export const _handleSubmit = (
-  {
-    users: unFormattedUsers,
-    setLoading,
-    showSuccessNotification,
-    organizationId,
-    teamId,
-    t,
-  }
-) => {
-  return new Promise((resolve) => {
-    setLoading(true);
-    const users = setTeamIdToUsers(formatUserType(formatJob(lowercaseEmail(unFormattedUsers))), teamId);
-    const promises = [];
-    users?.forEach(it => {
-      promises.push(createUserByAdmin(organizationId, it));
-    });
-
-    const alreadyRegisteredUsers = [];
-    let totalSuccessForInvite = 0;
-    let inviteBody = {add: []};
-
-    Promise.allSettled(promises)
-      .then(items => {
-        items.forEach((item, index) => {
-          if (item.status === "fulfilled") {
-            totalSuccessForInvite++;
-          } else {
-            console.error("creating user failed", item.reason?.response?.data);
-            // fixme be sure if 409 is for already registered error
-            if (item?.reason?.response?.data?.status?.toString() === "409") {
-              alreadyRegisteredUsers.push({
-                email: users[index]?.email,
-              });
-              inviteBody.add.push({
-                email: users?.[index]?.email,
-                userTypes: users?.[index]?.userTypes,
-              });
-            }
-          }
-        });
-      })
-      .finally(async () => {
-        if (inviteBody.add?.length > 0) {
-          const inviteResponse = await inviteTeamMember(teamId, inviteBody);
-          const numberOfSuccess = (inviteResponse?.data?.added?.length) ?? 0;
-          totalSuccessForInvite += numberOfSuccess;
-          showSuccessNotification(t(
-            totalSuccessForInvite > 1 ?
-              'msg users invited success' : 'msg user invited success', {
-              numberOfSuccess: totalSuccessForInvite,
-            }));
-
-          resolve({
-            alreadyRegisteredUsers,
-            numberOfSuccess: totalSuccessForInvite,
-          });
-        } else {
-          resolve({
-            alreadyRegisteredUsers,
-            numberOfSuccess: totalSuccessForInvite,
-          });
-        }
-        setLoading(false);
-      });
-  })
-};
-
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
-    users: [defaultTeamMember],
+    users: [],
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {
-    const {showErrorNotification, showSuccessNotification, setLoading, t, match: {params: {organizationId, id: teamId}}} = props;
+    const {
+      showErrorNotification, setLoading,
+      t, organizationId, id: teamId,
+      navigate,
+      isAdmin,
+    } = props;
     let users = values?.users;
     if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
       showErrorNotification(
         t("msg create organization before inviting users"),
       );
-      history.push("/invite/company");
+      navigate("/invite/company");
     } else {
       if (users?.length > 0) {
         const {alreadyRegisteredUsers, numberOfSuccess} =
-          await _handleSubmit({
+          await _handleSubmitV2({
             users,
             setLoading,
-            showSuccessNotification,
             organizationId,
             teamId,
-            t,
+            isAdmin,
           });
 
         if (alreadyRegisteredUsers?.length > 0) {
@@ -606,6 +585,7 @@ const EnhancedForm = withFormik({
 
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
+  isAdmin: get(state, 'auth.isAdmin'),
 });
 
 const mapDispatchToProps = (dispatch) =>

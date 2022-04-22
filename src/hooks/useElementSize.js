@@ -21,7 +21,7 @@ function useElementSize(){
     })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ref?.offsetHeight, ref?.offsetWidth, count])
+  }, [ref?.offsetHeight, ref?.offsetWidth])
 
   const forceUpdate = () => {
     setTimeout(() => {
@@ -34,9 +34,9 @@ function useElementSize(){
   useLayoutEffect(() => {
     handleSize()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ref?.offsetHeight, ref?.offsetWidth])
+  }, [ref?.offsetHeight, ref?.offsetWidth, count])
 
-  return [setRef, size, forceUpdate]
+  return [setRef, size, forceUpdate];
 }
 
-export default useElementSize
+export default useElementSize;

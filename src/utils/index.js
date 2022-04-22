@@ -3,6 +3,7 @@ import {
   isValidPhoneNumber,
 } from 'libphonenumber-js';
 import queryString from "query-string";
+import spacetime from "spacetime";
 
 export const getTokenFromUrl = () => {
   const queryString = window.location.search;
@@ -20,7 +21,7 @@ export const countString = (str, letter) => {
   let count = 0;
 
   // looping through the items
-  for (let i = 0; i < str.length; i++) {
+  for (let i = 0; i < str?.length; i++) {
 
     // check if the character is at that position
     if (str.charAt(i) === letter) {
@@ -41,7 +42,7 @@ export const checkUsernameValidation1 = str => {
 }
 
 export const checkUsernameValidation2 = str => {
-  return str.charAt(str.length - 1) !== '.';
+  return str?.charAt(str.length - 1) !== '.';
 }
 
 export const getParamFromUrl = key => {
@@ -138,6 +139,14 @@ export const convertCmToMetric = value => {
   }
 };
 
+export const convertLbsToKilos = value => {
+  return Math.round(value * 0.45359237);
+};
+
+export const convertKilosToLbs = value => {
+  return Math.round(value / 0.45359237);
+};
+
 export const format2Digits = (value) => {
   if (!["", null, undefined].includes(value)) {
     return String(value).padStart(2, '0');
@@ -231,3 +240,40 @@ export const updateUrlParam = ({param: {key, value}, reload = false}) => {
     window.location.href = newUrl;
   }
 }
+
+/**
+ * @typedef TimezoneObj
+ * @property {string} name
+ * @property {boolean} valid
+ * @property {string} displayName
+ */
+
+/**
+ * @description time display as on timezone
+ * @param {string} time in utc
+ * @param {TimezoneObj} timezone
+ */
+export const timeOnOtherZone = (time, timezone) => {
+  const os = new Date().getTimezoneOffset();
+  let ret = new Date(time);
+  if (!timezone.valid) {
+    let gmt = timezone.name;
+    if (gmt) {
+      const arr = gmt?.toLowerCase()?.replace("gmt", "")?.split(":");
+      if (arr.length === 2) {
+        let offset = (parseInt(arr[0]) * 60) +  parseInt(arr[1]);
+        ret = new Date(new Date(time).getTime() + ((offset + os) * 60 * 1000));
+      }
+    }
+
+    return ret.toLocaleString([], {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } else {
+    return spacetime(time).goto(timezone.name).unixFmt('yyyy.MM.dd h:mm a');
+  }
+};

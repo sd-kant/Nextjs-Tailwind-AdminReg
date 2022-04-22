@@ -11,9 +11,9 @@ import style from "./FormPhoneRegister.module.scss";
 import clsx from "clsx";
 import {setMyProfileWithToken} from "../../../http";
 import {get} from "lodash";
-import history from "../../../history";
 import {setTokenAction} from "../../../redux/action/auth";
 import backIcon from "../../../assets/images/back.svg";
+import {useNavigate} from "react-router-dom";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -31,6 +31,7 @@ const formSchema = (t) => {
 
 const FormPhoneRegister = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass, setToken} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setClassName();
@@ -41,10 +42,6 @@ const FormPhoneRegister = (props) => {
     setRestBarClass(`progress-50`);
   }
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   return (
     <Form className='form-group mt-57'>
       <div>
@@ -52,7 +49,7 @@ const FormPhoneRegister = (props) => {
           className="d-inline-flex align-center cursor-pointer"
           onClick={() => {
             setToken(null);
-            navigateTo('/login');
+            navigate('/login');
           }}
         >
           <img src={backIcon} alt="back"/>
@@ -115,13 +112,14 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
+    const {navigate} = props;
     if (props.token) {
       try {
         const phoneNumber = `+${values.phoneNumber?.value}`;
         await setMyProfileWithToken({
           phoneNumber,
         }, props.token);
-        history.push(`/phone-verification/0?phoneNumber=${phoneNumber}`);
+        navigate(`/phone-verification/0?phoneNumber=${phoneNumber}`);
       } catch (e) {
         props.showErrorNotification(e.response?.data?.message);
       }

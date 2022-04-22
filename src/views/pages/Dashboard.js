@@ -4,12 +4,13 @@ import {withTranslation} from "react-i18next";
 import {bindActionCreators} from "redux";
 import SuccessModal from "../components/SuccessModal";
 import {get} from 'lodash';
-import history from "../../history";
 import {setVisibleSuccessModalAction} from "../../redux/action/ui";
 import {logout} from "../layouts/MainLayout";
+import {useNavigate} from "react-router-dom";
 
 const Dashboard = (props) => {
   const {visibleSuccessModal, setVisibleSuccessModal} = props;
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -17,7 +18,7 @@ const Dashboard = (props) => {
         show={visibleSuccessModal}
         onCancel={() => {
           setVisibleSuccessModal(false);
-          history.push("/invite/company");
+          navigate("/invite/company");
         }}
         onOk={() => {
           setVisibleSuccessModal(false);

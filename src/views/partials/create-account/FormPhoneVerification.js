@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {withTranslation, Trans} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
-import history from "../../../history";
 import {bindActionCreators} from "redux";
 import {getParamFromUrl} from "../../../utils";
 import {setLoadingAction, showErrorNotificationAction} from "../../../redux/action/ui";
@@ -10,11 +9,13 @@ import CodeInput from "../../components/CodeInput";
 import {loginWithCodeAction} from "../../../redux/action/auth";
 import {requestSmsCode} from "../../../http";
 import {get} from "lodash";
+import {useNavigate} from "react-router-dom";
 
 const FormPhoneVerification = (props) => {
   const {t, setRestBarClass, showErrorNotification, setLoading, login, smsAuthFailedCount} = props;
   const [code, setCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getMyPhoneNumber().then();
@@ -24,7 +25,12 @@ const FormPhoneVerification = (props) => {
 
   useEffect(() => {
     if (code?.length === 6) {
-      login(phoneNumber, code, true);
+      login({
+        phoneNumber,
+        loginCode: code,
+        fromRegister: true,
+        navigate,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
@@ -32,10 +38,6 @@ const FormPhoneVerification = (props) => {
   const getMyPhoneNumber = async () => {
     const phone = getParamFromUrl('phoneNumber');
     setPhoneNumber(phone);
-  }
-
-  const navigateTo = (path) => {
-    history.push(path);
   }
 
   const resendCode = async () => {
@@ -63,7 +65,7 @@ const FormPhoneVerification = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/phone-register')}
+          onClick={() => navigate('/create-account/phone-register')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -88,7 +90,6 @@ const FormPhoneVerification = (props) => {
         </div>
 
         <div className='mt-40 d-flex flex-column'>
-          {/*todo don't accept alphabets*/}
           <CodeInput
             value={code}
             onChange={(v) => {

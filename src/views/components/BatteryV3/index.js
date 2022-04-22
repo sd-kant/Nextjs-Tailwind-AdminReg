@@ -39,4 +39,4 @@ const BatteryV3 = (
   )
 }
 
-export default withTranslation()(BatteryV3);
+export default withTranslation()(React.memo(BatteryV3));

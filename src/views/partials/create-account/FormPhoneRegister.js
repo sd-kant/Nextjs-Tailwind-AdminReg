@@ -4,15 +4,14 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import backIcon from "../../../assets/images/back.svg";
-import history from "../../../history";
 import {bindActionCreators} from "redux";
 import {checkPhoneNumberValidation} from "../../../utils";
 import {showErrorNotificationAction} from "../../../redux/action/ui";
 import CustomPhoneInput from "../../components/PhoneInput";
 import style from "./FormPhoneRegister.module.scss";
 import clsx from "clsx";
-import {updateMyProfileAction} from "../../../redux/action/profile";
 import {get} from "lodash";
+import {useNavigate} from "react-router-dom";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -30,6 +29,7 @@ const formSchema = (t) => {
 
 const FormPhoneRegister = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass('progress-18');
@@ -42,7 +42,7 @@ const FormPhoneRegister = (props) => {
         <div
           className="d-flex align-center cursor-pointer"
           onClick={() => {
-            history.back();
+            navigate(-1);
           }}
         >
           <img src={backIcon} alt="back"/>
@@ -106,11 +106,13 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
     try {
+      const {navigate, updateProfile} = props;
       const phoneNumber = `+${values["phoneNumber"]?.value}`;
-      props.updateProfile({
+      updateProfile({
         body: {
           phoneNumber,
         },
+        navigate,
         nextPath: `/create-account/phone-verification?phoneNumber=${phoneNumber}`,
       });
     } catch (e) {
@@ -126,7 +128,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      updateProfile: updateMyProfileAction,
       showErrorNotification: showErrorNotificationAction,
     },
     dispatch

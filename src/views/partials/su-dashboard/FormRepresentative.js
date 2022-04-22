@@ -4,7 +4,6 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import history from "../../../history";
 import plusCircleFire from "../../../assets/images/plus-circle-fire.svg";
 import backIcon from "../../../assets/images/back.svg";
 import removeIcon from "../../../assets/images/remove.svg";
@@ -19,6 +18,7 @@ import {USER_TYPE_ORG_ADMIN} from "../../../constant";
 import clsx from "clsx";
 import style from "./FormRepresentative.module.scss";
 import {useOrganizationContext} from "../../../providers/OrganizationProvider";
+import {useNavigate} from "react-router-dom";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -47,7 +47,8 @@ export const defaultMember = {
 
 const FormRepresentative = (props) => {
   const {orgAdmins} = useOrganizationContext();
-  const {values, errors, touched, t, setFieldValue, setRestBarClass, match: {params: {organizationId}}} = props;
+  const {values, errors, touched, t, setFieldValue, setRestBarClass, organizationId} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRestBarClass("progress-18 medical");
@@ -72,16 +73,12 @@ const FormRepresentative = (props) => {
     setFieldValue("users", data);
   }
 
-  const navigateTo = (path) => {
-    history.push(path);
-  }
-
   return (
     <Form className='form mt-57'>
       <div style={{padding: '0 10px'}}>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/invite/company')}
+          onClick={() => navigate('/invite/company')}
         >
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
@@ -295,7 +292,7 @@ const FormRepresentative = (props) => {
         {
           orgAdmins?.length > 0 &&
           <span className={clsx(style.Skip, 'font-binary')}
-                onClick={() => history.push(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
+                onClick={() => navigate(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
         }
       </div>
     </Form>
@@ -322,10 +319,10 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
-    const {match: {params: {organizationId}}} = props;
+    const {organizationId, navigate} = props;
     let users = values?.users;
     if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
-      history.push("/invite/company");
+      navigate("/invite/company");
     } else {
       users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
     }
@@ -368,7 +365,7 @@ const EnhancedForm = withFormik({
             }
             props.setLoading(false);
             if (alreadyRegisteredUsers?.length === 0) {
-              history.push(`/invite/${organizationId}/team-mode`);
+              navigate(`/invite/${organizationId}/team-mode`);
             }
           });
       }

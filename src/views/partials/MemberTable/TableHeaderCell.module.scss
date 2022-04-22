@@ -1,0 +1,38 @@
+@import "src/assets/scss/colors";
+
+.TableHeaderCell {
+  padding: 5px 10px;
+  text-align: center;
+  white-space: nowrap;
+  background: $app-list-bg;
+  border: 1px solid $app-bg;
+
+  .TableHeaderCellSpan {
+    font-size: 18px;
+    line-height: 20.13px;
+  }
+
+  .ChevronWrapper {
+    display: inline-flex;
+    width: 30px;
+    height: 30px;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+
+    .ChevronIcon {
+      width: 12px;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .TableHeaderCell {
+    padding: 15px 40px;
+
+    .TableHeaderCellSpan {
+      font-size: 21px;
+      line-height: 24.13px;
+    }
+  }
+}

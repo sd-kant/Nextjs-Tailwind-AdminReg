@@ -14,13 +14,17 @@ module.exports = {
     "plugin:jest/recommended",
     "plugin:testing-library/react"
   ],
-  parser: "babel-eslint", // Uses babel-eslint transforms.
+  parser: "@babel/eslint-parser",
   parserOptions: {
     ecmaFeatures: {
       jsx: true
     },
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
-    sourceType: "module" // Allows for the use of imports
+    sourceType: "module", // Allows for the use of imports
+    "requireConfigFile": false,
+    babelOptions: {
+      "presets": ["@babel/preset-react"]
+    }
   },
   plugins: [
     "import" // eslint-plugin-import plugin. https://www.npmjs.com/package/eslint-plugin-import
@@ -38,6 +42,7 @@ module.exports = {
     "no-console": 0,
     "no-empty-pattern": "warn",
     "no-mixed-operators": "warn",
+    "no-unsafe-optional-chaining": 0,
     "no-unused-vars": "warn",
     "no-unreachable": "warn",
     "react/jsx-filename-extension": [

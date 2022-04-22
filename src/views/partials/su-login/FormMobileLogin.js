@@ -8,15 +8,17 @@ import {setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth
 // import MicrosoftLogin from "react-microsoft-login";
 import {apiBaseUrl} from "../../../config";
 import axios from "axios";
-import history from "../../../history";
 import {formSchema} from "./FormSULogin";
+import {getParamFromUrl} from "../../../utils";
 
 const FormMobileLogin = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
 
   useEffect(() => {
     setClassName();
-    // todo get deviceId
+    const deviceId = getParamFromUrl("deviceId")
+    if (deviceId)
+      setFieldValue("deviceId", deviceId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -127,10 +129,11 @@ const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     username: '',
     password: '',
+    deviceId: '',
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
-    const {t, showErrorNotification, setLoading, setBaseUri, setMobileToken} = props;
+    const {t, showErrorNotification, setLoading, setBaseUri, setMobileToken, navigate} = props;
     if (values.username?.includes("@")) {
       showErrorNotification(t("use your username"));
       return;
@@ -165,9 +168,9 @@ const EnhancedForm = withFormik({
         setMobileToken(accessToken);
 
         if (havePhone) {
-          history.push('/mobile-phone-verification/1');
+          navigate(`/mobile-phone-verification/1?deviceId=${values?.deviceId}`);
         } else {
-          history.push('/mobile-phone-register');
+          navigate(`/mobile-phone-register?deviceId=${values?.deviceId}`);
         }
       }
     } catch (e) {

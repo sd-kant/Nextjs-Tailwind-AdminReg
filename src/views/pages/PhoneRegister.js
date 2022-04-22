@@ -2,10 +2,12 @@ import React from 'react';
 import logo from "../../assets/images/logo_light.svg";
 import {useTranslation} from "react-i18next";
 import FormPhoneRegister from "../partials/su-login/FormPhoneRegister";
+import {useNavigate} from "react-router-dom";
 
 
 const PhoneRegister = () => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <div className='form-main'>
@@ -18,7 +20,9 @@ const PhoneRegister = () => {
         </span>
       </div>
 
-      <FormPhoneRegister/>
+      <FormPhoneRegister
+        navigate={navigate}
+      />
     </div>
   )
 }

@@ -19,6 +19,11 @@ import {numMinutesBetweenWithNow as numMinutesBetween} from "../../../utils";
 import BatteryV3 from "../../components/BatteryV3";
 import ConfirmModalV2 from "../../components/ConfirmModalV2";
 import ConfirmModal from "../../components/ConfirmModal";
+import {formatHeartRate} from "../../../utils/dashboard";
+import {useUtilsContext} from "../../../providers/UtilsProvider";
+import {useUserSubscriptionContext} from "../../../providers/UserSubscriptionProvider";
+import ActivityLogs from "./ActivityLogs";
+import lockIcon from "../../../assets/images/lock.svg";
 
 export const filters = [
   {
@@ -31,43 +36,35 @@ export const filters = [
   },
 ];
 
-export const activitiesSorts = [
-  {
-    value: "1",
-    label: "Most Recent Alerts",
-  },
-  {
-    value: "2",
-    label: "All Activities",
-  },
-];
-
 const MemberDetail = (
   {
     t,
     open = false,
     closeModal = () => {
     },
-    data,
+    data: origin,
     metric,
   }) => {
+  const {getHeartRateZone, formatHeartCbt} = useUtilsContext();
   const {
     values: {devices},
-    formatAlertForDetail,
-    formatHeartCbt,
-    getHeartRateZone,
+    formattedMembers,
     formattedTeams,
-    formatHeartRate,
     moveMember,
     setMember,
-    setVisibleMemberModal,
+    unlockMember,
   } = useDashboardContext();
-  const [visibleMoveModal, setVisibleMoveModal] = React.useState(false);
-  const [confirmModal, setConfirmModal] = React.useState({visible: false, title: ''});
-  console.log("member", data);
-  const {stat, alertsForMe, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk} = data ?? {
+  const {setUser, logs, activitiesFilters, activitiesFilter, setActivitiesFilter} = useUserSubscriptionContext();
+  const [warningModal, setWarningModal] = React.useState({visible: false, title: '', mode: null}); // mode: 'move', 'unlock'
+  const [confirmModal, setConfirmModal] = React.useState({visible: false, title: '', mode: null}); // mode: move, unlock
+  const memberId = React.useRef(origin?.userId);
+  const data = React.useMemo(() => {
+    return origin ? origin : formattedMembers.find(it => it.userId?.toString() === memberId.current?.toString());
+  }, [formattedMembers, origin]);
+  const {stat, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk} = data ?? {
     stat: null, alertsForMe: null, lastSyncStr: null, numberOfAlerts: null,
   };
+  console.log("member", data);
   let badgeColorStyle = style.Off;
   if (connectionObj?.value?.toString() === "3") {
     if (["1", "2"].includes(alertObj?.value?.toString())) {
@@ -91,6 +88,7 @@ const MemberDetail = (
     } else {
       setTeam(null);
     }
+    setUser(data);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
   const userDevices = devices?.find(it => it.userId?.toString() === data?.userId?.toString())?.devices;
@@ -103,52 +101,121 @@ const MemberDetail = (
   const visibleHeartStats = numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
 
-  const handleMove = async () => {
-    try {
-      await moveMember([data], team?.value);
-      setVisibleMemberModal(false);
-      setVisibleMoveModal(false);
-      setConfirmModal({
-        visible: true,
-        title: t("move user to team confirmation title", {user: `${data?.firstName} ${data?.lastName}`, team: team?.label})
-      });
-    } catch (e) {
-      console.log("moving member error", e);
+  const hideWarningModal = () => {
+    setWarningModal({visible: false, title: '', mode: null});
+  }
+
+  const handleConfirm = React.useCallback(() => {
+    switch (confirmModal.mode) {
+      case 'move':
+        setMember(null);
+        setConfirmModal({visible: false, title: '', mode: null});
+        break;
+      case 'unlock':
+        setConfirmModal({visible: false, title: '', mode: null});
+        break;
+      default:
+        console.log("action not registered");
     }
-  };
+  }, [confirmModal, setMember]);
 
   const renderActionContent = () => {
     return (
       <>
-        <div className={clsx(style.Control)}>
+        {/*<div className={clsx(style.Control)}>
           <Button
             size="sm"
             bgColor={'transparent'}
             borderColor={'orange'}
             title={t("send a message")}
           />
-        </div>
-
-        <div className={clsx(style.Control)}>
-          <Button
-            size="sm"
-            bgColor={'transparent'}
-            borderColor={'orange'}
-            title={t("reset password")}
-          />
-        </div>
+        </div>*/}
+        {
+          data?.locked ?
+            <div className={clsx(style.Control)}>
+              <Button
+                size="sm"
+                bgColor={'transparent'}
+                borderColor={'orange'}
+                title={t("unlock user")}
+                onClick={handleClickUnlock}
+              />
+            </div> : null
+        }
       </>
     );
   }
 
+  const handleClickMoveTeam = () => {
+    setWarningModal({
+      visible: true,
+      title: t("move user to team warning title", {user: `${data?.firstName} ${data?.lastName}`, team: team?.label}),
+      mode: 'move',
+    });
+  };
+
+  const handleClickUnlock = () => {
+    setWarningModal({
+      visible: true,
+      title: t('unlock user warning title'),
+      mode: 'unlock',
+    });
+  };
+
+  const handleWarningClick = React.useCallback(() => {
+    const handleMove = () => {
+      moveMember([data], team?.value)
+        .then(() => {
+          hideWarningModal();
+          setConfirmModal({
+            visible: true,
+            title: t("move user to team confirmation title", {
+              user: `${data?.firstName} ${data?.lastName}`,
+              team: team?.label
+            }),
+            mode: 'move',
+          });
+        })
+        .catch(e => {
+          console.log("moving member error", e);
+        });
+    };
+
+    const handleUnlock = () => {
+      unlockMember(data)
+        .then(() => {
+          hideWarningModal();
+          setConfirmModal({
+            visible: true,
+            title: t("unlock user confirmation title", {name: `${data?.firstName} ${data?.lastName}`}),
+            mode: 'unlock',
+          });
+        })
+        .catch(e => {
+          console.log("moving member error", e);
+        });
+    };
+
+    switch (warningModal.mode) {
+      case "move":
+        handleMove();
+        break;
+      case "unlock":
+        handleUnlock();
+        break;
+      default:
+        console.log("action moe not registered");
+    }
+  }, [data, moveMember, unlockMember, t, team, warningModal]);
+
   return (
     <React.Fragment>
-
       <Modal
         isOpen={open}
         className={clsx(style.Modal)}
         overlayClassName={clsx(style.ModalOverlay)}
         onRequestClose={closeModal}
+        preventScroll={true}
         appElement={document.getElementsByTagName("body")}
       >
         <div className={clsx(style.Wrapper)}>
@@ -168,7 +235,15 @@ const MemberDetail = (
                       className={clsx(style.Avatar)}
                       src={avatar} alt="avatar"
                     />
-
+                    {
+                      data?.locked ?
+                        <img
+                          className={clsx(style.LockIcon)}
+                          src={lockIcon}
+                          alt="lock icon"
+                          onClick={() => {}}
+                        /> : null
+                    }
                     <span className={clsx('text-orange cursor-pointer text-capitalize')}>
                     {t("edit")}
                   </span>
@@ -244,7 +319,8 @@ const MemberDetail = (
                       <div>
                         <span className={clsx(style.HelperText, 'font-helper-text')}>{t("status")}</span>
                       </div>
-                      <div className={clsx(style.StatusCell)} title={invisibleHeatRisk ? null : alertObj?.label} style={{height: '18.38px'}}>
+                      <div className={clsx(style.StatusCell)} title={invisibleHeatRisk ? null : alertObj?.label}
+                           style={{height: '18.38px'}}>
                         <div className={clsx(style.BadgeWrapper)}>
                           <div className={clsx(style.StatusBadge, badgeColorStyle)}/>
                         </div>
@@ -265,10 +341,12 @@ const MemberDetail = (
 
                     <div className={clsx(style.InformationEntity)}>
                       <div>
-                        <span className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}>{t("connection status")}</span>
+                        <span
+                          className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}>{t("connection status")}</span>
                       </div>
                       <div className={clsx(style.Cell)}>
-                        <span className={clsx('font-input-label')} title={connectionObj?.label}>{connectionObj?.label}</span>
+                        <span className={clsx('font-input-label')}
+                              title={connectionObj?.label}>{connectionObj?.label}</span>
                       </div>
                     </div>
                   </div>
@@ -339,15 +417,13 @@ const MemberDetail = (
                 </div>
 
                 <div className={clsx(style.FilterArea)}>
-                  {/*<span className={clsx('font-binary')} style={{marginTop: '10px'}}>
-                {t("filter by")}
-              </span>*/}
-
                   <ResponsiveSelect
                     className={clsx('font-binary text-black', style.Dropdown)}
-                    placeholder={t("sort by")}
+                    placeholder={t("filter by")}
                     styles={customStyles()}
-                    options={activitiesSorts}
+                    options={activitiesFilters}
+                    value={activitiesFilter}
+                    onChange={setActivitiesFilter}
                     maxMenuHeight={190}
                     writable={false}
                   />
@@ -355,53 +431,10 @@ const MemberDetail = (
               </div>
 
               <div className={clsx(style.AlertCardContent)}>
-                {
-                  alertsForMe?.length > 0 ?
-                    <div className={clsx(style.DataRow, style.Header, 'font-button-label text-orange')}>
-                      <span className={clsx('font-binary', style.Padding)}>{t("details")}</span>
-                      <div>
-                        <span className={clsx('font-binary', style.Padding)}>{t("cbt")}</span>
-                        <span className={clsx('font-binary', style.Padding, 'ml-20')}>{t("hr")}</span>
-                      </div>
-                      <span className={clsx('font-binary', style.Padding)}>{t("datetime")}</span>
-                    </div> :
-                    <div className={clsx(style.DataRow, style.Header, 'font-button-label text-orange')}>
-                      <span className={clsx('font-binary', style.Padding)}>{t("no alerts")}</span>
-                    </div>
-                }
-                {
-                  alertsForMe?.map((item, index) => {
-                    return (
-                      <div className={clsx(style.DataRow)} key={`user-alert-${data?.userId}-${index}`}>
-                        <div className={clsx(style.DataLabel)}>
-                          <div className={clsx('font-binary', style.Rounded)}>
-                            {formatAlertForDetail(item.alertStageId)}
-                          </div>
-                        </div>
-
-                        <div>
-                          <div className={clsx('font-binary', style.Rounded)}>
-                            <img className={style.MobileOnly} src={thermometer} alt="thermometer" width={8}
-                                 style={{marginRight: '3px'}}/>
-                            <span className={clsx(style.HeartCBTSpan)}>{formatHeartCbt(item.heartCbtAvg)}</span>
-                          </div>
-
-                          <div className={clsx('font-binary', style.Rounded, 'ml-15')}>
-                            <img className={style.MobileOnly} src={heart} alt="heart" width={13}
-                                 style={{marginRight: '3px'}}/>
-                            <span className={clsx(style.HeartCBTSpan)}>{formatHeartRate(item.heartRateAvg)}</span>
-                          </div>
-                        </div>
-
-                        <div>
-                        <span className={clsx('font-binary text-gray-2', style.Padding)}>
-                          {new Date(item.utcTs).toLocaleString([], { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                        </div>
-                      </div>
-                    )
-                  })
-                }
+                <ActivityLogs
+                  logs={logs}
+                  gmt={data?.gmt}
+                />
               </div>
             </div>
 
@@ -428,9 +461,7 @@ const MemberDetail = (
                     title={'update team'}
                     size='sm'
                     disabled={team?.value?.toString() === data?.teamId?.toString()}
-                    onClick={() => {
-                      setVisibleMoveModal(true);
-                    }}
+                    onClick={handleClickMoveTeam}
                   />
                 </div>
               </div>
@@ -443,18 +474,15 @@ const MemberDetail = (
         </div>
       </Modal>
       <ConfirmModalV2
-        show={visibleMoveModal}
-        header={t("move user to team warning title", {user: `${data?.firstName} ${data?.lastName}`, team: team?.label})}
-        onOk={handleMove}
-        onCancel={() => setVisibleMoveModal(false)}
+        show={warningModal.visible}
+        header={warningModal.title}
+        onOk={handleWarningClick}
+        onCancel={hideWarningModal}
       />
       <ConfirmModal
         show={confirmModal.visible}
         header={confirmModal.title}
-        onOk={() => {
-          setMember(null);
-          setConfirmModal({visible: false, title: ''});
-        }}
+        onOk={handleConfirm}
       />
     </React.Fragment>
   );
@@ -467,4 +495,4 @@ const mapStateToProps = (state) => ({
 export default connect(
   mapStateToProps,
   null,
-)(withTranslation()(MemberDetail));
+)(withTranslation()(React.memo(MemberDetail)));

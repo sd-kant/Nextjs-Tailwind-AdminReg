@@ -4,7 +4,6 @@ import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
-import history from "../../../history";
 import {checkPasswordValidation, getTokenFromUrl} from "../../../utils";
 import {instance, lookupByToken, resetPasswordV2} from "../../../http";
 import {
@@ -13,6 +12,8 @@ import {
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import ConfirmModal from "../../components/ConfirmModal";
+import {useNavigate} from "react-router-dom";
+import {apiBaseUrl} from "../../../config";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -51,6 +52,7 @@ const FormResetPassword = (props) => {
     setStatus,
     t
   } = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = getTokenFromUrl();
@@ -138,7 +140,7 @@ const FormResetPassword = (props) => {
         onOk={(e) => {
           e.preventDefault();
           setStatus({visibleModal: false});
-          history.push("/login");
+          navigate("/login");
         }}
       />
     </Form>
@@ -160,6 +162,7 @@ const EnhancedForm = withFormik({
 
     try {
       props.setLoading(true);
+      instance.defaults.baseURL = apiBaseUrl;
       const lookupRes = await lookupByToken(values?.token);
       const {baseUri} = lookupRes.data;
       if (baseUri) {

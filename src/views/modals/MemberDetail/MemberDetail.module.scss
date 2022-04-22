@@ -55,10 +55,19 @@
             align-items: center;
             height: 100%;
             justify-content: space-between;
+            position: relative;
 
             .Avatar {
               width: 80px;
               height: 80px;
+            }
+
+            .LockIcon {
+              position: absolute;
+              width: 16px;
+              height: 16px;
+              right: 5px;
+              top: 0;
             }
           }
 
@@ -209,42 +218,7 @@
 
     .AlertsCard {
       .AlertCardContent {
-        .DataRow {
-          display: grid;
-          grid-template-columns: 1fr;
-          margin-top: 8px;
 
-          .DataLabel {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-          }
-
-          .Padding {
-            display: inline-block;
-            padding: 0 15px;
-          }
-
-          .Rounded {
-            display: inline-flex;
-            background-color: $app-ts;
-            padding: 8px 15px;
-            border-radius: 10px;
-
-            .HeartCBTSpan {
-              width: 31px;
-              text-align: center;
-            }
-          }
-
-          & > div {
-            margin-bottom: 8px;
-          }
-        }
-
-        .Header {
-          display: none;
-        }
       }
     }
 
@@ -332,6 +306,14 @@
                 width: 100px;
                 height: 100px;
               }
+
+              .LockIcon {
+                position: absolute;
+                width: 24px;
+                height: 24px;
+                right: 10px;
+                top: -5px;
+              }
             }
           }
 
@@ -347,15 +329,7 @@
     .RightCard {
       .AlertsCard {
         .AlertCardContent {
-          .DataRow {
-            display: grid;
-            grid-template-columns: 1fr 150px 200px;
-            margin-top: 8px;
-          }
 
-          .Header {
-            display: grid;
-          }
         }
       }
 
@@ -370,10 +344,6 @@
         }
       }
     }
-  }
-
-  .MobileOnly {
-    display: none;
   }
 }
 
