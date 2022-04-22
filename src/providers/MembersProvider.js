@@ -200,7 +200,7 @@ const MembersProvider = (
       firstName: it.firstName,
       lastName: it.lastName,
       email: it.email,
-      job: jobs?.find(ele => ele.value?.toString() === (it?.job?.toString() ?? "14")),
+      job: jobs?.find(ele => ele.value?.toString() === (it?.job?.toString() ?? "no-role")),
       userTypes: it.userTypes,
       userTypesOrigin: it.userTypesOrigin,
       accessibleTeams: it.accessibleTeams,
@@ -242,7 +242,7 @@ const MembersProvider = (
         }
         // No Role Defined will be selected as default when user's job role is null, and this will not be considered as updated
         if (get(user, "job.value") !== get(origin, "job")) {
-          if (!(get(user, "job.value") === "14" && [null, undefined, ""].includes(get(origin, "job")))) {
+          if (!(get(user, "job.value") === "no-role" && [null, undefined, ""].includes(get(origin, "job")))) {
             ret = true;
           }
         }
@@ -330,7 +330,7 @@ const MembersProvider = (
         it['phoneAction'] = 1;
         it['accessibleTeams'] = accessibleTeams;
         it['originalAccessibleTeams'] = accessibleTeams;
-        it['job'] = (parseInt(it['job']) > 0 && parseInt(it['job']) <= 14) ? it['job'] : "14";
+        it['job'] = it['job'] ?? "no-role";
         it['userTypesOrigin'] = it.userTypes;
         if (!(["", "-1", null, undefined].includes(teamId))) {
           it['teamId'] = teamId;

@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.7.20";
+export const CURRENT_VERSION = "3.7.21";
 export const AVAILABLE_COUNTRIES = [
   {
     "value": "AU",
@@ -54,83 +54,83 @@ export const AVAILABLE_COUNTRIES = [
 ];
 export const AVAILABLE_JOBS = [
   {
-    value: "1",
+    value: "health-safety",
     label: i18n.t("job health safety"),
   },
   {
-    value: "2",
+    value: "superintendent",
     label: i18n.t("job superintendent"),
   },
   {
-    value: "3",
+    value: "supervisor",
     label: i18n.t("job supervisor"),
   },
   {
-    value: "4",
+    value: "project-manager",
     label: i18n.t("job project manager"),
   },
   {
-    value: "5",
+    value: "healthcare",
     label: i18n.t("job healthcare professional"),
   },
   {
-    value: "6",
+    value: "welder",
     label: i18n.t("job welder"),
   },
   {
-    value: "7",
+    value: "engineer",
     label: i18n.t("job engineer"),
   },
   {
-    value: "8",
+    value: "it-security",
     label: i18n.t("job it security"),
   },
   {
-    value: "9",
+    value: "electrician",
     label: i18n.t("job electrician"),
   },
   {
-    value: "10",
+    value: "site-security",
     label: i18n.t("job site security"),
   },
   {
-    value: "11",
+    value: "laborer",
     label: i18n.t("job laborer"),
   },
   {
-    value: "12",
+    value: "surveyor",
     label: i18n.t("job surveyor"),
   },
   {
-    value: "13",
+    value: "carpenter",
     label: i18n.t("job carpenter"),
   },
   {
-    value: "14",
+    value: "no-role",
     label: i18n.t("job no role defined"),
   },
   {
-    value: "15",
+    value: "firefighter",
     label: i18n.t("job firefighter"),
   },
   {
-    value: "16",
+    value: "miner",
     label: i18n.t("job miner"),
   },
   {
-    value: "17",
+    value: "remediation",
     label: i18n.t("job remediation"),
   },
   {
-    value: "18",
+    value: "contractor",
     label: i18n.t("job contractor"),
   },
   {
-    value: "19",
+    value: "temp-hire",
     label: i18n.t("job temp hire"),
   },
   {
-    value: "20",
+    value: "machine-operator",
     label: i18n.t("job machine operator"),
   },
 ];

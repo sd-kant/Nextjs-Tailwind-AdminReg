@@ -150,9 +150,9 @@ const FormInvite = (props) => {
 
     const d = csvData?.map(it => {
       const level = it.permissionLevel?.split(":")?.[0]?.trim();
-      const job = it.jobRole?.split(":")?.[0]?.trim();
+      const job = it.jobRole?.toLowerCase()?.trim();
       const selectedLevel = permissionLevels.find(ele => parseInt(ele.value) === parseInt(level));
-      const selectedJob = AVAILABLE_JOBS.find(ele => parseInt(ele.value) === parseInt(job));
+      const selectedJob = AVAILABLE_JOBS.find(ele => ele.value === job);
       const phoneNumber = `${it.countryCode ?? ""}${it.phoneNumber ?? ""}`;
       const phoneNumberWithPlus = `+${it.countryCode ?? ""}${it.phoneNumber ?? ""}`;
       const asYouType = new AsYouType()
