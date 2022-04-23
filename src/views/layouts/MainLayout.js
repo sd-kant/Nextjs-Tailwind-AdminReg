@@ -5,11 +5,15 @@ import {logoutAPI} from "../../http";
 
 export const logout = () => {
   logoutAPI().finally(() => {
-    const lang = localStorage.getItem("kop-v2-lang");
-    const params = localStorage.getItem("kop-params");
+    const valuesToKeep = ["kop-v2-lang", "kop-params", "kop-v2-device-id"];
+    const x = {};
+    valuesToKeep.forEach(it => x[it] = localStorage.getItem(it));
+    // const lang = localStorage.getItem("kop-v2-lang");
+    // const params = localStorage.getItem("kop-params");
     localStorage.clear();
-    localStorage.setItem("kop-v2-lang", lang);
-    localStorage.setItem("kop-params", params);
+    valuesToKeep.forEach(it => localStorage.setItem(it, x[it]));
+    // localStorage.setItem("kop-v2-lang", lang);
+    // localStorage.setItem("kop-params", params);
     window.location.href = "/";
   });
 }
