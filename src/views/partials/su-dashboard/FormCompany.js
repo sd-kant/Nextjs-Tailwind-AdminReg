@@ -613,6 +613,12 @@ const FormCompany = (props) => {
                 </div>
               </div>
 
+              <div className='grouped-form mt-40'>
+                <label className="font-header-medium">
+                  {t("privacy")}
+                </label>
+              </div>
+
               <div className='d-flex flex-column mt-25'>
                 <label className='font-input-label'>
                   {t("org hide hr & cbt")}
