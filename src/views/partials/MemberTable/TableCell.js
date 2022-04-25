@@ -12,6 +12,7 @@ const TableCell = (
     value,
     member,
     metric,
+    hideCbtHR,
   }) => {
   const {
     stat,
@@ -63,9 +64,12 @@ const TableCell = (
               {
                 alertObj?.value?.toString() !== "5" &&
                 <React.Fragment>
-                  <span>
+                  {
+                    !hideCbtHR &&
+                    <span>
                     {formatHeartCbt(alert?.heartCbtAvg)}{metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;{formatHeartRate(alert?.heartRateAvg)} BPM
                   </span>
+                  }
                   <span>
                     {alert?.utcTs ? new Date(alert?.utcTs).toLocaleString([], {
                       year: 'numeric',
