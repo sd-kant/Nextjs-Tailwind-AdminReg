@@ -41,14 +41,14 @@ export const userSchema = (t) => {
     email: Yup.string()
       .email(t("email invalid"))
       .max(1024, t('email max error'))
-      .test(
+      /*.test(
         'required',
         t('email or phone number required'),
         function (value) {
           if (value) return true;
           return !!(this.parent.phoneNumber?.value);
         }
-      ),
+      )*/,
     firstName: Yup.string()
       .required(t('firstName required'))
       .max(1024, t("firstName max error")),
