@@ -9,9 +9,11 @@ import {get} from 'lodash';
 import {WidthProvider} from "./providers/WidthProvider";
 import {GlobalDebug} from "./utils/remove-console";
 
+export const isProductionMode = process.env.REACT_APP_ENV === "PRODUCTION";
+
 function App({loading}) {
   React.useEffect(() => {
-    (process.env.REACT_APP_ENV === "PRODUCTION") &&
+    isProductionMode &&
     GlobalDebug(false);
   }, []);
 
