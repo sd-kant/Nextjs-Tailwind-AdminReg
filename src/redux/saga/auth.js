@@ -6,7 +6,7 @@ import {
 import {actionTypes} from '../type';
 import {instance, login, lookupByUsername} from "../../http";
 import i18n from '../../i18nextInit';
-import {ableToLogin} from "../../utils";
+import {ableToLogin, uuidv4} from "../../utils";
 import {apiBaseUrl} from "../../config";
 
 function* actionWatcher() {
@@ -47,6 +47,16 @@ function* loginSaga({payload: {
       };
       mode = 2;
     }
+    // attach deviceId
+    if (!body.deviceId) {
+      let deviceId = localStorage.getItem("kop-v2-device-id");
+      if ([null, undefined, "null", "undefined", ""].includes(deviceId)) {
+        deviceId = uuidv4();
+        localStorage.setItem("kop-v2-device-id", deviceId);
+      }
+      body["deviceId"] = `web:${deviceId}`;
+    }
+
     apiRes = yield call(login, body);
     const responseData = apiRes.data;
     const {

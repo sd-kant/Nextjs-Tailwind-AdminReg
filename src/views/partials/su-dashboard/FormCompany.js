@@ -18,7 +18,7 @@ import {
   twoFAOptions, USER_TYPE_ORG_ADMIN, hideCbtHROptions
 } from "../../../constant";
 import {queryAllOrganizationsAction} from "../../../redux/action/base";
-import {get} from "lodash";
+import {get, isEqual} from "lodash";
 import ButtonGroup from "../../components/ButtonGroup";
 import clsx from "clsx";
 import style from "./FormCompany.module.scss";
@@ -245,6 +245,38 @@ const FormCompany = (props) => {
       navigate("/select-mode");
     }
   };
+
+  const changes = React.useMemo(() => {
+    const ret = [];
+    const organization = organizations?.find(it => it.value?.toString() === values.selectedItem?.toString());
+    if (values.selectedItem && organization) {
+      if (values?.companyName?.label?.toString()?.trim() !== values?.editingCompanyName?.toString()?.trim()) {
+        ret.push("name");
+      }
+
+      if (values?.companyCountry?.label?.toString()?.trim() !== organization?.country?.toString()?.trim()) {
+        ret.push("country");
+      }
+
+      const regions = values?.regions?.map(it => it.label);
+      const orgRegions = JSON.parse(JSON.stringify(organization?.regions ?? []));
+      if (!isEqual(regions?.sort(), orgRegions?.sort())) {
+        ret.push("regions");
+      }
+
+      if (values?.users?.length > 0) {
+        ret.push("admin");
+      }
+
+      const fields = ["twoFA", "passwordMinimumLength", "passwordExpirationDays", "hideCbtHR"];
+      fields.forEach(item => {
+        if (values?.[item] !== organization?.[item]) {
+          ret.push(item);
+        }
+      });
+    }
+    return ret;
+  }, [values, organizations]);
 
   return (
     <React.Fragment>
@@ -613,6 +645,12 @@ const FormCompany = (props) => {
                 </div>
               </div>
 
+              <div className='grouped-form mt-40'>
+                <label className="font-header-medium">
+                  {t("privacy")}
+                </label>
+              </div>
+
               <div className='d-flex flex-column mt-25'>
                 <label className='font-input-label'>
                   {t("org hide hr & cbt")}
@@ -632,14 +670,25 @@ const FormCompany = (props) => {
           }
         </div>
         <div className='mt-80'>
-          <button
-            className={"button active cursor-pointer"}
-            type={"submit"}
-          >
-          <span className='font-button-label text-white text-uppercase'>
-            {values["isEditing"] ? t("save") : t("next")}
-          </span>
-          </button>
+          {
+            values.isEditing ?
+              <button
+                className={`${changes?.length > 0 ? " active cursor-pointer" : "inactive cursor-default"} button`}
+                type={changes?.length > 0 ? "submit" : "button"}
+              >
+                <span className='font-button-label text-white text-uppercase'>
+                  {t("save")}
+                </span>
+              </button> :
+              <button
+                className={"button active cursor-pointer"}
+                type={"submit"}
+              >
+                <span className='font-button-label text-white text-uppercase'>
+                  {t("next")}
+                </span>
+              </button>
+          }
           <button
             className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
             type={"button"}
@@ -695,12 +744,12 @@ const EnhancedForm = withFormik({
 
       if (values.selectedItem) {
         try {
+          setLoading(true);
           const organizationId = values.selectedItem;
           await updateCompany(organizationId, data);
 
           // creating org admins
           let users = values?.users;
-          setLoading(true);
           users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
           const promises = [];
           let totalSuccessForInvite = 0;

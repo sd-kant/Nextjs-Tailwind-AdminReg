@@ -6,6 +6,7 @@ import {
   celsiusToFahrenheit,
   numMinutesBetweenWithNow as numMinutesBetween,
 } from "../utils";
+import {isProductionMode} from "../App";
 
 const UtilsContext = React.createContext(null);
 
@@ -143,7 +144,7 @@ export const UtilsProviderDraft = (
       case "3":
         return "Safe, Return to Work";
       case "4":
-        return "Alert Reset";
+        return isProductionMode ? "Safe, Return to Work" : "Alert Reset";
       default:
         return "N/A";
     }

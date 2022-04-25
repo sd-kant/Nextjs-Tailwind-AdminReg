@@ -16,7 +16,7 @@ const TableRow = (
   }) => {
   const {width} = useWidthContext();
   const checkboxSize = React.useMemo(() => width < 768 ? 'sm' : 'md', [width]);
-  const {setVisibleMemberModal, setMember} = useDashboardContext();
+  const {setVisibleMemberModal, setMember, hideCbtHR} = useDashboardContext();
   const {selectedMembers, setSelectedMembers} = useMembersContextV2();
   const index = selectedMembers?.findIndex(it => it.userId === member.userId);
   const checked = index !== -1;
@@ -75,6 +75,7 @@ const TableRow = (
               value={header}
               key={`cell-${member.userId}-${index}`}
               member={member}
+              hideCbtHR={hideCbtHR}
             /> : null
         ))
       }

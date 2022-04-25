@@ -24,6 +24,7 @@ import {useUtilsContext} from "../../../providers/UtilsProvider";
 import {useUserSubscriptionContext} from "../../../providers/UserSubscriptionProvider";
 import ActivityLogs from "./ActivityLogs";
 import lockIcon from "../../../assets/images/lock.svg";
+import blockIcon from "../../../assets/images/no.svg";
 
 export const filters = [
   {
@@ -62,8 +63,9 @@ const MemberDetail = (
     return origin ? origin : formattedMembers.find(it => it.userId?.toString() === memberId.current?.toString());
   }, [formattedMembers, origin]);
   const {stat, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk} = data ?? {
-    stat: null, alertsForMe: null, lastSyncStr: null, numberOfAlerts: null,
+    stat: null, alertsForMe: null, lastSyncStr: null, numberOfAlerts: null, settings: {hideCbtHR: false}
   };
+  const hideCbtHR = data?.settings?.hideCbtHR;
   console.log("member", data);
   let badgeColorStyle = style.Off;
   if (connectionObj?.value?.toString() === "3") {
@@ -241,7 +243,8 @@ const MemberDetail = (
                           className={clsx(style.LockIcon)}
                           src={lockIcon}
                           alt="lock icon"
-                          onClick={() => {}}
+                          onClick={() => {
+                          }}
                         /> : null
                     }
                     <span className={clsx('text-orange cursor-pointer text-capitalize')}>
@@ -370,9 +373,10 @@ const MemberDetail = (
                 <div className={clsx(style.InformationContent)}
                      style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
                   <img src={thermometer} alt="thermometer" width={15}/>
-                  <span className={'font-big-number'}>
-                  {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
-                </span>
+                  {
+                    hideCbtHR ?
+                      <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon"/> : <span className={'font-big-number'}>{formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}</span>
+                  }
                 </div>
 
                 <div style={{display: 'flex', justifyContent: 'center'}}>
@@ -391,12 +395,13 @@ const MemberDetail = (
                 <div className={clsx(style.InformationContent)}
                      style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
                   <img src={heart} alt="heart" width={30}/>
-                  <span className={clsx('font-big-number')}>
-                  {formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)}
-                </span>
+                  {
+                    hideCbtHR ?
+                      <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon"/> : <span className={clsx('font-big-number')}>{formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)}</span>
+                  }
                 </div>
                 {
-                  visibleHeartStats &&
+                  !hideCbtHR && visibleHeartStats &&
                   <div style={{display: 'flex', justifyContent: 'center'}}>
                 <span className={clsx('font-binary', heartRateZoneStyles[heartRateZone?.value?.toString()])}>
                   {heartRateZone?.label}
