@@ -62,9 +62,10 @@ const MemberDetail = (
   const data = React.useMemo(() => {
     return origin ? origin : formattedMembers.find(it => it.userId?.toString() === memberId.current?.toString());
   }, [formattedMembers, origin]);
-  const {stat, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk, settings: {hideCbtHR}} = data ?? {
+  const {stat, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk} = data ?? {
     stat: null, alertsForMe: null, lastSyncStr: null, numberOfAlerts: null, settings: {hideCbtHR: false}
   };
+  const hideCbtHR = data?.settings?.hideCbtHR;
   console.log("member", data);
   let badgeColorStyle = style.Off;
   if (connectionObj?.value?.toString() === "3") {
