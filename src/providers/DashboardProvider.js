@@ -129,6 +129,11 @@ const DashboardProviderDraft = (
     localStorage.setItem("kop-params", location.search);
   }, [organization]);
 
+  const hideCbtHR = React.useMemo(() => {
+    const item = organizations?.find(it => it.id?.toString() === organization?.toString());
+    return item?.settings?.hideCbtHR;
+  }, [organization, organizations]);
+
   React.useEffect(() => {
     const sortBy = Object.keys(filter)?.[0];
     let sortDirection = undefined;
@@ -698,6 +703,7 @@ const DashboardProviderDraft = (
     setRefreshCount,
     removeMember,
     unlockMember,
+    hideCbtHR,
   };
 
   return (
