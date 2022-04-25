@@ -54,7 +54,7 @@ function* loginSaga({payload: {
         deviceId = uuidv4();
         localStorage.setItem("kop-v2-device-id", deviceId);
       }
-      body["deviceId"] = deviceId;
+      body["deviceId"] = `web:${deviceId}`;
     }
 
     apiRes = yield call(login, body);

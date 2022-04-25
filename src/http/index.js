@@ -63,7 +63,7 @@ instance.interceptors.response.use(function (response) {
           const deviceId = localStorage.getItem("kop-v2-device-id");
           const res = await post("/auth/refresh", {
             refreshToken,
-            deviceId: deviceId,
+            deviceId: `web:${deviceId}`,
           });
           if (res.data?.accessToken) {
             localStorage.setItem("kop-v2-token", res.data?.accessToken);
