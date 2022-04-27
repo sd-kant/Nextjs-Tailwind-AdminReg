@@ -308,6 +308,7 @@ const FormProfile = (props) => {
 
   return (
     <React.Fragment>
+      <ConfirmModal show={visibleModal} header={t("profile changes saved")} onOk={onOkModal}/>
       <Form className='form-group mt-10'>
         {
           edit ?
@@ -679,7 +680,6 @@ const FormProfile = (props) => {
           }
         </div>
       </Form>
-      <ConfirmModal show={visibleModal} header={t("profile changes saved")} onOk={onOkModal}/>
     </React.Fragment>
   )
 }
