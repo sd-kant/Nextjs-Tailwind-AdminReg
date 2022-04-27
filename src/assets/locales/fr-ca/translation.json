@@ -509,7 +509,7 @@
   "job contractor": "Prestataire",
   "job temp hire": "Embauche temporaire",
   "job machine operator": "Opérateur",
-  "org hide hr & cbt": "Masquer toutes les valeurs RH et CBT de l'utilisateur sur le tableau de bord de l'équipe ?",
+  "org hide hr & cbt": "Masquer toutes les valeurs d'alerte HR et CBT de l'utilisateur sur le tableau de bord de l'équipe ?",
   "user hide hr & cbt": "Cacher RH et CBT ?",
   "privacy": "Confidentialité"
 }
