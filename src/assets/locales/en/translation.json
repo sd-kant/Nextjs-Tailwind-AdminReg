@@ -509,7 +509,7 @@
   "job contractor": "Contractor",
   "job temp hire": "Temp Hire",
   "job machine operator": "Machine Operator",
-  "org hide hr & cbt": "Hide All User’s HR and CBT Values on the Team Dashboard?",
+  "org hide hr & cbt": "Hide All User’s HR and CBT Alert Values on the Team Dashboard?",
   "user hide hr & cbt": "Hide HR and CBT?",
   "privacy": "Privacy"
 }
