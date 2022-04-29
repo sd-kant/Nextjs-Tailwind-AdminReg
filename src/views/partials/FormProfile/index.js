@@ -11,8 +11,6 @@ import maleIcon from "../../../assets/images/male.svg";
 import maleGrayIcon from "../../../assets/images/male-gray.svg";
 import femaleIcon from "../../../assets/images/female.svg";
 import femaleGrayIcon from "../../../assets/images/female-gray.svg";
-import "react-modern-calendar-datepicker/lib/DatePicker.css";
-import DatePicker from "react-modern-calendar-datepicker";
 import {FEMALE, IMPERIAL, MALE, METRIC} from "../../../constant";
 import imperialIcon from "../../../assets/images/imperial.svg";
 import imperialGrayIcon from "../../../assets/images/imperial-gray.svg";
@@ -20,7 +18,7 @@ import metricIcon from "../../../assets/images/metric.svg";
 import metricGrayIcon from "../../../assets/images/metric-gray.svg";
 import {formShape as nameFormShape} from "../create-account/FormName";
 import {formShape as genderFormShape} from "../create-account/FormGender";
-import {CustomInput, formShape as dobFormShape, makeDobStr} from "../create-account/FormBirth";
+import {formShape as dobFormShape} from "../create-account/FormBirth";
 import {formShape as unitFormShape} from "../create-account/FormUnit";
 import {ftOptions, inOptions, formShape as heightFormShape, getHeightAsMetric} from "../create-account/FormHeight";
 import {formShape as weightFormShape} from "../create-account/FormWeight";
@@ -82,7 +80,6 @@ const FormProfile = (props) => {
     status: {confirmedCnt = 0, edit = false, visibleModal},
     setStatus,
   } = props;
-  const [selectedDay, setSelectedDay] = React.useState(null);
   const [timezones] = useTimezone();
   const [hourOptions, minuteOptions] = useTimeOptions();
   const [cnt, setCnt] = React.useState(0);
@@ -102,14 +99,6 @@ const FormProfile = (props) => {
       setFieldValue("lastName", profile.lastName ?? "");
       setFieldValue("gender", profile.sex ?? "");
       const dateOfBirth = profile.dateOfBirth;
-      const dobSplits = dateOfBirth?.split("-");
-      if (dobSplits?.length === 3) {
-        setSelectedDay({
-          year: parseInt(dobSplits[0]),
-          month: parseInt(dobSplits[1]),
-          day: parseInt(dobSplits[2]),
-        })
-      }
       setFieldValue("dob", dateOfBirth ?? "");
       setFieldValue("measureType", profile.measure ?? IMPERIAL);
       const {measure, height, weight, workDayStart} = profile;
@@ -189,7 +178,7 @@ const FormProfile = (props) => {
       firstName, lastName, gender,
       measureType, timezone, workLength,
       startTimeOption, hour, minute,
-      responses, hideCbtHR,
+      responses, hideCbtHR, dob,
     } = values;
 
     if (firstName !== profile?.firstName) {
@@ -201,7 +190,7 @@ const FormProfile = (props) => {
     if (gender?.toString() !== profile?.sex?.toString()) {
       ret.push("gender");
     }
-    if (`${selectedDay?.year}-${format2Digits(selectedDay?.month)}-${format2Digits(selectedDay?.day)}` !== profile?.dateOfBirth) {
+    if (dob !== profile?.dateOfBirth) {
       ret.push("dob");
     }
     if (measureType !== profile?.measure) {
@@ -257,16 +246,12 @@ const FormProfile = (props) => {
 
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values, profile, selectedDay, timezones, medicalResponses, confirmedCnt]);
+  }, [values, profile, timezones, medicalResponses, confirmedCnt]);
 
   const changeFormField = (e) => {
     const {value, name} = e.target;
     setFieldValue(name, value);
   }
-  useEffect(() => {
-    setFieldValue("dob", selectedDay);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDay]);
   const unitOptions = [
     {
       value: IMPERIAL,
@@ -383,13 +368,13 @@ const FormProfile = (props) => {
             <label className='font-input-label'>
               {t("dob")}
             </label>
-            <DatePicker
-              value={selectedDay}
-              colorPrimary={'#DE7D2C'}
-              renderInput={({ref}) => {
-                return <CustomInput ref={ref} selectedDay={selectedDay} disabled={!edit} name="dob"/>
-              }}
-              onChange={setSelectedDay}
+            <input
+              className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
+              disabled={!edit}
+              name="dob"
+              type='date'
+              value={values["dob"]}
+              onChange={changeFormField}
             />
             {
               errors.dob && touched.dob && (
@@ -721,13 +706,12 @@ const EnhancedForm = withFormik({
       const {
         gender,
         startTimeOption, hour, minute,
-        dob: {year, month, day},
+        dob,
         measureType, height, feet, inch, weight,
         timezone: {value, gmtTz},
         workLength,
         responses,
       } = values;
-      const dobStr = makeDobStr({year, month, day});
       const measure = measureType;
       const heightAsMetric = getHeightAsMetric({
         measure: measure,
@@ -743,7 +727,7 @@ const EnhancedForm = withFormik({
       const body = {
         ...values,
         sex: gender,
-        dateOfBirth: dobStr,
+        dateOfBirth: dob,
         measure: measure,
         height: heightAsMetric,
         weight: weightAsMetric,
