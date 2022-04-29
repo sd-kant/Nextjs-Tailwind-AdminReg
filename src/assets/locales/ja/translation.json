@@ -3,7 +3,7 @@
   "password": "パスワード",
   "your password required": "あなたのパスワードを入力してください",
   "password invalid": "有効なパスワードを入力してください",
-  "password min error": "6文字以上を入力してください",
+  "password min error": "10文字以上を入力してください",
   "password max error": "1024文字未満で入力してください",
   "username": "ユーザー名",
   "username required": "ユーザー名を入力してください",

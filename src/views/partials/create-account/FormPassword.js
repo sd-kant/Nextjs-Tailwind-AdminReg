@@ -43,7 +43,7 @@ const formSchema = (t) => {
       ),
     password: Yup.string()
       .required(t('your password required'))
-      .min(6, t('password min error'))
+      .min(10, t('password min error'))
       .max(1024, t('password max error'))
       .test(
         'is-valid',

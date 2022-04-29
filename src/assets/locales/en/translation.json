@@ -3,7 +3,7 @@
   "password": "Password",
   "your password required": "Please enter your password",
   "password invalid": "Please enter a valid password",
-  "password min error": "Please enter more than 6 letters",
+  "password min error": "Please enter more than 10 letters",
   "password max error": "Please enter less than 1024 letters",
   "username": "Username",
   "username required": "Please enter your username",
