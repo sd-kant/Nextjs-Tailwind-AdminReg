@@ -14,9 +14,9 @@
 
 .Modal {
   position: absolute;
-  top: 50%;
+  top: 40px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   opacity: 1;
   background: #313131;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
@@ -27,7 +27,7 @@
 
   .Wrapper {
     position: relative;
-    padding: 10px;
+    padding: 20px 10px;
 
     .RemoveIconWrapper {
       width: 24px;
@@ -221,6 +221,9 @@
 
 @media only screen and (min-width: 1400px) {
   .Modal {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     border-radius: 24px;
     max-width: 900px;
 
