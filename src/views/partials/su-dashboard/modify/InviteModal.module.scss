@@ -63,6 +63,7 @@
 
         .Input {
           width: calc(100% - 45px);
+          font-size: 15px;
         }
       }
     }
@@ -89,6 +90,10 @@
 
       .User {
         .UserRow {
+          .Input {
+            width: calc(450px - 22px);
+            font-size: 21px;
+          }
         }
 
         & > .UserRow:first-child > div:first-child {
