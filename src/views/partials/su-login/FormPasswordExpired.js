@@ -21,7 +21,7 @@ export const formSchema = (t) => {
   return Yup.object().shape({
     password: Yup.string()
       .required(t('your password required'))
-      .min(6, t('password min error'))
+      .min(10, t('password min error'))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
@@ -32,7 +32,7 @@ export const formSchema = (t) => {
       ),
     newPassword: Yup.string()
       .required(t('your password required'))
-      .min(6, t('password min error'))
+      .min(10, t('password min error'))
       .max(1024, t('password max error'))
       .test(
         'is-valid',

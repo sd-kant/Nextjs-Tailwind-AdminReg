@@ -3,7 +3,7 @@
   "password": "Mot de passe",
   "your password required": "Veuillez saisir votre mot de passe",
   "password invalid": "Veuillez saisir un mot de passe valide",
-  "password min error": "Veuillez saisir plus de 6 lettres",
+  "password min error": "Veuillez saisir plus de 10 lettres",
   "password max error": "Veuillez saisir moins de 1024 lettres",
   "username": "Nom d'utilisateur",
   "username required": "s'il vous plaît entrez votre nom d'utilisateur",
