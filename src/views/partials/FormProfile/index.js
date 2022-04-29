@@ -281,14 +281,14 @@ const FormProfile = (props) => {
   ];
   const hideCbtHROptions = [
     {
-      value: true,
-      title: t('yes'),
-      icons: {active: yesIcon, inactive: yesGrayIcon},
-    },
-    {
       value: false,
       title: t('no'),
       icons: {active: noIcon, inactive: noGrayIcon},
+    },
+    {
+      value: true,
+      title: t('yes'),
+      icons: {active: yesIcon, inactive: yesGrayIcon},
     },
   ];
   const genderOptions = [
