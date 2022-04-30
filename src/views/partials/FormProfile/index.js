@@ -305,7 +305,7 @@ const FormProfile = (props) => {
               onClick={() => setStatus({edit: true, confirmedCnt, visibleModal})}
             >Edit</span></div>
         }
-        <div className={clsx(style.ContentWrapper, 'form-header-medium')}>
+        <div className={clsx(style.ContentWrapper , visibleModal ? style.OverflowYHidden : style.OverflowYAuto, 'form-header-medium')}>
           <ScrollToFieldError/>
           {/*name section*/}
           <div className='mt-10 form-header-medium'><span
