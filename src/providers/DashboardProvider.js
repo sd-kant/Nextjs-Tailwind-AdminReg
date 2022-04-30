@@ -447,7 +447,7 @@ const DashboardProviderDraft = (
 
               let valuesV2Temp = JSON.parse(JSON.stringify(valuesV2Ref.current));
 
-              valuesV2Temp?.members?.forEach(member => {
+              valuesV2Temp?.members?.forEach((member, memberIndex) => {
                 const memberEvents = events?.filter(it => it.userId?.toString() === member.userId.toString());
                 const latestHeartRate = memberEvents?.filter(it => it.type === "HeartRate")
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
@@ -456,6 +456,20 @@ const DashboardProviderDraft = (
                 const memberDeviceLogs = memberEvents?.filter(it => it.type === "DeviceLog");
                 const latestDeviceLog = memberDeviceLogs
                   ?.sort((a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime())?.[0]?.data;
+
+                if (latestHeartRate) {
+                  const membersTemp = JSON.parse(JSON.stringify(valuesV2Temp?.members));
+                  const updatedMember = {
+                    ...member,
+                    heatSusceptibility: latestHeartRate.heatSusceptibility,
+                  };
+                  membersTemp.splice(memberIndex, 1, updatedMember);
+                  valuesV2Temp = {
+                    ...valuesV2Temp,
+                    members: membersTemp,
+                  };
+                }
+
 
                 if (memberDeviceLogs?.length > 0) {
                   const devicesTemp = JSON.parse(JSON.stringify(valuesV2Temp?.devices));

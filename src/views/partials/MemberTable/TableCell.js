@@ -26,6 +26,7 @@ const TableCell = (
     invisibleBattery,
     invisibleHeatRisk,
     invisibleLastSync,
+    heatSusceptibility,
   } = member;
   const {formatHeartCbt} = useUtilsContext();
   const cellGray = ["1", "2", "7", "8"].includes(connectionObj?.value?.toString()) ? style.NoConnection : null;
@@ -94,6 +95,7 @@ const TableCell = (
     case "heatSusceptibility":
       return (
         <td className={clsx(style.TableCell, cellGray)}>
+          {invisibleHeatRisk ? '' : heatSusceptibility}
         </td>
       );
     case "lastDataSync":
