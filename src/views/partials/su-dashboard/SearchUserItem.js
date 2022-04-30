@@ -304,9 +304,12 @@ const SearchUserItem = (
 
         <div className={style.GroupWrapper}>
           <div className="d-flex flex-column">
-            <label className="font-input-label text-white text-capitalize">
-              {t("wearing a device")}
-            </label>
+            <div className={clsx(style.WearingLabelWrapper)}>
+              <label className="font-input-label text-white text-capitalize">
+                {t("wearing a device")}
+              </label>
+            </div>
+
             <ResponsiveSelect
               className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
               options={yesNoOptions}
