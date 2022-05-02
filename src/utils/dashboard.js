@@ -107,6 +107,10 @@ export const sortMembers = ({arrOrigin, filter}) => {
     [HEAT_SUSCEPTIBILITY_LOW.toLowerCase()]: 3,
   };
 
+  const getHeatSusceptibilityPriority = ({key, direction}) => {
+    return heatSusceptibilityPriorities[key] ?? (direction === 1 ? 4 : 0);
+  }
+
   if ([1, 2].includes(filter?.lastSync)) { // sort by last sync
     arr = arr?.sort((a, b) => {
       if (a.invisibleLastSync) {
@@ -140,14 +144,24 @@ export const sortMembers = ({arrOrigin, filter}) => {
       filterDirection: filter?.heatRisk,
     });
   }
-  if ([1, 2].includes(filter?.heatSusceptibility)) { // sort by username
-    arr = common({
-      arr,
-      invisibleKey: 'invisibleHeatSusceptibility',
-      columnPriorities: heatSusceptibilityPriorities,
-      connectionPriorities: priorities,
-      path: 'heatSusceptibility',
-      filterDirection: filter?.heatSusceptibility,
+  if ([1, 2].includes(filter?.heatSusceptibility)) {
+    arr = arr?.sort((a, b) => {
+      const aPriority = getHeatSusceptibilityPriority({key: a.heatSusceptibility?.toLowerCase(), direction: filter?.heatSusceptibility});
+      const bPriority = getHeatSusceptibilityPriority({key: b.heatSusceptibility?.toLowerCase(), direction: filter?.heatSusceptibility});
+      let v = filter?.heatSusceptibility === 1 ? aPriority - bPriority : bPriority - aPriority;
+      if (v === 0) {
+        if (a.invisibleLastSync) {
+          v = 1;
+        } else if (b.invisibleLastSync) {
+          v = -1;
+        } else {
+          const aGap = numMinutesBetweenWithNow(new Date(), new Date(a.lastSync));
+          const bGap = numMinutesBetweenWithNow(new Date(), new Date(b.lastSync));
+          v = aGap - bGap;
+        }
+      }
+
+      return v;
     });
   }
   if ([1, 2].includes(filter?.connection)) {
