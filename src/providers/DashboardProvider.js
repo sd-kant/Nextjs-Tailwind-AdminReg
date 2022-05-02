@@ -4,7 +4,7 @@ import {bindActionCreators} from "redux";
 import {
   getTeamAlerts,
   getTeamDevices,
-  getTeamStats, inviteTeamMember,
+  getTeamStats, inviteTeamMemberV2,
   queryAllOrganizations,
   queryTeamMembers,
   queryTeams,
@@ -555,17 +555,17 @@ const DashboardProviderDraft = (
         if (index !== -1) {
           removeObj.splice(index, 1, {
             ...removeObj[index],
-            emails: [...removeObj[index].emails, member.email],
+            ids: [...removeObj[index].ids, member.userId],
           })
         } else {
           removeObj.push({
             teamId: member.teamId,
-            emails: [member.email],
+            ids: [member.userId],
           });
         }
       });
       if (removeObj.length > 0) {
-        const promises = removeObj.map(it => inviteTeamMember(it.teamId, {remove: it.emails}));
+        const promises = removeObj.map(it => inviteTeamMemberV2(it.teamId, {remove: it.ids}));
         setLoading(true);
         let cnt = 0;
         Promise.allSettled(promises)
@@ -575,7 +575,7 @@ const DashboardProviderDraft = (
                 cnt += result.value?.data?.removed?.length;
                 setValuesV2({
                   ...valuesV2Ref.current,
-                  members: valuesV2Ref.current.members?.filter(it => !(result.value?.data?.removed?.includes(it.email))),
+                  members: valuesV2Ref.current.members?.filter(it => !(result.value?.data?.removed?.includes(it.userId))),
                 })
               }
             });
@@ -622,7 +622,6 @@ const DashboardProviderDraft = (
             userTypes.push(USER_TYPE_TEAM_ADMIN);
           }
           addObj.push({
-            email: member.email,
             userTypes,
             userId: member.userId,
           });
@@ -635,7 +634,7 @@ const DashboardProviderDraft = (
       });
       if (addObj.length > 0) {
         setLoading(true);
-        inviteTeamMember(teamId, {
+        inviteTeamMemberV2(teamId, {
           add: addObj,
         })
           .then(() => {

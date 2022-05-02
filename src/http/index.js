@@ -268,10 +268,6 @@ export const updateUserByAdmin = (orgId, userId, user) => {
   return patch(`organization/${orgId}/user/${userId}`, user);
 };
 
-export const inviteTeamMember = (teamId, payload) => {
-  return patch(`team/${teamId}/members`, payload);
-};
-
 export const inviteTeamMemberV2 = (teamId, payload) => {
   return patch(`team/${teamId}/member`, payload);
 };
