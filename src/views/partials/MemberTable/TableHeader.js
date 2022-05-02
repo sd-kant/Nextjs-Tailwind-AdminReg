@@ -161,12 +161,16 @@ const TableHeader = (
     {
       title: t("high to low"),
       action: () => {
+        setFilter({heatSusceptibility: 1});
       },
+      highlight: filter.heatSusceptibility === 1,
     },
     {
       title: t('low to high'),
       action: () => {
+        setFilter({heatSusceptibility: 2});
       },
+      highlight: filter.heatSusceptibility === 2,
     },
     {
       title: t('remove'),
@@ -175,7 +179,7 @@ const TableHeader = (
         forceWidthUpdate();
       },
     },
-  ]), [forceWidthUpdate, setVisibleColumns, t]);
+  ]), [filter.heatSusceptibility, setFilter, forceWidthUpdate, setVisibleColumns, t]);
 
   const items = React.useCallback(value => {
     switch (value) {
