@@ -1,4 +1,6 @@
 import {minutesToDaysHoursMinutes, numMinutesBetween, numMinutesBetweenWithNow} from "./index";
+import {HEAT_SUSCEPTIBILITY_HIGH, HEAT_SUSCEPTIBILITY_LOW, HEAT_SUSCEPTIBILITY_MEDIUM} from "../constant";
+import {get} from "lodash";
 
 export const formatDevice4Digits = str => {
   const splits = str?.split(":");
@@ -44,6 +46,43 @@ export const shortenDate = ({aDateStr, bDateStr}) => {
 }
 
 export const sortMembers = ({arrOrigin, filter}) => {
+  const common = ({arr, invisibleKey, columnPriorities, connectionPriorities, path, filterDirection}) => {
+    return arr?.sort((a, b) => {
+      let v;
+      if (a[invisibleKey] ^ b[invisibleKey]) {
+        v = a[invisibleKey] ? 1 : -1;
+      } else {
+        let flag = false;
+        if (a[invisibleKey]) {
+          flag = true;
+        } else {
+          v = filterDirection === 1 ?
+            columnPriorities[get(a, path)?.toString()?.toLowerCase()] - columnPriorities[get(b, path)?.toString()?.toLowerCase()] :
+            columnPriorities[get(b, path)?.toString()?.toLowerCase()] - columnPriorities[get(a, path)?.toString()?.toLowerCase()];
+          if (v === 0) {
+            flag = true;
+          }
+        }
+
+        if (flag) {
+          v = connectionPriorities[a.connectionObj?.value] - connectionPriorities[b.connectionObj?.value];
+          if (v === 0) {
+            if (a.invisibleLastSync) {
+              v = 1;
+            } else if (b.invisibleLastSync) {
+              v = -1;
+            } else {
+              const aGap = numMinutesBetweenWithNow(new Date(), new Date(a.lastSync));
+              const bGap = numMinutesBetweenWithNow(new Date(), new Date(b.lastSync));
+              v = aGap - bGap;
+            }
+          }
+        }
+      }
+      return v;
+    });
+  }
+
   let arr = arrOrigin;
   const priorities = {
     "1": 6,
@@ -61,6 +100,16 @@ export const sortMembers = ({arrOrigin, filter}) => {
     "4": 3,
     "5": 3,
   };
+
+  const heatSusceptibilityPriorities = {
+    [HEAT_SUSCEPTIBILITY_HIGH.toLowerCase()]: 1,
+    [HEAT_SUSCEPTIBILITY_MEDIUM.toLowerCase()]: 2,
+    [HEAT_SUSCEPTIBILITY_LOW.toLowerCase()]: 3,
+  };
+
+  const getHeatSusceptibilityPriority = ({key, direction}) => {
+    return heatSusceptibilityPriorities[key] ?? (direction === 1 ? 4 : 0);
+  }
 
   if ([1, 2].includes(filter?.lastSync)) { // sort by last sync
     arr = arr?.sort((a, b) => {
@@ -86,38 +135,32 @@ export const sortMembers = ({arrOrigin, filter}) => {
     });
   }
   if ([1, 2].includes(filter?.heatRisk)) { // sort by heat risk
+    arr = common({
+      arr,
+      invisibleKey: 'invisibleHeatRisk',
+      columnPriorities: heatRiskPriorities,
+      connectionPriorities: priorities,
+      path: 'alertObj.value',
+      filterDirection: filter?.heatRisk,
+    });
+  }
+  if ([1, 2].includes(filter?.heatSusceptibility)) {
     arr = arr?.sort((a, b) => {
-      let v;
-      if (a.invisibleHeatRisk ^ b.invisibleHeatRisk) {
-        v = a.invisibleHeatRisk ? 1 : -1;
-      } else {
-        let flag = false;
-        if (a.invisibleHeatRisk) {
-          flag = true;
+      const aPriority = getHeatSusceptibilityPriority({key: a.heatSusceptibility?.toLowerCase(), direction: filter?.heatSusceptibility});
+      const bPriority = getHeatSusceptibilityPriority({key: b.heatSusceptibility?.toLowerCase(), direction: filter?.heatSusceptibility});
+      let v = filter?.heatSusceptibility === 1 ? aPriority - bPriority : bPriority - aPriority;
+      if (v === 0) {
+        if (a.invisibleLastSync) {
+          v = 1;
+        } else if (b.invisibleLastSync) {
+          v = -1;
         } else {
-          v = filter?.heatRisk === 1 ?
-            heatRiskPriorities[a.alertObj?.value?.toString()] - heatRiskPriorities[b.alertObj?.value?.toString()] :
-            heatRiskPriorities[b.alertObj?.value?.toString()] - heatRiskPriorities[a.alertObj?.value?.toString()];
-          if (v === 0) {
-            flag = true;
-          }
-        }
-
-        if (flag) {
-          v = priorities[a.connectionObj?.value] - priorities[b.connectionObj?.value];
-          if (v === 0) {
-            if (a.invisibleLastSync) {
-              v = 1;
-            } else if (b.invisibleLastSync) {
-              v = -1;
-            } else {
-              const aGap = numMinutesBetweenWithNow(new Date(), new Date(a.lastSync));
-              const bGap = numMinutesBetweenWithNow(new Date(), new Date(b.lastSync));
-              v = aGap - bGap;
-            }
-          }
+          const aGap = numMinutesBetweenWithNow(new Date(), new Date(a.lastSync));
+          const bGap = numMinutesBetweenWithNow(new Date(), new Date(b.lastSync));
+          v = aGap - bGap;
         }
       }
+
       return v;
     });
   }
