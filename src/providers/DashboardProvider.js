@@ -375,6 +375,7 @@ const DashboardProviderDraft = (
         invisibleBattery,
         invisibleHeatRisk,
         invisibleLastSync,
+        invisibleHeatSusceptibility: invisibleHeatRisk,
       });
     });
 

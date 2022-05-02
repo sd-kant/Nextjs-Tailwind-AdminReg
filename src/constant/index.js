@@ -229,3 +229,7 @@ export const MALE = "male";
 export const FEMALE = "female";
 export const QUESTION_TYPE_RADIO = "radio";
 export const QUESTION_TYPE_BOOLEAN = "boolean";
+
+export const HEAT_SUSCEPTIBILITY_LOW = "Low";
+export const HEAT_SUSCEPTIBILITY_MEDIUM = "Medium";
+export const HEAT_SUSCEPTIBILITY_HIGH = "High";
