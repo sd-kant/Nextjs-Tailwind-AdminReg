@@ -26,7 +26,6 @@ const TableCell = (
     invisibleBattery,
     invisibleHeatRisk,
     invisibleLastSync,
-    invisibleHeatSusceptibility,
     heatSusceptibility,
   } = member;
   const {formatHeartCbt} = useUtilsContext();
@@ -96,7 +95,7 @@ const TableCell = (
     case "heatSusceptibility":
       return (
         <td className={clsx(style.TableCell, cellGray)}>
-          {invisibleHeatSusceptibility ? '' : heatSusceptibility}
+          {heatSusceptibility ?? ""}
         </td>
       );
     case "lastDataSync":
