@@ -14,6 +14,10 @@ import {
 } from "../../../redux/action/ui";
 import {answerMedicalQuestionsV2} from "../../../http";
 import {useNavigate} from "react-router-dom";
+import yesIcon from "../../../assets/images/yes.svg";
+import yesGrayIcon from "../../../assets/images/yes-gray.svg";
+import noIcon from "../../../assets/images/no.svg";
+import noGrayIcon from "../../../assets/images/no-gray.svg";
 
 export const formatAnswersToOptions = (answers) => {
   let temp = JSON.parse(JSON.stringify(answers));
@@ -26,6 +30,10 @@ export const formatAnswersToOptions = (answers) => {
       return {
         value: answer?.answerId,
         title: answer?.text,
+        icons: {
+          active: answer?.answerId?.toString() === "5" ? noIcon : yesIcon,
+          inactive: answer?.answerId?.toString() === "5" ? noGrayIcon : yesGrayIcon,
+        }
       }
     });
 }

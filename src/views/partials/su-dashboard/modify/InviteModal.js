@@ -7,7 +7,6 @@ import {withTranslation} from "react-i18next";
 import {useMembersContext} from "../../../../providers/MembersProvider";
 import SearchDropdown from "../../../components/SearchDropdown";
 import useClickOutSide from "../../../../hooks/useClickOutSide";
-import Button from "../../../components/Button";
 
 const InviteModal = (
   {
@@ -95,11 +94,15 @@ const InviteModal = (
             <div
               className="d-flex flex-column"
             >
-              <Button
-                size={"sm"}
-                title={"create new team member"}
+              <button
+                className="active cursor-pointer button"
+                type="button"
                 onClick={onClickCreate}
-              />
+              >
+                <span className='font-button-label text-white text-uppercase'>
+                  {"create new team member"}
+                </span>
+              </button>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@
   "password": "パスワード",
   "your password required": "あなたのパスワードを入力してください",
   "password invalid": "有効なパスワードを入力してください",
-  "password min error": "6文字以上を入力してください",
+  "password min error": "10文字以上を入力してください",
   "password max error": "1024文字未満で入力してください",
   "username": "ユーザー名",
   "username required": "ユーザー名を入力してください",
@@ -509,7 +509,7 @@
   "job contractor": "請負業者",
   "job temp hire": "臨時雇用",
   "job machine operator": "機械オペレータ",
-  "org hide hr & cbt": "チームダッシュボードですべてのユーザーのHRとCBTの値を非表示にしますか？",
+  "org hide hr & cbt": "チームダッシュボードですべてのユーザーのHRおよびCBTアラート値を非表示にしますか？",
   "user hide hr & cbt": "HRとCBTを非表示にしますか？",
   "privacy": "プライバシー"
 }

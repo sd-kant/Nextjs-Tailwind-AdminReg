@@ -3,7 +3,7 @@
   "password": "Password",
   "your password required": "Please enter your password",
   "password invalid": "Please enter a valid password",
-  "password min error": "Please enter more than 6 letters",
+  "password min error": "Please enter more than 10 letters",
   "password max error": "Please enter less than 1024 letters",
   "username": "Username",
   "username required": "Please enter your username",
@@ -509,7 +509,7 @@
   "job contractor": "Contractor",
   "job temp hire": "Temp Hire",
   "job machine operator": "Machine Operator",
-  "org hide hr & cbt": "Hide All User’s HR and CBT Values on the Team Dashboard?",
+  "org hide hr & cbt": "Hide All User’s HR and CBT Alert Values on the Team Dashboard?",
   "user hide hr & cbt": "Hide HR and CBT?",
   "privacy": "Privacy"
 }

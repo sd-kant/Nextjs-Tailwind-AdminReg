@@ -12,6 +12,14 @@
   overflow-x: hidden;
   padding: 20px 0;
   margin-top: 15px;
+
+  &.OverflowYHidden {
+    overflow-y: hidden;
+  }
+
+  &.OverflowYAuto {
+    overflow-y: auto;
+  }
 }
 
 .CancelBtn {

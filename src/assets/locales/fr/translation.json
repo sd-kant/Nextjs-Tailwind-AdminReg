@@ -3,7 +3,7 @@
   "password": "Mot de passe",
   "your password required": "Veuillez saisir votre mot de passe",
   "password invalid": "Veuillez saisir un mot de passe valide",
-  "password min error": "Veuillez saisir plus de 6 lettres",
+  "password min error": "Veuillez saisir plus de 10 lettres",
   "password max error": "Veuillez saisir moins de 1024 lettres",
   "username": "Nom d'utilisateur",
   "username required": "s'il vous plaît entrez votre nom d'utilisateur",
@@ -509,7 +509,7 @@
   "job contractor": "Prestataire",
   "job temp hire": "Embauche temporaire",
   "job machine operator": "Opérateur",
-  "org hide hr & cbt": "Masquer toutes les valeurs RH et CBT de l'utilisateur sur le tableau de bord de l'équipe ?",
+  "org hide hr & cbt": "Masquer toutes les valeurs d'alerte HR et CBT de l'utilisateur sur le tableau de bord de l'équipe ?",
   "user hide hr & cbt": "Cacher RH et CBT ?",
   "privacy": "Confidentialité"
 }

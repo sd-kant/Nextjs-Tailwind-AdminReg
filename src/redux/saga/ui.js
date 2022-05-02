@@ -19,6 +19,9 @@ function showErrorNotificationSaga({payload: {msg = i18n.t("msg something went w
   toastr.error(
     title, // title
     msg,
+    {
+      timeOut: 6000,
+    }
   );
 }
 
