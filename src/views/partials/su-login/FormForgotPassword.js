@@ -8,7 +8,7 @@ import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} fr
 import ConfirmModal from "../../components/ConfirmModal";
 import {instance, lookupByUsername, requestResetPassword} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
-import {checkUsernameValidation2, checkUsernameValidation1} from "../../../utils";
+import {checkUsernameValidation2, checkUsernameValidation1, getParamFromUrl} from "../../../utils";
 import {useNavigate} from "react-router-dom";
 import {apiBaseUrl} from "../../../config";
 
@@ -44,15 +44,22 @@ const FormForgotPassword = (props) => {
     setFieldValue(name, value);
   }
 
+  const handlePrevious = () => {
+    const from = getParamFromUrl("from");
+    if (from === "mobile") {
+      navigate('/mobile-login');
+    } else {
+      navigate('/login');
+    }
+  }
+
   return (
     <Form className='form-group mt-57'>
       <div>
         <div className="d-flex align-center cursor-pointer">
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
-          <span className='font-button-label text-orange' onClick={() => {
-            navigate('/login');
-          }}>
+          <span className='font-button-label text-orange' onClick={handlePrevious}>
               {t("previous")}
             </span>
         </div>
@@ -103,7 +110,8 @@ const FormForgotPassword = (props) => {
           onOk={(e) => {
             e.preventDefault();
             setStatus({visibleModal: false});
-            navigate("/login");
+
+            handlePrevious();
           }}
         />
       }

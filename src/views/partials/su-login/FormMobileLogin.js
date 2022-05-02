@@ -10,6 +10,7 @@ import {apiBaseUrl} from "../../../config";
 import axios from "axios";
 import {formSchema} from "./FormSULogin";
 import {getParamFromUrl} from "../../../utils";
+import {Link} from "react-router-dom";
 
 const FormMobileLogin = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
@@ -35,13 +36,6 @@ const FormMobileLogin = (props) => {
     sum += values["username"] ? 1 : 0;
     setRestBarClass(`progress-${sum * 50}`);
   }
-
-  /*const authHandler = (err, data) => {
-    console.log(err, data);
-  };*/
-
-  const baseUrlArr = (window.location.href).split("/");
-  const baseUrl = baseUrlArr[0] + "//" + baseUrlArr[2];
 
   return (
     <Form className='form-group mt-57'>
@@ -87,15 +81,15 @@ const FormMobileLogin = (props) => {
         </div>
 
         <div className='mt-40 d-flex flex-column'>
-          <a href={`${baseUrl}/forgot-password`} target="_blank" rel="noreferrer" className="font-input-label text-orange no-underline">
+          <Link to={`/forgot-password?from=mobile`} className="font-input-label text-orange no-underline">
             {t("forgot password")}
-          </a>
+          </Link>
         </div>
 
         <div className='mt-10 d-flex flex-column'>
-          <a href={`${baseUrl}/forgot-username`} target="_blank" rel="noreferrer" className="font-input-label text-orange no-underline">
+          <Link to={`/forgot-username?from=mobile`} className="font-input-label text-orange no-underline">
             {t("forgot your username")}
-          </a>
+          </Link>
         </div>
       </div>
 
