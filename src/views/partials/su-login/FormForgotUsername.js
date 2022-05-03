@@ -26,8 +26,7 @@ const formSchema = (t) => {
         'required',
         t('email required'),
         function (value) {
-          if (value) return true;
-          return !!(this.parent.phoneNumber.value);
+          return this.parent.mode === "email" ? !!value : true;
         }
       ),
     phoneNumber: Yup.object()
@@ -35,22 +34,21 @@ const formSchema = (t) => {
         'required',
         t('phone number required'),
         function (obj) {
-          if (obj?.value) return true;
-          return !!this.parent.email;
+          return this.parent.mode === "email" ? true : !!obj?.value;
         }
       )
       .test(
         'is-valid',
         t('phone number invalid'),
         function (obj) {
-          return checkPhoneNumberValidation(obj.value, obj.countryCode);
+          return this.parent.mode === "email" ? true : checkPhoneNumberValidation(obj.value, obj.countryCode)
         },
       ),
   });
 };
 
 const FormForgotUsername = (props) => {
-  const {values, errors, touched, t, setFieldValue, status, setStatus} = props;
+  const {values, errors, touched, t, setFieldValue, status, setStatus, resetForm} = props;
   const navigate = useNavigate();
 
   const changeFormField = (e) => {
@@ -73,6 +71,21 @@ const FormForgotUsername = (props) => {
   const switchMode = React.useCallback(() => {
     setFieldValue("mode", emailMode ? "phone" : "email");
   }, [setFieldValue, emailMode]);
+
+  React.useEffect(() => {
+    resetForm({
+      values: {
+        mode: values.mode,
+        email: '',
+        phoneNumber: {
+          value: '',
+          countryCode: '',
+        },
+      },
+      errors: {},
+      touched: {},
+    });
+  }, [values.mode, resetForm]);
 
   return (
     <Form className='form-group mt-57'>
@@ -104,9 +117,9 @@ const FormForgotUsername = (props) => {
         {
           emailMode ?
             <div className='d-flex mt-40 flex-column'>
-            <label className='font-input-label'>
-              {t("email")}
-            </label>
+              <label className='font-input-label'>
+                {t("email")}
+              </label>
               <input
                 className='input input-field mt-10 font-heading-small text-white'
                 name="email"
@@ -120,7 +133,7 @@ const FormForgotUsername = (props) => {
                   <span className="font-helper-text text-error mt-10">{errors.email}</span>
                 )
               }
-          </div> :
+            </div> :
             <div className={clsx(style.PhoneNumberWrapper, 'd-flex flex-column mt-40')}>
               <label className='font-input-label'>
                 {t("phone number")}
