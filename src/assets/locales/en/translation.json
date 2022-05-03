@@ -511,5 +511,12 @@
   "job machine operator": "Machine Operator",
   "org hide hr & cbt": "Hide All User’s HR and CBT Alert Values on the Team Dashboard?",
   "user hide hr & cbt": "Hide HR and CBT?",
-  "privacy": "Privacy"
+  "privacy": "Privacy",
+  "phone number required": "Please enter the phone number",
+  "forgot username phone confirm header": "SMS Sent",
+  "forgot username phone confirm subheader": "If you have a valid phone number, your username will be sent to your phone number",
+  "forgot username phone description1": "Enter your registered phone number to recover your username.",
+  "forgot username phone description2": "If your account is valid, you will receive an SMS with your username",
+  "switch via phone number": "Switch via Phone Number",
+  "switch via email": "Switch via Email"
 }

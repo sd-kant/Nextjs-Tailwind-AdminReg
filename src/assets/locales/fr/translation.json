@@ -511,5 +511,12 @@
   "job machine operator": "Opérateur",
   "org hide hr & cbt": "Masquer toutes les valeurs d'alerte HR et CBT de l'utilisateur sur le tableau de bord de l'équipe ?",
   "user hide hr & cbt": "Cacher RH et CBT ?",
-  "privacy": "Confidentialité"
+  "privacy": "Confidentialité",
+  "phone number required": "Veuillez entrer le numéro de téléphone",
+  "forgot username phone confirm header": "SMS envoyé",
+  "forgot username phone confirm subheader": "Si vous avez un numéro de téléphone valide, votre nom d'utilisateur sera envoyé à votre numéro de téléphone",
+  "forgot username phone description1": "Entrez votre numéro de téléphone enregistré pour récupérer votre nom d'utilisateur.",
+  "forgot username phone description2": "Si votre compte est valide, vous recevrez un SMS avec votre nom d'utilisateur",
+  "switch via phone number": "Basculer via le numéro de téléphone",
+  "switch via email": "Changer par e-mail"
 }

@@ -334,6 +334,10 @@ export const recoverUsername = email => {
   return get(`/auth/forgot/username/${email}`);
 };
 
+export const recoverUsernameByPhoneNumber = phoneNumber => {
+  return get(`/auth/forgot/username/phone/${phoneNumber}`);
+};
+
 export const lookupByUsername = username => {
   return get(`/master/lookup/username/${username}`);
 };
