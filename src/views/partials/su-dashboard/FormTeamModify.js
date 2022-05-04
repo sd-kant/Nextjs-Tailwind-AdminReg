@@ -103,6 +103,37 @@ const FormTeamModify = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allTeams, hasUnassignedMember]);
 
+  const handleNameChange = e => {
+    setFieldValue("name", {
+      ...(values.name),
+      label: e.target.value,
+    })
+  }
+
+  const handleCancel = () => {
+    setFieldValue("editing", false);
+    const team = filteredTeams.find(it => it.value?.toString() === values.name?.value?.toString());
+    setFieldValue("name", team);
+  };
+
+  const changes = React.useMemo(() => {
+    const team = filteredTeams.find(it => it.value?.toString() === values.name?.value?.toString());
+    const ret = [];
+    if (team) {
+      if (values.name?.label?.trim() !== team?.label?.trim()) {
+        ret.push('name');
+      }
+      if (values.region?.label?.trim() !== team?.region?.trim()) {
+        ret.push('region');
+      }
+      if (values.location?.label?.trim() !== team?.location?.trim()) {
+        ret.push('location');
+      }
+    }
+
+    return ret;
+  }, [values, filteredTeams]);
+
   return (
     <Form className='form mt-57'>
       <div>
@@ -124,19 +155,33 @@ const FormTeamModify = (props) => {
         </div>
 
         <div className='d-flex flex-column mt-40'>
-          <ResponsiveSelect
-            className='mt-10 font-heading-small text-black input-field'
-            isClearable
-            options={filteredTeams}
-            value={values["name"]}
-            name="name"
-            styles={customStyles()}
-            placeholder={t("team name select")}
-            menuPortalTarget={document.body}
-            menuPosition={'fixed'}
-            onChange={(value) => changeHandler("name", value)}
-          />
-
+          {
+            values?.editing ? (
+              <React.Fragment>
+                <input
+                  className='input input-field mt-10 font-heading-small text-white'
+                  value={values.name?.label}
+                  type='text'
+                  onChange={handleNameChange}
+                />
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <ResponsiveSelect
+                  className='mt-10 font-heading-small text-black input-field'
+                  isClearable
+                  options={filteredTeams}
+                  value={values["name"]}
+                  name="name"
+                  styles={customStyles()}
+                  placeholder={t("team name select")}
+                  menuPortalTarget={document.body}
+                  menuPosition={'fixed'}
+                  onChange={(value) => changeHandler("name", value)}
+                />
+              </React.Fragment>
+              )
+          }
           {
             touched?.name && errors?.name && (
               <span className="font-helper-text text-error mt-10">{errors.name.label}</span>
@@ -196,7 +241,7 @@ const FormTeamModify = (props) => {
                   className='text-capitalize text-orange cursor-pointer'
                   onClick={() => setFieldValue("editing", true)}
                 >
-                  {t("edit location")}
+                  {t("edit")}
                 </label>
               </div>
           ) : null
@@ -204,20 +249,27 @@ const FormTeamModify = (props) => {
       </div>
 
       <div className='mt-80'>
-        <button
-          className={`button ${values['name'] ? "active cursor-pointer" : "inactive cursor-default"}`}
-          type={values['name'] ? "submit" : "button"}
-        >
-          <span className='font-button-label text-white text-uppercase'>
-            {values.editing ? t("save") : t("next")}
-          </span>
-        </button>
+        {
+          values.editing ? (
+            <button
+              className={`button ${(values['name'] && changes?.length > 0) ? "active cursor-pointer" : "inactive cursor-default"}`}
+              type={(values['name'] && changes?.length > 0) ? "submit" : "button"}
+            ><span className='font-button-label text-white text-uppercase'>{t("save")}</span>
+            </button>
+          ) : (
+            <button
+              className={`button ${values['name'] ? "active cursor-pointer" : "inactive cursor-default"}`}
+              type={values['name'] ? "submit" : "button"}
+            ><span className='font-button-label text-white text-uppercase'>{t("next")}</span>
+            </button>
+          )
+        }
         {
           !([null, undefined, -1, ""].includes(values.name?.value)) && values.editing && (
             <button
               className={`button cursor-pointer cancel ml-15`}
               type={"button"}
-              onClick={() => setFieldValue("editing", false)}
+              onClick={handleCancel}
             >
             <span className='font-button-label text-orange text-uppercase'>
               {t("cancel")}
