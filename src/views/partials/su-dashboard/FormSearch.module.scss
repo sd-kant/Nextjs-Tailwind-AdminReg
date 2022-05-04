@@ -3,8 +3,11 @@
 .FormHeader {
   width: 100%;
   max-width: 924px;
-  padding-right: 14px;
-  z-index: 1;
+  padding: 40px 14px 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: $app-bg;
 
   .Header {
     display: flex;
@@ -19,20 +22,32 @@
     }
   }
 
-  .SearchWrapper {
-    position: relative;
-    max-width: 450px;
+  .Tools {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
 
-    .SearchIcon {
-      position: absolute;
-      top: 50%;
-      left: 15px;
-      transform: translateY(calc(-50% + 6px));
+    .SearchWrapper {
+      position: relative;
+      max-width: 450px;
+
+      .SearchIcon {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(calc(-50% + 6px));
+      }
+
+      .SearchInput {
+        padding: 0 22px 0 45px;
+        width: calc(100% - 67px);
+      }
     }
 
-    .SearchInput {
-      padding: 0 22px 0 45px;
-      width: calc(100% - 67px);
+    .SubmitWrapper {
+      display: flex;
+      align-items: flex-end;
+      margin-top: 10px;
     }
   }
 }
@@ -76,22 +91,6 @@
   margin-top: 20px;
 }
 
-.Footer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 50px;
-
-  .Reupload {
-    position: relative;
-    margin: 10px 0;
-    z-index: 1;
-    cursor: pointer;
-    opacity: 1;
-  }
-}
-
 @media only screen and (min-width: 768px) {
   .FormHeader {
     width: calc(100vw - 130px);
@@ -103,23 +102,23 @@
       margin-top: -10px;
     }
 
-    .SearchWrapper {
-      width: 100%;
+    .Tools {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-column-gap: 40px;
+
+      .SearchWrapper {
+        width: 100%;
+      }
+
+      .SubmitWrapper {
+        margin-top: 0;
+      }
     }
   }
 
   .FormBody {
     width: calc(100vw - 130px);
-  }
-
-  .Footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-
-    .Reupload {
-      margin-left: 76px;
-    }
   }
 }
 
@@ -139,7 +138,5 @@
 
   .FormBody {
     width: 910px;
-    height: 500px;
-    overflow-y: auto;
   }
 }
