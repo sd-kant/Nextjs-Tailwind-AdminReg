@@ -93,13 +93,13 @@ export const sortMembers = ({arrOrigin, filter}) => {
     "8": 4,
   };
 
-  const heatRiskPriorities = {
-    "1": 1,
-    "2": 2,
+  const heatRiskPriorities = (filterDirection) => ({
+    "1": filterDirection === 1 ? 2 : 1,
+    "2": filterDirection === 1 ? 1 : 2,
     "3": 3,
     "4": 3,
     "5": 3,
-  };
+  });
 
   const heatSusceptibilityPriorities = {
     [HEAT_SUSCEPTIBILITY_HIGH.toLowerCase()]: 1,
@@ -138,7 +138,7 @@ export const sortMembers = ({arrOrigin, filter}) => {
     arr = common({
       arr,
       invisibleKey: 'invisibleHeatRisk',
-      columnPriorities: heatRiskPriorities,
+      columnPriorities: heatRiskPriorities(filter?.heatRisk),
       connectionPriorities: priorities,
       path: 'alertObj.value',
       filterDirection: filter?.heatRisk,
