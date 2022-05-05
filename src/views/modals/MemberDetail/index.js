@@ -94,10 +94,10 @@ const MemberDetail = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
   const userDevices = devices?.find(it => it.userId?.toString() === data?.userId?.toString())?.devices;
-  let androidDevice = null;
+  let phoneDevice = null;
   let kenzenDevice = null;
   if (userDevices?.length > 0) {
-    androidDevice = userDevices?.filter(it => it.type === "android")?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+    phoneDevice = userDevices?.filter(it => it.type !== "kenzen")?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
     kenzenDevice = userDevices?.filter(it => it.type === "kenzen")?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
   }
   const visibleHeartStats = numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
@@ -284,18 +284,18 @@ const MemberDetail = (
                         </div>
                       }
                       {
-                        androidDevice &&
+                        phoneDevice &&
                         <div>
                         <span className={clsx('font-binary')}>
-                          Android Ver. {androidDevice?.osVersion}
+                          {phoneDevice?.type === "ios" ? "iOS Ver." : "Android Ver."} {phoneDevice?.osVersion}
                         </span>
                         </div>
                       }
                       {
-                        androidDevice &&
+                        phoneDevice &&
                         <div>
                         <span className={clsx('font-binary')}>
-                          App Ver. {androidDevice?.version}
+                          App Ver. {phoneDevice?.version}
                         </span>
                         </div>
                       }
