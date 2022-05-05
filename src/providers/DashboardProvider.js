@@ -19,7 +19,13 @@ import {
 } from "../utils";
 import {withTranslation} from "react-i18next";
 import {get} from "lodash";
-import {USER_TYPE_ADMIN, USER_TYPE_OPERATOR, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN} from "../constant";
+import {
+  ALERT_STAGE_ID_LIST,
+  USER_TYPE_ADMIN,
+  USER_TYPE_OPERATOR,
+  USER_TYPE_ORG_ADMIN,
+  USER_TYPE_TEAM_ADMIN
+} from "../constant";
 import useForceUpdate from "../hooks/useForceUpdate";
 import {useNotificationContext} from "./NotificationProvider";
 import {formatLastSync, sortMembers} from "../utils/dashboard";
@@ -255,12 +261,13 @@ const DashboardProviderDraft = (
                             })
                           )
                         )];
-                      const uniqueUpdated = [];
+                      let uniqueUpdated = [];
                       for (const entry of updated) {
                         if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) {
                           uniqueUpdated.push(entry)
                         }
                       }
+                      uniqueUpdated = uniqueUpdated?.filter(it => ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString()));
 
                       setValuesV2({
                         ...prev,
@@ -433,12 +440,13 @@ const DashboardProviderDraft = (
               if (alerts?.length > 0) {
                 const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
                 const updated = [...prev.alerts, ...(alerts?.map(it => it.data))];
-                const uniqueUpdated = [];
+                let uniqueUpdated = [];
                 for (const entry of updated) {
                   if (!uniqueUpdated.some(x => (entry.utcTs === x.utcTs) && (entry.userId === x.userId))) {
                     uniqueUpdated.push(entry)
                   }
                 }
+                uniqueUpdated = uniqueUpdated?.filter(it => ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString()));
                 setValuesV2({
                   ...prev,
                   alerts: uniqueUpdated,

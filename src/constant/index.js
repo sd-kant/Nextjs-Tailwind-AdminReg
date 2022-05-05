@@ -237,3 +237,4 @@ export const QUESTION_TYPE_BOOLEAN = "boolean";
 export const HEAT_SUSCEPTIBILITY_LOW = "Low";
 export const HEAT_SUSCEPTIBILITY_MEDIUM = "Medium";
 export const HEAT_SUSCEPTIBILITY_HIGH = "High";
+export const ALERT_STAGE_ID_LIST = ["1", "2", "3", "4"];
