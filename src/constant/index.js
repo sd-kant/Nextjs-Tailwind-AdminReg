@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.7.50";
+export const CURRENT_VERSION = "3.7.51";
 export const AVAILABLE_COUNTRIES = [
   {
     "value": "AU",
@@ -237,3 +237,4 @@ export const QUESTION_TYPE_BOOLEAN = "boolean";
 export const HEAT_SUSCEPTIBILITY_LOW = "Low";
 export const HEAT_SUSCEPTIBILITY_MEDIUM = "Medium";
 export const HEAT_SUSCEPTIBILITY_HIGH = "High";
+export const ALERT_STAGE_ID_LIST = ["1", "2", "3", "4"];

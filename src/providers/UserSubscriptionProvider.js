@@ -3,6 +3,7 @@ import {getTeamMemberEvents, getTeamMemberAlerts, subscribeDataEvents} from "../
 import axios from "axios";
 import {useTranslation} from "react-i18next";
 import {useDashboardContext} from "./DashboardProvider";
+import {ALERT_STAGE_ID_LIST} from "../constant";
 
 const UserSubscriptionContext = React.createContext(null);
 
@@ -90,11 +91,12 @@ export const UserSubscriptionProvider = (
                 if (index === 0) {
                   // alerts
                   if (typeof result?.value?.data === "object") {
-                    const sortedAlerts = result?.value?.data?.sort((a, b) => new Date(b.ts) - new Date(a.ts))
+                    let sortedAlerts = result?.value?.data?.sort((a, b) => new Date(b.ts) - new Date(a.ts))
                       ?.map(it => ({
                         ...it,
                         utcTs: it.ts,
                       }));
+                    sortedAlerts = sortedAlerts?.filter(it => ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString()));
                     setAlerts(sortedAlerts ?? []);
                   }
                 } else if (index === 1) {
@@ -143,8 +145,9 @@ export const UserSubscriptionProvider = (
                 sinceTs = latestTs;
               }
 
-              const newAlerts = events?.filter(it => it.type === "Alert");
+              let newAlerts = events?.filter(it => it.type === "Alert");
               if (newAlerts?.length > 0) {
+                newAlerts = newAlerts?.filter(it => ALERT_STAGE_ID_LIST.includes(it.data.alertStageId?.toString()));
                 setAlerts([...(newAlerts.map(it => it.data)), ...alertsRef.current]);
               }
               const newActivities = events?.filter(it => it.type === "Event");
