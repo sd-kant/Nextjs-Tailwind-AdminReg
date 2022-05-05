@@ -28,7 +28,7 @@ const FormComplete = (props) => {
 
         <div className="mt-80 d-flex justify-start align-center">
           <a
-            href="https://apps.apple.com/us/app/kenzen/id1512544065"
+            href="https://apps.apple.com/app/id1604255458"
             target="_blank"
             rel="noreferrer"
           >
@@ -39,7 +39,7 @@ const FormComplete = (props) => {
             />
           </a>
           <a
-            href="https://play.google.com/store/apps/details?id=com.kenzen.patch"
+            href="https://play.google.com/store/apps/details?id=com.kenzen.v2"
             target="_blank"
             rel="noreferrer"
           >

@@ -268,10 +268,6 @@ export const updateUserByAdmin = (orgId, userId, user) => {
   return patch(`organization/${orgId}/user/${userId}`, user);
 };
 
-export const inviteTeamMember = (teamId, payload) => {
-  return patch(`team/${teamId}/members`, payload);
-};
-
 export const inviteTeamMemberV2 = (teamId, payload) => {
   return patch(`team/${teamId}/member`, payload);
 };
@@ -336,6 +332,10 @@ export const answerMedicalQuestionsV2 = (body, token) => {
 
 export const recoverUsername = email => {
   return get(`/auth/forgot/username/${email}`);
+};
+
+export const recoverUsernameByPhoneNumber = phoneNumber => {
+  return get(`/auth/forgot/username/phone/${phoneNumber}`);
 };
 
 export const lookupByUsername = username => {

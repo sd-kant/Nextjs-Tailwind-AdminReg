@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.7.43";
+export const CURRENT_VERSION = "3.7.50";
 export const AVAILABLE_COUNTRIES = [
   {
     "value": "AU",
@@ -54,84 +54,88 @@ export const AVAILABLE_COUNTRIES = [
 ];
 export const AVAILABLE_JOBS = [
   {
-    value: "health-safety",
-    label: i18n.t("job health safety"),
-  },
-  {
-    value: "superintendent",
-    label: i18n.t("job superintendent"),
-  },
-  {
-    value: "supervisor",
-    label: i18n.t("job supervisor"),
-  },
-  {
-    value: "project-manager",
-    label: i18n.t("job project manager"),
-  },
-  {
-    value: "healthcare",
-    label: i18n.t("job healthcare professional"),
-  },
-  {
-    value: "welder",
-    label: i18n.t("job welder"),
-  },
-  {
-    value: "engineer",
-    label: i18n.t("job engineer"),
-  },
-  {
-    value: "it-security",
-    label: i18n.t("job it security"),
-  },
-  {
-    value: "electrician",
-    label: i18n.t("job electrician"),
-  },
-  {
-    value: "site-security",
-    label: i18n.t("job site security"),
-  },
-  {
-    value: "laborer",
-    label: i18n.t("job laborer"),
-  },
-  {
-    value: "surveyor",
-    label: i18n.t("job surveyor"),
+    value: "agriculture",
+    label: i18n.t("job agriculture"),
   },
   {
     value: "carpenter",
     label: i18n.t("job carpenter"),
   },
   {
-    value: "no-role",
-    label: i18n.t("job no role defined"),
+    value: "driver",
+    label: i18n.t("job driver"),
   },
   {
-    value: "firefighter",
-    label: i18n.t("job firefighter"),
+    value: "electrician",
+    label: i18n.t("job electrician"),
+  },
+  {
+    value: "emergency-worker",
+    label: i18n.t("job emergency worker"),
+  },
+  {
+    value: "engineer",
+    label: i18n.t("job engineer"),
+  },
+  {
+    value: "government-employee",
+    label: i18n.t("job government employee"),
+  },
+  {
+    value: "health-safety",
+    label: i18n.t("job health safety"),
+  },
+  {
+    value: "laborer-lineman",
+    label: i18n.t("job laborer lineman"),
+  },
+  {
+    value: "machine-operator",
+    label: i18n.t("job machine operator"),
+  },
+  {
+    value: "maintenance-mechanic",
+    label: i18n.t("job maintenance mechanic"),
+  },
+  {
+    value: "marine-worker",
+    label: i18n.t("job marine worker"),
+  },
+  {
+    value: "metallurgy",
+    label: i18n.t("job metallurgy"),
   },
   {
     value: "miner",
     label: i18n.t("job miner"),
   },
   {
-    value: "remediation",
-    label: i18n.t("job remediation"),
+    value: "no-role",
+    label: i18n.t("job no role defined"),
   },
   {
-    value: "contractor",
-    label: i18n.t("job contractor"),
+    value: "other",
+    label: i18n.t("job other"),
   },
   {
-    value: "temp-hire",
-    label: i18n.t("job temp hire"),
+    value: "pipeline",
+    label: i18n.t("job pipeline"),
   },
   {
-    value: "machine-operator",
-    label: i18n.t("job machine operator"),
+    value: "production",
+    label: i18n.t("job production"),
+  },
+  {
+    value: "supervisor-foreman",
+    label: i18n.t("job supervisor foreman"),
+  },
+  {
+    value: "surveyor",
+    label: i18n.t("job surveyor"),
+  },
+  {
+    value: "welder",
+    label: i18n.t("job welder"),
   },
 ];
 export const permissionLevels = [

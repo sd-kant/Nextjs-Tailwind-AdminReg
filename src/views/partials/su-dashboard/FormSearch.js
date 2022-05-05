@@ -41,14 +41,14 @@ export const userSchema = (t) => {
     email: Yup.string()
       .email(t("email invalid"))
       .max(1024, t('email max error'))
-      /*.test(
-        'required',
-        t('email or phone number required'),
-        function (value) {
-          if (value) return true;
-          return !!(this.parent.phoneNumber?.value);
-        }
-      )*/,
+    /*.test(
+      'required',
+      t('email or phone number required'),
+      function (value) {
+        if (value) return true;
+        return !!(this.parent.phoneNumber?.value);
+      }
+    )*/,
     firstName: Yup.string()
       .required(t('firstName required'))
       .max(1024, t("firstName max error")),
@@ -134,9 +134,11 @@ const FormSearch = (props) => {
       <Form className='form-group mt-57'>
         <div>
           <div className="d-flex align-center">
-            <img src={backIcon} alt="back" className={"cursor-pointer"} onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}/>
+            <img src={backIcon} alt="back" className={"cursor-pointer"}
+                 onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}/>
             &nbsp;&nbsp;
-            <span className='font-button-label text-orange cursor-pointer' onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
+            <span className='font-button-label text-orange cursor-pointer'
+                  onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
               {t("previous")}
             </span>
           </div>
@@ -159,15 +161,28 @@ const FormSearch = (props) => {
               </div>
             </div>
 
-            <div className={clsx(style.SearchWrapper)}>
-              <img className={clsx(style.SearchIcon)} src={searchIcon} alt="search icon"/>
-              <input
-                className={clsx(style.SearchInput, 'input mt-10 font-heading-small text-white')}
-                placeholder={t("search user")}
-                type="text"
-                value={keyword}
-                onChange={e => setKeyword(e.target.value)}
-              />
+            <div className={clsx(style.Tools)}>
+              <div className={clsx(style.SearchWrapper)}>
+                <img className={clsx(style.SearchIcon)} src={searchIcon} alt="search icon"/>
+                <input
+                  className={clsx(style.SearchInput, 'input mt-10 font-heading-small text-white')}
+                  placeholder={t("search user")}
+                  type="text"
+                  value={keyword}
+                  onChange={e => setKeyword(e.target.value)}
+                />
+              </div>
+
+              {
+                newChanges ?
+                  <div className={clsx(style.SubmitWrapper)}>
+                    <button
+                      className={`button active cursor-pointer`}
+                      type={"submit"}
+                    ><span className='font-button-label text-white'>{t("save & update")}</span>
+                    </button>
+                  </div> : null
+              }
             </div>
           </div>
 
@@ -186,19 +201,6 @@ const FormSearch = (props) => {
             }
           </div>
         </div>
-        {
-          newChanges ?
-            <div className={clsx(style.Footer)}>
-              <button
-                className={`button active cursor-pointer`}
-                type={"submit"}
-              >
-                <span className='font-button-label text-white'>
-                  {t("save & update")}
-                </span>
-              </button>
-            </div> : <></>
-        }
       </Form>
     </>
   )
