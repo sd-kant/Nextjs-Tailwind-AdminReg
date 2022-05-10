@@ -108,6 +108,7 @@ const FormCompany = (props) => {
     isOrgAdmin,
     isSuperAdmin,
     setStatus,
+    setValues,
     status: {visibleModal},
   } = props;
   // const options = useMemo(() => AVAILABLE_COUNTRIES, []);
@@ -159,7 +160,17 @@ const FormCompany = (props) => {
   }
   const changeHandler = (key, value) => {
     if (key === "companyName") {
-      if (value && value.created) { // if already created company, then set country according to picked company
+      if (value?.__isNew__) {
+        setValues({
+          companyCountry: '',
+          regions: [],
+          twoFA: false,
+          passwordMinimumLength: 10,
+          passwordExpirationDays: 0,
+          hideCbtHR: false,
+          users: [],
+        });
+      } else if (value?.created) { // if already created company, then set country according to picked company
         const country = options?.find(entity => entity.label === value.country);
         if (country) {
           setFieldValue("companyCountry", country);
@@ -180,7 +191,7 @@ const FormCompany = (props) => {
       country: organization.country,
       regions: organization.regions,
       twoFA: organization.settings?.twoFA ?? false,
-      passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 6,
+      passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 10,
       passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
       hideCbtHR: organization.settings?.hideCbtHR ?? false,
       created: true,
@@ -719,7 +730,7 @@ const EnhancedForm = withFormik({
     companyCountry: '',
     regions: [],
     twoFA: false,
-    passwordMinimumLength: 6,
+    passwordMinimumLength: 10,
     passwordExpirationDays: 0,
     hideCbtHR: false,
     users: [],
