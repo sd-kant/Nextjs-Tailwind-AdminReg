@@ -108,6 +108,7 @@ const FormCompany = (props) => {
     isOrgAdmin,
     isSuperAdmin,
     setStatus,
+    setValues,
     status: {visibleModal},
   } = props;
   // const options = useMemo(() => AVAILABLE_COUNTRIES, []);
@@ -159,7 +160,17 @@ const FormCompany = (props) => {
   }
   const changeHandler = (key, value) => {
     if (key === "companyName") {
-      if (value && value.created) { // if already created company, then set country according to picked company
+      if (value?.__isNew__) {
+        setValues({
+          companyCountry: '',
+          regions: [],
+          twoFA: false,
+          passwordMinimumLength: 10,
+          passwordExpirationDays: 0,
+          hideCbtHR: false,
+          users: [],
+        });
+      } else if (value?.created) { // if already created company, then set country according to picked company
         const country = options?.find(entity => entity.label === value.country);
         if (country) {
           setFieldValue("companyCountry", country);
@@ -180,7 +191,7 @@ const FormCompany = (props) => {
       country: organization.country,
       regions: organization.regions,
       twoFA: organization.settings?.twoFA ?? false,
-      passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 6,
+      passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 10,
       passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
       hideCbtHR: organization.settings?.hideCbtHR ?? false,
       created: true,
@@ -240,6 +251,8 @@ const FormCompany = (props) => {
 
   const handleCancel = () => {
     if (isEditing) {
+      if (values.companyName?.__isNew__) setFieldValue("companyName", "");
+
       cancelEditing();
     } else {
       navigate("/select-mode");
@@ -286,18 +299,6 @@ const FormCompany = (props) => {
             <label className="font-header-medium">
               {values.isEditing ? t("edit company") : (isSuperAdmin ? t("create or select company") : t("welcome"))}
             </label>
-            {
-              (values.companyName?.created && !values.isEditing) ?
-                <label
-                  className={`font-binary d-block mt-8 text-capitalize text-orange cursor-pointer`}
-                  onClick={enableEditing}
-                >
-                  {t("edit")}
-                </label> : null
-              /*<label className={`font-binary d-block mt-8 text-capitalize text-white`}>
-                {isSuperAdmin ? t("create or select company description") : t("select company description")}
-              </label>*/
-            }
           </div>
 
           <div className='d-flex flex-column mt-40'>
@@ -351,6 +352,20 @@ const FormCompany = (props) => {
                 )
             }
           </div>
+
+
+          {
+            (values.companyName?.created && !values.isEditing) ?
+              <div className="d-flex flex-column mt-25">
+                <label
+                  className={`font-binary d-block mt-8 text-capitalize text-orange cursor-pointer`}
+                  onClick={enableEditing}
+                >
+                  {t("edit")}
+                </label>
+              </div> : null
+          }
+
           {
             isEditing &&
             <div className='mt-40 d-flex flex-column'>
@@ -700,7 +715,8 @@ const FormCompany = (props) => {
           </button>
         </div>
       </Form>
-      <ConfirmModal header={t("org admin invite sent")} show={visibleModal} onOk={() => setStatus({visibleModal: false})}/>
+      <ConfirmModal header={t("org admin invite sent")} show={visibleModal}
+                    onOk={() => setStatus({visibleModal: false})}/>
     </React.Fragment>
   )
 }
@@ -714,7 +730,7 @@ const EnhancedForm = withFormik({
     companyCountry: '',
     regions: [],
     twoFA: false,
-    passwordMinimumLength: 6,
+    passwordMinimumLength: 10,
     passwordExpirationDays: 0,
     hideCbtHR: false,
     users: [],
@@ -787,8 +803,8 @@ const EnhancedForm = withFormik({
                 setLoading(false);
               });
           } else {
-             initialize();
-             setLoading(false);
+            initialize();
+            setLoading(false);
           }
         } catch (e) {
           console.log("update company error", e);
