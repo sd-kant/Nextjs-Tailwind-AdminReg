@@ -175,6 +175,17 @@ const DashboardProviderDraft = (
   }, [organization, teams, isAdmin]);
 
   React.useEffect(() => {
+    if (formattedTeams?.length === 1 && pickedTeams?.length === 0) {
+      const teamId = formattedTeams[0].value?.toString();
+      if (teamId) {
+        updateUrlParam({param: {key: 'teams', value: teamId}});
+        setPickedTeams([teamId]);
+        localStorage.setItem("kop-params", location.search);
+      }
+    }
+  }, [formattedTeams]);
+
+  React.useEffect(() => {
     if (formattedTeams?.length > 0) {
       const validPickedTeams = pickedTeams?.filter(ele => formattedTeams?.some(it => it.value?.toString() === ele.toString()));
       updateUrlParam({param: {key: 'teams', value: validPickedTeams?.toString()}});
