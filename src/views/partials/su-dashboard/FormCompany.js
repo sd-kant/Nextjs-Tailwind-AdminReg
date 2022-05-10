@@ -240,6 +240,8 @@ const FormCompany = (props) => {
 
   const handleCancel = () => {
     if (isEditing) {
+      if (values.companyName?.__isNew__) setFieldValue("companyName", "");
+
       cancelEditing();
     } else {
       navigate("/select-mode");
@@ -286,18 +288,6 @@ const FormCompany = (props) => {
             <label className="font-header-medium">
               {values.isEditing ? t("edit company") : (isSuperAdmin ? t("create or select company") : t("welcome"))}
             </label>
-            {
-              (values.companyName?.created && !values.isEditing) ?
-                <label
-                  className={`font-binary d-block mt-8 text-capitalize text-orange cursor-pointer`}
-                  onClick={enableEditing}
-                >
-                  {t("edit")}
-                </label> : null
-              /*<label className={`font-binary d-block mt-8 text-capitalize text-white`}>
-                {isSuperAdmin ? t("create or select company description") : t("select company description")}
-              </label>*/
-            }
           </div>
 
           <div className='d-flex flex-column mt-40'>
@@ -351,6 +341,20 @@ const FormCompany = (props) => {
                 )
             }
           </div>
+
+
+          {
+            (values.companyName?.created && !values.isEditing) ?
+              <div className="d-flex flex-column mt-25">
+                <label
+                  className={`font-binary d-block mt-8 text-capitalize text-orange cursor-pointer`}
+                  onClick={enableEditing}
+                >
+                  {t("edit")}
+                </label>
+              </div> : null
+          }
+
           {
             isEditing &&
             <div className='mt-40 d-flex flex-column'>
@@ -700,7 +704,8 @@ const FormCompany = (props) => {
           </button>
         </div>
       </Form>
-      <ConfirmModal header={t("org admin invite sent")} show={visibleModal} onOk={() => setStatus({visibleModal: false})}/>
+      <ConfirmModal header={t("org admin invite sent")} show={visibleModal}
+                    onOk={() => setStatus({visibleModal: false})}/>
     </React.Fragment>
   )
 }
@@ -787,8 +792,8 @@ const EnhancedForm = withFormik({
                 setLoading(false);
               });
           } else {
-             initialize();
-             setLoading(false);
+            initialize();
+            setLoading(false);
           }
         } catch (e) {
           console.log("update company error", e);
