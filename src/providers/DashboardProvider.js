@@ -183,6 +183,7 @@ const DashboardProviderDraft = (
         localStorage.setItem("kop-params", location.search);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formattedTeams]);
 
   React.useEffect(() => {
