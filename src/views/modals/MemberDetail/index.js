@@ -97,8 +97,17 @@ const MemberDetail = (
   let phoneDevice = null;
   let kenzenDevice = null;
   if (userDevices?.length > 0) {
-    phoneDevice = userDevices?.filter(it => it.type !== "kenzen")?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
-    kenzenDevice = userDevices?.filter(it => it.type === "kenzen")?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+    if (stat.deviceId) {
+      kenzenDevice = userDevices?.filter(it => it.type === "kenzen" && it.deviceId?.toLowerCase() === stat.deviceId?.toLowerCase())?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+    }
+    const filterFunc = it => {
+      if (["", null, undefined, "null", "undefined", "none"].includes(stat.sourceDeviceId)) {
+        return it.type !== "kenzen";
+      } else {
+        return it.type !== "kenzen" && it.deviceId?.toLowerCase() === stat.sourceDeviceId?.toLowerCase();
+      }
+    }
+    phoneDevice = userDevices?.filter(filterFunc)?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
   }
   const visibleHeartStats = numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
