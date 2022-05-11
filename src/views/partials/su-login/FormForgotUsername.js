@@ -98,8 +98,8 @@ const FormForgotUsername = (props) => {
             </span>
         </div>
 
-        <div className='grouped-form mt-25'>
-          <label className="font-binary d-block mt-8 text-orange cursor-pointer" onClick={switchMode}>
+        <div className='d-block mt-25'>
+          <label className="font-binary mt-8 text-orange cursor-pointer" onClick={switchMode}>
             {emailMode ? t("switch via phone number") : t("switch via email")}
           </label>
         </div>
