@@ -20,11 +20,11 @@ const formSchema = (t) => {
     token: Yup.string(),
     password: Yup.string()
       .required(t('your password required'))
-      .min(10, t('password min error'))
+      .min(10, t('password rule'))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
-        t('password invalid'),
+        t('password rule'),
         function (value) {
           return checkPasswordValidation(value);
         }
@@ -133,16 +133,19 @@ const FormResetPassword = (props) => {
               </span>
         </button>
       </div>
-      <ConfirmModal
-        show={status?.visibleModal}
-        header={t("reset password confirm header")}
-        subheader={t("reset password confirm subheader")}
-        onOk={(e) => {
-          e.preventDefault();
-          setStatus({visibleModal: false});
-          navigate("/login");
-        }}
-      />
+      {
+        status?.visibleModal &&
+        <ConfirmModal
+          show={status?.visibleModal}
+          header={t("reset password confirm header")}
+          subheader={t("reset password confirm subheader")}
+          onOk={(e) => {
+            e.preventDefault();
+            setStatus({visibleModal: false});
+            navigate("/login");
+          }}
+        />
+      }
     </Form>
   )
 }
