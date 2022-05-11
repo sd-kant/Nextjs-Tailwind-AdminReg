@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
-import {Form, withFormik} from "formik";
+import {Form, withFormik, useFormikContext} from "formik";
 import {withTranslation} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
@@ -33,6 +33,7 @@ import {defaultTeamMember, userSchema} from "./FormSearch";
 import InviteModal from "./modify/InviteModal";
 import {_handleSubmitV2, handleModifyUsers} from "../../../utils/invite";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
+import saveIcon from "../../../assets/images/save.svg";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -67,6 +68,7 @@ const FormInviteModify = (props) => {
   const {setPage, users, admins, keyword, setKeyword, members, initializeMembers} = useMembersContext();
   const navigate = useNavigate();
   const [visibleInviteModal, setVisibleInviteModal] = React.useState(false);
+  const { submitForm } = useFormikContext();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -141,6 +143,14 @@ const FormInviteModify = (props) => {
     }
   };
 
+  const visibleAddBtn = React.useMemo(() => {
+    return !(["-1"].includes(id?.toString()));
+  }, [id]);
+  const visibleSubmitBtn = React.useMemo(() => {
+    return newChanges > 0;
+  }, [newChanges]);
+  console.log("err", errors);
+
   return (
     <>
       <ConfirmModal
@@ -195,18 +205,10 @@ const FormInviteModify = (props) => {
           <div className={clsx(style.FormHeader, "d-flex flex-column")}>
             <ScrollToFieldError/>
             <div className={clsx(style.Header)}>
-              <div className={"d-flex align-center"}>
-              <span className='font-header-medium d-block'>
-              {t("modify team")}
-              </span>
-              </div>
-
+              <div className={clsx("d-flex align-center", style.Title)}><span className='font-header-medium d-block'>{t("modify team")}</span></div>
               <div/>
 
-              <div className={clsx("d-flex align-center", style.ChangeNote)}>
-              <span className="font-header-medium">
-                {t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}
-              </span>
+              <div className={clsx("d-flex align-center", style.ChangeNote)}><span>{t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}</span>
               </div>
             </div>
 
@@ -214,28 +216,51 @@ const FormInviteModify = (props) => {
               <div className={clsx(style.SearchWrapper)}>
                 <img className={clsx(style.SearchIcon)} src={searchIcon} alt="search icon"/>
                 <input
-                  className={clsx(style.SearchInput, 'input mt-10 font-heading-small text-white')}
+                  className={clsx(style.SearchInput, 'input mt-10 text-white')}
                   placeholder={t("search user")}
                   type="text"
                   value={keyword}
                   onChange={e => setKeyword(e.target.value)}
                 />
               </div>
+              {
+                visibleSubmitBtn &&
+                <div className={clsx(style.SaveIconWrapper)}>
+                  <img
+                    className={clsx(style.SaveIcon)}
+                    src={saveIcon}
+                    alt="save icon"
+                    onClick={submitForm}
+                  />
+                </div>
+              }
 
               {
-                newChanges ?
+                visibleAddBtn &&
+                <div className={clsx(style.SaveIconWrapper)}>
+                  <img
+                    className={clsx(style.SaveIcon)}
+                    src={plusIcon}
+                    alt="save icon"
+                    onClick={addAnother}
+                  />
+                </div>
+              }
+
+              {
+                visibleSubmitBtn &&
                   <div className={clsx(style.SubmitWrapper)}>
                     <button
                       className={`button active cursor-pointer`}
                       type={"submit"}
                     ><span className='font-button-label text-white'>{t("save & update")}</span>
                     </button>
-                  </div> : <></>
+                  </div>
               }
             </div>
 
             {
-              !(["-1"].includes(id?.toString())) &&
+              visibleAddBtn &&
               <div className={clsx(style.AddButton, "mt-15")} onClick={addAnother}>
                 <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
                 <span className="font-heading-small text-capitalize">
