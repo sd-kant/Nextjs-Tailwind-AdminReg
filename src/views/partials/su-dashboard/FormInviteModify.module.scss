@@ -19,23 +19,36 @@
       display: none;
     }
 
-    .ChangeNote {
-      display: inline-block;
-      margin-top: 5px;
-      z-index: 2;
+    .NoteWrapper {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 15px;
 
-      font-family: Ubuntu-Medium;
-      font-size: 21px;
-      line-height: 24.13px;
+      .ChangeNote {
+        display: inline-block;
+        margin-top: 5px;
+        z-index: 2;
+
+        font-family: Ubuntu-Medium;
+        font-size: 21px;
+        line-height: 24.13px;
+      }
+
+      .SaveIconWrapper {
+        display: flex;
+        align-items: center;
+
+        .SaveIcon {
+          width: 20px;
+          cursor: pointer;
+        }
+      }
     }
   }
 
   .Tools {
-    //display: flex;
-    //justify-content: space-between;
-    //flex-direction: column;
     display: grid;
-    grid-template-columns: auto 1fr 1fr;
+    grid-template-columns: auto 1fr;
     grid-column-gap: 5px;
 
     .SearchWrapper {
@@ -62,11 +75,11 @@
       display: none;
     }
 
-    .SaveIconWrapper {
+    .AddIconWrapper {
       display: flex;
       align-items: center;
 
-      .SaveIcon {
+      .AddIcon {
         width: 25px;
         cursor: pointer;
       }
@@ -188,9 +201,17 @@
         display: flex;
       }
 
-      .ChangeNote {
-        font-size: 27px;
-        line-height: 41px;
+      .NoteWrapper {
+        padding-right: 0;
+
+        .ChangeNote {
+          font-size: 27px;
+          line-height: 41px;
+        }
+
+        .SaveIconWrapper {
+          display: none;
+        }
       }
     }
 
@@ -214,11 +235,8 @@
         margin-top: 10px;
       }
 
-      .SaveIconWrapper {
+      .AddIconWrapper {
         display: none;
-
-        .SaveIcon {
-        }
       }
     }
 
