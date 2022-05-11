@@ -149,7 +149,6 @@ const FormInviteModify = (props) => {
   const visibleSubmitBtn = React.useMemo(() => {
     return newChanges > 0;
   }, [newChanges]);
-  console.log("err", errors);
 
   return (
     <>
@@ -208,7 +207,21 @@ const FormInviteModify = (props) => {
               <div className={clsx("d-flex align-center", style.Title)}><span className='font-header-medium d-block'>{t("modify team")}</span></div>
               <div/>
 
-              <div className={clsx("d-flex align-center", style.ChangeNote)}><span>{t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}</span>
+              <div className={clsx(style.NoteWrapper)}>
+                <div className={clsx("align-center", style.ChangeNote)}><span>{t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}</span>
+                </div>
+
+                {
+                  visibleSubmitBtn &&
+                  <div className={clsx(style.SaveIconWrapper)}>
+                    <img
+                      className={clsx(style.SaveIcon)}
+                      src={saveIcon}
+                      alt="save icon"
+                      onClick={submitForm}
+                    />
+                  </div>
+                }
               </div>
             </div>
 
@@ -223,23 +236,12 @@ const FormInviteModify = (props) => {
                   onChange={e => setKeyword(e.target.value)}
                 />
               </div>
-              {
-                visibleSubmitBtn &&
-                <div className={clsx(style.SaveIconWrapper)}>
-                  <img
-                    className={clsx(style.SaveIcon)}
-                    src={saveIcon}
-                    alt="save icon"
-                    onClick={submitForm}
-                  />
-                </div>
-              }
 
               {
                 visibleAddBtn &&
-                <div className={clsx(style.SaveIconWrapper)}>
+                <div className={clsx(style.AddIconWrapper)}>
                   <img
-                    className={clsx(style.SaveIcon)}
+                    className={clsx(style.AddIcon)}
                     src={plusIcon}
                     alt="save icon"
                     onClick={addAnother}
