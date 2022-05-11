@@ -79,7 +79,15 @@ export const UtilsProviderDraft = (
     if (connected && flag) {
       return calc();
     } else {
-      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 20) {
+      if (
+        numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 5 ||
+        numMinutesBetween(new Date(), new Date(stat?.lastOnTs)) <= 5
+      ) {
+        return calc();
+      } else if (
+        numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20 ||
+        numMinutesBetween(new Date(), new Date(stat?.lastOnTs)) <= 20
+      ) {
         return {
           label: t('no connection'),
           value: 7,
