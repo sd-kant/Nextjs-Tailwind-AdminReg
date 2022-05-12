@@ -13,8 +13,12 @@
     flex-direction: column;
 
     .DropdownWrapper {
-      display: flex;
-      flex-direction: column;
+      //display: flex;
+      //flex-direction: column;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: 5px;
 
       .OrganizationLabel {
         display: flex;
@@ -31,9 +35,9 @@
         text-overflow: ellipsis;
       }
 
-      & > div:nth-child(2) {
-        margin-top: 10px;
-      }
+      //& > div:nth-child(2) {
+      //  margin-top: 10px;
+      //}
     }
 
     .ModifyButton {
@@ -99,6 +103,16 @@
         cursor: pointer;
       }
     }
+
+    .ConnectedUsersLabel {
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+
+      font-family: Ubuntu-Regular;
+      font-size: 16px;
+      line-height: 21px;
+    }
   }
 }
 
@@ -129,7 +143,7 @@
 
     .Second {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: auto 1fr auto;
       grid-column-gap: 25px;
 
       .SearchInputWrapper {
@@ -140,6 +154,11 @@
 
       .PaginationWrapper {
         margin-top: 10px;
+      }
+
+      .ConnectedUsersLabel {
+        font-size: 21px;
+        line-height: 24.13px;
       }
     }
   }

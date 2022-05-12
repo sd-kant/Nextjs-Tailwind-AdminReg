@@ -521,5 +521,8 @@
   "job marine worker": "Ouvrier maritime",
   "job pipeline": "Pipeline",
   "job other": "Autre",
-  "add": "ajouter"
+  "add": "ajouter",
+  "n users connected": "{{n}} Utilisateurs connectés",
+  "n user connected": "{{n}} Utilisateur connecté",
+  "no users connected": "Aucun utilisateur n'est connecté"
 }
