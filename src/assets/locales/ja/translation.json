@@ -521,5 +521,8 @@
   "job marine worker": "海洋労働者",
   "job pipeline": "パイプライン",
   "job other": "他の",
-  "add": "追加"
+  "add": "追加",
+  "n users connected": "{{n}}接続されたユーザー",
+  "n user connected": "{{n}}ユーザー接続",
+  "no users connected": "ユーザーが接続していません"
 }
