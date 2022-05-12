@@ -63,7 +63,7 @@
   "job required": "Veuillez sélectionner un emploi",
   "remove user": "Supprimer l'utilisateur",
   "delete user": "Supprimer l'utilisateur",
-  "reupload csv": "Quelque chose cloche ? <a>Télécharger à nouveau le modèle</a>",
+  "reupload csv": "<a>Télécharger à nouveau le modèle</a>",
   "team create success": "L’équipe a été créée avec succès !",
   "team create success description": "Votre invitation a été envoyée aux e-mails de chaque membre de l’équipe.",
   "create or select company": "Créer ou sélectionner une entreprise",
@@ -520,5 +520,6 @@
   "job metallurgy": "Métallurgie",
   "job marine worker": "Ouvrier maritime",
   "job pipeline": "Pipeline",
-  "job other": "Autre"
+  "job other": "Autre",
+  "add": "ajouter"
 }

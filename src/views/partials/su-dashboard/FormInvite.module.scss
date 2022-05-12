@@ -3,7 +3,7 @@
 .FormHeader {
   width: 100%;
   max-width: 924px;
-  padding: 40px 14px 20px 0;
+  padding: 20px 14px 20px 0;
   position: sticky;
   top: 0;
   z-index: 30;
@@ -15,10 +15,18 @@
     flex-direction: column;
     margin-top: -10px;
 
+    .Title {
+      display: none;
+    }
+
     .ChangeNote {
       display: inline-block;
       margin-top: 5px;
       z-index: 2;
+
+      font-family: Ubuntu-Medium;
+      font-size: 21px;
+      line-height: 24.13px;
     }
   }
 
@@ -40,28 +48,18 @@
       }
     }
 
-    .CancelBtn {
-      margin-top: 15px;
-      margin-left: 0;
+    .ButtonWrapper {
+      display: none;
+    }
+
+    .LabelWrapper {
+      display: flex;
+      justify-content: space-between;
     }
   }
 
   .AddButton {
-    display: flex;
-    justify-content: center;
-    border: 1px solid #DE7D2C;
-    box-sizing: border-box;
-    border-radius: 24px;
-    padding: 36px;
-    text-align: center;
-    cursor: pointer;
-    z-index: 1;
-    background-color: $app-bg;
-    margin-top: 10px;
-
-    .PlusIcon {
-      margin-right: 24px;
-    }
+    display: none;
   }
 }
 
@@ -164,6 +162,15 @@
       grid-template-columns: auto 1fr auto;
       grid-column-gap: 40px;
       margin-top: -10px;
+
+      .Title {
+        display: flex;
+      }
+
+      .ChangeNote {
+        font-size: 27px;
+        line-height: 41px;
+      }
     }
 
     .Tools {
@@ -175,9 +182,35 @@
         margin-bottom: 0;
       }
 
-      .CancelBtn {
-        margin-left: 15px;
-        margin-top: 0;
+      .ButtonWrapper {
+        display: block;
+
+        .CancelBtn {
+          margin-left: 15px;
+          margin-top: 0;
+        }
+      }
+
+      .LabelWrapper {
+        display: none;
+      }
+    }
+
+    .AddButton {
+      display: flex;
+      justify-content: center;
+      border: 1px solid #DE7D2C;
+      box-sizing: border-box;
+      border-radius: 24px;
+      padding: 36px;
+      text-align: center;
+      cursor: pointer;
+      z-index: 1;
+      background-color: $app-bg;
+      margin-top: 10px;
+
+      .PlusIcon {
+        margin-right: 24px;
       }
     }
   }

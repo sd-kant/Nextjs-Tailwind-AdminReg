@@ -2,7 +2,7 @@ import React, {useMemo, useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
-import {Form, withFormik} from "formik";
+import {Form, useFormikContext, withFormik} from "formik";
 import {withTranslation, Trans} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
@@ -143,6 +143,7 @@ const FormInvite = (props) => {
     isAdmin,
   } = props;
   const navigate = useNavigate();
+  const {submitForm} = useFormikContext();
   useEffect(() => {
     setRestBarClass("progress-72 medical");
     const csvDataStr = localStorage.getItem("kop-csv-data");
@@ -397,6 +398,17 @@ const FormInvite = (props) => {
     return values.users?.length ?? 0;
   }, [values.users]);
 
+  const ableToSubmit = React.useMemo(() => values['users']?.length > 0, [values]);
+
+  const handleSubmit = () => {
+    if (!ableToSubmit) return;
+    submitForm().then();
+  }
+
+  const handleBack = () => {
+    navigate(`/invite/${organizationId}/team-mode`);
+  }
+
   return (
     <React.Fragment>
       <ConfirmModal
@@ -452,10 +464,10 @@ const FormInvite = (props) => {
 
           <div className={clsx(style.FormHeader, "d-flex flex-column")}>
             <div className={clsx(style.Header)}>
-              <div className='d-flex align-center'><span
+              <div className={clsx('d-flex align-center', style.Title)}><span
                 className='font-header-medium d-block'>{t("create team")}</span></div>
               <div/>
-              <div className={clsx("d-flex align-center", style.ChangeNote)}><span className="font-header-medium text-capitalize">{num === 0 ? (t("no new team member")) : (num > 1 ? (t("n new team members", {n: num})) : (t("n new team member", {n: 1})))}</span>
+              <div className={clsx("d-flex align-center", style.ChangeNote)}><span className="text-capitalize">{num === 0 ? (t("no new team member")) : (num > 1 ? (t("n new team members", {n: num})) : (t("n new team member", {n: 1})))}</span>
               </div>
             </div>
 
@@ -474,9 +486,9 @@ const FormInvite = (props) => {
                 }
               </div>
 
-              <div>
+              <div className={clsx(style.ButtonWrapper)}>
                 <button
-                  className={`button ${values['users']?.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'}`}
+                  className={`button ${ableToSubmit ? 'active cursor-pointer' : 'inactive cursor-default'}`}
                   type={values['users']?.length > 0 ? "submit" : "button"}
                 ><span className='font-button-label text-white text-uppercase'>{t("save")}</span>
                 </button>
@@ -484,9 +496,23 @@ const FormInvite = (props) => {
                 <button
                   className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
                   type={"button"}
-                  onClick={() => navigate(`/invite/${organizationId}/team-mode`)}
+                  onClick={handleBack}
                 ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
                 </button>
+              </div>
+
+              <div className={clsx(style.LabelWrapper)}>
+                <div>
+                  <span className="text-orange font-input-label text-uppercase" onClick={addAnother}>{t('add')}</span>
+                </div>
+
+                <div>
+                  <span className={`${ableToSubmit ? `text-orange` : 'text-gray-2'} font-input-label text-uppercase`} onClick={handleSubmit}>{t('save')}</span>
+                </div>
+
+                <div>
+                  <span className="text-orange font-input-label text-uppercase" onClick={handleBack}>{t('cancel')}</span>
+                </div>
               </div>
             </div>
 
