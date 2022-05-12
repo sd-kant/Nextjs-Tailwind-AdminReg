@@ -3,7 +3,7 @@
 .FormHeader {
   width: 100%;
   max-width: 924px;
-  padding: 40px 14px 20px 0;
+  padding: 20px 14px 20px 0;
   position: sticky;
   top: 0;
   z-index: 30;
@@ -15,17 +15,35 @@
     flex-direction: column;
     margin-top: -10px;
 
-    .ChangeNote {
-      display: inline-block;
-      margin-top: 5px;
-      z-index: 2;
+    .Title {
+      display: none;
+    }
+
+    .NoteWrapper {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 15px;
+
+      .ChangeNote {
+        display: inline-block;
+        margin-top: 5px;
+        z-index: 2;
+
+        font-family: Ubuntu-Medium;
+        font-size: 21px;
+        line-height: 24.13px;
+      }
+
+      .SaveIconWrapper {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 
   .Tools {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
 
     .SearchWrapper {
       position: relative;
@@ -41,14 +59,29 @@
       .SearchInput {
         padding: 0 22px 0 45px;
         width: calc(100% - 67px);
+        font-family: Ubuntu-Regular;
+        font-size: 16px;
+        line-height: 18.38px;
       }
     }
 
     .SubmitWrapper {
-      display: flex;
-      align-items: flex-end;
-      margin-top: 10px;
+      display: none;
     }
+
+    .AddIconWrapper {
+      display: flex;
+      align-items: center;
+
+      .AddIcon {
+        width: 25px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .AddButton {
+    display: none;
   }
 }
 
@@ -61,20 +94,76 @@
   z-index: 1;
   margin-bottom: 50px;
 
-  .AddButton {
-    display: flex;
-    justify-content: center;
-    border: 1px solid #DE7D2C;
-    box-sizing: border-box;
-    border-radius: 24px;
-    padding: 36px;
-    text-align: center;
-    cursor: pointer;
-    z-index: 1;
-    background-color: $app-bg;
+  .User {
+    background: #313131;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 40px;
+    position: relative;
 
-    .PlusIcon {
-      margin-right: 24px;
+    .RemoveIconWrapper {
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+
+    .UserRow {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      & > div {
+        margin-top: 10px;
+      }
+
+      .Input {
+        width: calc(100% - 45px);
+      }
+
+      .DisabledInput {
+        border: 1px solid $app-ts;
+        background-color: $app-tf;
+      }
+
+      .Select {
+        width: 100%;
+      }
+
+      .GroupWrapper {
+        display: flex;
+        flex-direction: column;
+
+        .ButtonWrapper {
+          display: flex;
+          justify-content: flex-end;
+          margin-top: 10px;
+        }
+      }
+
+      .PhoneNumberContainer {
+        width: 100%;
+        height: 50px;
+        border: none;
+        margin-top: 10px;
+      }
+
+      .PhoneNumberInput {
+        background-color: $app-ts;
+        color: $app-white;
+        height: 50px;
+        border: none;
+        font-size: 21px;
+        line-height: 24.13px;
+        font-family: Ubuntu-Regular, sans-serif;
+      }
+
+      .PhoneNumberDropdown {
+        background-color: white;
+        color: black;
+      }
     }
   }
 }
@@ -92,6 +181,7 @@
 }
 
 @media only screen and (min-width: 768px) {
+
   .FormHeader {
     width: calc(100vw - 130px);
 
@@ -100,6 +190,23 @@
       grid-template-columns: auto 1fr auto;
       grid-column-gap: 40px;
       margin-top: -10px;
+
+      .Title {
+        display: flex;
+      }
+
+      .NoteWrapper {
+        padding-right: 0;
+
+        .ChangeNote {
+          font-size: 27px;
+          line-height: 41px;
+        }
+
+        .SaveIconWrapper {
+          display: none;
+        }
+      }
     }
 
     .Tools {
@@ -109,16 +216,74 @@
 
       .SearchWrapper {
         width: 100%;
+
+        .SearchInput {
+          font-size: 21px;
+          line-height: 24.13px;
+        }
       }
 
       .SubmitWrapper {
-        margin-top: 0;
+        display: flex;
+        align-items: flex-end;
+        margin-top: 10px;
+      }
+
+      .AddIconWrapper {
+        display: none;
+      }
+    }
+
+    .AddButton {
+      display: flex;
+      justify-content: center;
+      border: 1px solid #DE7D2C;
+      box-sizing: border-box;
+      border-radius: 24px;
+      padding: 36px;
+      text-align: center;
+      cursor: pointer;
+      z-index: 1;
+      background-color: $app-bg;
+
+      .PlusIcon {
+        margin-right: 24px;
       }
     }
   }
 
   .FormBody {
     width: calc(100vw - 130px);
+
+    .User {
+      border-radius: 24px;
+      padding: 40px;
+
+      .RemoveIconWrapper {
+        top: 20px;
+        right: 40px;
+      }
+
+      .UserRow {
+        .GroupWrapper {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-column-gap: 40px;
+
+          .Select {
+            width: 100%;
+          }
+
+          .ButtonWrapper {
+            margin-top: 0;
+          }
+        }
+      }
+
+      & > .UserRow:first-child > div:first-child {
+        margin-top: 0;
+      }
+    }
   }
 }
 
@@ -128,6 +293,37 @@
   }
 
   .FormBody {
+
+    .User {
+      border-radius: 12px;
+      padding: 20px;
+
+      .RemoveIconWrapper {
+        top: 20px;
+        right: 20px;
+      }
+
+      .UserRow {
+        flex-direction: row;
+
+        .Input {
+          width: calc(350px - 22px);
+        }
+
+        .GroupWrapper {
+          width: 50%;
+          max-width: 370px;
+        }
+
+        .Select {
+          width: 372px;
+        }
+      }
+
+      & > .UserRow:first-child > div {
+        margin-top: 0;
+      }
+    }
   }
 }
 
@@ -138,5 +334,32 @@
 
   .FormBody {
     width: 910px;
+
+    .User {
+      border-radius: 24px;
+      padding: 40px;
+
+      .RemoveIconWrapper {
+        top: 20px;
+        right: 40px;
+      }
+
+      .UserRow {
+        flex-direction: row;
+
+        .Input {
+          width: calc(375px - 22px);
+        }
+
+        .GroupWrapper {
+          width: 50%;
+          max-width: 397px;
+        }
+
+        .Select {
+          width: 397px;
+        }
+      }
+    }
   }
 }
