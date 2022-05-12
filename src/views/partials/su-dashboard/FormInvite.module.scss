@@ -50,6 +50,8 @@
 
     .ButtonWrapper {
       display: none;
+
+      .CancelBtn {}
     }
 
     .LabelWrapper {
@@ -60,6 +62,8 @@
 
   .AddButton {
     display: none;
+
+    .PlusIcon {}
   }
 }
 

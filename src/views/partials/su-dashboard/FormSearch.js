@@ -13,19 +13,19 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction,
 } from "../../../redux/action/ui";
-import style from "./FormSearch.module.scss";
-import clsx from "clsx";
 import {
   queryAllTeamsAction,
 } from "../../../redux/action/base";
 import {get} from "lodash";
+import SearchUserItem from "./SearchUserItem";
 import ConfirmModal from "../../components/ConfirmModal";
 import {getParamFromUrl} from "../../../utils";
-import SearchUserItem from "./SearchUserItem";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import {useNavigate} from "react-router-dom";
 import {handleModifyUsers} from "../../../utils/invite";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
+import style from "./FormSearch.module.scss";
+import clsx from "clsx";
 
 export const defaultTeamMember = {
   email: '',

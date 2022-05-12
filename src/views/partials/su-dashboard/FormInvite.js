@@ -15,8 +15,6 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import style from "./FormInvite.module.scss";
-import clsx from "clsx";
 import {AVAILABLE_JOBS, permissionLevels} from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
 import CustomPhoneInput from "../../components/PhoneInput";
@@ -27,6 +25,8 @@ import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
 import {_handleSubmitV2} from "../../../utils/invite";
 import {AsYouType} from "libphonenumber-js";
+import style from "./FormInvite.module.scss";
+import clsx from "clsx";
 
 export const defaultTeamMember = {
   email: '',
@@ -552,10 +552,6 @@ const FormInvite = (props) => {
             }
 
           </div>
-        </div>
-
-        <div className={clsx(style.Footer)}>
-
         </div>
       </Form>
     </React.Fragment>
