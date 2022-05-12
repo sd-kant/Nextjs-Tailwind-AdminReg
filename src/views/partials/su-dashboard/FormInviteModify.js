@@ -33,7 +33,6 @@ import {defaultTeamMember, userSchema} from "./FormSearch";
 import InviteModal from "./modify/InviteModal";
 import {_handleSubmitV2, handleModifyUsers} from "../../../utils/invite";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
-import saveIcon from "../../../assets/images/save.svg";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -214,12 +213,7 @@ const FormInviteModify = (props) => {
                 {
                   visibleSubmitBtn &&
                   <div className={clsx(style.SaveIconWrapper)}>
-                    <img
-                      className={clsx(style.SaveIcon)}
-                      src={saveIcon}
-                      alt="save icon"
-                      onClick={submitForm}
-                    />
+                    <span className="text-orange font-input-label text-uppercase" onClick={submitForm}>{t('save')}</span>
                   </div>
                 }
               </div>
