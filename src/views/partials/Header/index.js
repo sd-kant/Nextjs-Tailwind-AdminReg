@@ -182,14 +182,16 @@ const Header = (
           )
         }*/}
         </div>
-
-        <div className={clsx(style.ModifyButton)}>
-          <Button
-            size='sm'
-            title={t('refresh')}
-            onClick={() => setRefreshCount(prev => prev + 1)}
-          />
-        </div>
+        {
+          pickedTeams?.length > 0 &&
+          <div className={clsx(style.ModifyButton)}>
+            <Button
+              size='sm'
+              title={t('refresh')}
+              onClick={() => setRefreshCount(prev => prev + 1)}
+            />
+          </div>
+        }
       </div>
       {
         formattedMembers?.length > 0 ?
