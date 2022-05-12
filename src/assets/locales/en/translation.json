@@ -63,7 +63,7 @@
   "job required": "Please select a job",
   "remove from team": "Remove from Team",
   "delete user": "Delete User",
-  "reupload csv": "Something not right? <a>Upload template again</a>",
+  "reupload csv": "<a>Upload template again</a>",
   "team create success": "Team Created Successfully!",
   "team create success description": "Your invitation has been sent to each of the team member emails.",
   "create or select company": "Create or Select a Company",
@@ -520,5 +520,6 @@
   "job metallurgy": "Metallurgy",
   "job marine worker": "Marine Worker",
   "job pipeline": "Pipeline",
-  "job other": "Other"
+  "job other": "Other",
+  "add": "add"
 }

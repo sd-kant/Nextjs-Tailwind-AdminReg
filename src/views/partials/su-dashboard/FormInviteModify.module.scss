@@ -37,11 +37,6 @@
       .SaveIconWrapper {
         display: flex;
         align-items: center;
-
-        .SaveIcon {
-          width: 20px;
-          cursor: pointer;
-        }
       }
     }
   }
@@ -88,6 +83,10 @@
 
   .AddButton {
     display: none;
+
+    .PlusIcon {
+
+    }
   }
 }
 

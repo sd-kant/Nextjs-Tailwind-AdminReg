@@ -1,10 +1,10 @@
 import React from "react";
 import {useTranslation} from "react-i18next";
-import style from "./ConfirmModalV2.module.scss";
-import clsx from "clsx";
 import yesIcon from "../../assets/images/yes.svg";
 import noIcon from "../../assets/images/no.svg";
 import closeIcon from "../../assets/images/close.svg";
+import style from "./ConfirmModalV2.module.scss";
+import clsx from "clsx";
 
 const ConfirmModalV2 = (
   {

@@ -14,8 +14,6 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import style from "./FormInviteModify.module.scss";
-import clsx from "clsx";
 import {
   permissionLevels,
 } from "../../../constant";
@@ -24,16 +22,17 @@ import {
   queryAllTeamsAction,
 } from "../../../redux/action/base";
 import {get} from "lodash";
+import SearchUserItem from "./SearchUserItem";
 import ConfirmModal from "../../components/ConfirmModal";
 import AddMemberModalV2 from "../../components/AddMemberModalV2";
+import InviteModal from "./modify/InviteModal";
 import {useMembersContext} from "../../../providers/MembersProvider";
-import SearchUserItem from "./SearchUserItem";
 import {useNavigate} from "react-router-dom";
 import {defaultTeamMember, userSchema} from "./FormSearch";
-import InviteModal from "./modify/InviteModal";
 import {_handleSubmitV2, handleModifyUsers} from "../../../utils/invite";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
-import saveIcon from "../../../assets/images/save.svg";
+import style from "./FormInviteModify.module.scss";
+import clsx from "clsx";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -214,12 +213,7 @@ const FormInviteModify = (props) => {
                 {
                   visibleSubmitBtn &&
                   <div className={clsx(style.SaveIconWrapper)}>
-                    <img
-                      className={clsx(style.SaveIcon)}
-                      src={saveIcon}
-                      alt="save icon"
-                      onClick={submitForm}
-                    />
+                    <span className="text-orange font-input-label text-uppercase" onClick={submitForm}>{t('save')}</span>
                   </div>
                 }
               </div>

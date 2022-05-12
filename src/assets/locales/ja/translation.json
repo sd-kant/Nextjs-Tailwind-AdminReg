@@ -63,7 +63,7 @@
   "job required": "職種を選択してください",
   "remove from team": "チームから削除する",
   "delete user": "ユーザーの削除",
-  "reupload csv": "何かがおかしい？ <a>テンプレートを再度アップロードする</a>",
+  "reupload csv": "<a>テンプレートを再度アップロードする</a>",
   "team create success": "チームが作成されました！",
   "team create success description": "招待状が、チームメンバーのEメールアドレスに送信されました。",
   "create or select company": "会社を作成もしくは選択",
@@ -520,5 +520,6 @@
   "job metallurgy": "冶金",
   "job marine worker": "海洋労働者",
   "job pipeline": "パイプライン",
-  "job other": "他の"
+  "job other": "他の",
+  "add": "追加"
 }
