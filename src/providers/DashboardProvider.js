@@ -60,7 +60,7 @@ const DashboardProviderDraft = (
   const [refreshCount, setRefreshCount] = React.useState(0);
   const [filter, setFilter] = React.useState(sortBy ? {[sortBy]: parseInt(sortDirection)} : {});
   const [page, setPage] = React.useState(null);
-  const [sizePerPage] = React.useState(10);
+  const [sizePerPage, setSizePerPage] = React.useState(10);
   const [keyword, setKeyword] = React.useState(keywordInUrl ?? "");
   const trimmedKeyword = React.useMemo(() => keyword.trim(), [keyword]);
   const [count, setCount] = React.useState(0);
@@ -755,6 +755,7 @@ const DashboardProviderDraft = (
     page,
     setPage,
     sizePerPage,
+    setSizePerPage,
     keyword,
     setKeyword,
     moveMember,

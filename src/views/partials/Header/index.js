@@ -35,6 +35,7 @@ const Header = (
     page,
     setPage,
     sizePerPage,
+    setSizePerPage,
     keyword,
     setKeyword,
     setRefreshCount,
@@ -112,6 +113,27 @@ const Header = (
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickedTeams, formattedTeams]);
+
+  const handleClickEnd = React.useCallback(() => {
+    setPage(Math.ceil(filteredMembers?.length / sizePerPage));
+  }, [setPage, sizePerPage, filteredMembers]);
+
+  const handleClickNext = React.useCallback(() => {
+    setPage(prev => prev + 1);
+  }, [setPage]);
+
+  const handleClickPrev = React.useCallback(() => {
+    setPage(prev => prev - 1);
+  }, [setPage]);
+
+  const handleClickStart = React.useCallback(() => {
+    setPage(1);
+  }, [setPage]);
+
+  const handleChangePageSize = React.useCallback(e => {
+    setPage(1);
+    setSizePerPage(e.target.value);
+  }, [setSizePerPage, setPage]);
 
   return (
     <div className={clsx(style.Header)} style={{width: `${tableWidth}px`}}>
@@ -211,23 +233,28 @@ const Header = (
             <div className={clsx(style.PaginationWrapper)}>
               {
                 filteredMembers?.length > 0 ?
-                  <Pagination
-                    page={page}
-                    size={sizePerPage}
-                    length={filteredMembers?.length}
-                    onClickEnd={() => {
-                      setPage(Math.ceil(filteredMembers?.length / sizePerPage));
-                    }}
-                    onClickNext={() => {
-                      setPage(prev => prev + 1);
-                    }}
-                    onClickPrev={() => {
-                      setPage(prev => prev - 1);
-                    }}
-                    onClickStart={() => {
-                      setPage(1);
-                    }}
-                  /> : null
+                  <React.Fragment>
+                    <Pagination
+                      page={page}
+                      size={sizePerPage}
+                      length={filteredMembers?.length}
+                      onClickEnd={handleClickEnd}
+                      onClickNext={handleClickNext}
+                      onClickPrev={handleClickPrev}
+                      onClickStart={handleClickStart}
+                    />
+                    <div className={clsx(style.SelectorWrapper)}>
+                      <select
+                        className={clsx(style.Selector, 'font-input-label text-white')}
+                        value={sizePerPage}
+                        onChange={handleChangePageSize}
+                      >
+                        <option value={10}>10</option>
+                        <option value={25}>25</option>
+                        <option value={50}>50</option>
+                      </select>
+                    </div>
+                  </React.Fragment> : null
               }
             </div>
           </div> : null

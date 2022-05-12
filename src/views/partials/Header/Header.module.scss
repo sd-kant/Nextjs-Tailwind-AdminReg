@@ -57,6 +57,35 @@
 
     .PaginationWrapper {
       margin-top: 5px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .SelectorWrapper {
+        margin-left: 10px;
+        .Selector {
+          background: transparent;
+          border: 1px solid #FFFFFF;
+          border-radius: 10px;
+          outline: none;
+          padding: 5px 20px;
+          color: white;
+
+          /* for Firefox */
+          -moz-appearance: none;
+          /* for Safari, Chrome, Opera */
+          -webkit-appearance: none;
+
+          &::-ms-expand {
+            display: none;
+          }
+
+          & > option {
+            color: $app-white;
+            background: $app-bg;
+          }
+        }
+      }
     }
 
     .SearchInputWrapper {
