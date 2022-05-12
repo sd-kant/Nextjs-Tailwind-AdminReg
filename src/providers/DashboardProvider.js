@@ -330,6 +330,13 @@ const DashboardProviderDraft = (
           source.cancel("cancel by user");
         };
       }
+    } else {
+      setValuesV2({
+        members: [],
+        alerts: [],
+        stats: [],
+        devices: [],
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickedTeams, refreshCount, formattedTeams]);
