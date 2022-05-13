@@ -63,7 +63,7 @@
   "job required": "職種を選択してください",
   "remove from team": "チームから削除する",
   "delete user": "ユーザーの削除",
-  "reupload csv": "何かがおかしい？ <a>テンプレートを再度アップロードする</a>",
+  "reupload csv": "<a>テンプレートを再度アップロードする</a>",
   "team create success": "チームが作成されました！",
   "team create success description": "招待状が、チームメンバーのEメールアドレスに送信されました。",
   "create or select company": "会社を作成もしくは選択",
@@ -509,8 +509,8 @@
   "forgot username phone confirm subheader": "有効な電話番号をお持ちの場合、ユーザー名が電話番号に送信されます",
   "forgot username phone description1": "登録した電話番号を入力して、ユーザー名を復元します。",
   "forgot username phone description2": "アカウントが有効な場合は、ユーザー名が記載されたSMSが届きます",
-  "switch via phone number": "電話番号で切り替える",
-  "switch via email": "メールで切り替える",
+  "switch via phone number": "あなたの電話番号を介してユーザー名を回復する",
+  "switch via email": "メールでユーザー名を復元する",
   "job agriculture": "農業",
   "job driver": "運転者",
   "job emergency worker": "救急隊員",
@@ -520,5 +520,9 @@
   "job metallurgy": "冶金",
   "job marine worker": "海洋労働者",
   "job pipeline": "パイプライン",
-  "job other": "他の"
+  "job other": "他の",
+  "add": "追加",
+  "n users connected": "{{n}}接続されたユーザー",
+  "n user connected": "{{n}}ユーザー接続",
+  "no users connected": "ユーザーが接続していません"
 }

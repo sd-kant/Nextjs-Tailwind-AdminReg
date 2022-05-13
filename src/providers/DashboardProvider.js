@@ -60,7 +60,7 @@ const DashboardProviderDraft = (
   const [refreshCount, setRefreshCount] = React.useState(0);
   const [filter, setFilter] = React.useState(sortBy ? {[sortBy]: parseInt(sortDirection)} : {});
   const [page, setPage] = React.useState(null);
-  const [sizePerPage] = React.useState(10);
+  const [sizePerPage, setSizePerPage] = React.useState(10);
   const [keyword, setKeyword] = React.useState(keywordInUrl ?? "");
   const trimmedKeyword = React.useMemo(() => keyword.trim(), [keyword]);
   const [count, setCount] = React.useState(0);
@@ -330,6 +330,13 @@ const DashboardProviderDraft = (
           source.cancel("cancel by user");
         };
       }
+    } else {
+      setValuesV2({
+        members: [],
+        alerts: [],
+        stats: [],
+        devices: [],
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickedTeams, refreshCount, formattedTeams]);
@@ -349,7 +356,9 @@ const DashboardProviderDraft = (
     valuesV2.members?.forEach(member => {
       const stat = valuesV2.stats?.find(it => it.userId?.toString() === member.userId?.toString());
       const userDevices = valuesV2.devices?.find(it => it.userId?.toString() === member.userId?.toString())?.devices;
-      const userKenzenDevice = userDevices?.find(it => it.type === "kenzen" && it.deviceId === stat?.deviceId);
+      const userKenzenDevice = userDevices
+        ?.filter(it => it.type === "kenzen" && it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase())
+        ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
       const alertsForMe = valuesV2.alerts?.filter(it => it.userId?.toString() === member.userId?.toString());
       const alert = alertsForMe
         ?.sort(function (a, b) {
@@ -526,6 +535,17 @@ const DashboardProviderDraft = (
                 const statIndex = prev.stats?.findIndex(it => it.userId?.toString() === member?.userId?.toString());
                 if (statIndex !== -1) {
                   const temp = JSON.parse(JSON.stringify(prev.stats));
+                  let updatedLastConnectedTs = temp[statIndex].lastConnectedTs;
+                  let updatedLastOnTs = temp[statIndex].lastOnTs;
+
+                  if (latestDeviceLog) {
+                    if (latestDeviceLog.onOff === true) {
+                      updatedLastOnTs = latestDeviceLog.utcTs;
+                    }
+                    if (latestDeviceLog.connected === true) {
+                      updatedLastConnectedTs = latestDeviceLog.utcTs;
+                    }
+                  }
                   const newEle = {
                     batteryPercent: latestDeviceLog ? latestDeviceLog?.batteryPercent : temp[statIndex].batteryPercent,
                     chargingFlag: latestDeviceLog ? latestDeviceLog?.charging : temp[statIndex].chargingFlag,
@@ -538,6 +558,8 @@ const DashboardProviderDraft = (
                     skinTemp: latestTempHumidity ? latestTempHumidity?.skinTemp : temp[statIndex].skinTemp,
                     tempHumidityTs: latestTempHumidity ? latestTempHumidity?.utcTs : temp[statIndex].tempHumidityTs,
                     userId: member.userId,
+                    lastConnectedTs: updatedLastConnectedTs,
+                    lastOnTs: updatedLastOnTs,
                   };
                   temp.splice(statIndex, 1, newEle);
                   valuesV2Temp = {
@@ -690,7 +712,10 @@ const DashboardProviderDraft = (
           userId: member?.userId,
         })
           .then(() => {
-            const updated = valuesV2Ref.current.members?.map(it => it.userId?.toString() === member?.userId?.toString() ? ({...it, locked: false}) : it);
+            const updated = valuesV2Ref.current.members?.map(it => it.userId?.toString() === member?.userId?.toString() ? ({
+              ...it,
+              locked: false
+            }) : it);
             setValuesV2({
               ...valuesV2Ref.current,
               members: updated,
@@ -730,6 +755,7 @@ const DashboardProviderDraft = (
     page,
     setPage,
     sizePerPage,
+    setSizePerPage,
     keyword,
     setKeyword,
     moveMember,

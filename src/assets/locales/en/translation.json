@@ -63,7 +63,7 @@
   "job required": "Please select a job",
   "remove from team": "Remove from Team",
   "delete user": "Delete User",
-  "reupload csv": "Something not right? <a>Upload template again</a>",
+  "reupload csv": "<a>Upload template again</a>",
   "team create success": "Team Created Successfully!",
   "team create success description": "Your invitation has been sent to each of the team member emails.",
   "create or select company": "Create or Select a Company",
@@ -509,8 +509,8 @@
   "forgot username phone confirm subheader": "If you have a valid phone number, your username will be sent to your phone number",
   "forgot username phone description1": "Enter your registered phone number to recover your username.",
   "forgot username phone description2": "If your account is valid, you will receive an SMS with your username",
-  "switch via phone number": "Switch via Phone Number",
-  "switch via email": "Switch via Email",
+  "switch via phone number": "Recover username via your phone number",
+  "switch via email": "Recover username via your Email",
   "job agriculture": "Agriculture",
   "job driver": "Driver",
   "job emergency worker": "Emergency Worker",
@@ -520,5 +520,9 @@
   "job metallurgy": "Metallurgy",
   "job marine worker": "Marine Worker",
   "job pipeline": "Pipeline",
-  "job other": "Other"
+  "job other": "Other",
+  "add": "add",
+  "n users connected": "{{n}} Users Connected",
+  "n user connected": "{{n}} User Connected",
+  "no users connected": "No Users Connected"
 }

@@ -118,8 +118,12 @@ const Settings = (
   }, [mode, isEntry, t, userType, navigate]);
 
   const direction = React.useMemo(() => {
-    return width < 768 ? 'bottom left' : 'bottom right';
-  }, [width]);
+    if (mode === "dashboard") {
+      return width < 768 ? 'bottom center' : 'bottom right';
+    } else {
+      return "bottom right";
+    }
+  }, [width, mode]);
 
   React.useEffect(() => {
     if (visiblePopup || leavePopup.visible) {

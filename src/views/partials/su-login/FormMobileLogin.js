@@ -80,13 +80,13 @@ const FormMobileLogin = (props) => {
           }
         </div>
 
-        <div className='mt-40 d-flex flex-column'>
+        <div className='mt-40 d-block'>
           <Link to={`/forgot-password?from=mobile`} className="font-input-label text-orange no-underline">
             {t("forgot password")}
           </Link>
         </div>
 
-        <div className='mt-10 d-flex flex-column'>
+        <div className='mt-10 d-block'>
           <Link to={`/forgot-username?from=mobile`} className="font-input-label text-orange no-underline">
             {t("forgot your username")}
           </Link>

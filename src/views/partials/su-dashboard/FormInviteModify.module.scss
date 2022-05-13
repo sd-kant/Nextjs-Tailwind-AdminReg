@@ -3,7 +3,7 @@
 .FormHeader {
   width: 100%;
   max-width: 924px;
-  padding: 40px 14px 20px 0;
+  padding: 20px 14px 20px 0;
   position: sticky;
   top: 0;
   z-index: 30;
@@ -15,17 +15,36 @@
     flex-direction: column;
     margin-top: -10px;
 
-    .ChangeNote {
-      display: inline-block;
-      margin-top: 5px;
-      z-index: 2;
+    .Title {
+      display: none;
+    }
+
+    .NoteWrapper {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 15px;
+
+      .ChangeNote {
+        display: inline-block;
+        margin-top: 5px;
+        z-index: 2;
+
+        font-family: Ubuntu-Medium;
+        font-size: 21px;
+        line-height: 24.13px;
+      }
+
+      .SaveIconWrapper {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 
   .Tools {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-column-gap: 5px;
 
     .SearchWrapper {
       position: relative;
@@ -41,30 +60,32 @@
       .SearchInput {
         padding: 0 22px 0 45px;
         width: calc(100% - 67px);
+        font-family: Ubuntu-Regular;
+        font-size: 16px;
+        line-height: 18.38px;
       }
     }
 
     .SubmitWrapper {
+      display: none;
+    }
+
+    .AddIconWrapper {
       display: flex;
-      align-items: flex-end;
-      margin-top: 10px;
+      align-items: center;
+
+      .AddIcon {
+        width: 25px;
+        cursor: pointer;
+      }
     }
   }
 
   .AddButton {
-    display: flex;
-    justify-content: center;
-    border: 1px solid #DE7D2C;
-    box-sizing: border-box;
-    border-radius: 24px;
-    padding: 36px;
-    text-align: center;
-    cursor: pointer;
-    z-index: 1;
-    background-color: $app-bg;
+    display: none;
 
     .PlusIcon {
-      margin-right: 24px;
+
     }
   }
 }
@@ -165,6 +186,7 @@
 }
 
 @media only screen and (min-width: 768px) {
+
   .FormHeader {
     width: calc(100vw - 130px);
 
@@ -173,6 +195,23 @@
       grid-template-columns: auto 1fr auto;
       grid-column-gap: 40px;
       margin-top: -10px;
+
+      .Title {
+        display: flex;
+      }
+
+      .NoteWrapper {
+        padding-right: 0;
+
+        .ChangeNote {
+          font-size: 27px;
+          line-height: 41px;
+        }
+
+        .SaveIconWrapper {
+          display: none;
+        }
+      }
     }
 
     .Tools {
@@ -182,10 +221,38 @@
 
       .SearchWrapper {
         width: 100%;
+
+        .SearchInput {
+          font-size: 21px;
+          line-height: 24.13px;
+        }
       }
 
       .SubmitWrapper {
-        margin-top: 0;
+        display: flex;
+        align-items: flex-end;
+        margin-top: 10px;
+      }
+
+      .AddIconWrapper {
+        display: none;
+      }
+    }
+
+    .AddButton {
+      display: flex;
+      justify-content: center;
+      border: 1px solid #DE7D2C;
+      box-sizing: border-box;
+      border-radius: 24px;
+      padding: 36px;
+      text-align: center;
+      cursor: pointer;
+      z-index: 1;
+      background-color: $app-bg;
+
+      .PlusIcon {
+        margin-right: 24px;
       }
     }
   }

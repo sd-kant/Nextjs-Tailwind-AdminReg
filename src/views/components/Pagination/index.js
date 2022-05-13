@@ -18,37 +18,41 @@ const Pagination = (
   }) => {
   const firstPage = page === 1;
   const lastPage = Math.ceil(length / size) === page;
+  const start = ((page - 1) * size) + 1;
+  const end = page * size > length ? length : page * size;
 
   return (
     <div className={clsx(style.Wrapper)}>
-      <div className={clsx(style.Label)}>
-        <span className="font-binary text-white">
-          {((page - 1) * size) + 1} - {page * size > length ? length : page * size} of {length}
-        </span>
-      </div>
+      {
+        start > 0 ?
+          <React.Fragment>
+            <div className={clsx(style.Label)}><span className="font-binary text-white">{`${start} - ${end} of ${length}`}</span>
+            </div>
 
-      <div className={clsx(style.Icons)}>
-        <img
-          className={clsx(style.Icon, style.GoEndIcon, style.Reverse, firstPage ? style.Disabled : style.Active)}
-          src={firstPage ? goEndDisabledIcon : goEndIcon} alt="go end icon"
-          onClick={firstPage ? null : onClickStart}
-        />
-        <img
-          className={clsx(style.Icon, style.GoNextIcon, style.Reverse, firstPage ? style.Disabled : style.Active)}
-          src={firstPage ? goNextDisabledIcon : goNextIcon} alt="go next icon"
-          onClick={firstPage ? null : onClickPrev}
-        />
-        <img
-          className={clsx(style.Icon, style.GoNextIcon, lastPage ? style.Disabled : style.Active)}
-          src={lastPage ? goNextDisabledIcon : goNextIcon} alt="go next icon"
-          onClick={lastPage ? null : onClickNext}
-        />
-        <img
-          className={clsx(style.Icon, style.GoEndIcon, lastPage ? style.Disabled : style.Active)}
-          src={lastPage ? goEndDisabledIcon : goEndIcon} alt="go end icon"
-          onClick={lastPage ? null : onClickEnd}
-        />
-      </div>
+            <div className={clsx(style.Icons)}>
+              <img
+                className={clsx(style.Icon, style.GoEndIcon, style.Reverse, firstPage ? style.Disabled : style.Active)}
+                src={firstPage ? goEndDisabledIcon : goEndIcon} alt="go end icon"
+                onClick={firstPage ? null : onClickStart}
+              />
+              <img
+                className={clsx(style.Icon, style.GoNextIcon, style.Reverse, firstPage ? style.Disabled : style.Active)}
+                src={firstPage ? goNextDisabledIcon : goNextIcon} alt="go next icon"
+                onClick={firstPage ? null : onClickPrev}
+              />
+              <img
+                className={clsx(style.Icon, style.GoNextIcon, lastPage ? style.Disabled : style.Active)}
+                src={lastPage ? goNextDisabledIcon : goNextIcon} alt="go next icon"
+                onClick={lastPage ? null : onClickNext}
+              />
+              <img
+                className={clsx(style.Icon, style.GoEndIcon, lastPage ? style.Disabled : style.Active)}
+                src={lastPage ? goEndDisabledIcon : goEndIcon} alt="go end icon"
+                onClick={lastPage ? null : onClickEnd}
+              />
+            </div>
+          </React.Fragment> : null
+      }
     </div>
   )
 }
