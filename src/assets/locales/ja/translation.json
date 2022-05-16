@@ -110,7 +110,7 @@
   "phone number invalid": "有効な電話番号を入力して下さい",
   "required for 2fa": "2要素認証に必要",
   "modify team": "更新チーム",
-  "search user": "名前またはメールアドレスでユーザーを検索する",
+  "search user": "名前またはメールで検索",
   "no new change": "新しい変更はありません",
   "new change": "{{numberOfChanges}}新しい変更",
   "new changes": "{{numberOfChanges}}新しい変更",

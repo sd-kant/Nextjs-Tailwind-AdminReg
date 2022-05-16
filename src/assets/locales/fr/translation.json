@@ -110,7 +110,7 @@
   "phone number invalid": "s'il vous plaît entrer un numéro de téléphone valide",
   "required for 2fa": "Requis pour l'authentification à 2 facteurs",
   "modify team": "Modifier l’équipe",
-  "search user": "Recherche d’un utilisateur par nom ou par e-mail",
+  "search user": "Recherche par nom ou email",
   "no new change": "Aucun nouveau changement",
   "new change": "{{numberOfChanges}} Nouveau changement",
   "new changes": "{{numberOfChanges}} Nouveaux changements",
