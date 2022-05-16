@@ -84,7 +84,7 @@ const FormWeight = (props) => {
         <div className="mt-40 d-flex flex-column">
           <div className="d-flex align-center">
             <label className='font-input-label'>
-              {t("weight")}
+              {t("weight")} {values.weightUnit === "1" ? "(lbs)" : "(kg)"}
             </label>
           </div>
 
