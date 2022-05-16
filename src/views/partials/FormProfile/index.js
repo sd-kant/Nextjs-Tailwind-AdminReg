@@ -480,7 +480,7 @@ const FormProfile = (props) => {
           <div className="mt-15 d-flex flex-column">
             <div className="d-flex align-center">
               <label className='font-input-label'>
-                {t("weight")}
+                {t("weight")} {values.measureType === IMPERIAL ? '(lbs)' : '(kg)'}
               </label>
             </div>
 
