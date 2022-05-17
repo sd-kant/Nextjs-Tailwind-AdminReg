@@ -235,6 +235,7 @@ const Header = (
               <SearchInput
                 keyword={keyword}
                 onChange={e => setKeyword(e.target.value)}
+                onClear={() => setKeyword("")}
               />
 
               <img
