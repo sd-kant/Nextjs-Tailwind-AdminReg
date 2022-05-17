@@ -58,7 +58,7 @@ const DashboardProviderDraft = (
   const [visibleMemberModal, setVisibleMemberModal] = React.useState(false);
 
   const [refreshCount, setRefreshCount] = React.useState(0);
-  const [filter, setFilter] = React.useState(sortBy ? {[sortBy]: parseInt(sortDirection)} : {});
+  const [filter, setFilter] = React.useState(sortBy ? {[sortBy]: parseInt(sortDirection)} : {heatRisk: 1});
   const [page, setPage] = React.useState(null);
   const [sizePerPage, setSizePerPage] = React.useState(10);
   const [keyword, setKeyword] = React.useState(keywordInUrl ?? "");
