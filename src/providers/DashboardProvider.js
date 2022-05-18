@@ -58,9 +58,9 @@ const DashboardProviderDraft = (
   const [visibleMemberModal, setVisibleMemberModal] = React.useState(false);
 
   const [refreshCount, setRefreshCount] = React.useState(0);
-  const [filter, setFilter] = React.useState(sortBy ? {[sortBy]: parseInt(sortDirection)} : {});
+  const [filter, setFilter] = React.useState(sortBy ? {[sortBy]: parseInt(sortDirection)} : {heatRisk: 1});
   const [page, setPage] = React.useState(null);
-  const [sizePerPage] = React.useState(10);
+  const [sizePerPage, setSizePerPage] = React.useState(10);
   const [keyword, setKeyword] = React.useState(keywordInUrl ?? "");
   const trimmedKeyword = React.useMemo(() => keyword.trim(), [keyword]);
   const [count, setCount] = React.useState(0);
@@ -330,6 +330,13 @@ const DashboardProviderDraft = (
           source.cancel("cancel by user");
         };
       }
+    } else {
+      setValuesV2({
+        members: [],
+        alerts: [],
+        stats: [],
+        devices: [],
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickedTeams, refreshCount, formattedTeams]);
@@ -358,7 +365,7 @@ const DashboardProviderDraft = (
           return new Date(b.utcTs) - new Date(a.utcTs);
         })?.[0];
       const numberOfAlerts = alertsForMe?.length;
-      const alertObj = formatAlert(alert?.alertStageId);
+      const alertObj = alert ? formatAlert(alert?.alertStageId) : {value: null, label: ''};
       const connectionObj = formatConnectionStatusV2({
         flag: stat?.onOffFlag,
         connected: userKenzenDevice?.connected,
@@ -416,6 +423,35 @@ const DashboardProviderDraft = (
         it.email?.toLowerCase()?.includes(trimmedKeyword?.toLowerCase());
     });
   }, [formattedMembers, trimmedKeyword]);
+
+  const columnStats = React.useMemo(() => {
+    let connectedUsers = 0;
+    let notConnectedUsers = 0;
+    let atRiskUsers = 0;
+    let safeUsers = 0;
+    let totalAlerts = 0;
+    formattedMembers.forEach(member => {
+      if ([3, 4].includes(member.connectionObj?.value)) {
+        connectedUsers++;
+      } else {
+        notConnectedUsers++;
+      }
+      if ([1, 2].includes(member.alertObj?.value)) {
+        atRiskUsers++;
+      } else if ([3, 4, 5].includes(member.alertObj?.value)) {
+        safeUsers++;
+      }
+      totalAlerts += (member.alertsForMe?.length ?? 0);
+    });
+
+    return {
+      connectedUsers,
+      notConnectedUsers,
+      atRiskUsers,
+      safeUsers,
+      totalAlerts,
+    }
+  }, [formattedMembers]);
 
   const paginatedMembers = React.useMemo(() => {
     return filteredMembers?.slice(((page - 1) * sizePerPage), (page * sizePerPage))
@@ -748,6 +784,7 @@ const DashboardProviderDraft = (
     page,
     setPage,
     sizePerPage,
+    setSizePerPage,
     keyword,
     setKeyword,
     moveMember,
@@ -755,6 +792,7 @@ const DashboardProviderDraft = (
     removeMember,
     unlockMember,
     hideCbtHR,
+    columnStats,
   };
 
   return (

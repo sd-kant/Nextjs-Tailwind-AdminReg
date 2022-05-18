@@ -10,6 +10,7 @@ const TableHeaderCell = (
     value,
     label,
     items,
+    hideChevron = false,
   }) => {
   const {t} = useTranslation();
   const dropdownColumnsMap = {
@@ -19,22 +20,27 @@ const TableHeaderCell = (
   };
 
   return (
-    <td className={clsx(style.TableHeaderCell)}>
-        <span
-          className={clsx(style.TableHeaderCellSpan)}
-        >
-          {label}
-        </span>
+    hideChevron ?
       <DropdownMenu
         title={dropdownColumnsMap[value]}
         icon={
-          <div className={clsx(style.ChevronWrapper)}>
-            <img className={clsx(style.ChevronIcon)} src={chevronDown} alt="down"/>
-          </div>
+          <td className={clsx(style.TableHeaderCell)}><span className={clsx(style.TableHeaderCellSpan)}>{label}</span>
+          </td>
         }
         items={items(value)}
-      />
-    </td>
+      /> :
+      <td className={clsx(style.TableHeaderCell)}>
+        <span className={clsx(style.TableHeaderCellSpan)}>{label}</span>
+        <DropdownMenu
+          title={dropdownColumnsMap[value]}
+          icon={
+            <div className={clsx(style.ChevronWrapper)}>
+              <img className={clsx(style.ChevronIcon)} src={chevronDown} alt="down"/>
+            </div>
+          }
+          items={items(value)}
+        />
+      </td>
   );
 }
 

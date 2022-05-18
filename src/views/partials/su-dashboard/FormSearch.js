@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
-import {Form, withFormik} from "formik";
+import {Form, useFormikContext, withFormik} from "formik";
 import {withTranslation} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import searchIcon from "../../../assets/images/search.svg";
@@ -13,19 +13,19 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction,
 } from "../../../redux/action/ui";
-import style from "./FormSearch.module.scss";
-import clsx from "clsx";
 import {
   queryAllTeamsAction,
 } from "../../../redux/action/base";
 import {get} from "lodash";
+import SearchUserItem from "./SearchUserItem";
 import ConfirmModal from "../../components/ConfirmModal";
 import {getParamFromUrl} from "../../../utils";
-import SearchUserItem from "./SearchUserItem";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import {useNavigate} from "react-router-dom";
 import {handleModifyUsers} from "../../../utils/invite";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
+import style from "./FormSearch.module.scss";
+import clsx from "clsx";
 
 export const defaultTeamMember = {
   email: '',
@@ -87,6 +87,7 @@ const FormSearch = (props) => {
   const [newChanges, setNewChanges] = useState(0);
   const {users, setPage, keyword, setKeyword} = useMembersContext();
   const navigate = useNavigate();
+  const { submitForm } = useFormikContext();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -120,6 +121,9 @@ const FormSearch = (props) => {
       setNewChanges(items?.length ?? 0);
     }, 500);
   };
+  const visibleSubmitBtn = React.useMemo(() => {
+    return newChanges > 0;
+  }, [newChanges]);
 
   return (
     <>
@@ -146,18 +150,21 @@ const FormSearch = (props) => {
           <div className={clsx(style.FormHeader, "mt-40 d-flex flex-column")}>
             <ScrollToFieldError/>
             <div className={clsx(style.Header)}>
-              <div className={"d-flex align-center"}>
-              <span className='font-header-medium d-block text-capitalize'>
-                {t("search")}
-              </span>
+              <div className={clsx("d-flex align-center", style.Title)}><span className='font-header-medium d-block text-capitalize'>{t("search")}</span>
               </div>
 
               <div/>
 
-              <div className={clsx("d-flex align-center", style.ChangeNote)}>
-              <span className="font-header-medium">
-                {t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}
-              </span>
+              <div className={clsx(style.NoteWrapper)}>
+                <div className={clsx("d-flex align-center", style.ChangeNote)}><span>{t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}</span>
+                </div>
+
+                {
+                  visibleSubmitBtn &&
+                  <div className={clsx(style.SaveIconWrapper)}>
+                    <span className="text-orange font-input-label text-uppercase" onClick={submitForm}>{t('save')}</span>
+                  </div>
+                }
               </div>
             </div>
 
@@ -172,9 +179,8 @@ const FormSearch = (props) => {
                   onChange={e => setKeyword(e.target.value)}
                 />
               </div>
-
               {
-                newChanges ?
+                visibleSubmitBtn ?
                   <div className={clsx(style.SubmitWrapper)}>
                     <button
                       className={`button active cursor-pointer`}

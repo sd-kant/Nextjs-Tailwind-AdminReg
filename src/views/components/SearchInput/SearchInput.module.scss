@@ -3,15 +3,21 @@
 .Wrapper {
   display: inline-flex;
   background: $app-ts;
-  padding: 8px 16px;
+  padding: 8px 10px 8px 16px;
   border-radius: 5px;
   align-items: center;
-  width: 258px;
-  max-width: calc(100% - 32px);
+  width: 262px;
+  max-width: calc(100% - 26px);
 
   .SearchIcon {
     width: 16px;
     height: 16px;
+  }
+
+  .ClearIcon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
   }
 
   .Input {

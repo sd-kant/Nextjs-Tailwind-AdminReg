@@ -2,9 +2,10 @@ import React from "react";
 import {withTranslation} from "react-i18next";
 import Button from "../Button";
 import DropDownCard from "./DropdownButtonCard";
+import chevronDown from "../../../assets/images/chevron-down.svg"
+
 import style from "./DropdownButton.module.scss";
 import clsx from 'clsx';
-import chevronDown from "../../../assets/images/chevron-down.svg"
 
 const DropdownButton = (
   {

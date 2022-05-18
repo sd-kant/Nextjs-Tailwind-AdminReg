@@ -63,7 +63,7 @@
   "job required": "Veuillez sélectionner un emploi",
   "remove user": "Supprimer l'utilisateur",
   "delete user": "Supprimer l'utilisateur",
-  "reupload csv": "Quelque chose ne va pas ? <a>Télécharger à nouveau le modèle</a>",
+  "reupload csv": "<a>Télécharger à nouveau le modèle</a>",
   "team create success": "L'équipe a été créée avec succès !",
   "team create success description": "Votre invitation a été envoyée à chacun des membres de l'équipe.",
   "create or select company": "Créer ou sélectionner une entreprise",
@@ -110,7 +110,7 @@
   "phone number invalid": "s'il vous plaît entrer un numéro de téléphone valide",
   "required for 2fa": "Requis pour l'authentification à 2 facteurs",
   "modify team": "Modifier l'équipe",
-  "search user": "Rechercher un utilisateur par leur nom ou adresse de courriel",
+  "search user": "Recherche par nom ou email",
   "no new change": "Pas de nouveaux changements",
   "new change": "{{numberOfChanges}} Nouveau changement",
   "new changes": "{{numberOfChanges}} Nouveaux changements",
@@ -520,5 +520,11 @@
   "job metallurgy": "Métallurgie",
   "job marine worker": "Ouvrier maritime",
   "job pipeline": "Pipeline",
-  "job other": "Autre"
+  "job other": "Autre",
+  "add": "ajouter",
+  "n users connected": "{{n}} Utilisateurs connectés",
+  "n user connected": "{{n}} Utilisateur connecté",
+  "no users connected": "Aucun utilisateur n'est connecté",
+  "safe": "Sûr",
+  "at risk": "À risque"
 }
