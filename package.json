@@ -5,7 +5,7 @@
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^13.1.1",
-    "@testing-library/user-event": "^12.7.1",
+    "@testing-library/user-event": "^14.1.1",
     "axios": "^0.26.1",
     "clsx": "^1.1.1",
     "country-region-data": "^2.2.0",
