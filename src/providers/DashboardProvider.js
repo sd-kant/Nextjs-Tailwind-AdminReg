@@ -365,7 +365,7 @@ const DashboardProviderDraft = (
           return new Date(b.utcTs) - new Date(a.utcTs);
         })?.[0];
       const numberOfAlerts = alertsForMe?.length;
-      const alertObj = formatAlert(alert?.alertStageId);
+      const alertObj = alert ? formatAlert(alert?.alertStageId) : {value: null, label: ''};
       const connectionObj = formatConnectionStatusV2({
         flag: stat?.onOffFlag,
         connected: userKenzenDevice?.connected,
@@ -423,6 +423,35 @@ const DashboardProviderDraft = (
         it.email?.toLowerCase()?.includes(trimmedKeyword?.toLowerCase());
     });
   }, [formattedMembers, trimmedKeyword]);
+
+  const columnStats = React.useMemo(() => {
+    let connectedUsers = 0;
+    let notConnectedUsers = 0;
+    let atRiskUsers = 0;
+    let safeUsers = 0;
+    let totalAlerts = 0;
+    formattedMembers.forEach(member => {
+      if ([3, 4].includes(member.connectionObj?.value)) {
+        connectedUsers++;
+      } else {
+        notConnectedUsers++;
+      }
+      if ([1, 2].includes(member.alertObj?.value)) {
+        atRiskUsers++;
+      } else if ([3, 4, 5].includes(member.alertObj?.value)) {
+        safeUsers++;
+      }
+      totalAlerts += (member.alertsForMe?.length ?? 0);
+    });
+
+    return {
+      connectedUsers,
+      notConnectedUsers,
+      atRiskUsers,
+      safeUsers,
+      totalAlerts,
+    }
+  }, [formattedMembers]);
 
   const paginatedMembers = React.useMemo(() => {
     return filteredMembers?.slice(((page - 1) * sizePerPage), (page * sizePerPage))
@@ -763,6 +792,7 @@ const DashboardProviderDraft = (
     removeMember,
     unlockMember,
     hideCbtHR,
+    columnStats,
   };
 
   return (
