@@ -8,7 +8,7 @@ import DropdownMenu from "../../components/DropdownMenu";
 import chevronDown from '../../../assets/images/chevron-down.svg';
 import addIcon from '../../../assets/images/plus-circle-fire.svg';
 import {useDashboardContext} from "../../../providers/DashboardProvider";
-import TableHeaderCell from "./TableHeaderCell";
+import TableHeaderCellWrapper from "./TableHeaderCellWrapper";
 
 const TableHeader = (
   {
@@ -219,7 +219,7 @@ const TableHeader = (
       {
         Object.keys(columnsMap).map((header, index) => (
           visibleColumns.includes(header) ?
-            <TableHeaderCell
+            <TableHeaderCellWrapper
               label={columnsMap[header]}
               value={header}
               key={`header-${index}`}

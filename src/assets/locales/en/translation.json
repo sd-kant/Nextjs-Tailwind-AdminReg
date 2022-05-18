@@ -524,5 +524,7 @@
   "add": "add",
   "n users connected": "{{n}} Users Connected",
   "n user connected": "{{n}} User Connected",
-  "no users connected": "No Users Connected"
+  "no users connected": "No Users Connected",
+  "safe": "Safe",
+  "at risk": "At Risk"
 }
