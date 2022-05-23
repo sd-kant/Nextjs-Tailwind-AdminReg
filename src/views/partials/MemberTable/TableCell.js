@@ -6,6 +6,7 @@ import clsx from "clsx";
 import style from "./TableCell.module.scss";
 import {formatDevice4Digits, formatHeartRate} from "../../../utils/dashboard";
 import BatteryV3 from "../../components/BatteryV3";
+import {useTranslation} from "react-i18next";
 
 const TableCell = (
   {
@@ -30,6 +31,7 @@ const TableCell = (
   } = member;
   const {formatHeartCbt} = useUtilsContext();
   const cellGray = ["1", "2", "8"].includes(connectionObj?.value?.toString()) ? style.NoConnection : null;
+  const {t} = useTranslation();
 
   switch (value) {
     case "connection":
@@ -45,10 +47,12 @@ const TableCell = (
             <span>{connectionObj?.label}</span>
             {
               !invisibleBattery ?
-                <BatteryV3
-                  percent={stat?.batteryPercent}
-                  charging={stat?.chargingFlag}
-                /> : null
+                (stat?.batteryPercent >= 15 ?
+                    <BatteryV3
+                      percent={stat?.batteryPercent}
+                      charging={stat?.chargingFlag}
+                    /> : <span className={clsx('text-risk')}>{t('battery very low')}</span>
+              ) : null
             }
           </div>
         </td>

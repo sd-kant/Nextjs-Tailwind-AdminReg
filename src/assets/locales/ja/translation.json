@@ -528,5 +528,6 @@
   "safe": "安全な",
   "at risk": "危険にさらされている",
   "check device": "機器を確認する",
-  "check app": "APPをチェック"
+  "check app": "APPをチェック",
+  "battery very low": "バッテリーが非常に少ない"
 }
