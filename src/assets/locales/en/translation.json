@@ -528,5 +528,6 @@
   "safe": "Safe",
   "at risk": "At Risk",
   "check device": "CHECK DEVICE",
-  "check app": "CHECK APP"
+  "check app": "CHECK APP",
+  "battery very low": "BATTERY VERY LOW"
 }
