@@ -385,7 +385,7 @@ const DashboardProviderDraft = (
       const invisibleDeviceMac = ["1"].includes(connectionObj?.value?.toString());
       const invisibleBattery = ["1", "8"].includes(connectionObj?.value?.toString()) ||
         (["2", "4"].includes(connectionObj?.value?.toString()) && numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 240);
-      const invisibleHeatRisk = ["1", "2", "8"].includes(connectionObj?.value?.toString());
+      const invisibleHeatRisk = ["1", "2", "8"].includes(connectionObj?.value?.toString()) || alertObj?.value === null;
       const invisibleLastSync = (new Date(lastSync).getTime() > (new Date().getTime() + (60 * 1000))) || ["1"].includes(connectionObj?.value?.toString());
 
       arr.push({
