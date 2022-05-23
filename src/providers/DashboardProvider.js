@@ -436,10 +436,12 @@ const DashboardProviderDraft = (
       } else {
         notConnectedUsers++;
       }
-      if ([1, 2].includes(member.alertObj?.value)) {
-        atRiskUsers++;
-      } else if ([3, 4, 5].includes(member.alertObj?.value)) {
-        safeUsers++;
+      if (!member.invisibleHeatRisk) {
+        if ([1, 2].includes(member.alertObj?.value)) {
+          atRiskUsers++;
+        } else if ([3, 4, 5].includes(member.alertObj?.value)) {
+          safeUsers++;
+        }
       }
       totalAlerts += (member.alertsForMe?.length ?? 0);
     });
