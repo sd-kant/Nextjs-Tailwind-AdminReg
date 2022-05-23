@@ -3,12 +3,15 @@ import {withTranslation} from "react-i18next";
 import clsx from 'clsx';
 import style from './SearchInput.module.scss';
 import searchIcon from '../../../assets/images/search.svg';
+import clearIcon from '../../../assets/images/close-white.svg';
 
 const SearchInput = (
   {
     t,
     keyword,
+    visibleClearIcon,
     onChange,
+    onClear,
   }) => {
   return (
     <div className={clsx(style.Wrapper)}>
@@ -19,6 +22,10 @@ const SearchInput = (
         value={keyword}
         onChange={onChange}
       />
+      {
+        visibleClearIcon &&
+        <img className={clsx(style.ClearIcon)} src={clearIcon} alt="clear icon" onClick={onClear}/>
+      }
     </div>
   )
 }

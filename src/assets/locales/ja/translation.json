@@ -110,7 +110,7 @@
   "phone number invalid": "有効な電話番号を入力して下さい",
   "required for 2fa": "2要素認証に必要",
   "modify team": "更新チーム",
-  "search user": "名前またはメールアドレスでユーザーを検索する",
+  "search user": "名前またはメールで検索",
   "no new change": "新しい変更はありません",
   "new change": "{{numberOfChanges}}新しい変更",
   "new changes": "{{numberOfChanges}}新しい変更",
@@ -524,5 +524,10 @@
   "add": "追加",
   "n users connected": "{{n}}接続されたユーザー",
   "n user connected": "{{n}}ユーザー接続",
-  "no users connected": "ユーザーが接続していません"
+  "no users connected": "ユーザーが接続していません",
+  "safe": "安全な",
+  "at risk": "危険にさらされている",
+  "check device": "機器を確認する",
+  "check app": "APPをチェック",
+  "battery very low": "バッテリーが非常に少ない"
 }

@@ -21,7 +21,8 @@ const MultiSelectPopup = (
   const [checkedItems, setCheckedItems] = React.useState(value);
   React.useEffect(() => {
     setCheckedItems(value);
-  }, [open, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
   const handleChange = (id, checked) => {
     if (checkedItems?.some(it => it.value?.toString() === id?.toString())) {
       if (!checked) {

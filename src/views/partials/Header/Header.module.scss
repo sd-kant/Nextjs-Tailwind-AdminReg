@@ -74,6 +74,7 @@
           outline: none;
           padding: 5px 20px;
           color: white;
+          text-align: center;
 
           /* for Firefox */
           -moz-appearance: none;
@@ -102,16 +103,6 @@
         height: 23px;
         cursor: pointer;
       }
-    }
-
-    .ConnectedUsersLabel {
-      margin-top: 5px;
-      display: flex;
-      align-items: center;
-
-      font-family: Ubuntu-Regular;
-      font-size: 16px;
-      line-height: 21px;
     }
   }
 }
@@ -143,7 +134,7 @@
 
     .Second {
       display: grid;
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: 1fr auto;
       grid-column-gap: 25px;
 
       .SearchInputWrapper {
@@ -154,11 +145,6 @@
 
       .PaginationWrapper {
         margin-top: 10px;
-      }
-
-      .ConnectedUsersLabel {
-        font-size: 21px;
-        line-height: 24.13px;
       }
     }
   }

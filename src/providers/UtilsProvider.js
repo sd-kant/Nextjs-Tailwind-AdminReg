@@ -80,19 +80,21 @@ export const UtilsProviderDraft = (
       return calc();
     } else {
       if (
-        numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 5 ||
+        numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 5 &&
         numMinutesBetween(new Date(), new Date(stat?.lastOnTs)) <= 5
       ) {
         return calc();
-      } else if (
-        numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20 ||
-        numMinutesBetween(new Date(), new Date(stat?.lastOnTs)) <= 20
-      ) {
+      } else if (!flag && numMinutesBetween(new Date(), new Date(stat?.lastOnTs)) <= 20) {
         return {
-          label: t('no connection'),
+          label: t('check device'),
           value: 7,
         };
-      } else {
+      } else if (!connected && numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20) {
+        return {
+          label: t('check app'),
+          value: 7,
+        };
+      }else {
         return {
           label: t('no connection'),
           value: 8,
