@@ -234,6 +234,7 @@ const Header = (
             <div className={clsx(style.SearchInputWrapper)}>
               <SearchInput
                 keyword={keyword}
+                visibleClearIcon={keyword?.trim() !== ""}
                 onChange={e => setKeyword(e.target.value)}
                 onClear={() => setKeyword("")}
               />
