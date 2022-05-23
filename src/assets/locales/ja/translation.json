@@ -526,5 +526,7 @@
   "n user connected": "{{n}}ユーザー接続",
   "no users connected": "ユーザーが接続していません",
   "safe": "安全な",
-  "at risk": "危険にさらされている"
+  "at risk": "危険にさらされている",
+  "check device": "機器を確認する",
+  "check app": "APPをチェック"
 }

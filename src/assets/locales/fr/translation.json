@@ -526,5 +526,7 @@
   "n user connected": "{{n}} Utilisateur connecté",
   "no users connected": "Aucun utilisateur n'est connecté",
   "safe": "Sûr",
-  "at risk": "À risque"
+  "at risk": "À risque",
+  "check device": "VÉRIFIER L'APPAREIL",
+  "check app": "VÉRIFIER L'APPLICATION"
 }

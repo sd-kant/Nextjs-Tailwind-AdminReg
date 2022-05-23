@@ -526,5 +526,7 @@
   "n user connected": "{{n}} User Connected",
   "no users connected": "No Users Connected",
   "safe": "Safe",
-  "at risk": "At Risk"
+  "at risk": "At Risk",
+  "check device": "CHECK DEVICE",
+  "check app": "CHECK APP"
 }
