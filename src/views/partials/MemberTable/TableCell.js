@@ -29,7 +29,7 @@ const TableCell = (
     heatSusceptibility,
   } = member;
   const {formatHeartCbt} = useUtilsContext();
-  const cellGray = ["1", "2", "7", "8"].includes(connectionObj?.value?.toString()) ? style.NoConnection : null;
+  const cellGray = ["1", "2", "8"].includes(connectionObj?.value?.toString()) ? style.NoConnection : null;
 
   switch (value) {
     case "connection":

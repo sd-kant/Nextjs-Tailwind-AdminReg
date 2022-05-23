@@ -28,7 +28,7 @@ const TableRow = (
     } else {
       badgeColorStyle = style.Green;
     }
-  } else if (connectionValue?.toString() === "4") {
+  } else if (["4", "7"].includes(connectionValue?.toString())) {
     badgeColorStyle = style.Yellow;
   }
   const userNameGray = ["1"].includes(connectionValue?.toString()) ? style.NoConnection : null;
