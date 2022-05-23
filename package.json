@@ -8,7 +8,7 @@
     "@testing-library/user-event": "^14.1.1",
     "axios": "^0.27.2",
     "clsx": "^1.1.1",
-    "country-region-data": "^2.2.0",
+    "country-region-data": "^2.3.0",
     "formik": "^2.2.9",
     "gsap": "^3.10.4",
     "i": "^0.3.7",
