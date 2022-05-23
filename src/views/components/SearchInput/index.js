@@ -9,6 +9,7 @@ const SearchInput = (
   {
     t,
     keyword,
+    visibleClearIcon,
     onChange,
     onClear,
   }) => {
@@ -21,7 +22,10 @@ const SearchInput = (
         value={keyword}
         onChange={onChange}
       />
-      <img className={clsx(style.ClearIcon)} src={clearIcon} alt="clear icon" onClick={onClear}/>
+      {
+        visibleClearIcon &&
+        <img className={clsx(style.ClearIcon)} src={clearIcon} alt="clear icon" onClick={onClear}/>
+      }
     </div>
   )
 }
