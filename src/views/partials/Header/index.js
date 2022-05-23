@@ -135,19 +135,6 @@ const Header = (
     setSizePerPage(e.target.value);
   }, [setSizePerPage, setPage]);
 
-  const numberOfConnectedUsers = React.useMemo(() => {
-    return formattedMembers?.filter(it => it.connectionObj?.value === 3)?.length ?? 0;
-  }, [formattedMembers]);
-  const numberOfConnectedUsersLabel = React.useMemo(() => {
-    if (numberOfConnectedUsers > 1) {
-      return t("n users connected", {n: numberOfConnectedUsers});
-    } else if (numberOfConnectedUsers > 0) {
-      return t("n user connected", {n: numberOfConnectedUsers});
-    } else {
-      return t("no users connected");
-    }
-  }, [numberOfConnectedUsers, t]);
-
   return (
     <div className={clsx(style.Header)} style={{width: `${tableWidth}px`}}>
       <div className={clsx(style.First)}>
@@ -243,10 +230,6 @@ const Header = (
                 src={refreshIcon} className={clsx(style.RefreshIcon)} alt="refresh"
                 onClick={() => setRefreshCount(prev => prev + 1)}
               />
-            </div>
-
-            <div className={clsx(style.ConnectedUsersLabel)}>
-              <span className={clsx('text-white text-capitalize')}>{numberOfConnectedUsersLabel}</span>
             </div>
 
             <div className={clsx(style.PaginationWrapper)}>
