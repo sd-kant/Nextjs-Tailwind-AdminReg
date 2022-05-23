@@ -67,7 +67,7 @@ const TableCell = (
                 {alertObj?.label}
               </span>
               {
-                (alertObj?.value !== null && alertObj?.value?.toString() !== "5") &&
+                alertObj?.value?.toString() !== "5" &&
                 <React.Fragment>
                   {
                     !hideCbtHR &&

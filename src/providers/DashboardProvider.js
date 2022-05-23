@@ -365,7 +365,7 @@ const DashboardProviderDraft = (
           return new Date(b.utcTs) - new Date(a.utcTs);
         })?.[0];
       const numberOfAlerts = alertsForMe?.length;
-      const alertObj = alert ? formatAlert(alert?.alertStageId) : {value: null, label: ''};
+      const alertObj = formatAlert(alert?.alertStageId);
       const connectionObj = formatConnectionStatusV2({
         flag: stat?.onOffFlag,
         connected: userKenzenDevice?.connected,
@@ -385,7 +385,7 @@ const DashboardProviderDraft = (
       const invisibleDeviceMac = ["1"].includes(connectionObj?.value?.toString());
       const invisibleBattery = ["1", "8"].includes(connectionObj?.value?.toString()) ||
         (["2", "4"].includes(connectionObj?.value?.toString()) && numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 240);
-      const invisibleHeatRisk = ["1", "2", "8"].includes(connectionObj?.value?.toString()) || alertObj?.value === null;
+      const invisibleHeatRisk = ["1", "2", "8"].includes(connectionObj?.value?.toString());
       const invisibleLastSync = (new Date(lastSync).getTime() > (new Date().getTime() + (60 * 1000))) || ["1"].includes(connectionObj?.value?.toString());
 
       arr.push({
