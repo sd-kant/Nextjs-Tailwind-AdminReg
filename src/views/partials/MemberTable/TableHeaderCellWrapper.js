@@ -15,29 +15,21 @@ const TableHeaderCellWrapper = (
     let ret = '';
     switch (value) {
       case "connection":
-        if (filter.connection?.toString() === "1") {
-          ret = `${t("connected")} (${columnStats.connectedUsers})`;
-        } else if (filter.connection?.toString() === "2") {
+        if (filter.connection?.toString() === "2") {
           ret = `${t('not connected')} (${columnStats.notConnectedUsers})`;
         } else {
-          ret = label;
+          ret = `${t("connected")} (${columnStats.connectedUsers})`;
         }
         break;
       case "heatRisk":
-        if (filter.heatRisk?.toString() === "1") {
-          ret = `${t("at risk")} (${columnStats.atRiskUsers})`;
-        } else if (filter.heatRisk?.toString() === "2") {
+        if (filter.heatRisk?.toString() === "2") {
           ret = `${t("safe")} (${columnStats.safeUsers})`;
         } else {
-          ret = label;
+          ret = `${t("at risk")} (${columnStats.atRiskUsers})`;
         }
         break;
       case "alerts":
-        if (["1", "2"].includes(filter.alerts?.toString())) {
-          ret = `${label} (${columnStats.totalAlerts})`;
-        } else {
-          ret = label;
-        }
+        ret = `${label} (${columnStats.totalAlerts})`;
         break;
       case "heatSusceptibility":
       case "lastDataSync":
@@ -46,23 +38,7 @@ const TableHeaderCellWrapper = (
     }
     return ret;
   }, [columnStats, label, value, filter, t]);
-  const hideChevron = React.useMemo(() => {
-    let ret = false;
-    switch (value) {
-      case "connection":
-        if (["1", "2"].includes(filter.connection?.toString())) ret = true;
-        break;
-      case "heatRisk":
-        if (["1", "2"].includes(filter.heatRisk?.toString())) ret = true;
-        break;
-      case "alerts":
-        if (["1", "2"].includes(filter.alerts?.toString())) ret = true;
-        break;
-      default:
-        ret = false;
-    }
-    return ret;
-  }, [value, filter]);
+  const hideChevron = React.useMemo(() => ["connection", "heatRisk", "alerts"].includes(value), [value]);
 
   return (
     <TableHeaderCell
