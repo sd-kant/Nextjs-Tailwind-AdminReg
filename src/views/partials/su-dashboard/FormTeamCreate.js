@@ -151,8 +151,6 @@ const FormTeamCreate = (props) => {
             value={values["location"]}
             name="location"
             styles={customStyles()}
-            menuPortalTarget={document.body}
-            menuPosition={'fixed'}
             placeholder={t("enter location")}
             onChange={v => setFieldValue("location", v)}
           />
