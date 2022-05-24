@@ -324,8 +324,8 @@ const FormCompany = (props) => {
                       name="companyName"
                       styles={customStyles()}
                       placeholder={t("enter name")}
-                      menuPortalTarget={document.body}
-                      menuPosition={'fixed'}
+                      // menuPortalTarget={document.body}
+                      // menuPosition={'fixed'}
                       onChange={(value) => changeHandler("companyName", value)}
                     /> :
                     <ResponsiveSelect
