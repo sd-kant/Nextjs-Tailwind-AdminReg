@@ -541,7 +541,7 @@ const DashboardProviderDraft = (
                   }
                   // fixme I assumed all device logs as kenzen device logs
                   memberDeviceLogsData?.forEach(it => {
-                    const index = memberDevices.findIndex(ele => ele.deviceId === it.deviceId)
+                    const index = memberDevices.findIndex(ele => ele.deviceId?.toLowerCase() === it.deviceId?.toLowerCase())
                     if (index !== -1) {
                       memberDevices.splice(index, 1, {...it, type: 'kenzen', version: memberDevices[index].version});
                     } else {
@@ -578,6 +578,7 @@ const DashboardProviderDraft = (
                     }
                   }
                   const newEle = {
+                    ...temp[statIndex],
                     batteryPercent: latestDeviceLog ? latestDeviceLog?.batteryPercent : temp[statIndex].batteryPercent,
                     chargingFlag: latestDeviceLog ? latestDeviceLog?.charging : temp[statIndex].chargingFlag,
                     cbtAvg: latestHeartRate ? latestHeartRate?.heartCbtAvg : temp[statIndex].cbtAvg,
