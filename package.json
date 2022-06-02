@@ -15,7 +15,7 @@
     "i18next": "^21.7.1",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.0",
-    "immer": "^9.0.12",
+    "immer": "^9.0.13",
     "libphonenumber-js": "^1.9.53",
     "lodash": "^4.17.21",
     "prop-types": "^15.8.1",
