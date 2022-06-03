@@ -532,5 +532,15 @@
   "battery very low": "BATTERY VERY LOW",
   "sign in with sso or saml provider": "Sign in with SSO or SAML Provider",
   "sso saml sign in": "SSO SAML Sign In",
-  "sign in with sso": "sign in with SSO"
+  "sign in with sso": "sign in with SSO",
+  "saml url invalid": "Please enter a valid SAML URL",
+  "saml issuer invalid": "Please enter a valid SAML Issuer",
+  "idp invalid": "Please enter a valid identity provider",
+  "sso organization": "Single Sign-On(SSO) Organization",
+  "saml url": "SAML URL",
+  "saml issuer": "SAML Issuer",
+  "idp": "Identity Provider",
+  "enter saml url": "Please enter a SAML URL",
+  "enter saml issuer": "Please enter a SAML Issuer",
+  "enter idp": "Please enter an identity provider"
 }
