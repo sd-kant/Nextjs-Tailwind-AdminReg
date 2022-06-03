@@ -529,5 +529,8 @@
   "at risk": "危険にさらされている",
   "check device": "機器を確認する",
   "check app": "APPをチェック",
-  "battery very low": "バッテリーが非常に少ない"
+  "battery very low": "バッテリーが非常に少ない",
+  "sign in with sso or saml provider": "SSOまたはSAMLプロバイダーでサインインします",
+  "sso saml sign in": "SSO SAMLサインイン",
+  "sign in with sso": "SSOでサインイン"
 }

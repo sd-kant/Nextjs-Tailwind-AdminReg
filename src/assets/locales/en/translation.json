@@ -529,5 +529,8 @@
   "at risk": "At Risk",
   "check device": "CHECK DEVICE",
   "check app": "CHECK APP",
-  "battery very low": "BATTERY VERY LOW"
+  "battery very low": "BATTERY VERY LOW",
+  "sign in with sso or saml provider": "Sign in with SSO or SAML Provider",
+  "sso saml sign in": "SSO SAML Sign In",
+  "sign in with sso": "sign in with SSO"
 }
