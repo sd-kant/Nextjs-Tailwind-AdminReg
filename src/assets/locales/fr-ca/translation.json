@@ -529,5 +529,8 @@
   "at risk": "À risque",
   "check device": "VÉRIFIER L'APPAREIL",
   "check app": "VÉRIFIER L'APPLICATION",
-  "battery very low": "BATTERIE TRÈS FAIBLE"
+  "battery very low": "BATTERIE TRÈS FAIBLE",
+  "sign in with sso or saml provider": "Connectez-vous avec SSO ou fournisseur SAML",
+  "sso saml sign in": "Connexion SSO SAML",
+  "sign in with sso": "se connecter avec SSO"
 }

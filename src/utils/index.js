@@ -277,3 +277,23 @@ export const timeOnOtherZone = (time, timezone) => {
     return spacetime(time).goto(timezone.name).unixFmt('yyyy.MM.dd h:mm a');
   }
 };
+
+
+export const getDeviceId = () => {
+  let deviceId = localStorage.getItem("kop-v2-device-id");
+  if ([null, undefined, "null", "undefined", ""].includes(deviceId)) {
+    deviceId = uuidv4();
+    localStorage.setItem("kop-v2-device-id", deviceId);
+  }
+
+  return deviceId;
+}
+
+export const setStorageAfterLogin = ({token, refreshToken, userType, orgId, baseUrl}) => {
+  localStorage.setItem("kop-v2-token", token);
+  localStorage.setItem("kop-v2-refresh-token", refreshToken);
+  localStorage.setItem("kop-v2-register-token", token);
+  localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
+  localStorage.setItem("kop-v2-picked-organization-id", orgId);
+  localStorage.setItem("kop-v2-base-url", baseUrl);
+}

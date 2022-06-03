@@ -6,7 +6,7 @@ import {
 import {actionTypes} from '../type';
 import {instance, login, lookupByUsername} from "../../http";
 import i18n from '../../i18nextInit';
-import {ableToLogin, uuidv4} from "../../utils";
+import {ableToLogin, getDeviceId, setStorageAfterLogin} from "../../utils";
 import {apiBaseUrl} from "../../config";
 
 function* actionWatcher() {
@@ -49,11 +49,7 @@ function* loginSaga({payload: {
     }
     // attach deviceId
     if (!body.deviceId) {
-      let deviceId = localStorage.getItem("kop-v2-device-id");
-      if ([null, undefined, "null", "undefined", ""].includes(deviceId)) {
-        deviceId = uuidv4();
-        localStorage.setItem("kop-v2-device-id", deviceId);
-      }
+      const deviceId = getDeviceId();
       body["deviceId"] = `web:${deviceId}`;
     }
 
@@ -105,18 +101,14 @@ function* loginSaga({payload: {
         localStorage.setItem("kop-v2-logged-in", !mfa ? "true" : "false");
 
         if (!mfa) { // if multi-factor authentication off
-          localStorage.setItem("kop-v2-token", token);
-          localStorage.setItem("kop-v2-refresh-token", refreshToken);
-          localStorage.setItem("kop-v2-register-token", token);
-          localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
-          localStorage.setItem("kop-v2-picked-organization-id", orgId);
+          setStorageAfterLogin({
+            token, refreshToken, userType, orgId, baseUrl: instance.defaults.baseURL,
+          });
           if (ableToLogin(userType)) {
             navigate("/select-mode");
           } else {
             navigate("/profile");
           }
-
-          localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
         } else {
           if (havePhone) {
             navigate('/phone-verification/1');

@@ -47,3 +47,19 @@ export const setPasswordExpiredAction = flag => ({
     passwordExpired: flag,
   }
 });
+
+export const setLoginSuccessAction = ({token, userType, organizationId}) => ({
+  type: actionTypes.LOGIN_SUCCESS,
+  payload: {
+    token,
+    userType,
+    organizationId,
+  }
+});
+
+export const setLoggedInAction = ({loggedIn}) => ({
+  type: actionTypes.LOGGED_IN,
+  payload: {
+    loggedIn,
+  }
+});
