@@ -12,8 +12,6 @@ import {
   checkUsernameValidation2
 } from "../../../utils";
 import {Link} from "react-router-dom";
-// import MicrosoftLogin from "react-microsoft-login";
-// import {microsoftAppClientID} from "../../../config";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -144,15 +142,21 @@ const FormSULogin = (props) => {
           </button>
         </div>
 
-        {/*<div className="mt-40">
-          <span className="font-binary text-gray">
-            {t("or login with")}
+        <div className="mt-15">
+          <span className="font-binary text-gray text-uppercase">
+            {t("or")}
           </span>
         </div>
 
         <div className={"mt-15"}>
-          <MicrosoftLogin clientId={microsoftAppClientID} authCallback={authHandler} />
-        </div>*/}
+          <Link to={"/login-sso?from=web"} className="font-input-label text-orange no-underline">
+            <button
+              className={`button active cursor-pointer`}
+              type={"button"}
+            ><span className='font-button-label text-white'>{t("sign in with sso or saml provider")}</span>
+            </button>
+          </Link>
+        </div>
       </div>
     </Form>
   )

@@ -92,6 +92,33 @@ const formSchema = (t) => {
           .max(1024, t("lastName max error")),
       }).required(),
     ),
+    sso: Yup.boolean(),
+    samlUrl: Yup.string()
+      .url(t('saml url invalid'))
+      .test(
+        'is-valid',
+        t('saml url invalid'),
+        function (value) {
+          return this.parent.isEditing && this.parent.sso ? !!value : true;
+        }
+      ),
+    samlIssuer: Yup.string()
+      .test(
+        'is-valid',
+        t('saml issuer invalid'),
+        function (value) {
+          return this.parent.isEditing && this.parent.sso ? !!value : true;
+        }
+      ),
+    idp: Yup.string()
+      .test(
+        'is-valid',
+        t('idp invalid'),
+        function (value) {
+          const validList = ['aad'];
+          return this.parent.isEditing && this.parent.sso ? validList.includes(value) : true;
+        }
+      ),
   });
 };
 
@@ -169,6 +196,10 @@ const FormCompany = (props) => {
           passwordExpirationDays: 0,
           hideCbtHR: false,
           users: [],
+          sso: false,
+          samlUrl: '',
+          samlIssuer: '',
+          idp: '',
         });
       } else if (value?.created) { // if already created company, then set country according to picked company
         const country = options?.find(entity => entity.label === value.country);
@@ -177,13 +208,12 @@ const FormCompany = (props) => {
         } else {
           setFieldValue("companyCountry", options?.[0]);
         }
-        const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays', 'hideCbtHR'];
+        const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays', 'hideCbtHR', 'sso', 'samlUrl', 'samlIssuer', 'idp'];
         fields?.forEach(item => setFieldValue(item, value[item]))
       }
     }
     setFieldValue(key, value);
   }
-
   useEffect(() => {
     setOrganizations((allOrganizations && allOrganizations.map(organization => ({
       value: organization.id,
@@ -194,6 +224,10 @@ const FormCompany = (props) => {
       passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 10,
       passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
       hideCbtHR: organization.settings?.hideCbtHR ?? false,
+      sso: organization.settings?.sso ?? false,
+      samlUrl: organization.settings?.samlUrl ?? '',
+      samlIssuer: organization.settings?.samlIssuer ?? '',
+      idp: organization.settings?.idp ?? '',
       created: true,
     }))) || []);
   }, [allOrganizations]);
@@ -281,12 +315,26 @@ const FormCompany = (props) => {
         ret.push("admin");
       }
 
-      const fields = ["twoFA", "passwordMinimumLength", "passwordExpirationDays", "hideCbtHR"];
-      fields.forEach(item => {
-        if (values?.[item] !== organization?.[item]) {
-          ret.push(item);
-        }
-      });
+      if (values?.hideCbtHR !== organization?.hideCbtHR) {
+        ret.push('hideCbtHR');
+      }
+
+      if (values?.sso !== organization?.sso) {
+        ret.push('sso');
+      }
+      let fields;
+      if (values?.sso) {
+        fields = ["samlUrl", "samlIssuer", "idp"];
+      } else {
+        fields = ["twoFA", "passwordMinimumLength", "passwordExpirationDays"];
+      }
+      if (fields) {
+        fields.forEach(item => {
+          if (values?.[item] !== organization?.[item]) {
+            ret.push(item);
+          }
+        });
+      }
     }
     return ret;
   }, [values, organizations]);
@@ -324,8 +372,6 @@ const FormCompany = (props) => {
                       name="companyName"
                       styles={customStyles()}
                       placeholder={t("enter name")}
-                      menuPortalTarget={document.body}
-                      menuPosition={'fixed'}
                       onChange={(value) => changeHandler("companyName", value)}
                     /> :
                     <ResponsiveSelect
@@ -610,55 +656,142 @@ const FormCompany = (props) => {
 
               <div className='d-flex flex-column mt-25'>
                 <label className='font-input-label'>
-                  {t("2fa")}
+                  {t("sso organization")}
                 </label>
 
                 <div className='d-inline-block mt-10'>
                   <ButtonGroup
                     options={twoFAOptions}
                     disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-                    value={values["twoFA"]}
-                    id={'2fa-option'}
-                    setValue={(v) => changeHandler("twoFA", v)}
+                    value={values["sso"]}
+                    id={'sso-option'}
+                    setValue={(v) => changeHandler("sso", v)}
                   />
                 </div>
               </div>
 
-              <div className='d-flex flex-column mt-25'>
-                <label className='font-input-label'>
-                  {t("password min length")}
-                </label>
+              {
+                values.sso ? (
+                  <>
+                    <div className='d-flex flex-column mt-25'>
+                      <label className='font-input-label'>
+                        {t("saml url")}
+                      </label>
 
-                <div className='d-inline-block mt-10'>
-                  <ButtonGroup
-                    size={'sm'}
-                    rounded={true}
-                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-                    options={passwordMinLengthOptions}
-                    value={values["passwordMinimumLength"]}
-                    id={'password-min-length-option'}
-                    setValue={(v) => changeHandler("passwordMinimumLength", v)}
-                  />
-                </div>
-              </div>
+                      <input
+                        className='input input-field mt-10 font-heading-small text-white'
+                        name="samlUrl"
+                        value={values["samlUrl"]}
+                        type='text'
+                        placeholder={t("enter saml url")}
+                        onChange={changeFormField}
+                      />
 
-              <div className='d-flex flex-column mt-25'>
-                <label className='font-input-label'>
-                  {t("Password Expiration (Days)")}
-                </label>
+                      {
+                        touched?.samlUrl && errors?.samlUrl && (
+                          <span className="font-helper-text text-error mt-10">{errors.samlUrl}</span>
+                        )
+                      }
+                    </div>
 
-                <div className='d-inline-block mt-10'>
-                  <ButtonGroup
-                    size={'sm'}
-                    rounded={true}
-                    disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
-                    options={passwordExpirationDaysOptions}
-                    value={values["passwordExpirationDays"]}
-                    id={'password-expiration-days-option'}
-                    setValue={(v) => changeHandler("passwordExpirationDays", v)}
-                  />
-                </div>
-              </div>
+                    <div className='d-flex flex-column mt-25'>
+                      <label className='font-input-label'>
+                        {t("saml issuer")}
+                      </label>
+
+                      <input
+                        className='input input-field mt-10 font-heading-small text-white'
+                        name="samlIssuer"
+                        value={values["samlIssuer"]}
+                        type='text'
+                        placeholder={t("enter saml issuer")}
+                        onChange={changeFormField}
+                      />
+
+                      {
+                        touched?.samlIssuer && errors?.samlIssuer && (
+                          <span className="font-helper-text text-error mt-10">{errors.samlIssuer}</span>
+                        )
+                      }
+                    </div>
+
+                    <div className='d-flex flex-column mt-25'>
+                      <label className='font-input-label'>
+                        {t("idp")}
+                      </label>
+
+                      <input
+                        className='input input-field mt-10 font-heading-small text-white'
+                        name="idp"
+                        value={values["idp"]}
+                        type='text'
+                        placeholder={t("enter idp")}
+                        onChange={changeFormField}
+                      />
+
+                      {
+                        touched?.idp && errors?.idp && (
+                          <span className="font-helper-text text-error mt-10">{errors.idp}</span>
+                        )
+                      }
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className='d-flex flex-column mt-25'>
+                      <label className='font-input-label'>
+                        {t("2fa")}
+                      </label>
+
+                      <div className='d-inline-block mt-10'>
+                        <ButtonGroup
+                          options={twoFAOptions}
+                          disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                          value={values["twoFA"]}
+                          id={'2fa-option'}
+                          setValue={(v) => changeHandler("twoFA", v)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className='d-flex flex-column mt-25'>
+                      <label className='font-input-label'>
+                        {t("password min length")}
+                      </label>
+
+                      <div className='d-inline-block mt-10'>
+                        <ButtonGroup
+                          size={'sm'}
+                          rounded={true}
+                          disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                          options={passwordMinLengthOptions}
+                          value={values["passwordMinimumLength"]}
+                          id={'password-min-length-option'}
+                          setValue={(v) => changeHandler("passwordMinimumLength", v)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className='d-flex flex-column mt-25'>
+                      <label className='font-input-label'>
+                        {t("Password Expiration (Days)")}
+                      </label>
+
+                      <div className='d-inline-block mt-10'>
+                        <ButtonGroup
+                          size={'sm'}
+                          rounded={true}
+                          disabled={!values.companyName?.__isNew__ && !values["isEditing"]}
+                          options={passwordExpirationDaysOptions}
+                          value={values["passwordExpirationDays"]}
+                          id={'password-expiration-days-option'}
+                          setValue={(v) => changeHandler("passwordExpirationDays", v)}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )
+              }
 
               <div className='grouped-form mt-40'>
                 <label className="font-header-medium">
@@ -734,6 +867,10 @@ const EnhancedForm = withFormik({
     passwordExpirationDays: 0,
     hideCbtHR: false,
     users: [],
+    sso: false,
+    samlUrl: '',
+    samlIssuer: '',
+    idp: '',
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue, setStatus}) => {
@@ -743,6 +880,10 @@ const EnhancedForm = withFormik({
       country: values?.companyCountry?.label,
       regions: values?.regions?.map(it => it.label) ?? [],
       settings: {
+        sso: values.sso,
+        samlUrl: values.samlUrl,
+        samlIssuer: values.samlIssuer,
+        idp: values.idp,
         twoFA: values.twoFA,
         passwordMinimumLength: values.passwordMinimumLength,
         passwordExpirationDays: values.passwordExpirationDays,

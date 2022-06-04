@@ -529,5 +529,18 @@
   "at risk": "危険にさらされている",
   "check device": "機器を確認する",
   "check app": "APPをチェック",
-  "battery very low": "バッテリーが非常に少ない"
+  "battery very low": "バッテリーが非常に少ない",
+  "sign in with sso or saml provider": "SSOまたはSAMLプロバイダーでサインインします",
+  "sso saml sign in": "SSO SAMLサインイン",
+  "sign in with sso": "SSOでサインイン",
+  "saml url invalid": "有効なSAMLURLを入力してください",
+  "saml issuer invalid": "有効なSAML発行者を入力してください",
+  "idp invalid": "有効なIDプロバイダーを入力してください",
+  "sso organization": "シングルサインオン（SSO）組織",
+  "saml url": "SAML URL",
+  "saml issuer": "SAML発行者",
+  "idp": "IDプロバイダー",
+  "enter saml url": "SAMLURLを入力してください",
+  "enter saml issuer": "SAML発行者を入力してください",
+  "enter idp": "IDプロバイダーを入力してください"
 }
