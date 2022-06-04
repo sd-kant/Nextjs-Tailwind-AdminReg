@@ -142,7 +142,7 @@ const FormSULogin = (props) => {
           </button>
         </div>
 
-        <div className="mt-15">
+        {/*<div className="mt-15">
           <span className="font-binary text-gray text-uppercase">
             {t("or")}
           </span>
@@ -156,7 +156,7 @@ const FormSULogin = (props) => {
             ><span className='font-button-label text-white'>{t("sign in with sso or saml provider")}</span>
             </button>
           </Link>
-        </div>
+        </div>*/}
       </div>
     </Form>
   )
