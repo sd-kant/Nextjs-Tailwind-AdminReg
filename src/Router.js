@@ -27,7 +27,7 @@ const RequirePasswordValid = lazy(() => import("./views/wrappers/RequirePassword
 const DashboardV2Wrapper = lazy(() => import("./views/pages/DashboardV2Wrapper"));
 const Invite = lazy(() => import("./views/pages/Invite"));
 const CreateAccount = lazy(() => import("./views/pages/CreateAccount"));
-// const SamlLogin = lazy(() => import("./views/pages/SamlLogin"));
+const LoginEntry = lazy(() => import("./views/pages/LoginEntry"));
 import Loader from "./views/components/Loader";
 
 const Router = (
@@ -223,17 +223,7 @@ const Router = (
             element=
               {
                 <SignInLayout>
-                  <SULogin/>
-                </SignInLayout>
-              }
-          />
-
-          {/*<Route
-            path="/login-sso"
-            element=
-              {
-                <SignInLayout>
-                  <SamlLogin/>
+                  <LoginEntry/>
                 </SignInLayout>
               }
           />
@@ -243,10 +233,20 @@ const Router = (
             element=
               {
                 <SignInLayout>
-                  <SamlLogin/>
+                  <LoginEntry/>
                 </SignInLayout>
               }
-          />*/}
+          />
+
+          <Route
+            path="/auth"
+            element=
+              {
+                <SignInLayout>
+                  <SULogin/>
+                </SignInLayout>
+              }
+          />
 
           <Route
             path="*"
