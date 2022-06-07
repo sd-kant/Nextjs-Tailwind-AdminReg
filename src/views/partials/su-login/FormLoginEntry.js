@@ -75,6 +75,7 @@ const FormLoginEntry = (props) => {
           setLoginSuccess({token: accessToken, userType, organizationId: orgId});
           setPasswordExpired(false);
           setLoggedIn({loggedIn: true});
+          localStorage.setItem("kop-v2-logged-in", "true");
           setStorageAfterLogin({
             token: accessToken,
             refreshToken,
