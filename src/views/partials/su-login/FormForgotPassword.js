@@ -8,7 +8,7 @@ import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} fr
 import ConfirmModal from "../../components/ConfirmModal";
 import {instance, lookupByUsername, requestResetPassword} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
-import {checkUsernameValidation2, checkUsernameValidation1} from "../../../utils";
+import {checkUsernameValidation2, checkUsernameValidation1, getParamFromUrl} from "../../../utils";
 import {useNavigate} from "react-router-dom";
 import {apiBaseUrl} from "../../../config";
 
@@ -45,7 +45,12 @@ const FormForgotPassword = (props) => {
   }
 
   const handlePrevious = () => {
-    navigate(-1);
+    const from = getParamFromUrl("from");
+    if (from === "mobile") {
+      navigate('/mobile-login');
+    } else {
+      navigate('/login');
+    }
   }
 
   return (

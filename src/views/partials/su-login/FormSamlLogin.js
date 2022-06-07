@@ -14,7 +14,7 @@ import {apiBaseUrl} from "../../../config";
 import {Buffer} from "buffer";
 import {setLoggedInAction, setLoginSuccessAction, setPasswordExpiredAction} from "../../../redux/action/auth";
 import {useNavigate} from "react-router-dom";
-import {Link} from "react-router-dom";
+import backIcon from "../../../assets/images/back.svg";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -39,7 +39,7 @@ export const formSchema = (t) => {
   });
 };
 
-const FormLoginEntry = (props) => {
+const FormSamlLogin = (props) => {
   const {
     values, errors, touched, t, setFieldValue, setRestBarClass,
     setLoginSuccess, setLoggedIn, setPasswordExpired,
@@ -75,7 +75,6 @@ const FormLoginEntry = (props) => {
           setLoginSuccess({token: accessToken, userType, organizationId: orgId});
           setPasswordExpired(false);
           setLoggedIn({loggedIn: true});
-          localStorage.setItem("kop-v2-logged-in", "true");
           setStorageAfterLogin({
             token: accessToken,
             refreshToken,
@@ -109,13 +108,27 @@ const FormLoginEntry = (props) => {
     setRestBarClass(`progress-${sum * 100}`);
   }
 
-
+  const handlePrevious = () => {
+    const from = getParamFromUrl("from");
+    if (from === "mobile") {
+      navigate('/mobile-login');
+    } else {
+      navigate('/login');
+    }
+  }
 
   return (
     <Form className='form-group mt-57'>
       <div>
+        <div className="d-flex align-center cursor-pointer">
+          <img src={backIcon} alt="back"/>
+          &nbsp;&nbsp;
+          <span className='font-button-label text-orange' onClick={handlePrevious}>
+              {t("previous")}
+            </span>
+        </div>
 
-        <div className='d-flex flex-column'>
+        <div className='d-flex flex-column mt-25'>
           <label className='font-input-label'>
             {t("username")}
           </label>
@@ -134,12 +147,6 @@ const FormLoginEntry = (props) => {
             )
           }
         </div>
-
-        <div className='mt-40 d-block'>
-          <Link to={"/forgot-username?from=web"} className="font-input-label text-orange no-underline">
-            {t("forgot your username")}
-          </Link>
-        </div>
       </div>
 
       <div className='mt-80'>
@@ -147,7 +154,7 @@ const FormLoginEntry = (props) => {
           <button
             className={`button ${values['username'] ? "active cursor-pointer" : "inactive cursor-default"}`}
             type={values['username'] ? "submit" : "button"}
-          ><span className='font-button-label text-white text-uppercase'>{t("next")}</span>
+          ><span className='font-button-label text-white text-uppercase'>{t("sign in with sso")}</span>
           </button>
         </div>
       </div>
@@ -172,9 +179,9 @@ const EnhancedForm = withFormik({
       deviceId = `web:${getDeviceId()}`;
     }
     // todo attach mobile or web login param
-    window.location.href = `${apiBaseUrl}/master/login?username=${username}&deviceId=${deviceId}&source=web`;
+    window.location.href = `${apiBaseUrl}/auth/saml?username=${username}&deviceId=${deviceId}`;
   }
-})(FormLoginEntry);
+})(FormSamlLogin);
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
