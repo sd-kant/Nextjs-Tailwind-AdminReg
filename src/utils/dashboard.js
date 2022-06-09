@@ -31,7 +31,7 @@ export const formatHeartRate = rate => {
   if ([null, undefined, "0", ""].includes(rate?.toString())) {
     return "--";
   }
-  return Math.ceil(parseFloat(rate));
+  return Math.floor(parseFloat(rate));
 };
 
 export const shortenDate = ({aDateStr, bDateStr}) => {
