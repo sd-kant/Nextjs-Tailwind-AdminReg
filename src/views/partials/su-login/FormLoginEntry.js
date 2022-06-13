@@ -20,6 +20,7 @@ import {
 } from "../../../redux/action/auth";
 import {useNavigate} from "react-router-dom";
 import {Link} from "react-router-dom";
+import {instance} from "../../../http";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -105,6 +106,8 @@ const FormLoginEntry = (props) => {
               navigate("/profile");
             }
           }
+          // set api base url
+          instance.defaults.baseURL = baseUri;
         } catch (e) {
           console.error("sso success response decode error", e);
         }

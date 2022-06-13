@@ -48,7 +48,8 @@ export const checkUsernameValidation2 = str => {
 export const getParamFromUrl = key => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  return urlParams.get(key)?.replace(/ /g, '+');
+  const param = urlParams.get(key)?.replace(/ /g, '+');
+  return param ? decodeURIComponent(param) : undefined;
 }
 
 export const checkPasswordValidation = (password) => {

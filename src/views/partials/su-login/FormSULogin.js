@@ -13,6 +13,7 @@ import {
 } from "../../../utils";
 import {Link, useNavigate} from "react-router-dom";
 import backIcon from "../../../assets/images/back.svg";
+import {instance} from "../../../http";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -57,6 +58,11 @@ const FormSULogin = (props) => {
     const source = getParamFromUrl(("source"));
     if (source === "create-account") {
       const token = getParamFromUrl("token");
+      const baseUri = getParamFromUrl("baseUri");
+      localStorage.setItem("kop-v2-base-url", baseUri);
+      // set api base url
+      instance.defaults.baseURL = baseUri;
+
       navigate(`/create-account/password-v2?token=${token}`);
     } else if (source === "mobile") {
       navigate("/mobile-login");

@@ -4,18 +4,29 @@ import {
 } from "../../../utils";
 import {useNavigate} from "react-router-dom";
 import {apiBaseUrl} from "../../../config";
+import {bindActionCreators} from "redux";
+import {setLoadingAction} from "../../../redux/action/ui";
+import {connect} from "react-redux";
 
-const FormSSOAuth = () => {
+const FormSSOAuth = (
+  {
+    setLoading,
+  }) => {
   const navigate = useNavigate();
   useEffect(() => {
     const tokenFromUrl = getTokenFromUrl();
     if (!tokenFromUrl) {
-        navigate("/");
+      navigate("/");
     } else {
       // sso flow
       const deviceId = `web:${getDeviceId()}`;
       window.location.href = `${apiBaseUrl}/master/token?token=${tokenFromUrl}&deviceId=${deviceId}&source=create-account`;
+      setLoading(true);
     }
+
+    return () => {
+      setLoading(false);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -24,4 +35,14 @@ const FormSSOAuth = () => {
   )
 }
 
-export default FormSSOAuth;
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setLoading: setLoadingAction,
+    },
+    dispatch
+  );
+
+export default connect(
+  mapDispatchToProps,
+)(FormSSOAuth);
