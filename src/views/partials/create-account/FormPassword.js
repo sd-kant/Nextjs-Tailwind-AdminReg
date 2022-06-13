@@ -112,7 +112,7 @@ const FormPassword = (props) => {
             type='text'
             onChange={changeFormField}
           />
-
+          <span className="font-helper-text mt-10 text-white">{t("username length")}</span>
           {
             errors.username && touched.username && (
               <span className="font-helper-text text-error mt-10">{errors.username}</span>

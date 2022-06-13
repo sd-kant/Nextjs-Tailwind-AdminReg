@@ -84,14 +84,19 @@ const FormUsername = (props) => {
             name="username"
             value={values["username"]}
             type='text'
+            placeholder={t("enter username")}
             onChange={changeFormField}
           />
-
+          <span className="font-helper-text mt-10 text-white">{t("username length")}</span>
           {
             errors.username && touched.username && (
               <span className="font-helper-text text-error mt-10">{errors.username}</span>
             )
           }
+        </div>
+
+        <div className='mt-60'>
+          <span className="font-helper-text mt-10 text-white">{t("sso note")}</span>
         </div>
       </div>
 
