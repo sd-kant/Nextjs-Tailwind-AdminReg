@@ -6,7 +6,7 @@ import {
 import {actionTypes} from '../type';
 import {instance, login, lookupByUsername} from "../../http";
 import i18n from '../../i18nextInit';
-import {ableToLogin, getDeviceId, setStorageAfterLogin} from "../../utils";
+import {ableToLogin, getDeviceId, setStorageAfterLogin, setStorageAfterRegisterLogin} from "../../utils";
 import {apiBaseUrl} from "../../config";
 
 function* actionWatcher() {
@@ -89,8 +89,7 @@ function* loginSaga({payload: {
       });
 
       if (fromRegister) {
-        localStorage.setItem("kop-v2-register-token", token);
-        localStorage.setItem("kop-v2-base-url", instance.defaults.baseURL);
+        setStorageAfterRegisterLogin({token, baseUrl: instance.defaults.baseURL})
 
         if (!mfa) { // if multi-factor authentication off
           navigate("/create-account/name");

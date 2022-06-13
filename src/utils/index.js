@@ -297,3 +297,8 @@ export const setStorageAfterLogin = ({token, refreshToken, userType, orgId, base
   localStorage.setItem("kop-v2-picked-organization-id", orgId);
   localStorage.setItem("kop-v2-base-url", baseUrl);
 }
+
+export const setStorageAfterRegisterLogin = ({token, baseUrl}) => {
+  localStorage.setItem("kop-v2-register-token", token);
+  localStorage.setItem("kop-v2-base-url", baseUrl);
+}

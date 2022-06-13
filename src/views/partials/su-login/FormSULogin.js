@@ -55,7 +55,10 @@ const FormSULogin = (props) => {
   useEffect(() => {
     setClassName();
     const source = getParamFromUrl(("source"));
-    if (source === "mobile") {
+    if (source === "create-account") {
+      const token = getParamFromUrl("token");
+      navigate(`/create-account/password-v2?token=${token}`);
+    } else if (source === "mobile") {
       navigate("/mobile-login");
     }
     const username = getParamFromUrl('username');
