@@ -8,13 +8,19 @@ import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux
 import {
   ableToLogin,
   checkUsernameValidation1,
-  checkUsernameValidation2, getDeviceId, getParamFromUrl, setStorageAfterLogin
+  checkUsernameValidation2, getDeviceId, getParamFromUrl, setStorageAfterLogin, setStorageAfterRegisterLogin
 } from "../../../utils";
 import {apiBaseUrl} from "../../../config";
 import {Buffer} from "buffer";
-import {setLoggedInAction, setLoginSuccessAction, setPasswordExpiredAction} from "../../../redux/action/auth";
+import {
+  setLoggedInAction,
+  setLoginSuccessAction,
+  setPasswordExpiredAction,
+  setRegisterLoginSuccessAction
+} from "../../../redux/action/auth";
 import {useNavigate} from "react-router-dom";
 import backIcon from "../../../assets/images/back.svg";
+import {instance} from "../../../http";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -43,7 +49,7 @@ const FormSamlLogin = (props) => {
   const {
     values, errors, touched, t, setFieldValue, setRestBarClass,
     setLoginSuccess, setLoggedIn, setPasswordExpired,
-    showErrorNotification,
+    showErrorNotification, setRegisterLoginSuccess,
   } = props;
   const navigate = useNavigate();
 
@@ -72,21 +78,36 @@ const FormSamlLogin = (props) => {
             userType,
             baseUri,
           } = JSON.parse(decoded);
-          setLoginSuccess({token: accessToken, userType, organizationId: orgId});
-          setPasswordExpired(false);
-          setLoggedIn({loggedIn: true});
-          setStorageAfterLogin({
-            token: accessToken,
-            refreshToken,
-            userType,
-            orgId,
-            baseUrl: baseUri,
-          });
-          if (ableToLogin(userType)) {
-            navigate("/select-mode");
-          } else {
-            navigate("/profile");
+          const source = getParamFromUrl("source");
+          if (source === "create-account") { // if from onboarding
+            const token = getParamFromUrl("token");
+            setRegisterLoginSuccess({token: accessToken, userType, organizationId: orgId});
+            setLoggedIn({loggedIn: true});
+            setStorageAfterRegisterLogin({
+              token: accessToken,
+              baseUrl: baseUri,
+            });
+            navigate(`/create-account/username?token=${token}`);
+          } else { // if from login
+            setLoginSuccess({token: accessToken, userType, organizationId: orgId});
+            setPasswordExpired(false);
+            setLoggedIn({loggedIn: true});
+            localStorage.setItem("kop-v2-logged-in", "true");
+            setStorageAfterLogin({
+              token: accessToken,
+              refreshToken,
+              userType,
+              orgId,
+              baseUrl: baseUri,
+            });
+            if (ableToLogin(userType)) {
+              navigate("/select-mode");
+            } else {
+              navigate("/profile");
+            }
           }
+          // set api base url
+          instance.defaults.baseURL = baseUri;
         } catch (e) {
           console.error("sso success response decode error", e);
         }
@@ -189,6 +210,7 @@ const mapDispatchToProps = (dispatch) =>
       setRestBarClass: setRestBarClassAction,
       showErrorNotification: showErrorNotificationAction,
       setLoginSuccess: setLoginSuccessAction,
+      setRegisterLoginSuccess: setRegisterLoginSuccessAction,
       setLoggedIn: setLoggedInAction,
       setPasswordExpired: setPasswordExpiredAction,
     },

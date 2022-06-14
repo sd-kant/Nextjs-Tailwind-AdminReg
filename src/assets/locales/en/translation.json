@@ -542,5 +542,8 @@
   "idp": "Identity Provider",
   "enter saml url": "Please enter a SAML URL",
   "enter saml issuer": "Please enter a SAML Issuer",
-  "enter idp": "Please enter an identity provider"
+  "enter idp": "Please enter an identity provider",
+  "enter username": "Enter a username",
+  "username length": "Username must be at least 6 characters long",
+  "sso note": "NOTE:  Your organization will use Single Sign-On to authenticate your Kenzen account"
 }

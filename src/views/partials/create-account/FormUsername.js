@@ -7,7 +7,6 @@ import {Form, withFormik} from "formik";
 import {
   checkUsernameValidation2,
   checkUsernameValidation1,
-  checkPasswordValidation,
   getTokenFromUrl
 } from "../../../utils";
 import {resetPasswordV2} from "../../../http";
@@ -40,30 +39,10 @@ const formSchema = (t) => {
           return checkUsernameValidation1(value);
         }
       ),
-    password: Yup.string()
-      .required(t('your password required'))
-      .min(10, t('password min error'))
-      .max(1024, t('password max error'))
-      .test(
-        'is-valid',
-        t('password invalid'),
-        function (value) {
-          return checkPasswordValidation(value);
-        }
-      ),
-    confirmPassword: Yup.string()
-      .required(t('confirm password required'))
-      .test(
-        'is-equal',
-        t('confirm password invalid'),
-        function (value) {
-          return (this.parent.password === value);
-        }
-      ),
   });
 };
 
-const FormPassword = (props) => {
+const FormUsername = (props) => {
   const {
     setFieldValue,
     values,
@@ -71,17 +50,12 @@ const FormPassword = (props) => {
     touched,
     setRestBarClass,
     t,
-    token,
   } = props;
   const navigate = useNavigate();
   useEffect(() => {
     const tokenFromUrl = getTokenFromUrl();
     if (!tokenFromUrl) {
-      if (token) {
-        navigate("/create-account/name");
-      } else {
-        navigate("/");
-      }
+      navigate("/");
     } else {
       setFieldValue("token", tokenFromUrl);
     }
@@ -110,6 +84,7 @@ const FormPassword = (props) => {
             name="username"
             value={values["username"]}
             type='text'
+            placeholder={t("enter username")}
             onChange={changeFormField}
           />
           <span className="font-helper-text mt-10 text-white">{t("username length")}</span>
@@ -120,57 +95,15 @@ const FormPassword = (props) => {
           }
         </div>
 
-        <div className='mt-40 d-flex flex-column'>
-          <label className='font-input-label'>
-            {t("create password")}
-          </label>
-
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
-            name="password"
-            value={values["password"]}
-            type='password'
-            onChange={changeFormField}
-          />
-
-          {
-            errors.password && touched.password && (
-              <span className="font-helper-text text-error mt-10">{errors.password}</span>
-            )
-          }
-        </div>
-
-        <div className='mt-40 d-flex flex-column'>
-          <label className='font-input-label'>
-            {t("confirm password")}
-          </label>
-
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
-            name="confirmPassword"
-            type='password'
-            value={values["confirmPassword"]}
-            onChange={changeFormField}
-          />
-
-          {
-            errors.confirmPassword && touched.confirmPassword && (
-              <span className="font-helper-text text-error mt-10">{errors.confirmPassword}</span>
-            )
-          }
-        </div>
-
-        <div className='mt-40'>
-            <span className='font-helper-text'>
-              {t("password rule")}
-            </span>
+        <div className='mt-60'>
+          <span className="font-helper-text mt-10 text-white">{t("sso note")}</span>
         </div>
       </div>
 
       <div className='mt-80'>
         <button
-          className={`button ${values['password'] && values['confirmPassword'] ? "active cursor-pointer" : "inactive cursor-default"}`}
-          type={values['password'] && values['confirmPassword'] ? "submit" : "button"}
+          className="button active cursor-pointer"
+          type="submit"
         >
               <span className='font-button-label text-white'>
                 {t("next")}
@@ -185,20 +118,16 @@ const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     token: '',
     username: '',
-    password: '',
-    confirmPassword: '',
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
     const data = {
       token: values["token"],
-      password: values["password"],
       username: values["username"],
     };
     const {
       setLoading,
       showSuccessNotification,
-      login,
       t,
       showErrorNotification,
       navigate,
@@ -208,12 +137,7 @@ const EnhancedForm = withFormik({
       setLoading(true);
       await resetPasswordV2(data);
       showSuccessNotification(t("msg password updated success"));
-      login({
-        username: values["username"],
-        password: values["password"],
-        fromRegister: true,
-        navigate: navigate,
-      });
+      navigate("/create-account/name");
     } catch (e) {
       if (e?.response?.data?.status?.toString() === "404") {
         showErrorNotification(t("msg token expired"));
@@ -224,7 +148,7 @@ const EnhancedForm = withFormik({
       setLoading(false);
     }
   }
-})(FormPassword);
+})(FormUsername);
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
