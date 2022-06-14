@@ -542,5 +542,8 @@
   "idp": "Fournisseur d'identité",
   "enter saml url": "Veuillez saisir une URL SAML",
   "enter saml issuer": "Veuillez saisir un émetteur SAML",
-  "enter idp": "Veuillez saisir un fournisseur d'identité"
+  "enter idp": "Veuillez saisir un fournisseur d'identité",
+  "enter username": "Entrez un nom d'utilisateur",
+  "username length": "Le nom d'utilisateur doit comporter au moins 6 caractères",
+  "sso note": "REMARQUE : Votre organisation utilisera l'authentification unique pour authentifier votre compte Kenzen."
 }
