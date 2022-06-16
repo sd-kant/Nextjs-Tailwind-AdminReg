@@ -39,6 +39,9 @@ const LanguagePickerV2 = () => {
         <option value="es">
           Español
         </option>
+        <option value="pt">
+          Português
+        </option>
       </select>
     </div>
   )
