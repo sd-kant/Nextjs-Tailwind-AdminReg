@@ -490,7 +490,7 @@ const FormProfile = (props) => {
               disabled={!edit}
               value={values["weight"]}
               name="weight"
-              step={1}
+              step={5}
               onChange={changeFormField}
             />
 
