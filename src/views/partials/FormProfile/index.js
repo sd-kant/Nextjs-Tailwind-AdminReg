@@ -204,8 +204,8 @@ const FormProfile = (props) => {
         }
       }
       if (values?.weight) {
-        const kilos = convertLbsToKilos(values?.weight);
-        if (kilos?.toString() !== profile?.weight?.toString()) {
+        const origin = convertKilosToLbs(profile?.weight);
+        if (values?.weight?.toString() !== origin?.toString()) {
           ret.push("weight");
         }
       }
