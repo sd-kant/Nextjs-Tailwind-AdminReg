@@ -545,5 +545,6 @@
   "enter idp": "Please enter an identity provider",
   "enter username": "Enter a username",
   "username length": "Username must be at least 6 characters long",
-  "sso note": "NOTE:  Your organization will use Single Sign-On to authenticate your Kenzen account"
+  "sso note": "NOTE:  Your organization will use Single Sign-On to authenticate your Kenzen account",
+  "msg account registered": "Your account has been registered"
 }

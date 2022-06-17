@@ -545,5 +545,6 @@
   "enter idp": "IDプロバイダーを入力してください",
   "enter username": "ユーザー名を入力",
   "username length": "ユーザー名は6文字以上である必要があります",
-  "sso note": "注：組織はシングルサインオンを使用してKenzenアカウントを認証します"
+  "sso note": "注：組織はシングルサインオンを使用してKenzenアカウントを認証します",
+  "msg account registered": "アカウントが登録されました"
 }

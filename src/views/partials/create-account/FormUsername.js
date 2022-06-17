@@ -136,7 +136,7 @@ const EnhancedForm = withFormik({
     try {
       setLoading(true);
       await resetPasswordV2(data);
-      showSuccessNotification(t("msg password updated success"));
+      showSuccessNotification(t("msg account registered"));
       navigate("/create-account/name");
     } catch (e) {
       if (e?.response?.data?.status?.toString() === "404") {
