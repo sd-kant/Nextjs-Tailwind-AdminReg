@@ -207,7 +207,7 @@ const EnhancedForm = withFormik({
     try {
       setLoading(true);
       await resetPasswordV2(data);
-      showSuccessNotification(t("msg password updated success"));
+      showSuccessNotification(t("msg account registered"));
       login({
         username: values["username"],
         password: values["password"],
