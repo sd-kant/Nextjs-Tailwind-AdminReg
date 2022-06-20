@@ -56,6 +56,10 @@ const FormSULogin = (props) => {
   useEffect(() => {
     setClassName();
     const source = getParamFromUrl(("source"));
+    const username = getParamFromUrl('username');
+    const deviceId = getParamFromUrl('deviceId');
+    if (username) setFieldValue("username", username);
+
     if (source === "create-account") {
       const token = getParamFromUrl("token");
       const baseUri = getParamFromUrl("baseUri");
@@ -65,10 +69,8 @@ const FormSULogin = (props) => {
 
       navigate(`/create-account/password-v2?token=${token}`);
     } else if (source === "mobile") {
-      navigate("/mobile-login");
+      navigate(`/mobile-auth?username=${username}&deviceId=${deviceId}`);
     }
-    const username = getParamFromUrl('username');
-    if (username) setFieldValue("username", username);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
