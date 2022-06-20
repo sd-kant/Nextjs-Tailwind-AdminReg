@@ -61,6 +61,13 @@
     &:nth-child(2) {
       margin-top: 30px;
     }
+
+    .DescriptionDiv {
+      width: 144px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }
 

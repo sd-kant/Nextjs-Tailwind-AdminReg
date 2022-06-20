@@ -6,8 +6,10 @@ import translationEN from "./assets/locales/en/translation.json";
 import translationJA from "./assets/locales/ja/translation.json";
 import translationFr from "./assets/locales/fr/translation.json";
 import translationFrCa from "./assets/locales/fr-ca/translation.json";
+import translationEs from "./assets/locales/es/translation.json";
+import translationPt from "./assets/locales/pt/translation.json";
 const fallbackLng = ['en'];
-const availableLanguages = ['en', 'ja', 'fr', 'frca'];
+const availableLanguages = ['en', 'ja', 'fr', 'frca', 'es', 'pt'];
 const resources = {
   en: {
     translation: translationEN
@@ -20,6 +22,12 @@ const resources = {
   },
   'frca': {
     translation: translationFrCa
+  },
+  es: {
+    translation: translationEs
+  },
+  pt: {
+    translation: translationPt
   },
 };
 

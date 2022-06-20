@@ -15,7 +15,7 @@ const ActivityLog = ({item, timezone}) => {
   return (
     <div className={clsx(style.DataRow)}>
       <div className={clsx(style.DataLabel)}>
-        <div className={clsx('font-binary', style.Rounded)}>
+        <div className={clsx('font-binary', style.Rounded, style.DetailSpan)}>
           {
             item.type === "Alert" ?
               formatAlertForDetail(item.alertStageId)
