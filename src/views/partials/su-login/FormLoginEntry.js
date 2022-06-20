@@ -97,7 +97,7 @@ const FormLoginEntry = (props) => {
               accessToken: accessToken,
               refreshToken: refreshToken,
             };
-
+            // eslint-disable-next-line no-prototype-builtins
             if (window.hasOwnProperty("kenzenAndroidClient")) {
               window.kenzenAndroidClient.postMessage(JSON.stringify(payload));
               // eslint-disable-next-line no-prototype-builtins
