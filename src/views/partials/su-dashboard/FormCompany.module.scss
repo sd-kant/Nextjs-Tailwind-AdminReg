@@ -6,13 +6,6 @@
   margin-left: 0;
 }
 
-.EmailHeaderLabel {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 @media only screen and (min-width: 768px) {
   .CancelBtn {
     margin-left: 15px;
