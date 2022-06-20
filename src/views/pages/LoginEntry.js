@@ -5,7 +5,10 @@ import FormLoginEntry from "../partials/su-login/FormLoginEntry";
 import {useNavigate} from "react-router-dom";
 
 
-const LoginEntry = () => {
+const LoginEntry = (
+  {
+    mobile,
+  }) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
 
@@ -20,6 +23,7 @@ const LoginEntry = () => {
       </div>
 
       <FormLoginEntry
+        mobile={mobile}
         navigate={navigate}
       />
     </div>

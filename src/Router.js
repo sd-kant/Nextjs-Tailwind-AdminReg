@@ -157,6 +157,18 @@ const Router = (
 
           <Route
             path="/mobile-login"
+            element=
+              {
+                <SignInLayout>
+                  <LoginEntry
+                    mobile={true}
+                  />
+                </SignInLayout>
+              }
+          />
+
+          <Route
+            path="/mobile-auth"
             element={
               <SignInLayout>
                 <MobileLogin/>

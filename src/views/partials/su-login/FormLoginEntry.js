@@ -50,6 +50,7 @@ const FormLoginEntry = (props) => {
     values, errors, touched, t, setFieldValue, setRestBarClass,
     setLoginSuccess, setLoggedIn, setPasswordExpired,
     showErrorNotification, setRegisterLoginSuccess,
+    mobile, // true when rendering from /mobile-login
   } = props;
   const navigate = useNavigate();
 
@@ -88,6 +89,23 @@ const FormLoginEntry = (props) => {
               baseUrl: baseUri,
             });
             navigate(`/create-account/username?token=${token}`);
+          } else if (source === "mobile") {
+            // deliver token to app
+            const payload = {
+              command: "login",
+              baseUri: baseUri,
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+            };
+
+            if (window.hasOwnProperty("kenzenAndroidClient")) {
+              window.kenzenAndroidClient.postMessage(JSON.stringify(payload));
+              // eslint-disable-next-line no-prototype-builtins
+            } else if (window.hasOwnProperty("webkit")) {
+              window.webkit.messageHandlers.kenzenIosClient.postMessage(payload);
+            } else {
+              console.log("Oh shit. What do I do with the token");
+            }
           } else { // if from login
             setLoginSuccess({token: accessToken, userType, organizationId: orgId});
             setPasswordExpired(false);
@@ -129,7 +147,8 @@ const FormLoginEntry = (props) => {
     setRestBarClass(`progress-${sum * 100}`);
   }
 
-
+  const source = getParamFromUrl('source');
+  const fromMobile =  mobile || source === "mobile";
 
   return (
     <Form className='form-group mt-57'>
@@ -156,7 +175,7 @@ const FormLoginEntry = (props) => {
         </div>
 
         <div className='mt-40 d-block'>
-          <Link to={"/forgot-username?from=web"} className="font-input-label text-orange no-underline">
+          <Link to={`/forgot-username?from=${fromMobile ? 'mobile' : 'web'}`} className="font-input-label text-orange no-underline">
             {t("forgot your username")}
           </Link>
         </div>
@@ -181,9 +200,12 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
+    const {showErrorNotification, t, mobile} = props;
+    const source = getParamFromUrl('source');
+    const fromMobile =  mobile || source === "mobile";
     const {username} = values;
     if (username?.includes("@")) {
-      props.showErrorNotification(props.t("use your username"));
+      showErrorNotification(t("use your username"));
       return;
     }
     // in case mobile login, get device id from param
@@ -191,8 +213,7 @@ const EnhancedForm = withFormik({
     if ([null, undefined, "null", "undefined", ""].includes(deviceId)) {
       deviceId = `web:${getDeviceId()}`;
     }
-    // todo attach mobile or web login param
-    window.location.href = `${apiBaseUrl}/master/login?username=${username}&deviceId=${deviceId}&source=web`;
+    window.location.href = `${apiBaseUrl}/master/login?username=${username}&deviceId=${deviceId}&source=${fromMobile ? 'mobile' : 'web'}`;
   }
 })(FormLoginEntry);
 
