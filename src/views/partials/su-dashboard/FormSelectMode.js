@@ -49,7 +49,7 @@ const FormSelectMode = (props) => {
               <img src={settings} className={clsx(style.SettingsImage)} alt="settings"/>
             </div>
 
-            <div>
+            <div className={clsx(style.DescriptionDiv)}>
               <span className={clsx('font-small')}>{t("create or modify team")}</span>
             </div>
           </div>
@@ -68,7 +68,7 @@ const FormSelectMode = (props) => {
               <img src={workerOrange} className={clsx(style.WorkerOrangeImage)} alt="worker orange"/>
             </div>
 
-            <div>
+            <div className={clsx(style.DescriptionDiv)}>
               <span className={clsx('font-small')}>{t("monitor your team")}</span>
             </div>
           </div>

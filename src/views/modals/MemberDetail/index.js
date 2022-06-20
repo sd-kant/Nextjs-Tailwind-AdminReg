@@ -373,7 +373,7 @@ const MemberDetail = (
 
             <div className={clsx(style.HeartRiskCard)}>
               <div className={clsx(style.RiskCard, style.Card)}>
-                <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
+                <div style={{display: "flex", flexDirection: 'column', alignItems: 'center', textAlign: 'center'}}>
                 <span className={clsx('font-input-label')}>
                   {t("cbt avg")}
                 </span>
@@ -395,8 +395,8 @@ const MemberDetail = (
               </div>
 
               <div className={clsx(style.HeartCard, style.Card)}>
-                <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
-                <span className={clsx('font-input-label')}>
+                <div style={{display: "flex", flexDirection: 'column', alignItems: 'center', textAlign: 'center'}}>
+                <span className={clsx('font-input-label text-capitalize')}>
                   {t("heart rate avg")}
                 </span>
                   <span className={clsx('font-input-label text-uppercase')}>(bpm)</span>
