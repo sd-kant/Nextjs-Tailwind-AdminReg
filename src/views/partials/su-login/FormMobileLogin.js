@@ -18,9 +18,8 @@ const FormMobileLogin = (props) => {
   useEffect(() => {
     setClassName();
     const deviceId = getParamFromUrl("deviceId")
-    const username = getParamFromUrl("deviceId")
-    if (deviceId) setFieldValue("deviceId", deviceId);
-    if (username) setFieldValue('username', username);
+    if (deviceId)
+      setFieldValue("deviceId", deviceId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -86,6 +85,12 @@ const FormMobileLogin = (props) => {
             {t("forgot password")}
           </Link>
         </div>
+
+        <div className='mt-10 d-block'>
+          <Link to={`/forgot-username?from=mobile`} className="font-input-label text-orange no-underline">
+            {t("forgot your username")}
+          </Link>
+        </div>
       </div>
 
       <div className='mt-80'>
@@ -99,6 +104,16 @@ const FormMobileLogin = (props) => {
           </span>
           </button>
         </div>
+
+        {/*<div className="mt-40">
+          <span className="font-binary text-gray">
+            {t("or login with")}
+          </span>
+        </div>
+
+        <div className={"mt-15"}>
+          <MicrosoftLogin clientId={microsoftAppClientID} authCallback={authHandler} />
+        </div>*/}
       </div>
     </Form>
   )

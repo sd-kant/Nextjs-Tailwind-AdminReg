@@ -57,15 +57,6 @@ export const setLoginSuccessAction = ({token, userType, organizationId}) => ({
   }
 });
 
-export const setRegisterLoginSuccessAction = ({token, userType, organizationId}) => ({
-  type: actionTypes.REGISTER_LOGIN_SUCCESS,
-  payload: {
-    token,
-    userType,
-    organizationId,
-  }
-});
-
 export const setLoggedInAction = ({loggedIn}) => ({
   type: actionTypes.LOGGED_IN,
   payload: {

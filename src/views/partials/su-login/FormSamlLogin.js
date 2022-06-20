@@ -8,19 +8,13 @@ import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux
 import {
   ableToLogin,
   checkUsernameValidation1,
-  checkUsernameValidation2, getDeviceId, getParamFromUrl, setStorageAfterLogin, setStorageAfterRegisterLogin
+  checkUsernameValidation2, getDeviceId, getParamFromUrl, setStorageAfterLogin
 } from "../../../utils";
 import {apiBaseUrl} from "../../../config";
 import {Buffer} from "buffer";
-import {
-  setLoggedInAction,
-  setLoginSuccessAction,
-  setPasswordExpiredAction,
-  setRegisterLoginSuccessAction
-} from "../../../redux/action/auth";
+import {setLoggedInAction, setLoginSuccessAction, setPasswordExpiredAction} from "../../../redux/action/auth";
 import {useNavigate} from "react-router-dom";
-import {Link} from "react-router-dom";
-import {instance} from "../../../http";
+import backIcon from "../../../assets/images/back.svg";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -45,12 +39,11 @@ export const formSchema = (t) => {
   });
 };
 
-const FormLoginEntry = (props) => {
+const FormSamlLogin = (props) => {
   const {
     values, errors, touched, t, setFieldValue, setRestBarClass,
     setLoginSuccess, setLoggedIn, setPasswordExpired,
-    showErrorNotification, setRegisterLoginSuccess,
-    mobile, // true when rendering from /mobile-login
+    showErrorNotification,
   } = props;
   const navigate = useNavigate();
 
@@ -79,53 +72,21 @@ const FormLoginEntry = (props) => {
             userType,
             baseUri,
           } = JSON.parse(decoded);
-          const source = getParamFromUrl("source");
-          if (source === "create-account") { // if from onboarding
-            const token = getParamFromUrl("token");
-            setRegisterLoginSuccess({token: accessToken, userType, organizationId: orgId});
-            setLoggedIn({loggedIn: true});
-            setStorageAfterRegisterLogin({
-              token: accessToken,
-              baseUrl: baseUri,
-            });
-            navigate(`/create-account/username?token=${token}`);
-          } else if (source === "mobile") {
-            // deliver token to app
-            const payload = {
-              command: "login",
-              baseUri: baseUri,
-              accessToken: accessToken,
-              refreshToken: refreshToken,
-            };
-            // eslint-disable-next-line no-prototype-builtins
-            if (window.hasOwnProperty("kenzenAndroidClient")) {
-              window.kenzenAndroidClient.postMessage(JSON.stringify(payload));
-              // eslint-disable-next-line no-prototype-builtins
-            } else if (window.hasOwnProperty("webkit")) {
-              window.webkit.messageHandlers.kenzenIosClient.postMessage(payload);
-            } else {
-              console.log("Oh shit. What do I do with the token");
-            }
-          } else { // if from login
-            setLoginSuccess({token: accessToken, userType, organizationId: orgId});
-            setPasswordExpired(false);
-            setLoggedIn({loggedIn: true});
-            localStorage.setItem("kop-v2-logged-in", "true");
-            setStorageAfterLogin({
-              token: accessToken,
-              refreshToken,
-              userType,
-              orgId,
-              baseUrl: baseUri,
-            });
-            if (ableToLogin(userType)) {
-              navigate("/select-mode");
-            } else {
-              navigate("/profile");
-            }
+          setLoginSuccess({token: accessToken, userType, organizationId: orgId});
+          setPasswordExpired(false);
+          setLoggedIn({loggedIn: true});
+          setStorageAfterLogin({
+            token: accessToken,
+            refreshToken,
+            userType,
+            orgId,
+            baseUrl: baseUri,
+          });
+          if (ableToLogin(userType)) {
+            navigate("/select-mode");
+          } else {
+            navigate("/profile");
           }
-          // set api base url
-          instance.defaults.baseURL = baseUri;
         } catch (e) {
           console.error("sso success response decode error", e);
         }
@@ -147,14 +108,27 @@ const FormLoginEntry = (props) => {
     setRestBarClass(`progress-${sum * 100}`);
   }
 
-  const source = getParamFromUrl('source');
-  const fromMobile =  mobile || source === "mobile";
+  const handlePrevious = () => {
+    const from = getParamFromUrl("from");
+    if (from === "mobile") {
+      navigate('/mobile-login');
+    } else {
+      navigate('/login');
+    }
+  }
 
   return (
     <Form className='form-group mt-57'>
       <div>
+        <div className="d-flex align-center cursor-pointer">
+          <img src={backIcon} alt="back"/>
+          &nbsp;&nbsp;
+          <span className='font-button-label text-orange' onClick={handlePrevious}>
+              {t("previous")}
+            </span>
+        </div>
 
-        <div className='d-flex flex-column'>
+        <div className='d-flex flex-column mt-25'>
           <label className='font-input-label'>
             {t("username")}
           </label>
@@ -173,12 +147,6 @@ const FormLoginEntry = (props) => {
             )
           }
         </div>
-
-        <div className='mt-40 d-block'>
-          <Link to={`/forgot-username?from=${fromMobile ? 'mobile' : 'web'}`} className="font-input-label text-orange no-underline">
-            {t("forgot your username")}
-          </Link>
-        </div>
       </div>
 
       <div className='mt-80'>
@@ -186,7 +154,7 @@ const FormLoginEntry = (props) => {
           <button
             className={`button ${values['username'] ? "active cursor-pointer" : "inactive cursor-default"}`}
             type={values['username'] ? "submit" : "button"}
-          ><span className='font-button-label text-white text-uppercase'>{t("next")}</span>
+          ><span className='font-button-label text-white text-uppercase'>{t("sign in with sso")}</span>
           </button>
         </div>
       </div>
@@ -200,12 +168,9 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: (values, {props}) => {
-    const {showErrorNotification, t, mobile} = props;
-    const source = getParamFromUrl('source');
-    const fromMobile =  mobile || source === "mobile";
     const {username} = values;
     if (username?.includes("@")) {
-      showErrorNotification(t("use your username"));
+      props.showErrorNotification(props.t("use your username"));
       return;
     }
     // in case mobile login, get device id from param
@@ -213,9 +178,10 @@ const EnhancedForm = withFormik({
     if ([null, undefined, "null", "undefined", ""].includes(deviceId)) {
       deviceId = `web:${getDeviceId()}`;
     }
-    window.location.href = `${apiBaseUrl}/master/login?username=${username}&deviceId=${deviceId}&source=${fromMobile ? 'mobile' : 'web'}`;
+    // todo attach mobile or web login param
+    window.location.href = `${apiBaseUrl}/auth/saml?username=${username}&deviceId=${deviceId}`;
   }
-})(FormLoginEntry);
+})(FormSamlLogin);
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
@@ -223,7 +189,6 @@ const mapDispatchToProps = (dispatch) =>
       setRestBarClass: setRestBarClassAction,
       showErrorNotification: showErrorNotificationAction,
       setLoginSuccess: setLoginSuccessAction,
-      setRegisterLoginSuccess: setRegisterLoginSuccessAction,
       setLoggedIn: setLoggedInAction,
       setPasswordExpired: setPasswordExpiredAction,
     },
