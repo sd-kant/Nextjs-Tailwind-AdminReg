@@ -10,7 +10,7 @@ import {
   checkPasswordValidation,
   getTokenFromUrl
 } from "../../../utils";
-import {resetPasswordV2} from "../../../http";
+import {instance, lookupByToken, resetPasswordV2} from "../../../http";
 import {
   setLoadingAction,
   showErrorNotificationAction,
@@ -18,6 +18,7 @@ import {
 } from "../../../redux/action/ui";
 import {loginAction} from "../../../redux/action/auth";
 import {useNavigate} from "react-router-dom";
+import {apiBaseUrl} from "../../../config";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -112,7 +113,7 @@ const FormPassword = (props) => {
             type='text'
             onChange={changeFormField}
           />
-          <span className="font-helper-text mt-10 text-white">{t("username length")}</span>
+
           {
             errors.username && touched.username && (
               <span className="font-helper-text text-error mt-10">{errors.username}</span>
@@ -206,8 +207,14 @@ const EnhancedForm = withFormik({
 
     try {
       setLoading(true);
+      instance.defaults.baseURL = apiBaseUrl;
+      const lookupRes = await lookupByToken(values?.token);
+      const {baseUri} = lookupRes.data;
+      if (baseUri) {
+        instance.defaults.baseURL = lookupRes.data?.baseUri;
+      }
       await resetPasswordV2(data);
-      showSuccessNotification(t("msg account registered"));
+      showSuccessNotification(t("msg password updated success"));
       login({
         username: values["username"],
         password: values["password"],

@@ -31,8 +31,6 @@ const FormTimezone = lazy(() => import("../partials/create-account/FormTimezone"
 const FormPhoneRegister = lazy(() => import("../partials/create-account/FormPhoneRegister"));
 const FormPhoneVerification = lazy(() => import("../partials/create-account/FormPhoneVerification"));
 const ParamsWrapper = lazy(() => import("../partials/su-dashboard/ParamsWrapper"));
-const FormSSOAuth = lazy(() => import("../partials/create-account/FormSSOAuth"));
-const FormUsername = lazy(() => import("../partials/create-account/FormUsername"));
 import Loader from "../components/Loader";
 
 const CreateAccount = (
@@ -71,26 +69,6 @@ const CreateAccount = (
         <Routes>
           <Route
             path='/password'
-            element={
-              <FormSSOAuth
-                navigate={navigate}
-                {...props}
-              />
-            }
-          />
-
-          <Route
-            path='/username'
-            element={
-              <FormUsername
-                navigate={navigate}
-                {...props}
-              />
-            }
-          />
-
-          <Route
-            path='/password-v2'
             element={
               <FormPassword
                 navigate={navigate}

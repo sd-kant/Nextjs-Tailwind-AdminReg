@@ -82,10 +82,7 @@ export const _handleSubmitV2 = (
                   if (item.value?.config?.url?.includes("user/phone")) { // if find by phone number
                     userItem = item.value?.data;
                   } else { // if find by keyword
-                    if (item.value?.data?.length === 0) {
-                      // if email or phone number used on other organization
-                      // todo error handling
-                    } else if (item.value?.data?.length === 1) {
+                    if (item.value?.data?.length === 1) {
                       userItem = item.value?.data?.[0];
                     }
                   }

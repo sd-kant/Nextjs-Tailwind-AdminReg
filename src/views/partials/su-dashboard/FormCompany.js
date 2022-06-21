@@ -511,14 +511,12 @@ const FormCompany = (props) => {
                         />
                       </div>
 
-                      <div className={clsx("d-flex flex-column ml-25")}>
+                      <div className="d-flex flex-column ml-25">
                         {
                           index === 0 &&
-                          <div className={clsx(style.EmailHeaderLabel)}>
-                            <label className="font-input-label text-white">
-                              {t("administrator email")}
-                            </label>
-                          </div>
+                          <label className="font-input-label text-white">
+                            {t("administrator email")}
+                          </label>
                         }
 
                         <input
