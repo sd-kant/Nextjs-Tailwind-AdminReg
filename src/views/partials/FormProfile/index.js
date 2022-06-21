@@ -204,8 +204,8 @@ const FormProfile = (props) => {
         }
       }
       if (values?.weight) {
-        const kilos = convertLbsToKilos(values?.weight);
-        if (kilos?.toString() !== profile?.weight?.toString()) {
+        const origin = convertKilosToLbs(profile?.weight);
+        if (values?.weight?.toString() !== origin?.toString()) {
           ret.push("weight");
         }
       }
@@ -490,7 +490,7 @@ const FormProfile = (props) => {
               disabled={!edit}
               value={values["weight"]}
               name="weight"
-              step={1}
+              step={5}
               onChange={changeFormField}
             />
 

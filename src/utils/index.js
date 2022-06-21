@@ -48,7 +48,8 @@ export const checkUsernameValidation2 = str => {
 export const getParamFromUrl = key => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  return urlParams.get(key)?.replace(/ /g, '+');
+  const param = urlParams.get(key)?.replace(/ /g, '+');
+  return param ? decodeURIComponent(param) : undefined;
 }
 
 export const checkPasswordValidation = (password) => {
@@ -295,5 +296,10 @@ export const setStorageAfterLogin = ({token, refreshToken, userType, orgId, base
   localStorage.setItem("kop-v2-register-token", token);
   localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
   localStorage.setItem("kop-v2-picked-organization-id", orgId);
+  localStorage.setItem("kop-v2-base-url", baseUrl);
+}
+
+export const setStorageAfterRegisterLogin = ({token, baseUrl}) => {
+  localStorage.setItem("kop-v2-register-token", token);
   localStorage.setItem("kop-v2-base-url", baseUrl);
 }
