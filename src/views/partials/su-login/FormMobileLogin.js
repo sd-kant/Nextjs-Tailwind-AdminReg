@@ -18,7 +18,7 @@ const FormMobileLogin = (props) => {
   useEffect(() => {
     setClassName();
     const deviceId = getParamFromUrl("deviceId")
-    const username = getParamFromUrl("deviceId")
+    const username = getParamFromUrl("username")
     if (deviceId) setFieldValue("deviceId", deviceId);
     if (username) setFieldValue('username', username);
     // eslint-disable-next-line react-hooks/exhaustive-deps
