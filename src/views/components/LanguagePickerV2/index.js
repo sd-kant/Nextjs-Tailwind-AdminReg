@@ -36,12 +36,6 @@ const LanguagePickerV2 = () => {
         <option value="frca">
           Ca-français
         </option>
-        <option value="es">
-          Español
-        </option>
-        <option value="pt">
-          Português
-        </option>
       </select>
     </div>
   )

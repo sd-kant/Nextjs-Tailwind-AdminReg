@@ -7,18 +7,13 @@
 
   .DataLabel {
     overflow: hidden;
-    //white-space: nowrap;
+    white-space: nowrap;
     text-overflow: ellipsis;
   }
 
   .Padding {
     display: inline-block;
     padding: 0 15px;
-  }
-
-  .DetailSpan {
-    max-width: 200px;
-    word-break: break-word;
   }
 
   .Rounded {
