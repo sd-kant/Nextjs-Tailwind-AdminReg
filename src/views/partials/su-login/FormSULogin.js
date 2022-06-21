@@ -9,9 +9,11 @@ import {loginAction} from "../../../redux/action/auth";
 import {
   checkPasswordValidation,
   checkUsernameValidation1,
-  checkUsernameValidation2
+  checkUsernameValidation2, getParamFromUrl
 } from "../../../utils";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import backIcon from "../../../assets/images/back.svg";
+import {instance} from "../../../http";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -49,9 +51,26 @@ export const formSchema = (t) => {
 
 const FormSULogin = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setClassName();
+    const source = getParamFromUrl(("source"));
+    const username = getParamFromUrl('username');
+    const deviceId = getParamFromUrl('deviceId');
+    if (username) setFieldValue("username", username);
+
+    if (source === "create-account") {
+      const token = getParamFromUrl("token");
+      const baseUri = getParamFromUrl("baseUri");
+      localStorage.setItem("kop-v2-base-url", baseUri);
+      // set api base url
+      instance.defaults.baseURL = baseUri;
+
+      navigate(`/create-account/password-v2?token=${token}`);
+    } else if (source === "mobile") {
+      navigate(`/mobile-auth?username=${username}&deviceId=${deviceId}`);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -69,15 +88,27 @@ const FormSULogin = (props) => {
     setRestBarClass(`progress-${sum * 50}`);
   }
 
-  // eslint-disable-next-line no-unused-vars
-  const authHandler = (err, data) => {
-    console.log(err, data);
-  };
+  const handlePrevious = () => {
+    const source = getParamFromUrl('source');
+    if (source === "mobile") {
+      navigate("/mobile-login");
+    } else {
+      navigate("/login");
+    }
+  }
 
   return (
     <Form className='form-group mt-57'>
       <div>
-        <div className='d-flex flex-column'>
+        <div className="d-flex align-center cursor-pointer">
+          <img src={backIcon} alt="back"/>
+          &nbsp;&nbsp;
+          <span className='font-button-label text-orange' onClick={handlePrevious}>
+              {t("previous")}
+            </span>
+        </div>
+
+        <div className='d-flex flex-column mt-25'>
           <label className='font-input-label'>
             {t("username")}
           </label>
@@ -122,12 +153,6 @@ const FormSULogin = (props) => {
             {t("forgot password")}
           </Link>
         </div>
-
-        <div className='mt-10 d-block'>
-          <Link to={"/forgot-username?from=web"} className="font-input-label text-orange no-underline">
-            {t("forgot your username")}
-          </Link>
-        </div>
       </div>
 
       <div className='mt-80'>
@@ -141,22 +166,6 @@ const FormSULogin = (props) => {
           </span>
           </button>
         </div>
-
-        {/*<div className="mt-15">
-          <span className="font-binary text-gray text-uppercase">
-            {t("or")}
-          </span>
-        </div>
-
-        <div className={"mt-15"}>
-          <Link to={"/login-sso?from=web"} className="font-input-label text-orange no-underline">
-            <button
-              className={`button active cursor-pointer`}
-              type={"button"}
-            ><span className='font-button-label text-white'>{t("sign in with sso or saml provider")}</span>
-            </button>
-          </Link>
-        </div>*/}
       </div>
     </Form>
   )

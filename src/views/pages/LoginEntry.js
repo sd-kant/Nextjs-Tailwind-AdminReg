@@ -1,11 +1,14 @@
 import React from 'react';
 import logo from "../../assets/images/logo_light.svg";
 import {useTranslation} from "react-i18next";
-import FormSamlLogin from "../partials/su-login/FormSamlLogin";
+import FormLoginEntry from "../partials/su-login/FormLoginEntry";
 import {useNavigate} from "react-router-dom";
 
 
-const SamlLogin = () => {
+const LoginEntry = (
+  {
+    mobile,
+  }) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
 
@@ -15,15 +18,16 @@ const SamlLogin = () => {
         <img className='form-header-logo' src={logo} alt='kenzen logo'/>
         &nbsp;&nbsp;
         <span className='form-header-text text-capitalize'>
-          &#47;&#47;&nbsp;&nbsp;{t("sso saml sign in")}
+          &#47;&#47;&nbsp;&nbsp;{t("sign in")}
         </span>
       </div>
 
-      <FormSamlLogin
+      <FormLoginEntry
+        mobile={mobile}
         navigate={navigate}
       />
     </div>
   )
 }
 
-export default SamlLogin;
+export default LoginEntry;
