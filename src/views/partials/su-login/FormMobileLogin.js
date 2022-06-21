@@ -10,10 +10,12 @@ import {apiBaseUrl} from "../../../config";
 import axios from "axios";
 import {formSchema} from "./FormSULogin";
 import {getParamFromUrl} from "../../../utils";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import backIcon from "../../../assets/images/back.svg";
 
 const FormMobileLogin = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setClassName();
@@ -38,10 +40,22 @@ const FormMobileLogin = (props) => {
     setRestBarClass(`progress-${sum * 50}`);
   }
 
+  const handlePrevious = () => {
+    navigate("/mobile-login");
+  }
+
   return (
     <Form className='form-group mt-57'>
       <div>
-        <div className='d-flex flex-column'>
+        <div className="d-flex align-center cursor-pointer">
+          <img src={backIcon} alt="back"/>
+          &nbsp;&nbsp;
+          <span className='font-button-label text-orange' onClick={handlePrevious}>
+              {t("previous")}
+            </span>
+        </div>
+
+        <div className='d-flex flex-column mt-25'>
           <label className='font-input-label'>
             {t("username")}
           </label>
