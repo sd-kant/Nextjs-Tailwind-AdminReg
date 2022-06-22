@@ -111,6 +111,10 @@ const SearchUserItem = (
     return [];
   }, [hiddenPhoneNumber, ableToResetPhoneNumber]);
 
+  const actionOptions = React.useMemo(() => {
+    return hasRightToEdit ? doableActions : doableActions.filter(it => it.value?.toString() !== "3");
+  }, [doableActions, hasRightToEdit]);
+
   return (
     <div className={clsx(style.User)}>
       <div className={clsx(style.RemoveIconWrapper)}>
@@ -332,7 +336,7 @@ const SearchUserItem = (
               <DropdownButton
                 placeholder={t("select action")}
                 option={user?.action}
-                options={doableActions}
+                options={actionOptions}
                 onClick={() => {}}
                 onClickOption={value => {
                   handleActionOptionClick(value, user);

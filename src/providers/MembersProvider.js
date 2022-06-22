@@ -691,6 +691,9 @@ const MembersProvider = (
   };
 
   const handleActionOptionClick = (value, user) => {
+    const userPermissionLevel = getPermissionLevelFromUserTypes(user?.userTypes);
+    const hasRightToEdit = !checkIfHigherThanMe(userType, userPermissionLevel);
+
     switch (value?.toString()) {
       case "1": // re-invite
         setSelectedUser(user);
@@ -711,13 +714,18 @@ const MembersProvider = (
         });
         break;
       case "3": // delete
-        setSelectedUser(user);
-        setWarningModal({
-          visible: true,
-          title: t('delete user warning title'),
-          subtitle: t('delete user warning description'),
-          mode: 'delete',
-        });
+        if (!hasRightToEdit) {
+          // don't need this to be translated because this code part will never run(UI prevented from triggering this action)
+          showErrorNotification("You have no right to delete this user");
+        } else {
+          setSelectedUser(user);
+          setWarningModal({
+            visible: true,
+            title: t('delete user warning title'),
+            subtitle: t('delete user warning description'),
+            mode: 'delete',
+          });
+        }
         break;
       default:
         console.log('please select valid action type');
