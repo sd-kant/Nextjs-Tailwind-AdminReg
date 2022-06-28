@@ -7,7 +7,6 @@ import mediumPadStripes from "../../assets/images/pad-stripes.svg";
 import smallStripes from "../../assets/images/small-stripes.svg";
 import {get} from "lodash";
 import Footer from "./Footer";
-import LanguagePicker from "../components/LanguagePicker";
 import clsx from "clsx";
 import style from "./SignInLayout.module.scss";
 import Settings from "../components/Settings";
@@ -16,7 +15,6 @@ const SignInLayout = (props) => {
   const {loggedIn, isEntry} = props;
   return (
     <div className='wrapper content'>
-      <LanguagePicker/>
       {
         loggedIn &&
         <div className={clsx(style.MenuWrapper)}>
