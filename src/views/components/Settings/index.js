@@ -4,21 +4,21 @@ import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
 import clsx from 'clsx';
 import style from './Settings.module.scss';
-import settingIcon from '../../../assets/images/settings.svg';
 import Popup from 'reactjs-popup';
 import defaultAvatar from '../../../assets/images/logo_round.png';
 import Toggle from "../Toggle";
-import closeIcon from '../../../assets/images/close2.svg';
 import {get} from "lodash";
 import {setMetricAction} from "../../../redux/action/ui";
 import ConfirmModalV2 from "../ConfirmModalV2";
-import {useWidthContext} from "../../../providers/WidthProvider";
 import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERSION} from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
 import queryString from "query-string";
 import {ableToLogin, concatAsUrlParam} from "../../../utils";
 import {getCompanyById} from "../../../http";
+import LanguageModal from "../LanguageModal";
+import closeIconV2 from '../../../assets/images/close-white.svg';
+import menuIcon from '../../../assets/images/menu.svg';
 
 const popupContentStyle = {
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
@@ -44,7 +44,7 @@ const Settings = (
   const ref = React.useRef();
   const navigate = useNavigate();
   const [visiblePopup, setVisiblePopup] = React.useState(false);
-  const {width} = useWidthContext();
+  const [visibleLanguageModal, setVisibleLanguageModal] = React.useState(false);
   const [orgLabel, setOrgLabel] = React.useState("");
 
   React.useEffect(() => {
@@ -93,6 +93,13 @@ const Settings = (
         },
       },
       {
+        title: t('language'),
+        handleClick: () => {
+          ref.current.close();
+          setVisibleLanguageModal(true);
+        },
+      },
+      {
         title:
           <a
             href={"https://kenzen.com/support/"}
@@ -118,12 +125,8 @@ const Settings = (
   }, [mode, isEntry, t, userType, navigate]);
 
   const direction = React.useMemo(() => {
-    if (mode === "dashboard") {
-      return width < 768 ? 'bottom center' : 'bottom right';
-    } else {
-      return "bottom right";
-    }
-  }, [width, mode]);
+    return "bottom right";
+  }, []);
 
   React.useEffect(() => {
     if (visiblePopup || leavePopup.visible) {
@@ -147,7 +150,7 @@ const Settings = (
       <Popup
         trigger={open => (
           <img
-            src={open ? closeIcon : settingIcon}
+            src={open ? closeIconV2 : menuIcon}
             alt="setting icon"
             style={{cursor: 'pointer', marginLeft: open ? '25px' : '15px'}}
           />
@@ -252,6 +255,11 @@ const Settings = (
         onCancel={() => {
           setLeavePopup({visible: false, title: ''})
         }}
+      />
+      <LanguageModal
+        show={visibleLanguageModal}
+        header={t('language')}
+        onCancel={() => setVisibleLanguageModal(false)}
       />
     </>
   )

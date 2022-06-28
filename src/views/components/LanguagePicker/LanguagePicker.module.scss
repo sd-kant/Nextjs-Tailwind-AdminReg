@@ -1,13 +1,11 @@
 @import "../../../assets/scss/colors";
 
 .LangPicker {
-  position: absolute;
-  display: none;
   z-index: 99;
   height: 55px;
+  position: relative;
 
   select {
-    //width: 155px;
     height: 55px;
     border: 1px solid #FFFFFF;
     border-radius: 10px;
@@ -37,27 +35,5 @@
     left: 10px;
     top: 15px;
     z-index: -1;
-  }
-}
-
-@media only screen and (min-width: 768px) {
-  .LangPicker {
-  }
-}
-
-@media only screen and (min-width: 1024px) {
-  .LangPicker {
-    display: block;
-    top: 80px;
-    bottom: auto;
-    right: 100px;
-  }
-}
-
-@media only screen and (min-width: 1400px) {
-  .LangPicker {
-    top: 40px;
-    bottom: auto;
-    right: 100px;
   }
 }
