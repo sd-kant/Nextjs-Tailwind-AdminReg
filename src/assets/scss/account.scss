@@ -164,6 +164,10 @@
   width: calc(325px - 44px);
 }
 
+.input-field-wrapper {
+  width: 325px;
+}
+
 .grouped-form {
   display: flex;
   flex-direction: column;
@@ -245,6 +249,10 @@
 
   .input-field {
     width: calc(375px - 22px);
+  }
+
+  .input-field-wrapper {
+    width: 397px;
   }
 }
 

@@ -18,6 +18,7 @@ import {
 } from "../../../redux/action/ui";
 import {loginAction} from "../../../redux/action/auth";
 import {useNavigate} from "react-router-dom";
+import PasswordInput from "../../components/PasswordInput";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -125,11 +126,9 @@ const FormPassword = (props) => {
             {t("create password")}
           </label>
 
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
+          <PasswordInput
             name="password"
             value={values["password"]}
-            type='password'
             onChange={changeFormField}
           />
 
@@ -145,10 +144,8 @@ const FormPassword = (props) => {
             {t("confirm password")}
           </label>
 
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
+          <PasswordInput
             name="confirmPassword"
-            type='password'
             value={values["confirmPassword"]}
             onChange={changeFormField}
           />

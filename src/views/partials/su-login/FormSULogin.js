@@ -14,6 +14,7 @@ import {
 import {Link, useNavigate} from "react-router-dom";
 import backIcon from "../../../assets/images/back.svg";
 import {instance} from "../../../http";
+import PasswordInput from "../../components/PasswordInput";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -133,10 +134,8 @@ const FormSULogin = (props) => {
             {t("password")}
           </label>
 
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
+          <PasswordInput
             name="password"
-            type='password'
             value={values["password"]}
             onChange={changeFormField}
           />

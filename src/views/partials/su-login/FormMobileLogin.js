@@ -12,6 +12,7 @@ import {formSchema} from "./FormSULogin";
 import {getParamFromUrl} from "../../../utils";
 import {Link, useNavigate} from "react-router-dom";
 import backIcon from "../../../assets/images/back.svg";
+import PasswordInput from "../../components/PasswordInput";
 
 const FormMobileLogin = (props) => {
   const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
@@ -80,10 +81,8 @@ const FormMobileLogin = (props) => {
             {t("password")}
           </label>
 
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
+          <PasswordInput
             name="password"
-            type='password'
             value={values["password"]}
             onChange={changeFormField}
           />
