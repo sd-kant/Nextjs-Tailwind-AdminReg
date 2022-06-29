@@ -546,5 +546,6 @@
   "enter username": "Digite um nome de usuário",
   "username length": "O nome de usuário deve ter pelo menos 6 caracteres",
   "sso note": "OBSERVAÇÃO: Sua organização usará o Single Sign-On para autenticar sua conta Kenzen",
-  "msg account registered": "Sua conta foi registrada"
+  "msg account registered": "Sua conta foi registrada",
+  "language": "Linguagem"
 }

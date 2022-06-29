@@ -16,25 +16,11 @@
       justify-content: space-between;
     }
 
-    .MenuDropdown {
-      margin-top: 25px;
-    }
-
     .RightArea {
-      .MenuIcon {
-        width: 24px;
-        color: white;
-        cursor: pointer;
+      .RightAreaContent {
+        display: inline-flex !important;
+        align-items: center;
       }
-    }
-
-    .RightAreaContent {
-      display: none;
-    }
-
-    .MenuContent {
-      display: inline-flex;
-      align-items: center;
     }
   }
 
@@ -47,25 +33,6 @@
   .Wrapper {
     .Navbar {
       .NavbarMain {
-
-      }
-
-      .MenuDropdown {
-        display: none !important;
-      }
-
-      .RightArea {
-        .MenuIcon {
-          display: none;
-        }
-      }
-
-      .RightAreaContent {
-        display: inline-flex !important;
-        align-items: center;
-      }
-
-      .MenuContent {
 
       }
     }

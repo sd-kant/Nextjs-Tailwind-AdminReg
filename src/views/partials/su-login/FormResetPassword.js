@@ -14,6 +14,7 @@ import {
 import ConfirmModal from "../../components/ConfirmModal";
 import {useNavigate} from "react-router-dom";
 import {apiBaseUrl} from "../../../config";
+import PasswordInput from "../../components/PasswordInput";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -80,12 +81,10 @@ const FormResetPassword = (props) => {
             {t("new password")}
           </label>
 
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
+          <PasswordInput
             name="password"
             autoFocus={true}
             value={values["password"]}
-            type='password'
             onChange={changeFormField}
           />
 
@@ -101,10 +100,8 @@ const FormResetPassword = (props) => {
             {t("confirm password")}
           </label>
 
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
+          <PasswordInput
             name="confirmPassword"
-            type='password'
             value={values["confirmPassword"]}
             onChange={changeFormField}
           />

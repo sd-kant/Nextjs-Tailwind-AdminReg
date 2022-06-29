@@ -28,7 +28,7 @@ const FormComplete = (props) => {
 
         <div className="mt-80 d-flex justify-start align-center">
           <a
-            href="https://apps.apple.com/app/id1604255458"
+            href="https://apps.apple.com/app/id1631770130"
             target="_blank"
             rel="noreferrer"
           >

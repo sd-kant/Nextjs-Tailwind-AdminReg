@@ -16,6 +16,7 @@ import {
 } from "../../../utils";
 import {resetPasswordWithToken} from "../../../http";
 import {get} from "lodash";
+import PasswordInput from "../../components/PasswordInput";
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -94,10 +95,8 @@ const FormPasswordExpired = (props) => {
             {t("password")}
           </label>
 
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
+          <PasswordInput
             name="password"
-            type='password'
             value={values["password"]}
             onChange={changeFormField}
           />
@@ -114,10 +113,8 @@ const FormPasswordExpired = (props) => {
             {t("new password")}
           </label>
 
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
+          <PasswordInput
             name="newPassword"
-            type='password'
             value={values["newPassword"]}
             onChange={changeFormField}
           />
@@ -133,11 +130,8 @@ const FormPasswordExpired = (props) => {
           <label className='font-input-label'>
             {t("confirm password")}
           </label>
-
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
+          <PasswordInput
             name="confirmPassword"
-            type='password'
             value={values["confirmPassword"]}
             onChange={changeFormField}
           />
