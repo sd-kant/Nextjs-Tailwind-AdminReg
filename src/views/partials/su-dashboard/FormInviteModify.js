@@ -60,6 +60,7 @@ const FormInviteModify = (props) => {
     status,
     setStatus,
     setValues,
+    isAdmin,
   } = props;
   const [newChanges, setNewChanges] = useState(0);
   const [visibleAddModal, setVisibleAddModal] = useState(false);
@@ -130,6 +131,8 @@ const FormInviteModify = (props) => {
           setLoading,
           organizationId,
           teamId: id,
+          showErrorNotification,
+          isAdmin,
           t,
         });
       initializeMembers();

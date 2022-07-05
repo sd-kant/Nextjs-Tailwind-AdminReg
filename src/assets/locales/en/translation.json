@@ -547,5 +547,7 @@
   "username length": "Username must be at least 6 characters long",
   "sso note": "NOTE:  Your organization will use Single Sign-On to authenticate your Kenzen account",
   "msg account registered": "Your account has been registered",
-  "language": "Language"
+  "language": "Language",
+  "msg email belongs other org": "The user associated with {{email}} exists but belongs to a different organization",
+  "msg phone belongs other org": "The user associated with {{phone}} exists but belongs to a different organization"
 }

@@ -547,5 +547,7 @@
   "username length": "El nombre de usuario debe tener al menos 6 caracteres",
   "sso note": "NOTA: Su organización utilizará el inicio de sesión único para autenticar su cuenta de Kenzen",
   "msg account registered": "Su cuenta ha sido registrada",
-  "language": "Idioma"
+  "language": "Idioma",
+  "msg email belongs other org": "El usuario asociado con {{email}} existe pero pertenece a una organización diferente",
+  "msg phone belongs other org": "El usuario asociado con {{phone}} existe pero pertenece a una organización diferente"
 }
