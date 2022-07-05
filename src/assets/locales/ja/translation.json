@@ -547,5 +547,7 @@
   "username length": "ユーザー名は6文字以上である必要があります",
   "sso note": "注：組織はシングルサインオンを使用してKenzenアカウントを認証します",
   "msg account registered": "アカウントが登録されました",
-  "language": "言語"
+  "language": "言語",
+  "msg email belongs other org": "{{email}}に関連付けられているユーザーは存在しますが、別の組織に属しています",
+  "msg phone belongs other org": "{{phone}}に関連付けられているユーザーは存在しますが、別の組織に属しています"
 }

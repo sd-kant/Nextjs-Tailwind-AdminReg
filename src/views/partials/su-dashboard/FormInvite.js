@@ -585,6 +585,8 @@ const EnhancedForm = withFormik({
             organizationId,
             teamId,
             isAdmin,
+            showErrorNotification,
+            t,
           });
 
         if (alreadyRegisteredUsers?.length > 0) {
