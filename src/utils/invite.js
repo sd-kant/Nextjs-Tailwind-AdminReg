@@ -50,6 +50,8 @@ export const _handleSubmitV2 = (
     organizationId,
     teamId,
     isAdmin,
+    showErrorNotification,
+    t,
   }
 ) => {
   return new Promise((resolve) => {
@@ -80,13 +82,28 @@ export const _handleSubmitV2 = (
                 let userItem = null;
                 if (item.status === "fulfilled") {
                   if (item.value?.config?.url?.includes("user/phone")) { // if find by phone number
-                    userItem = item.value?.data;
+                    if (item.value?.data) {
+                      if (item.value?.data?.orgId?.toString() === organizationId?.toString()) {
+                        userItem = item.value?.data;
+                      } else {
+                        // show error notification phone number used for other organization member
+                        showErrorNotification(t('msg phone belongs other org', {phone: payload[index]?.phoneNumber}));
+                      }
+                    }
                   } else { // if find by keyword
+                    let error = false;
                     if (item.value?.data?.length === 0) {
-                      // if email or phone number used on other organization
-                      // todo error handling
+                      error = true;
                     } else if (item.value?.data?.length === 1) {
-                      userItem = item.value?.data?.[0];
+                      if (item.value?.data?.[0]?.orgId?.toString() === organizationId?.toString()) {
+                        userItem = item.value?.data?.[0];
+                      } else {
+                        error = true;
+                      }
+                    }
+                    if (error) {
+                      // show error notification email used for other organization member
+                      showErrorNotification(t('msg email belongs other org', {email: payload[index]?.email}));
                     }
                   }
                 } else { //
@@ -110,14 +127,18 @@ export const _handleSubmitV2 = (
                   });
                 }
               });
-              let added = 0;
-              inviteTeamMemberV2(teamId, inviteBody)
-                .then(res => {
-                  added = (res.data?.added?.length ?? 0);
-                })
-                .finally(() => {
-                  resolve(added);
-                });
+              if (inviteBody.add.length > 0) {
+                let added = 0;
+                inviteTeamMemberV2(teamId, inviteBody)
+                  .then(res => {
+                    added = (res.data?.added?.length ?? 0);
+                  })
+                  .finally(() => {
+                    resolve(added);
+                  });
+              } else {
+                resolve(0);
+              }
             });
         } else {
           resolve(0);

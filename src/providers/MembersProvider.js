@@ -839,7 +839,7 @@ const MembersProvider = (
     if (trimmedKeywordOnInvite) {
       let promise = null;
       let promiseBody = {};
-      if (isAdmin && [undefined, "-1", null, ""].includes(organizationId?.toString())) {
+      if (isAdmin && ![undefined, "-1", null, ""].includes(organizationId?.toString())) {
         promise = searchMembersUnderOrganization;
         promiseBody = {organizationId, keyword: trimmedKeywordOnInvite};
       } else {

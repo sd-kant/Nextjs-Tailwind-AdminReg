@@ -578,27 +578,21 @@ const EnhancedForm = withFormik({
       navigate("/invite/company");
     } else {
       if (users?.length > 0) {
-        const {alreadyRegisteredUsers, numberOfSuccess} =
+        const {numberOfSuccess} =
           await _handleSubmitV2({
             users,
             setLoading,
             organizationId,
             teamId,
             isAdmin,
+            showErrorNotification,
+            t,
           });
 
-        if (alreadyRegisteredUsers?.length > 0) {
+        if (numberOfSuccess > 0) {
           setStatus({
-            visibleWarningModal: true,
-            alreadyRegisteredUsers,
-            leavePage: numberOfSuccess > 0,
+            visibleSuccessModal: true,
           });
-        } else {
-          if (numberOfSuccess > 0) {
-            setStatus({
-              visibleSuccessModal: true,
-            });
-          }
         }
       }
     }

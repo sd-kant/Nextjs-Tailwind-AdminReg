@@ -185,7 +185,8 @@ export const minutesToDaysHoursMinutes = minutes => {
 }
 
 export const celsiusToFahrenheit = t => {
-  return ((t * 9 / 5) + 32).toFixed(1);
+  const a = ((t * 9 / 5) + 32);
+  return Math.round(a * 10) / 10;
 };
 
 export const getLatestDate = (d1, d2) => {

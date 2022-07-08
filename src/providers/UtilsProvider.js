@@ -197,7 +197,7 @@ export const UtilsProviderDraft = (
       return "--";
     }
     if (metric) {
-      return cbt.toFixed(1);
+      return Math.round(cbt * 10) / 10;
     } else {
       return celsiusToFahrenheit(cbt);
     }

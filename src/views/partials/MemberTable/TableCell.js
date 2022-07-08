@@ -47,7 +47,7 @@ const TableCell = (
             <span>{connectionObj?.label}</span>
             {
               !invisibleBattery ?
-                (stat?.batteryPercent >= 15 ?
+                (stat?.batteryPercent >= 20 ?
                     <BatteryV3
                       percent={stat?.batteryPercent}
                       charging={stat?.chargingFlag}
