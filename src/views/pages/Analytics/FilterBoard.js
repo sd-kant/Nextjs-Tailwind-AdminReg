@@ -8,6 +8,7 @@ import {useBasicContext} from "../../../providers/BasicProvider";
 import MultiSelectPopup from "../../components/MultiSelectPopup";
 import {customStyles} from "../DashboardV2";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
+import {dateFormat} from "../../../utils";
 
 const FilterBoard = () => {
   const {t} = useTranslation();
@@ -16,6 +17,7 @@ const FilterBoard = () => {
     organization, setOrganization,
     formattedTeams: teams, pickedTeams, setPickedTeams,
   } = useBasicContext();
+  const [submitTried, setSubmitTried] = React.useState(false);
   const {
     startDate, setStartDate, endDate, setEndDate,
     metrics, metric, setMetric,
@@ -61,6 +63,32 @@ const FilterBoard = () => {
   const selectedMembers = React.useMemo(() => {
     return members?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
   }, [pickedMembers, members]);
+  const submit = () => {
+    setSubmitTried(true);
+    if (Object.values(errors).some(it => !!it)) {
+      console.log("please fix error");
+    } else {
+      console.log("submit!");
+    }
+  }
+  const errors = React.useMemo(() => {
+    const errors = {
+      dateRange: null,
+      metric: null,
+    };
+    if (!startDate || !endDate || startDate >= endDate) {
+      errors.dateRange = t("date range invalid")
+    }
+    if (!metric) {
+      errors.metric = t("metric required");
+    }
+    return errors;
+  }, [startDate, endDate, metric]);
+
+  const d = new Date();
+  const startDateMax = dateFormat(d);
+  d.setDate(d.getDate() + 1)
+  const endDateMax = dateFormat(d);
 
   return (
     <div>
@@ -125,6 +153,7 @@ const FilterBoard = () => {
           className={clsx('input mt-10 font-heading-small text-white', style.InputField)}
           type='date'
           value={startDate}
+          max={startDateMax}
           onChange={v => setStartDate(v.target.value)}
         />
 
@@ -132,8 +161,15 @@ const FilterBoard = () => {
           className={clsx('input mt-15 font-heading-small text-white', style.InputField)}
           type='date'
           value={endDate}
+          max={endDateMax}
           onChange={v => setEndDate(v.target.value)}
         />
+
+        {
+          submitTried && errors?.dateRange && (
+            <span className="font-helper-text text-error mt-10">{errors.dateRange}</span>
+          )
+        }
       </div>
 
       <div className="mt-40 d-flex flex-column">
@@ -150,12 +186,18 @@ const FilterBoard = () => {
           placeholder={t("select company")}
           onChange={v => setMetric(v.value)}
         />
+
+        {
+          submitTried && errors?.metric && (
+            <span className="font-helper-text text-error mt-10">{errors.metric}</span>
+          )
+        }
       </div>
 
       <div className="mt-40">
         <button
           className={`active cursor-pointer button`}
-          type={"submit"}
+          onClick={submit}
         ><span className='font-button-label text-white text-uppercase'>{t("process")}</span>
         </button>
       </div>

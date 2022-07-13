@@ -39,8 +39,8 @@ export const AnalyticsProvider = (
     children,
   }) => {
   const [pickedMembers, setPickedMembers] = React.useState([]);
-  const [startDate, setStartDate] = React.useState(null);
-  const [endDate, setEndDate] = React.useState(null);
+  const [startDate, setStartDate] = React.useState('');
+  const [endDate, setEndDate] = React.useState('');
   const {pickedTeams, organization} = useBasicContext();
   const [members, _setMembers] = React.useState();
   const membersRef = React.useRef(members);

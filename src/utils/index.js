@@ -304,3 +304,12 @@ export const setStorageAfterRegisterLogin = ({token, baseUrl}) => {
   localStorage.setItem("kop-v2-register-token", token);
   localStorage.setItem("kop-v2-base-url", baseUrl);
 }
+
+export const dateFormat = d => { // return 2022-07-02
+  const year = d.getFullYear();
+  const month = d.getMonth() + 1;
+  const formattedMonth = String(month).padStart(2, '0')
+  const date = d.getDate();
+  const formattedDate = String(date).padStart(2, '0');
+  return `${year}-${formattedMonth}-${formattedDate}`;
+}
