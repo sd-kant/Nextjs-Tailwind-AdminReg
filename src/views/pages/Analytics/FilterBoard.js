@@ -63,7 +63,11 @@ const FilterBoard = () => {
   const selectedMembers = React.useMemo(() => {
     return members?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
   }, [pickedMembers, members]);
+  const submitActivated = React.useMemo(() => {
+    return organization && pickedTeams?.length > 0;
+  }, [organization, pickedTeams]);
   const submit = () => {
+    if (!submitActivated) return;
     setSubmitTried(true);
     if (Object.values(errors).some(it => !!it)) {
       console.log("please fix error");
@@ -196,7 +200,7 @@ const FilterBoard = () => {
 
       <div className="mt-40">
         <button
-          className={`active cursor-pointer button`}
+          className={`${submitActivated ? 'active cursor-pointer' : 'inactive cursor-default'} button`}
           onClick={submit}
         ><span className='font-button-label text-white text-uppercase'>{t("process")}</span>
         </button>
