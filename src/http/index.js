@@ -371,3 +371,11 @@ export const getTeamMemberAlerts = ({teamId, userId, since}) => {
 export const logoutAPI = () => {
   return get(`/user/logout`);
 };
+
+export const queryOrganizationWearTime = (orgId, data) => {
+  return post(`/organization/${orgId}/data/wearTime`, data);
+}
+
+export const queryOrganizationAlertMetrics = (orgId, data) => {
+  return post(`/organization/${orgId}/data/alertMetrics`, data);
+}

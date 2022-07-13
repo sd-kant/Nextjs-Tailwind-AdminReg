@@ -19,7 +19,7 @@ const FilterBoard = () => {
   const {
     startDate, setStartDate, endDate, setEndDate,
     metrics, metric, setMetric,
-    formattedUsers: users, pickedUsers, setPickedUsers,
+    formattedMembers: members, pickedMembers, setPickedMembers,
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
@@ -45,22 +45,22 @@ const FilterBoard = () => {
     return teams?.filter(it => pickedTeams.some(ele => ele.toString() === it.value?.toString()))
   }, [pickedTeams, teams]);
   const userLabel = React.useMemo(() => {
-    if (pickedUsers?.length > 0) {
-      if (users?.length > 1 && (pickedUsers?.length === users?.length)) {
+    if (pickedMembers?.length > 0) {
+      if (members?.length > 1 && (pickedMembers?.length === members?.length)) {
         return t("all users");
-      } else if (pickedUsers?.length > 1) {
-        return t("n users selected", {n: pickedUsers.length});
+      } else if (pickedMembers?.length > 1) {
+        return t("n users selected", {n: pickedMembers.length});
       } else {
-        return users?.find(it => it.value?.toString() === pickedUsers?.[0]?.toString())?.label;
+        return members?.find(it => it.value?.toString() === pickedMembers?.[0]?.toString())?.label;
       }
     } else {
       return t("select user");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickedUsers, users]);
-  const selectedUsers = React.useMemo(() => {
-    return users?.filter(it => pickedUsers.some(ele => ele.toString() === it.value?.toString()))
-  }, [pickedUsers, users]);
+  }, [pickedMembers, members]);
+  const selectedMembers = React.useMemo(() => {
+    return members?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
+  }, [pickedMembers, members]);
 
   return (
     <div>
@@ -99,18 +99,18 @@ const FilterBoard = () => {
       }
 
       {
-        users?.length > 0 ?
+        members?.length > 0 ?
           <div className={"d-flex flex-column mt-40"}>
             <label className='font-input-label mb-10'>
               Users
             </label>
 
             <MultiSelectPopup
-              label={label}
-              options={users}
-              value={selectedUsers}
+              label={userLabel}
+              options={members}
+              value={selectedMembers}
               onChange={v => {
-                setPickedUsers(v?.map(it => it.value));
+                setPickedMembers(v?.map(it => it.value));
               }}
             />
           </div> : null
@@ -118,7 +118,7 @@ const FilterBoard = () => {
 
       <div className="mt-40 d-flex flex-column">
         <label className='font-input-label'>
-          {t("dob")}
+          {t("date range")}
         </label>
 
         <input
@@ -150,6 +150,14 @@ const FilterBoard = () => {
           placeholder={t("select company")}
           onChange={v => setMetric(v.value)}
         />
+      </div>
+
+      <div className="mt-40">
+        <button
+          className={`active cursor-pointer button`}
+          type={"submit"}
+        ><span className='font-button-label text-white text-uppercase'>{t("process")}</span>
+        </button>
       </div>
     </div>
   )
