@@ -22,6 +22,7 @@ const FilterBoard = () => {
     startDate, setStartDate, endDate, setEndDate,
     metrics, metric, setMetric,
     formattedMembers: members, pickedMembers, setPickedMembers,
+    processQuery,
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
@@ -69,10 +70,8 @@ const FilterBoard = () => {
   const submit = () => {
     if (!submitActivated) return;
     setSubmitTried(true);
-    if (Object.values(errors).some(it => !!it)) {
-      console.log("please fix error");
-    } else {
-      console.log("submit!");
+    if (!(Object.values(errors).some(it => !!it))) {
+      processQuery();
     }
   }
   const errors = React.useMemo(() => {
@@ -108,7 +107,7 @@ const FilterBoard = () => {
           value={selectedOrganization}
           styles={customStyles()}
           placeholder={t("select company")}
-          onChange={v => setOrganization(v.value)}
+          onChange={v => setOrganization(v?.value)}
         />
       </div>
 
@@ -187,8 +186,8 @@ const FilterBoard = () => {
           options={metrics}
           value={selectedMetric}
           styles={customStyles()}
-          placeholder={t("select company")}
-          onChange={v => setMetric(v.value)}
+          placeholder={t("select metric")}
+          onChange={v => setMetric(v?.value)}
         />
 
         {

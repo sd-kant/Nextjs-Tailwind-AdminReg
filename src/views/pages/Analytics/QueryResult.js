@@ -7,7 +7,7 @@ import ResultTableBody from "./ResultTableBody";
 
 const QueryResult = () => {
   return (
-    <div>
+    <div className={clsx(style.Wrapper)}>
       <table className={clsx(style.Table)}>
         <ResultTableHeader/>
         <ResultTableBody/>

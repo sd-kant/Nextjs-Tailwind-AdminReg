@@ -11,6 +11,7 @@ import {
 } from "../http";
 import axios from "axios";
 import {
+  dateFormat,
   getLatestDateBeforeNow as getLatestDate,
   getParamFromUrl,
   numMinutesBetweenWithNow as numMinutesBetween,
@@ -34,18 +35,6 @@ import {useBasicContext} from "./BasicProvider";
 
 const AnalyticsContext = React.createContext(null);
 
-const testData = [{
-  userId: 1,
-  name: 'Oleksandr Muzychenko',
-  cbt: 38,
-},
-  {
-    userId: 2,
-    name: 'Claude Robotham',
-    cbt: 37,
-  }
-]
-
 export const AnalyticsProvider = (
   {
     children,
@@ -53,14 +42,14 @@ export const AnalyticsProvider = (
   const [pickedMembers, setPickedMembers] = React.useState([]);
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
-  const {pickedTeams, organization} = useBasicContext();
+  const {pickedTeams, organization, formattedTeams} = useBasicContext();
   const [members, _setMembers] = React.useState();
   const membersRef = React.useRef(members);
   const setMembers = v => {
     _setMembers(v);
     membersRef.current = v;
   }
-  const [analytics, setAnalytics] = React.useState(testData);
+  const [analytics, setAnalytics] = React.useState(null); // { wearTime: [], alertMetrics: [] }
   const metrics = [
     {
       label: 'Wear Time',
@@ -85,6 +74,7 @@ export const AnalyticsProvider = (
   }, [members]);
   React.useEffect(() => {
     const membersPromises = [];
+    setMembers([]);
     if (pickedTeams?.length > 0) {
       pickedTeams.forEach(team => {
         membersPromises.push(queryTeamMembers(team));
@@ -96,7 +86,7 @@ export const AnalyticsProvider = (
               if (result.status === "fulfilled") {
                 if (result.value?.data?.members?.length > 0) {
                   const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString()) ?? [];
-                  setMembers(operators);
+                  setMembers([...membersRef.current, ...operators]);
                 }
               }
             })
@@ -117,17 +107,27 @@ export const AnalyticsProvider = (
           case 1:
             queryOrganizationWearTime(organization, {
               teamIds: pickedTeams,
-              startDate: "2022-07-01",
-              endDate: "2022-07-12",
+              startDate: dateFormat(new Date(startDate)),
+              endDate: dateFormat(new Date(endDate)),
             })
-              .then(data => console.log("data", data));
+              .then(response => {
+                setAnalytics({
+                  ...analytics,
+                  wearTime: response.data,
+                });
+              });
             break;
           case 2:
             queryOrganizationAlertMetrics(organization, {
               teamIds: pickedTeams,
-              startDate: "2022-07-01",
-              endDate: "2022-07-12",
-            }).then(data => console.log("alertMetrics", data));
+              startDate: dateFormat(new Date(startDate)),
+              endDate: dateFormat(new Date(endDate)),
+            }).then(response => {
+              setAnalytics({
+                ...analytics,
+                alertMetrics: response.data,
+              });
+            });
             break;
           default:
             console.log("metric is not available");
@@ -135,6 +135,20 @@ export const AnalyticsProvider = (
       }
     }
   };
+
+  const getUserNameFromUserId = React.useCallback(id => {
+    const user = members?.find(it => it.userId?.toString() === id?.toString());
+    return user ? `${user?.firstName} ${user?.lastName}` : '';
+  }, [members]);
+
+  const getTeamNameFromUserId = React.useCallback(userId => {
+    const user = members?.find(it => it.userId?.toString() === userId?.toString());
+    if (user?.teamId) {
+      const team = formattedTeams?.find(it => it.value?.toString() === user.teamId?.toString());
+      return team ? team.label : '';
+    }
+    return user ? `${user?.firstName} ${user?.lastName}` : '';
+  }, [members]);
 
   const providerValue = {
     members,
@@ -150,6 +164,9 @@ export const AnalyticsProvider = (
     metric,
     setMetric,
     analytics,
+    processQuery,
+    getUserNameFromUserId,
+    getTeamNameFromUserId,
   };
 
   return (
