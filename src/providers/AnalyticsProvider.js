@@ -34,6 +34,18 @@ import {useBasicContext} from "./BasicProvider";
 
 const AnalyticsContext = React.createContext(null);
 
+const testData = [{
+  userId: 1,
+  name: 'Oleksandr Muzychenko',
+  cbt: 38,
+},
+  {
+    userId: 2,
+    name: 'Claude Robotham',
+    cbt: 37,
+  }
+]
+
 export const AnalyticsProvider = (
   {
     children,
@@ -48,7 +60,7 @@ export const AnalyticsProvider = (
     _setMembers(v);
     membersRef.current = v;
   }
-  const [analytics, setAnalytics] = React.useState(null);
+  const [analytics, setAnalytics] = React.useState(testData);
   const metrics = [
     {
       label: 'Wear Time',
@@ -137,6 +149,7 @@ export const AnalyticsProvider = (
     metrics,
     metric,
     setMetric,
+    analytics,
   };
 
   return (
