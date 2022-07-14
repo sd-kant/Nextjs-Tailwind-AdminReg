@@ -39,7 +39,7 @@
     "read-excel-file": "^5.3.4",
     "redux": "^4.2.0",
     "redux-saga": "^1.1.3",
-    "sass": "^1.52.3",
+    "sass": "^1.53.0",
     "spacetime": "^7.1.4",
     "timezone-soft": "^1.3.1",
     "uuid": "^8.3.2",
