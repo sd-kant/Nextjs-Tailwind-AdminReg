@@ -379,3 +379,7 @@ export const queryOrganizationWearTime = (orgId, data) => {
 export const queryOrganizationAlertMetrics = (orgId, data) => {
   return post(`/organization/${orgId}/data/alertMetrics`, data);
 }
+
+export const getRiskLevels = () => {
+  return get('risklevel');
+}

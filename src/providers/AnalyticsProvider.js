@@ -7,7 +7,7 @@ import {
   queryAllOrganizations,
   queryTeamMembers,
   queryTeams,
-  subscribeDataEvents, unlockUser, queryOrganizationAlertMetrics
+  subscribeDataEvents, unlockUser, queryOrganizationAlertMetrics, getRiskLevels
 } from "../http";
 import axios from "axios";
 import {
@@ -61,6 +61,7 @@ export const AnalyticsProvider = (
     }
   ];
   const [metric, setMetric] = React.useState(null);
+  const [riskLevels, setRiskLevels] = React.useState(null);
   const formattedMembers = React.useMemo(() => {
     const ret = [];
     members?.forEach(user => {
@@ -72,6 +73,18 @@ export const AnalyticsProvider = (
 
     return ret;
   }, [members]);
+  React.useEffect(() => {
+    let mounted = true;
+    getRiskLevels().then(response => {
+      if (mounted) setRiskLevels(response.data);
+    })
+
+    return () => {
+      mounted = false;
+    }
+  }, []);
+  console.log("risk levels", riskLevels);
+
   React.useEffect(() => {
     const membersPromises = [];
     setMembers([]);
@@ -149,6 +162,9 @@ export const AnalyticsProvider = (
     }
     return user ? `${user?.firstName} ${user?.lastName}` : '';
   }, [members]);
+  const formatRiskLevel = id => {
+    return riskLevels?.find(it => it.id?.toString() === id?.toString())?.name;
+  }
 
   const providerValue = {
     members,
@@ -167,6 +183,7 @@ export const AnalyticsProvider = (
     processQuery,
     getUserNameFromUserId,
     getTeamNameFromUserId,
+    formatRiskLevel,
   };
 
   return (
