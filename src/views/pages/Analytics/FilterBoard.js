@@ -2,11 +2,11 @@ import * as React from "react";
 import clsx from "clsx";
 import style from "./FilterBoard.module.scss";
 
+import {customStyles} from "../DashboardV2";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
+import MultiSelectPopup from "../../components/MultiSelectPopup";
 import {useTranslation} from "react-i18next";
 import {useBasicContext} from "../../../providers/BasicProvider";
-import MultiSelectPopup from "../../components/MultiSelectPopup";
-import {customStyles} from "../DashboardV2";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 import {dateFormat} from "../../../utils";
 
