@@ -549,5 +549,12 @@
   "msg account registered": "Su cuenta ha sido registrada",
   "language": "Idioma",
   "msg email belongs other org": "El usuario asociado con {{email}} existe pero pertenece a una organización diferente",
-  "msg phone belongs other org": "El usuario asociado con {{phone}} existe pero pertenece a una organización diferente"
+  "msg phone belongs other org": "El usuario asociado con {{phone}} existe pero pertenece a una organización diferente",
+  "select metric": "Seleccionar métrica",
+  "all users": "Todos los usuarios",
+  "select user": "Seleccionar usuario",
+  "date range": "Rango de fechas",
+  "process": "proceso",
+  "date range invalid": "Elija un intervalo de fechas válido",
+  "metric required": "Seleccione una métrica"
 }
