@@ -1,36 +1,12 @@
 import * as React from 'react';
 import {
   queryOrganizationWearTime,
-  getTeamAlerts,
-  getTeamDevices,
-  getTeamStats, inviteTeamMemberV2,
-  queryAllOrganizations,
   queryTeamMembers,
-  queryTeams,
-  subscribeDataEvents, unlockUser, queryOrganizationAlertMetrics, getRiskLevels
+queryOrganizationAlertMetrics, getRiskLevels
 } from "../http";
-import axios from "axios";
 import {
   dateFormat,
-  getLatestDateBeforeNow as getLatestDate,
-  getParamFromUrl,
-  numMinutesBetweenWithNow as numMinutesBetween,
-  updateUrlParam,
 } from "../utils";
-import {withTranslation} from "react-i18next";
-import {get} from "lodash";
-import {
-  ALERT_STAGE_ID_LIST,
-  USER_TYPE_ADMIN,
-  USER_TYPE_OPERATOR,
-  USER_TYPE_ORG_ADMIN,
-  USER_TYPE_TEAM_ADMIN
-} from "../constant";
-import useForceUpdate from "../hooks/useForceUpdate";
-import {useNotificationContext} from "./NotificationProvider";
-import {formatLastSync, sortMembers} from "../utils/dashboard";
-import {setLoadingAction} from "../redux/action/ui";
-import {useUtilsContext} from "./UtilsProvider";
 import {useBasicContext} from "./BasicProvider";
 
 const AnalyticsContext = React.createContext(null);
@@ -107,8 +83,6 @@ export const AnalyticsProvider = (
           .finally(() => resolve());
       });
       Promise.allSettled([a()]).then();
-    } else {
-
     }
   }, [pickedTeams]);
 
@@ -161,7 +135,7 @@ export const AnalyticsProvider = (
       return team ? team.label : '';
     }
     return user ? `${user?.firstName} ${user?.lastName}` : '';
-  }, [members]);
+  }, [members, formattedTeams]);
   const formatRiskLevel = id => {
     return riskLevels?.find(it => it.id?.toString() === id?.toString())?.name;
   }

@@ -2,44 +2,23 @@ import * as React from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {
-  getTeamAlerts,
-  getTeamDevices,
-  getTeamStats, inviteTeamMemberV2,
   queryAllOrganizations,
-  queryTeamMembers,
   queryTeams,
-  subscribeDataEvents, unlockUser
 } from "../http";
-import axios from "axios";
-import {
-  getLatestDateBeforeNow as getLatestDate,
-  getParamFromUrl,
-  numMinutesBetweenWithNow as numMinutesBetween,
-  updateUrlParam,
-} from "../utils";
 import {withTranslation} from "react-i18next";
 import {get} from "lodash";
 import {
-  ALERT_STAGE_ID_LIST,
   USER_TYPE_ADMIN,
-  USER_TYPE_OPERATOR,
   USER_TYPE_ORG_ADMIN,
-  USER_TYPE_TEAM_ADMIN
 } from "../constant";
-import useForceUpdate from "../hooks/useForceUpdate";
-import {useNotificationContext} from "./NotificationProvider";
-import {formatLastSync, sortMembers} from "../utils/dashboard";
 import {setLoadingAction} from "../redux/action/ui";
-import {useUtilsContext} from "./UtilsProvider";
 
 const BasicContext = React.createContext(null);
 
 const BasicProviderDraft = (
   {
     children,
-    setLoading,
     userType,
-    t,
   }) => {
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [organizations, setOrganizations] = React.useState([]);

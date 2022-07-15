@@ -86,7 +86,7 @@ const FilterBoard = () => {
       errors.metric = t("metric required");
     }
     return errors;
-  }, [startDate, endDate, metric]);
+  }, [startDate, endDate, metric, t]);
 
   const d = new Date();
   const startDateMax = dateFormat(d);
@@ -114,9 +114,9 @@ const FilterBoard = () => {
       {
         teams?.length > 0 ?
           <div className={"d-flex flex-column mt-40"}>
-            <label className='font-input-label mb-10'>
+            <span className='font-input-label mb-10'>
               {t("team")}
-            </label>
+            </span>
 
             <MultiSelectPopup
               label={label}
@@ -132,9 +132,9 @@ const FilterBoard = () => {
       {
         members?.length > 0 ?
           <div className={"d-flex flex-column mt-40"}>
-            <label className='font-input-label mb-10'>
+            <span className='font-input-label mb-10'>
               Users
-            </label>
+            </span>
 
             <MultiSelectPopup
               label={userLabel}
@@ -148,9 +148,9 @@ const FilterBoard = () => {
       }
 
       <div className="mt-40 d-flex flex-column">
-        <label className='font-input-label'>
+        <span className='font-input-label'>
           {t("date range")}
-        </label>
+        </span>
 
         <input
           className={clsx('input mt-10 font-heading-small text-white', style.InputField)}
@@ -176,9 +176,9 @@ const FilterBoard = () => {
       </div>
 
       <div className="mt-40 d-flex flex-column">
-        <label className='font-input-label'>
+        <span className='font-input-label'>
           {t("select metric")}
-        </label>
+        </span>
 
         <ResponsiveSelect
           className='mt-10 font-heading-small text-black'
