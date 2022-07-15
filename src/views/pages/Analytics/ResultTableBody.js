@@ -8,12 +8,14 @@ import {formatHeartRate} from "../../../utils/dashboard";
 const ResultTableBody = () => {
   const {analytics, metric, getUserNameFromUserId, getTeamNameFromUserId, formatRiskLevel} = useAnalyticsContext();
   const data = React.useMemo(() => {
+    let ret = [];
     if (metric === 1) {
-      return analytics?.wearTime;
+      ret = analytics?.wearTime;
     } else if (metric === 2) {
-      return analytics?.alertMetrics;
+      ret = analytics?.alertMetrics;
     }
-    return [];
+    if (ret?.length > 0) return ret;
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(() => ({userId: null}));
   }, [analytics, metric]);
   const {formatAlert, formatHeartCbt} = useUtilsContext();
 
@@ -32,10 +34,10 @@ const ResultTableBody = () => {
             metric === 1 &&
               <React.Fragment>
                 <td className={clsx(style.Cell)}>
-                  {it.avgWearTime}
+                  {it.avgWearTime ?? ''}
                 </td>
                 <td className={clsx(style.Cell)}>
-                  {it.wearTime}
+                  {it.wearTime ?? ''}
                 </td>
               </React.Fragment>
           }
@@ -43,25 +45,25 @@ const ResultTableBody = () => {
             metric === 2 &&
             <React.Fragment>
               <td className={clsx(style.Cell)}>
-                {new Date(it.ts)?.toLocaleString()}
+                {it.ts ? new Date(it.ts)?.toLocaleString() : ''}
               </td>
               <td className={clsx(style.Cell)}>
-                {formatAlert(it.alertStageId)?.label}
+                {it.alertStageId ? formatAlert(it.alertStageId)?.label : ''}
               </td>
               <td className={clsx(style.Cell)}>
-                {formatRiskLevel(it.risklevelId)}
+                {it.risklevelId ? formatRiskLevel(it.risklevelId) : ''}
               </td>
               <td className={clsx(style.Cell)}>
-                {formatHeartCbt(it.heartCbtAvg)}
+                {it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ''}
               </td>
               <td className={clsx(style.Cell)}>
-                {formatHeartCbt(it.temperature)}
+                {it.temperature ? formatHeartCbt(it.temperature) : ''}
               </td>
               <td className={clsx(style.Cell)}>
-                {it.humidity}
+                {it.humidity ?? ''}
               </td>
               <td className={clsx(style.Cell)}>
-                {formatHeartRate(it.heartRateAvg)}
+                {it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ''}
               </td>
             </React.Fragment>
           }
