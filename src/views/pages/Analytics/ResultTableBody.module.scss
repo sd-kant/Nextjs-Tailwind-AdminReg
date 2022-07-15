@@ -1,0 +1,9 @@
+@import "src/assets/scss/colors";
+
+.Cell {
+  background: $app-list-bg;
+  text-align: center;
+  border: 1px solid $app-bg;
+  height: 45px;
+  padding: 0 5px;
+}

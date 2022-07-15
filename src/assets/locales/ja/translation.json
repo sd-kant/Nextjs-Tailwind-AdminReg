@@ -549,5 +549,12 @@
   "msg account registered": "アカウントが登録されました",
   "language": "言語",
   "msg email belongs other org": "{{email}}に関連付けられているユーザーは存在しますが、別の組織に属しています",
-  "msg phone belongs other org": "{{phone}}に関連付けられているユーザーは存在しますが、別の組織に属しています"
+  "msg phone belongs other org": "{{phone}}に関連付けられているユーザーは存在しますが、別の組織に属しています",
+  "select metric": "メトリックを選択",
+  "all users": "全てのユーザー",
+  "select user": "ユーザーを選択",
+  "date range": "日付範囲",
+  "process": "処理する",
+  "date range invalid": "有効な日付範囲を選択してください",
+  "metric required": "指標を選択してください"
 }
