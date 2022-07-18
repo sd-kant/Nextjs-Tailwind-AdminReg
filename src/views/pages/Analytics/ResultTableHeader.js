@@ -7,7 +7,7 @@ const ResultTableHeader = () => {
   const {metric} = useAnalyticsContext();
 
   return (
-    <thead>
+    <thead className={clsx(style.Header)}>
     <tr>
       <td className={clsx(style.HeaderCell)}>
         Name

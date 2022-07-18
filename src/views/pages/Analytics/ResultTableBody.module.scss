@@ -6,4 +6,14 @@
   border: 1px solid $app-bg;
   height: 45px;
   padding: 0 5px;
+
+  font-size: 14px;
+  line-height: 21px;
+}
+
+@media only screen and (min-width: 768px) {
+  .Cell {
+    font-size: 16px;
+    line-height: 24px;
+  }
 }
