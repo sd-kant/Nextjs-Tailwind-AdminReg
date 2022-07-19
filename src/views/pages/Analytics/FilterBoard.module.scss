@@ -1,3 +1,15 @@
 .InputField {
   width: calc(100% - 44px);
 }
+
+.CustomInputWrapper {
+  position: relative;
+  .CalendarIcon {
+    position: absolute;
+    right: 20px;
+    top: calc(50% + 5px);
+    transform: translateY(-50%);
+    width: 20px;
+    height: 21px;
+  }
+}

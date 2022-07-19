@@ -8,7 +8,24 @@ import MultiSelectPopup from "../../components/MultiSelectPopup";
 import {useTranslation} from "react-i18next";
 import {useBasicContext} from "../../../providers/BasicProvider";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
-import {dateFormat} from "../../../utils";
+import CustomDatePicker from "../../components/CustomDatePicker";
+import calendarIcon from "../../../assets/images/calendar.png";
+
+const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
+  <div className={clsx(style.CustomInputWrapper)} onClick={onClick}>
+    <input
+      className={clsx('input mt-10 font-heading-small text-white', style.InputField)}
+      type='text'
+      ref={ref}
+      placeholder={'mm/dd/yyyy'}
+      value={value}
+      readOnly
+    />
+    <img src={calendarIcon} className={clsx(style.CalendarIcon)} alt="calendar"/>
+  </div>
+));
+
+CustomInput.displayName = 'CustomInput';
 
 const FilterBoard = () => {
   const {t} = useTranslation();
@@ -88,10 +105,10 @@ const FilterBoard = () => {
     return errors;
   }, [startDate, endDate, metric, t]);
 
-  const d = new Date();
-  const startDateMax = dateFormat(d);
-  d.setDate(d.getDate() + 1)
-  const endDateMax = dateFormat(d);
+  const startDateMax = new Date();
+  const e = new Date();
+  e.setDate(e.getDate() + 1)
+  const endDateMax = e;
 
   return (
     <div>
@@ -152,20 +169,18 @@ const FilterBoard = () => {
           {t("date range")}
         </span>
 
-        <input
-          className={clsx('input mt-10 font-heading-small text-white', style.InputField)}
-          type='date'
-          value={startDate}
-          max={startDateMax}
-          onChange={v => setStartDate(v.target.value)}
+        <CustomDatePicker
+          date={startDate}
+          setDate={setStartDate}
+          CustomInput={CustomInput}
+          maxDate={startDateMax}
         />
 
-        <input
-          className={clsx('input mt-15 font-heading-small text-white', style.InputField)}
-          type='date'
-          value={endDate}
-          max={endDateMax}
-          onChange={v => setEndDate(v.target.value)}
+        <CustomDatePicker
+          date={endDate}
+          setDate={setEndDate}
+          CustomInput={CustomInput}
+          maxDate={endDateMax}
         />
 
         {
