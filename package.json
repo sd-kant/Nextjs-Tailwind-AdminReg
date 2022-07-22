@@ -34,7 +34,7 @@
     "react-router-redux": "^4.0.8",
     "react-scripts": "5.0.1",
     "react-scroll": "^1.8.7",
-    "react-select": "^5.3.2",
+    "react-select": "^5.4.0",
     "react-transition-group": "^4.4.2",
     "reactjs-popup": "^2.0.5",
     "read-excel-file": "^5.3.5",
