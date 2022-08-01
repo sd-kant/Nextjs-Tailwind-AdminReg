@@ -356,7 +356,7 @@ const DashboardProviderDraft = (
       setOrganization(formattedOrganizations[0].value);
       setPickedTeams([]);
     }
-  }, [formattedOrganizations]);
+  }, [formattedOrganizations, organization]);
 
   const formattedMembers = React.useMemo(() => {
     let arr = [];
