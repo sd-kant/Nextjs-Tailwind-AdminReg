@@ -351,6 +351,13 @@ const DashboardProviderDraft = (
     ));
   }, [organizations]);
 
+  React.useEffect(() => {
+    if (formattedOrganizations.length === 1 && ['null', 'undefined', null, undefined].includes(organization)) {
+      setOrganization(formattedOrganizations[0].value);
+      setPickedTeams([]);
+    }
+  }, [formattedOrganizations]);
+
   const formattedMembers = React.useMemo(() => {
     let arr = [];
     valuesV2.members?.forEach(member => {
