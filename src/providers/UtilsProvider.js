@@ -165,12 +165,16 @@ export const UtilsProviderDraft = (
         if (activity.data?.source?.toLowerCase() === "web") { // web
           if (activity.data?.type?.toLowerCase() === "username") { // username
             return t("activity login username web");
+          } else if (activity.data?.type?.toLowerCase() === "saml") { // sso login
+            return t("activity login saml web");
           } else { // 2FA
             return t("activity login 2fa web");
           }
         } else { // mobile
           if (activity.data?.type?.toLowerCase() === "username") { // username
             return t("activity login username mobile");
+          } else if (activity.data?.type?.toLowerCase() === "saml") { // sso login
+            return t("activity login saml mobile");
           } else { // 2FA
             return t("activity login 2fa mobile");
           }

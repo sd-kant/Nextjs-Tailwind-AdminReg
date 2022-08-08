@@ -556,5 +556,7 @@
   "date range": "Rango de fechas",
   "process": "proceso",
   "date range invalid": "Elija un intervalo de fechas válido",
-  "metric required": "Seleccione una métrica"
+  "metric required": "Seleccione una métrica",
+  "activity login saml web": "Inicio de sesión SSO (web)",
+  "activity login saml mobile": "Inicio de sesión SSO (móvil)"
 }
