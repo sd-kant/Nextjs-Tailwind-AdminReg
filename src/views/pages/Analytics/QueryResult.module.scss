@@ -1,0 +1,16 @@
+.Wrapper {
+  margin-top: 20px;
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
+
+  .Table {
+    border-spacing: 0;
+    border-collapse: separate;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .Wrapper {
+    margin-top: 0;
+  }
+}

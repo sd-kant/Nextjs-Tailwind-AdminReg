@@ -1,0 +1,25 @@
+@import "src/assets/scss/colors";
+
+.Header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+.HeaderCell {
+  padding: 5px 10px;
+  text-align: center;
+  white-space: nowrap;
+  background: $app-list-bg;
+  border: 1px solid $app-bg;
+
+  font-size: 18px;
+  line-height: 20.13px;
+}
+
+@media only screen and (min-width: 768px) {
+  .HeaderCell {
+    font-size: 21px;
+    line-height: 24.13px;
+  }
+}

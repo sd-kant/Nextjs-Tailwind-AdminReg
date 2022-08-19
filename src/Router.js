@@ -28,6 +28,7 @@ const DashboardV2Wrapper = lazy(() => import("./views/pages/DashboardV2Wrapper")
 const Invite = lazy(() => import("./views/pages/Invite"));
 const CreateAccount = lazy(() => import("./views/pages/CreateAccount"));
 const LoginEntry = lazy(() => import("./views/pages/LoginEntry"));
+const Analytics = lazy(() => import("./views/pages/Analytics"));
 import Loader from "./views/components/Loader";
 
 const Router = (
@@ -148,6 +149,21 @@ const Router = (
                   <RequireAdminRole>
                     <MainLayoutV2>
                       <DashboardV2Wrapper/>
+                    </MainLayoutV2>
+                  </RequireAdminRole>
+                </RequirePasswordValid>
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/analytics"
+            element={
+              <RequireAuth requireLoggedIn={true}>
+                <RequirePasswordValid>
+                  <RequireAdminRole>
+                    <MainLayoutV2>
+                      <Analytics/>
                     </MainLayoutV2>
                   </RequireAdminRole>
                 </RequirePasswordValid>
