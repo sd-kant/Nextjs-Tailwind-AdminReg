@@ -558,5 +558,8 @@
   "date range invalid": "Elija un intervalo de fechas válido",
   "metric required": "Seleccione una métrica",
   "activity login saml web": "Inicio de sesión SSO (web)",
-  "activity login saml mobile": "Inicio de sesión SSO (móvil)"
+  "activity login saml mobile": "Inicio de sesión SSO (móvil)",
+  "saml logout url": "URL de cierre de sesión de SAML",
+  "enter saml logout url": "Ingrese una URL de cierre de sesión de SAML",
+  "saml logout url invalid": "Ingrese una URL de cierre de sesión de SAML válida"
 }

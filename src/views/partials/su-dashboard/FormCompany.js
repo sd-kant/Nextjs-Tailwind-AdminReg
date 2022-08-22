@@ -102,6 +102,15 @@ const formSchema = (t) => {
           return this.parent.isEditing && this.parent.sso ? !!value : true;
         }
       ),
+    samlLogoutUrl: Yup.string()
+      .url(t('saml logout url invalid'))
+      .test(
+        'is-valid',
+        t('saml logout url invalid'),
+        function (value) {
+          return this.parent.isEditing && this.parent.sso ? !!value : true;
+        }
+      ),
     samlIssuer: Yup.string()
       .test(
         'is-valid',
@@ -198,6 +207,7 @@ const FormCompany = (props) => {
           users: [],
           sso: false,
           samlUrl: '',
+          samlLogoutUrl: '',
           samlIssuer: '',
           idp: '',
         });
@@ -208,7 +218,7 @@ const FormCompany = (props) => {
         } else {
           setFieldValue("companyCountry", options?.[0]);
         }
-        const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays', 'hideCbtHR', 'sso', 'samlUrl', 'samlIssuer', 'idp'];
+        const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays', 'hideCbtHR', 'sso', 'samlUrl', 'samlLogoutUrl', 'samlIssuer', 'idp'];
         fields?.forEach(item => setFieldValue(item, value[item]))
       }
     }
@@ -226,6 +236,7 @@ const FormCompany = (props) => {
       hideCbtHR: organization.settings?.hideCbtHR ?? false,
       sso: organization.settings?.sso ?? false,
       samlUrl: organization.settings?.samlUrl ?? '',
+      samlLogoutUrl: organization.settings?.samlLogoutUrl ?? '',
       samlIssuer: organization.settings?.samlIssuer ?? '',
       idp: organization.settings?.idp ?? '',
       created: true,
@@ -324,7 +335,7 @@ const FormCompany = (props) => {
       }
       let fields;
       if (values?.sso) {
-        fields = ["samlUrl", "samlIssuer", "idp"];
+        fields = ["samlUrl", "samlLogoutUrl", "samlIssuer", "idp"];
       } else {
         fields = ["twoFA", "passwordMinimumLength", "passwordExpirationDays"];
       }
@@ -698,6 +709,27 @@ const FormCompany = (props) => {
 
                     <div className='d-flex flex-column mt-25'>
                       <label className='font-input-label'>
+                        {t("saml logout url")}
+                      </label>
+
+                      <input
+                        className='input input-field mt-10 font-heading-small text-white'
+                        name="samlLogoutUrl"
+                        value={values["samlLogoutUrl"]}
+                        type='text'
+                        placeholder={t("enter saml logout url")}
+                        onChange={changeFormField}
+                      />
+
+                      {
+                        touched?.samlLogoutUrl && errors?.samlLogoutUrl && (
+                          <span className="font-helper-text text-error mt-10">{errors.samlLogoutUrl}</span>
+                        )
+                      }
+                    </div>
+
+                    <div className='d-flex flex-column mt-25'>
+                      <label className='font-input-label'>
                         {t("saml issuer")}
                       </label>
 
@@ -871,6 +903,7 @@ const EnhancedForm = withFormik({
     users: [],
     sso: false,
     samlUrl: '',
+    samlLogoutUrl: '',
     samlIssuer: '',
     idp: '',
   }),
@@ -884,6 +917,7 @@ const EnhancedForm = withFormik({
       settings: {
         sso: values.sso,
         samlUrl: values.samlUrl,
+        samlLogoutUrl: values.samlLogoutUrl,
         samlIssuer: values.samlIssuer,
         idp: values.idp,
         twoFA: values.twoFA,

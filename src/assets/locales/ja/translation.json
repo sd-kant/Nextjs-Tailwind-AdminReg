@@ -558,5 +558,8 @@
   "date range invalid": "有効な日付範囲を選択してください",
   "metric required": "指標を選択してください",
   "activity login saml web": "SSO ログイン (ウェブ)",
-  "activity login saml mobile": "SSO ログイン (モバイル)"
+  "activity login saml mobile": "SSO ログイン (モバイル)",
+  "saml logout url": "SAML ログアウト URL",
+  "enter saml logout url": "SAML ログアウト URL を入力してください",
+  "saml logout url invalid": "有効な SAML ログアウト URL を入力してください"
 }
