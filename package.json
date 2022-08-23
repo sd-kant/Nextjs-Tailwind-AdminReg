@@ -13,7 +13,7 @@
     "formik": "^2.2.9",
     "gsap": "^3.10.4",
     "i": "^0.3.7",
-    "i18next": "^21.8.11",
+    "i18next": "^21.8.16",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.1",
     "immer": "^9.0.15",
