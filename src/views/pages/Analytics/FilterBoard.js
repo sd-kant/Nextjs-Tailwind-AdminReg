@@ -106,9 +106,8 @@ const FilterBoard = () => {
   }, [startDate, endDate, metric, t]);
 
   const startDateMax = new Date();
-  const e = new Date();
-  e.setDate(e.getDate() + 1)
-  const endDateMax = e;
+  const endDateMax = new Date();
+  endDateMax.setDate(endDateMax.getDate() + 1)
 
   return (
     <div>

@@ -52,6 +52,22 @@ const ResultTableHeader = () => {
           </td>
         </React.Fragment>
       }
+      {
+        metric === 3 &&
+        <React.Fragment>
+          <td className={clsx(style.HeaderCell)}>
+            Max CBT
+          </td>
+        </React.Fragment>
+      }
+      {
+        metric === 4 &&
+        <React.Fragment>
+          <td className={clsx(style.HeaderCell)}>
+            Count(HR)
+          </td>
+        </React.Fragment>
+      }
     </tr>
     </thead>
   )

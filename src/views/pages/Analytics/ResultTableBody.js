@@ -13,6 +13,10 @@ const ResultTableBody = () => {
       ret = analytics?.wearTime;
     } else if (metric === 2) {
       ret = analytics?.alertMetrics;
+    } else if (metric === 3) {
+      ret = analytics?.maxCbt;
+    } else if (metric === 4) {
+      ret = analytics?.activeUsers;
     }
     if (ret?.length > 0) return ret;
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(() => ({userId: null}));
@@ -64,6 +68,23 @@ const ResultTableBody = () => {
               </td>
               <td className={clsx(style.Cell)}>
                 {it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ''}
+              </td>
+            </React.Fragment>
+          }
+          {/*todo property name is confusing: wearTime should be maxCbt */}
+          {
+            metric === 3 &&
+            <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {it.wearTime ? formatHeartCbt(it.wearTime) : ''}
+              </td>
+            </React.Fragment>
+          }
+          {
+            metric === 4 &&
+            <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {it.count ?? ''}
               </td>
             </React.Fragment>
           }

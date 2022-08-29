@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
   queryOrganizationWearTime,
   queryTeamMembers,
-queryOrganizationAlertMetrics, getRiskLevels
+  queryOrganizationAlertMetrics, getRiskLevels, queryOrganizationMaxCbt, queryOrganizationActiveUsers
 } from "../http";
 import {
   dateFormat,
@@ -14,6 +14,7 @@ const AnalyticsContext = React.createContext(null);
 export const AnalyticsProvider = (
   {
     children,
+    setLoading,
   }) => {
   const [pickedMembers, setPickedMembers] = React.useState([]);
   const [startDate, setStartDate] = React.useState('');
@@ -34,6 +35,14 @@ export const AnalyticsProvider = (
     {
       label: 'Alerts Metric',
       value: 2,
+    },
+    {
+      label: 'Max HeartCBT',
+      value: 3,
+    },
+    {
+      label: 'Active Users',
+      value: 4,
     }
   ];
   const [metric, setMetric] = React.useState(null);
@@ -59,7 +68,6 @@ export const AnalyticsProvider = (
       mounted = false;
     }
   }, []);
-  console.log("risk levels", riskLevels);
 
   React.useEffect(() => {
     const membersPromises = [];
@@ -92,6 +100,7 @@ export const AnalyticsProvider = (
       if (startDate && endDate && metric) {
         switch (metric) {
           case 1:
+            setLoading(true);
             queryOrganizationWearTime(organization, {
               teamIds: pickedTeams,
               startDate: dateFormat(new Date(startDate)),
@@ -102,19 +111,61 @@ export const AnalyticsProvider = (
                   ...analytics,
                   wearTime: response.data,
                 });
+              })
+              .finally(() => {
+                setLoading(false);
               });
             break;
           case 2:
+            setLoading(true);
             queryOrganizationAlertMetrics(organization, {
               teamIds: pickedTeams,
               startDate: dateFormat(new Date(startDate)),
               endDate: dateFormat(new Date(endDate)),
-            }).then(response => {
-              setAnalytics({
-                ...analytics,
-                alertMetrics: response.data,
+            })
+              .then(response => {
+                setAnalytics({
+                  ...analytics,
+                  alertMetrics: response.data,
+                });
+              })
+              .finally(() => {
+                setLoading(false);
               });
-            });
+            break;
+          case 3:
+            setLoading(true);
+            queryOrganizationMaxCbt(organization, {
+              teamIds: pickedTeams,
+              startDate: dateFormat(new Date(startDate)),
+              endDate: dateFormat(new Date(endDate)),
+            })
+              .then(response => {
+                setAnalytics({
+                  ...analytics,
+                  maxCbt: response.data,
+                });
+              })
+              .finally(() => {
+                setLoading(false);
+              });
+            break;
+          case 4:
+            setLoading(true);
+            queryOrganizationActiveUsers(organization, {
+              teamIds: pickedTeams,
+              startDate: dateFormat(new Date(startDate)),
+              endDate: dateFormat(new Date(endDate)),
+            })
+              .then(response => {
+                setAnalytics({
+                  ...analytics,
+                  activeUsers: response.data,
+                });
+              })
+              .finally(() => {
+                setLoading(false);
+              });
             break;
           default:
             console.log("metric is not available");
@@ -122,6 +173,8 @@ export const AnalyticsProvider = (
       }
     }
   };
+
+  console.log("**", analytics);
 
   const getUserNameFromUserId = React.useCallback(id => {
     const user = members?.find(it => it.userId?.toString() === id?.toString());
