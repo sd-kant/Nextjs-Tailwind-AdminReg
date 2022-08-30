@@ -558,5 +558,8 @@
   "date range invalid": "Veuillez choisir une plage de dates valide",
   "metric required": "Veuillez sélectionner une statistique",
   "activity login saml web": "Connexion SSO (Web)",
-  "activity login saml mobile": "Connexion SSO (mobile)"
+  "activity login saml mobile": "Connexion SSO (mobile)",
+  "saml logout url": "URL de déconnexion SAML",
+  "enter saml logout url": "Veuillez entrer une URL de déconnexion SAML",
+  "saml logout url invalid": "Veuillez entrer une URL de déconnexion SAML valide"
 }
