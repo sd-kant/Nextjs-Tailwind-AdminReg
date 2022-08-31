@@ -81,7 +81,7 @@ const ResultTableBody = (
             metric === 3 &&
             <React.Fragment>
               <td className={clsx(style.Cell)}>
-                {it.wearTime ? formatHeartCbt(it.wearTime) : ''}
+                {it.maxCbt ? formatHeartCbt(it.maxCbt) : ''}
               </td>
             </React.Fragment>
           }

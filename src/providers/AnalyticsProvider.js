@@ -51,6 +51,10 @@ export const AnalyticsProvider = (
     {
       label: 'SWR & Fluid',
       value: 5,
+    },
+    {
+      label: 'Percentage of Workers',
+      value: 6,
     }
   ];
   const [metric, setMetric] = React.useState(null);
