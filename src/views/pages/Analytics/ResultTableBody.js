@@ -5,7 +5,10 @@ import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 import {useUtilsContext} from "../../../providers/UtilsProvider";
 import {formatHeartRate} from "../../../utils/dashboard";
 
-const ResultTableBody = () => {
+const ResultTableBody = (
+  {
+    metric: unitMetric,
+  }) => {
   const {analytics, metric, getUserNameFromUserId, getTeamNameFromUserId, formatRiskLevel} = useAnalyticsContext();
   const data = React.useMemo(() => {
     let ret = [];
@@ -17,6 +20,8 @@ const ResultTableBody = () => {
       ret = analytics?.maxCbt;
     } else if (metric === 4) {
       ret = analytics?.activeUsers;
+    } else if (metric === 5) {
+      ret = analytics?.swrFluid;
     }
     if (ret?.length > 0) return ret;
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(() => ({userId: null}));
@@ -36,14 +41,14 @@ const ResultTableBody = () => {
           </td>
           {
             metric === 1 &&
-              <React.Fragment>
-                <td className={clsx(style.Cell)}>
-                  {it.avgWearTime ?? ''}
-                </td>
-                <td className={clsx(style.Cell)}>
-                  {it.wearTime ?? ''}
-                </td>
-              </React.Fragment>
+            <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {it.avgWearTime ?? ''}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it.wearTime ?? ''}
+              </td>
+            </React.Fragment>
           }
           {
             metric === 2 &&
@@ -85,6 +90,35 @@ const ResultTableBody = () => {
             <React.Fragment>
               <td className={clsx(style.Cell)}>
                 {it.count ?? ''}
+              </td>
+            </React.Fragment>
+          }
+          {
+            metric === 5 &&
+            <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {it.sweatRateCategory ?? ''}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it.sweatRate ?? ''}
+              </td>
+              {
+                unitMetric ?
+                  <td className={clsx(style.Cell)}>
+                    {it.fluidRecommendationL ?? ''}
+                  </td> :
+                  <td className={clsx(style.Cell)}>
+                    {it.fluidRecommendationG ?? ''}
+                  </td>
+              }
+              <td className={clsx(style.Cell)}>
+                {it.previousIllness ?? ''}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it.acclimatizationStatus ?? ''}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it.heatSusceptibility ?? ''}
               </td>
             </React.Fragment>
           }

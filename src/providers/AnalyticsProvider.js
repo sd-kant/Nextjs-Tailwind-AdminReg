@@ -2,7 +2,11 @@ import * as React from 'react';
 import {
   queryOrganizationWearTime,
   queryTeamMembers,
-  queryOrganizationAlertMetrics, getRiskLevels, queryOrganizationMaxCbt, queryOrganizationActiveUsers
+  queryOrganizationAlertMetrics,
+  getRiskLevels,
+  queryOrganizationMaxCbt,
+  queryOrganizationActiveUsers,
+  queryOrganizationSWRFluid
 } from "../http";
 import {
   dateFormat,
@@ -43,6 +47,10 @@ export const AnalyticsProvider = (
     {
       label: 'Active Users',
       value: 4,
+    },
+    {
+      label: 'SWR & Fluid',
+      value: 5,
     }
   ];
   const [metric, setMetric] = React.useState(null);
@@ -161,6 +169,23 @@ export const AnalyticsProvider = (
                 setAnalytics({
                   ...analytics,
                   activeUsers: response.data,
+                });
+              })
+              .finally(() => {
+                setLoading(false);
+              });
+            break;
+          case 5:
+            setLoading(true);
+            queryOrganizationSWRFluid(organization, {
+              teamIds: pickedTeams,
+              startDate: dateFormat(new Date(startDate)),
+              endDate: dateFormat(new Date(endDate)),
+            })
+              .then(response => {
+                setAnalytics({
+                  ...analytics,
+                  swrFluid: response.data,
                 });
               })
               .finally(() => {

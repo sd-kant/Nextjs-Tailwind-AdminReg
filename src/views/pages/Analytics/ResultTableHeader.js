@@ -3,7 +3,10 @@ import clsx from "clsx";
 import style from "./ResultTableHeader.module.scss";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 
-const ResultTableHeader = () => {
+const ResultTableHeader = (
+  {
+    metric: unitMetric,
+  }) => {
   const {metric} = useAnalyticsContext();
 
   return (
@@ -65,6 +68,35 @@ const ResultTableHeader = () => {
         <React.Fragment>
           <td className={clsx(style.HeaderCell)}>
             Count(HR)
+          </td>
+        </React.Fragment>
+      }
+      {
+        metric === 5 &&
+        <React.Fragment>
+          <td className={clsx(style.HeaderCell)}>
+            SWR Category
+          </td>
+          <td className={clsx(style.HeaderCell)}>
+            SWR (L/h)
+          </td>
+          {
+            unitMetric ?
+              <td className={clsx(style.HeaderCell)}>
+                Fluid Recmdt (L)
+              </td> :
+              <td className={clsx(style.HeaderCell)}>
+                Fluid Recmdt (Gal)
+              </td>
+          }
+          <td className={clsx(style.HeaderCell)}>
+            Previous illness
+          </td>
+          <td className={clsx(style.HeaderCell)}>
+            Acclim Status
+          </td>
+          <td className={clsx(style.HeaderCell)}>
+            Heat Risk
           </td>
         </React.Fragment>
       }

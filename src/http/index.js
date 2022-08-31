@@ -388,6 +388,10 @@ export const queryOrganizationActiveUsers = (orgId, data) => {
   return post(`/organization/${orgId}/data/activeUsers`, data);
 }
 
+export const queryOrganizationSWRFluid = (orgId, data) => {
+  return post(`/organization/${orgId}/data/fluidMetrics`, data);
+}
+
 export const getRiskLevels = () => {
   return get('risklevel');
 }
