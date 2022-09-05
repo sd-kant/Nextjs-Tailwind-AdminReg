@@ -1,16 +1,22 @@
 .Wrapper {
-  margin-top: 20px;
-  max-height: calc(100vh - 150px);
-  overflow-y: auto;
+  .InnerWrapper {
+    margin-top: 20px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
 
-  .Table {
-    border-spacing: 0;
-    border-collapse: separate;
+    .Table {
+      border-spacing: 0;
+      border-collapse: separate;
+    }
+  }
+
+  .StatsSelectWrapper {
+    margin-top: 20px;
   }
 }
 
 @media only screen and (min-width: 768px) {
-  .Wrapper {
+  .InnerWrapper {
     margin-top: 0;
   }
 }

@@ -6,17 +6,34 @@ import style from "./QueryResult.module.scss";
 import ResultTableHeader from "./ResultTableHeader";
 import ResultTableBody from "./ResultTableBody";
 import {get} from "lodash";
+import Toggle from "../../components/Toggle";
+import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 
 const QueryResult = (
   {
     metric,
   }) => {
+  const {statsBy, setStatsBy} = useAnalyticsContext();
+
   return (
     <div className={clsx(style.Wrapper)}>
-      <table className={clsx(style.Table)}>
-        <ResultTableHeader metric={metric}/>
-        <ResultTableBody metric={metric}/>
-      </table>
+      <div className={clsx(style.InnerWrapper)}>
+        <table className={clsx(style.Table)}>
+          <ResultTableHeader metric={metric}/>
+          <ResultTableBody metric={metric}/>
+        </table>
+      </div>
+
+      <div className={clsx(style.StatsSelectWrapper)}>
+        <Toggle
+          on={statsBy === 'team'}
+          titleOn={'User'}
+          titleOff={'Team'}
+          handleSwitch={v => {
+            setStatsBy(v ? 'team' : 'user');
+          }}
+        />
+      </div>
     </div>
   )
 }

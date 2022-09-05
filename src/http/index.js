@@ -392,6 +392,10 @@ export const queryOrganizationSWRFluid = (orgId, data) => {
   return post(`/organization/${orgId}/data/fluidMetrics`, data);
 }
 
+export const queryOrganizationAlertedUserCount = (orgId, data) => {
+  return post(`/organization/${orgId}/data/alertedUserCount`, data);
+}
+
 export const getRiskLevels = () => {
   return get('risklevel');
 }

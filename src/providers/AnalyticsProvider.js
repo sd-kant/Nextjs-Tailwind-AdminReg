@@ -6,7 +6,7 @@ import {
   getRiskLevels,
   queryOrganizationMaxCbt,
   queryOrganizationActiveUsers,
-  queryOrganizationSWRFluid
+  queryOrganizationSWRFluid, queryOrganizationAlertedUserCount
 } from "../http";
 import {
   dateFormat,
@@ -19,19 +19,21 @@ export const AnalyticsProvider = (
   {
     children,
     setLoading,
+    metric: unitMetric,
   }) => {
   const [pickedMembers, setPickedMembers] = React.useState([]);
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
   const {pickedTeams, organization, formattedTeams} = useBasicContext();
   const [members, _setMembers] = React.useState();
+  console.log("members", members);
   const membersRef = React.useRef(members);
   const setMembers = v => {
     _setMembers(v);
     membersRef.current = v;
   }
   const [analytics, setAnalytics] = React.useState(null); // { wearTime: [], alertMetrics: [] }
-  const metrics = [
+  /*const metrics = [
     {
       label: 'Wear Time',
       value: 1,
@@ -56,8 +58,98 @@ export const AnalyticsProvider = (
       label: 'Percentage of Workers',
       value: 6,
     }
-  ];
+  ];*/
+  const [statsBy, setStatsBy] = React.useState('user'); // user | team
+  const metrics = React.useMemo(() => {
+    const userStatsMetrics = [
+      {
+        label: 'Wear Time',
+        value: 1,
+      },
+      {
+        label: 'Alerts',
+        value: 2,
+      },
+      {
+        label: 'Max Heart CBT',
+        value: 3,
+      },
+      {
+        label: 'SWR & Acclim',
+        value: 5,
+      },
+      {
+        label: 'Time spent in CBT zones',
+        value: 6,
+      },
+      {
+        label: 'Device Data',
+        value: 7,
+      }
+    ];
+    const teamStatsMetrics = [
+      {
+        label: 'Ambient Temp/Humidity',
+        value: 20,
+      },
+      {
+        label: '% of workers with Alerts',
+        value: 21,
+      },
+      {
+        label: 'Active Users',
+        value: 22,
+      },
+      {
+        label: 'No. of users in SWR Categories',
+        value: 23,
+      },
+      {
+        label: 'No. of users in Heat Susceptibility Categories',
+        value: 24,
+      },
+      {
+        label: 'No. of users in CBT zones',
+        value: 25,
+      },
+      {
+        label: 'No. of users unacclimated, acclimated and persis previous illness',
+        value: 26,
+      },
+    ];
+    return statsBy === 'user' ? userStatsMetrics : teamStatsMetrics;
+  }, [statsBy]);
   const [metric, setMetric] = React.useState(null);
+  const headers = React.useMemo(() => {
+    let ret = ['Name', 'Team'];
+    switch (metric) {
+      case 1:
+        ret = ['Name', 'Team', 'Avg Wear Time', 'Total Wear Time'];
+        break;
+      case 2:
+        ret = ['Name', 'Team', 'Alert time', 'Alert', 'Heat Risk', 'CBT', 'Temp', 'Humidity', 'Heart Rate Avg'];
+        break;
+      case 3:
+        ret = ['Name', 'Team', 'Max CBT'];
+        break;
+      case 4:
+        // ret = ['Name', 'Team'];
+        break;
+      case 5:
+        ret = ['Name', 'Team', 'SWR Category', 'SWR', unitMetric ? 'Fluid Recmdt (L)' : 'Fluid Recmdt (Gal)', 'Previous illness', 'Acclim Status', 'Heat Risk'];
+        break;
+      case 22:
+        ret = ['Team', 'Active Users'];
+        break;
+      case 23:
+        ret = ['Team', 'Low SWR', 'Moderate SWR', 'High SWR'];
+        break;
+      default:
+        console.log('metric not registered');
+    }
+
+    return ret;
+  }, [metric, unitMetric]);
   const [riskLevels, setRiskLevels] = React.useState(null);
   const formattedMembers = React.useMemo(() => {
     const ret = [];
@@ -111,7 +203,7 @@ export const AnalyticsProvider = (
       setAnalytics(null);
       if (startDate && endDate && metric) {
         switch (metric) {
-          case 1:
+          case 1: // wear time
             setLoading(true);
             queryOrganizationWearTime(organization, {
               teamIds: pickedTeams,
@@ -128,7 +220,7 @@ export const AnalyticsProvider = (
                 setLoading(false);
               });
             break;
-          case 2:
+          case 2: // alerts
             setLoading(true);
             queryOrganizationAlertMetrics(organization, {
               teamIds: pickedTeams,
@@ -162,7 +254,25 @@ export const AnalyticsProvider = (
                 setLoading(false);
               });
             break;
-          case 4:
+          case 5:
+          case 23:
+            setLoading(true);
+            queryOrganizationSWRFluid(organization, {
+              teamIds: pickedTeams,
+              startDate: dateFormat(new Date(startDate)),
+              endDate: dateFormat(new Date(endDate)),
+            })
+              .then(response => {
+                setAnalytics({
+                  ...analytics,
+                  swrFluid: response.data,
+                });
+              })
+              .finally(() => {
+                setLoading(false);
+              });
+            break;
+          case 22:
             setLoading(true);
             queryOrganizationActiveUsers(organization, {
               teamIds: pickedTeams,
@@ -179,9 +289,9 @@ export const AnalyticsProvider = (
                 setLoading(false);
               });
             break;
-          case 5:
+          case 21:
             setLoading(true);
-            queryOrganizationSWRFluid(organization, {
+            queryOrganizationAlertedUserCount(organization, {
               teamIds: pickedTeams,
               startDate: dateFormat(new Date(startDate)),
               endDate: dateFormat(new Date(endDate)),
@@ -189,7 +299,7 @@ export const AnalyticsProvider = (
               .then(response => {
                 setAnalytics({
                   ...analytics,
-                  swrFluid: response.data,
+                  activeUsers: response.data,
                 });
               })
               .finally(() => {
@@ -218,6 +328,9 @@ export const AnalyticsProvider = (
     }
     return user ? `${user?.firstName} ${user?.lastName}` : '';
   }, [members, formattedTeams]);
+  const getTeamNameFromTeamId = React.useCallback(teamId => {
+    return formattedTeams?.find(it => it.value?.toString() === teamId?.toString())?.label;
+  }, [formattedTeams]);
   const formatRiskLevel = id => {
     return riskLevels?.find(it => it.id?.toString() === id?.toString())?.name;
   }
@@ -239,7 +352,11 @@ export const AnalyticsProvider = (
     processQuery,
     getUserNameFromUserId,
     getTeamNameFromUserId,
+    getTeamNameFromTeamId,
     formatRiskLevel,
+    statsBy,
+    setStatsBy,
+    headers,
   };
 
   return (

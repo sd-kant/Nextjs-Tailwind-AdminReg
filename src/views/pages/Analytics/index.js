@@ -4,6 +4,7 @@ import style from "./Analytics.module.scss";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAction} from "../../../redux/action/ui";
+import {get} from "lodash";
 
 import FilterBoard from "./FilterBoard";
 import QueryResult from "./QueryResult";
@@ -13,12 +14,14 @@ import {UtilsProvider} from "../../../providers/UtilsProvider";
 
 const Analytics = (
   {
+    metric,
     setLoading,
   }) => {
   return (
     <div className={clsx(style.Wrapper)}>
       <BasicProvider>
         <AnalyticsProvider
+          metric={metric}
           setLoading={setLoading}
         >
           <UtilsProvider>
@@ -31,6 +34,10 @@ const Analytics = (
   )
 }
 
+const mapStateToProps = (state) => ({
+  metric: get(state, 'ui.metric'),
+});
+
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
@@ -42,6 +49,6 @@ const mapDispatchToProps = (dispatch) =>
   );
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(Analytics);

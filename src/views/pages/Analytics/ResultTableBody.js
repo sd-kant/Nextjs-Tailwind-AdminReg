@@ -9,7 +9,15 @@ const ResultTableBody = (
   {
     metric: unitMetric,
   }) => {
-  const {analytics, metric, getUserNameFromUserId, getTeamNameFromUserId, formatRiskLevel} = useAnalyticsContext();
+  const {
+    analytics,
+    metric,
+    getUserNameFromUserId,
+    getTeamNameFromUserId,
+    getTeamNameFromTeamId,
+    formatRiskLevel,
+    members,
+  } = useAnalyticsContext();
   const data = React.useMemo(() => {
     let ret = [];
     if (metric === 1) {
@@ -18,30 +26,67 @@ const ResultTableBody = (
       ret = analytics?.alertMetrics;
     } else if (metric === 3) {
       ret = analytics?.maxCbt;
-    } else if (metric === 4) {
-      ret = analytics?.activeUsers;
     } else if (metric === 5) {
       ret = analytics?.swrFluid;
+    } else if (metric === 22) { // active users in team
+      // analytics?.activeUsers
+      analytics?.activeUsers?.forEach(it => {
+        const member = members?.find(ele => ele.userId === it.userId);
+        const memberTeamId = member.teamId;
+        const index = ret?.findIndex(e => e.teamId === memberTeamId);
+
+        if (index !== -1) {
+          ret.splice(index, 1, {
+            teamId: memberTeamId,
+            cnt: ret[index].cnt + 1,
+          });
+        } else {
+          ret.push({
+            teamId: memberTeamId,
+            cnt: 1,
+          })
+        }
+      });
+    } else if (metric === 23) {
+      analytics?.swrFluid.forEach(it => {
+        const index = ret?.findIndex(e => e.teamId === it.teamId);
+        if (["low", "moderate", "high"].includes(it.sweatRateCategory?.toLowerCase())) {
+          if (index !== -1) {
+            ret.splice(index, 1, {
+              ...ret[index],
+              [it.sweatRateCategory?.toLowerCase()]: (ret[index][it.sweatRateCategory?.toLowerCase()] ?? 0) + 1,
+            });
+          } else {
+            ret.push(
+              {
+                teamId: it.teamId,
+                [it.sweatRateCategory?.toLowerCase()]: 1,
+              }
+            )
+          }
+        }
+      });
     }
     if (ret?.length > 0) return ret;
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(() => ({userId: null}));
-  }, [analytics, metric]);
+  }, [analytics, metric, members]);
   const {formatAlert, formatHeartCbt} = useUtilsContext();
+  console.log(data);
 
   return (
     <tbody>
     {
       data?.map((it, index) =>
         <tr key={`query-record-${index}`}>
-          <td className={clsx(style.Cell)}>
-            {getUserNameFromUserId(it.userId)}
-          </td>
-          <td className={clsx(style.Cell)}>
-            {getTeamNameFromUserId(it.userId)}
-          </td>
           {
             metric === 1 &&
             <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {getUserNameFromUserId(it.userId)}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {getTeamNameFromUserId(it.userId)}
+              </td>
               <td className={clsx(style.Cell)}>
                 {it.avgWearTime ?? ''}
               </td>
@@ -53,6 +98,12 @@ const ResultTableBody = (
           {
             metric === 2 &&
             <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {getUserNameFromUserId(it.userId)}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {getTeamNameFromUserId(it.userId)}
+              </td>
               <td className={clsx(style.Cell)}>
                 {it.ts ? new Date(it.ts)?.toLocaleString() : ''}
               </td>
@@ -76,10 +127,15 @@ const ResultTableBody = (
               </td>
             </React.Fragment>
           }
-          {/*todo property name is confusing: wearTime should be maxCbt */}
           {
             metric === 3 &&
             <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {getUserNameFromUserId(it.userId)}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {getTeamNameFromUserId(it.userId)}
+              </td>
               <td className={clsx(style.Cell)}>
                 {it.maxCbt ? formatHeartCbt(it.maxCbt) : ''}
               </td>
@@ -89,6 +145,12 @@ const ResultTableBody = (
             metric === 4 &&
             <React.Fragment>
               <td className={clsx(style.Cell)}>
+                {getUserNameFromUserId(it.userId)}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {getTeamNameFromUserId(it.userId)}
+              </td>
+              <td className={clsx(style.Cell)}>
                 {it.count ?? ''}
               </td>
             </React.Fragment>
@@ -96,6 +158,12 @@ const ResultTableBody = (
           {
             metric === 5 &&
             <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {getUserNameFromUserId(it.userId)}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {getTeamNameFromUserId(it.userId)}
+              </td>
               <td className={clsx(style.Cell)}>
                 {it.sweatRateCategory ?? ''}
               </td>
@@ -119,6 +187,34 @@ const ResultTableBody = (
               </td>
               <td className={clsx(style.Cell)}>
                 {it.heatSusceptibility ?? ''}
+              </td>
+            </React.Fragment>
+          }
+          {
+            metric === 22 &&
+            <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {getTeamNameFromTeamId(it.teamId)}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it.cnt}
+              </td>
+            </React.Fragment>
+          }
+          {
+            metric === 23 &&
+            <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {getTeamNameFromTeamId(it.teamId)}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it['low'] ?? 0}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it['moderate'] ?? 0}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it['high'] ?? 0}
               </td>
             </React.Fragment>
           }
