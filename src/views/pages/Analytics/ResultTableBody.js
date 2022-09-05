@@ -66,6 +66,25 @@ const ResultTableBody = (
           }
         }
       });
+    } else if (metric === 24) {
+      analytics?.swrFluid.forEach(it => {
+        const index = ret?.findIndex(e => e.teamId === it.teamId);
+        if (["low", "medium", "high"].includes(it.heatSusceptibility?.toLowerCase())) {
+          if (index !== -1) {
+            ret.splice(index, 1, {
+              ...ret[index],
+              [it.heatSusceptibility?.toLowerCase()]: (ret[index][it.heatSusceptibility?.toLowerCase()] ?? 0) + 1,
+            });
+          } else {
+            ret.push(
+              {
+                teamId: it.teamId,
+                [it.heatSusceptibility?.toLowerCase()]: 1,
+              }
+            )
+          }
+        }
+      });
     }
     if (ret?.length > 0) return ret;
     return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(() => ({userId: null}));
@@ -208,13 +227,30 @@ const ResultTableBody = (
                 {getTeamNameFromTeamId(it.teamId)}
               </td>
               <td className={clsx(style.Cell)}>
-                {it['low'] ?? 0}
+                {it['low']}
               </td>
               <td className={clsx(style.Cell)}>
-                {it['moderate'] ?? 0}
+                {it['moderate']}
               </td>
               <td className={clsx(style.Cell)}>
-                {it['high'] ?? 0}
+                {it['high']}
+              </td>
+            </React.Fragment>
+          }
+          {
+            metric === 24 &&
+            <React.Fragment>
+              <td className={clsx(style.Cell)}>
+                {getTeamNameFromTeamId(it.teamId)}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it['low']}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it['medium']}
+              </td>
+              <td className={clsx(style.Cell)}>
+                {it['high']}
               </td>
             </React.Fragment>
           }

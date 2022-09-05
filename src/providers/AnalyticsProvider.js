@@ -144,6 +144,9 @@ export const AnalyticsProvider = (
       case 23:
         ret = ['Team', 'Low SWR', 'Moderate SWR', 'High SWR'];
         break;
+      case 24:
+        ret = ['Team', 'Low Ris', 'Medium Risk', 'High Risk'];
+        break;
       default:
         console.log('metric not registered');
     }
@@ -256,6 +259,7 @@ export const AnalyticsProvider = (
             break;
           case 5:
           case 23:
+          case 24:
             setLoading(true);
             queryOrganizationSWRFluid(organization, {
               teamIds: pickedTeams,
