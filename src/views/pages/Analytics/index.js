@@ -20,15 +20,15 @@ const Analytics = (
   return (
     <div className={clsx(style.Wrapper)}>
       <BasicProvider>
-        <AnalyticsProvider
-          metric={metric}
-          setLoading={setLoading}
-        >
-          <UtilsProvider>
+        <UtilsProvider>
+          <AnalyticsProvider
+            metric={metric}
+            setLoading={setLoading}
+          >
             <FilterBoard/>
             <QueryResult/>
-          </UtilsProvider>
-        </AnalyticsProvider>
+          </AnalyticsProvider>
+        </UtilsProvider>
       </BasicProvider>
     </div>
   )

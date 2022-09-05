@@ -6,12 +6,15 @@ import {
   getRiskLevels,
   queryOrganizationMaxCbt,
   queryOrganizationActiveUsers,
-  queryOrganizationSWRFluid, queryOrganizationAlertedUserCount
+  queryOrganizationSWRFluid,
+  // queryOrganizationAlertedUserCount,
 } from "../http";
 import {
   dateFormat,
 } from "../utils";
 import {useBasicContext} from "./BasicProvider";
+import {formatHeartRate} from "../utils/dashboard";
+import {useUtilsContext} from "./UtilsProvider";
 
 const AnalyticsContext = React.createContext(null);
 
@@ -21,45 +24,54 @@ export const AnalyticsProvider = (
     setLoading,
     metric: unitMetric,
   }) => {
+  const {formatAlert, formatHeartCbt} = useUtilsContext();
   const [pickedMembers, setPickedMembers] = React.useState([]);
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
   const {pickedTeams, organization, formattedTeams} = useBasicContext();
   const [members, _setMembers] = React.useState();
-  console.log("members", members);
   const membersRef = React.useRef(members);
   const setMembers = v => {
     _setMembers(v);
     membersRef.current = v;
   }
   const [analytics, setAnalytics] = React.useState(null); // { wearTime: [], alertMetrics: [] }
-  /*const metrics = [
-    {
-      label: 'Wear Time',
-      value: 1,
-    },
-    {
-      label: 'Alerts Metric',
-      value: 2,
-    },
-    {
-      label: 'Max HeartCBT',
-      value: 3,
-    },
-    {
-      label: 'Active Users',
-      value: 4,
-    },
-    {
-      label: 'SWR & Fluid',
-      value: 5,
-    },
-    {
-      label: 'Percentage of Workers',
-      value: 6,
-    }
-  ];*/
   const [statsBy, setStatsBy] = React.useState('user'); // user | team
+  React.useEffect(() => {
+    let mounted = true;
+    getRiskLevels().then(response => {
+      if (mounted) setRiskLevels(response.data);
+    })
+
+    return () => {
+      mounted = false;
+    }
+  }, []);
+
+  React.useEffect(() => {
+    const membersPromises = [];
+    setMembers([]);
+    if (pickedTeams?.length > 0) {
+      pickedTeams.forEach(team => {
+        membersPromises.push(queryTeamMembers(team));
+      });
+      const a = () => new Promise(resolve => {
+        Promise.allSettled(membersPromises)
+          .then(results => {
+            results?.forEach((result, index) => {
+              if (result.status === "fulfilled") {
+                if (result.value?.data?.members?.length > 0) {
+                  const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString()) ?? [];
+                  setMembers([...membersRef.current, ...operators]);
+                }
+              }
+            })
+          })
+          .finally(() => resolve());
+      });
+      Promise.allSettled([a()]).then();
+    }
+  }, [pickedTeams]);
   const metrics = React.useMemo(() => {
     const userStatsMetrics = [
       {
@@ -145,7 +157,7 @@ export const AnalyticsProvider = (
         ret = ['Team', 'Low SWR', 'Moderate SWR', 'High SWR'];
         break;
       case 24:
-        ret = ['Team', 'Low Ris', 'Medium Risk', 'High Risk'];
+        ret = ['Team', 'Low Risk', 'Medium Risk', 'High Risk'];
         break;
       default:
         console.log('metric not registered');
@@ -165,179 +177,203 @@ export const AnalyticsProvider = (
 
     return ret;
   }, [members]);
-  React.useEffect(() => {
-    let mounted = true;
-    getRiskLevels().then(response => {
-      if (mounted) setRiskLevels(response.data);
-    })
-
-    return () => {
-      mounted = false;
-    }
-  }, []);
-
-  React.useEffect(() => {
-    const membersPromises = [];
-    setMembers([]);
-    if (pickedTeams?.length > 0) {
-      pickedTeams.forEach(team => {
-        membersPromises.push(queryTeamMembers(team));
-      });
-      const a = () => new Promise(resolve => {
-        Promise.allSettled(membersPromises)
-          .then(results => {
-            results?.forEach((result, index) => {
-              if (result.status === "fulfilled") {
-                if (result.value?.data?.members?.length > 0) {
-                  const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString()) ?? [];
-                  setMembers([...membersRef.current, ...operators]);
-                }
-              }
-            })
-          })
-          .finally(() => resolve());
-      });
-      Promise.allSettled([a()]).then();
-    }
-  }, [pickedTeams]);
 
   const processQuery = () => {
     if (pickedTeams?.length > 0) {
-      setAnalytics(null);
       if (startDate && endDate && metric) {
+        let key = null;
+        let apiCall = null;
         switch (metric) {
           case 1: // wear time
-            setLoading(true);
-            queryOrganizationWearTime(organization, {
-              teamIds: pickedTeams,
-              startDate: dateFormat(new Date(startDate)),
-              endDate: dateFormat(new Date(endDate)),
-            })
-              .then(response => {
-                setAnalytics({
-                  ...analytics,
-                  wearTime: response.data,
-                });
-              })
-              .finally(() => {
-                setLoading(false);
-              });
+            apiCall = queryOrganizationWearTime;
+            key = 'wearTime';
             break;
           case 2: // alerts
-            setLoading(true);
-            queryOrganizationAlertMetrics(organization, {
-              teamIds: pickedTeams,
-              startDate: dateFormat(new Date(startDate)),
-              endDate: dateFormat(new Date(endDate)),
-            })
-              .then(response => {
-                setAnalytics({
-                  ...analytics,
-                  alertMetrics: response.data,
-                });
-              })
-              .finally(() => {
-                setLoading(false);
-              });
+            apiCall = queryOrganizationAlertMetrics;
+            key = 'alertMetrics';
             break;
           case 3:
-            setLoading(true);
-            queryOrganizationMaxCbt(organization, {
-              teamIds: pickedTeams,
-              startDate: dateFormat(new Date(startDate)),
-              endDate: dateFormat(new Date(endDate)),
-            })
-              .then(response => {
-                setAnalytics({
-                  ...analytics,
-                  maxCbt: response.data,
-                });
-              })
-              .finally(() => {
-                setLoading(false);
-              });
+            apiCall = queryOrganizationMaxCbt;
+            key = 'maxCbt';
             break;
           case 5:
           case 23:
           case 24:
-            setLoading(true);
-            queryOrganizationSWRFluid(organization, {
-              teamIds: pickedTeams,
-              startDate: dateFormat(new Date(startDate)),
-              endDate: dateFormat(new Date(endDate)),
-            })
-              .then(response => {
-                setAnalytics({
-                  ...analytics,
-                  swrFluid: response.data,
-                });
-              })
-              .finally(() => {
-                setLoading(false);
-              });
+            apiCall = queryOrganizationSWRFluid;
+            key = 'swrFluid';
             break;
           case 22:
-            setLoading(true);
-            queryOrganizationActiveUsers(organization, {
-              teamIds: pickedTeams,
-              startDate: dateFormat(new Date(startDate)),
-              endDate: dateFormat(new Date(endDate)),
-            })
-              .then(response => {
-                setAnalytics({
-                  ...analytics,
-                  activeUsers: response.data,
-                });
-              })
-              .finally(() => {
-                setLoading(false);
-              });
+            apiCall = queryOrganizationActiveUsers;
+            key = 'activeUsers';
             break;
           case 21:
-            setLoading(true);
-            queryOrganizationAlertedUserCount(organization, {
-              teamIds: pickedTeams,
-              startDate: dateFormat(new Date(startDate)),
-              endDate: dateFormat(new Date(endDate)),
-            })
-              .then(response => {
-                setAnalytics({
-                  ...analytics,
-                  activeUsers: response.data,
-                });
-              })
-              .finally(() => {
-                setLoading(false);
-              });
+            /*apiCall = queryOrganizationAlertedUserCount;
+            key = 'activeUsers';*/
             break;
           default:
             console.log("metric is not available");
         }
+
+        if (apiCall && key) {
+          setLoading(true);
+          apiCall(organization, {
+            teamIds: pickedTeams,
+            startDate: dateFormat(new Date(startDate)),
+            endDate: dateFormat(new Date(endDate)),
+          })
+            .then(response => {
+              setAnalytics({
+                ...analytics,
+                [key]: response.data,
+              });
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
       }
     }
   };
-
-  console.log("**", analytics);
-
-  const getUserNameFromUserId = React.useCallback(id => {
-    const user = members?.find(it => it.userId?.toString() === id?.toString());
-    return user ? `${user?.firstName} ${user?.lastName}` : '';
-  }, [members]);
-
-  const getTeamNameFromUserId = React.useCallback(userId => {
-    const user = members?.find(it => it.userId?.toString() === userId?.toString());
-    if (user?.teamId) {
-      const team = formattedTeams?.find(it => it.value?.toString() === user.teamId?.toString());
-      return team ? team.label : '';
-    }
-    return user ? `${user?.firstName} ${user?.lastName}` : '';
-  }, [members, formattedTeams]);
-  const getTeamNameFromTeamId = React.useCallback(teamId => {
-    return formattedTeams?.find(it => it.value?.toString() === teamId?.toString())?.label;
-  }, [formattedTeams]);
   const formatRiskLevel = id => {
     return riskLevels?.find(it => it.id?.toString() === id?.toString())?.name;
   }
+  const data = React.useMemo(() => {
+    const getUserNameFromUserId = id => {
+      const user = members?.find(it => it.userId?.toString() === id?.toString());
+      return user ? `${user?.firstName} ${user?.lastName}` : '';
+    };
+
+    const getTeamNameFromUserId = userId => {
+      const user = members?.find(it => it.userId?.toString() === userId?.toString());
+      if (user?.teamId) {
+        const team = formattedTeams?.find(it => it.value?.toString() === user.teamId?.toString());
+        return team ? team.label : '';
+      }
+      return user ? `${user?.firstName} ${user?.lastName}` : '';
+    };
+    const getTeamNameFromTeamId = teamId => {
+      return formattedTeams?.find(it => it.value?.toString() === teamId?.toString())?.label;
+    };
+
+    let ret = [];
+    if (metric === 1) { // wear time
+      ret = analytics?.wearTime?.map(it => ([
+        getUserNameFromUserId(it.userId),
+        getTeamNameFromUserId(it.userId),
+        it.avgWearTime ?? '',
+        it.wearTime ?? '',
+      ]))
+    } else if (metric === 2) { // alert metrics
+      ret = analytics?.alertMetrics?.map(it => ([
+        getUserNameFromUserId(it.userId),
+        getTeamNameFromUserId(it.userId),
+        it.ts ? new Date(it.ts)?.toLocaleString() : '',
+        it.alertStageId ? formatAlert(it.alertStageId)?.label : '',
+        it.risklevelId ? formatRiskLevel(it.risklevelId) : '',
+        it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : '',
+        it.temperature ? formatHeartCbt(it.temperature) : '',
+        it.humidity ?? '',
+        it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : '',
+      ]))
+    } else if (metric === 3) {
+      ret = analytics?.maxCbt?.map(it => ([
+        getUserNameFromUserId(it.userId),
+        getTeamNameFromUserId(it.userId),
+        it.maxCbt ? formatHeartCbt(it.maxCbt) : '',
+      ]));
+    } else if (metric === 5) {
+      ret = analytics?.swrFluid?.map(it => ([
+        getUserNameFromUserId(it.userId),
+        getTeamNameFromUserId(it.userId),
+        it.sweatRateCategory ?? '',
+        it.sweatRate ?? '',
+        unitMetric ? it.fluidRecommendationL ?? '' : it.fluidRecommendationG ?? '',
+        it.previousIllness ?? '',
+        it.acclimatizationStatus ?? '',
+        it.heatSusceptibility ?? '',
+      ]));
+    } else if (metric === 22) {
+      let tempRet = [];
+      analytics?.activeUsers?.forEach(it => {
+        const member = members?.find(ele => ele.userId === it.userId);
+        const memberTeamId = member?.teamId;
+        if (memberTeamId) {
+          const index = tempRet?.findIndex(e => e.teamId === memberTeamId);
+
+          if (index !== -1) {
+            tempRet.splice(index, 1, {
+              teamId: memberTeamId,
+              cnt: tempRet[index].cnt + 1,
+            });
+          } else {
+            tempRet.push({
+              teamId: memberTeamId,
+              cnt: 1,
+            })
+          }
+        }
+      });
+      ret = tempRet?.map(it => ([
+        getTeamNameFromTeamId(it.teamId),
+        it.cnt,
+      ]));
+    } else if (metric === 23) {
+      let tempRet = [];
+      analytics?.swrFluid?.forEach(it => {
+        const index = tempRet?.findIndex(e => e.teamId === it.teamId);
+        if (["low", "moderate", "high"].includes(it.sweatRateCategory?.toLowerCase())) {
+          if (index !== -1) {
+            tempRet.splice(index, 1, {
+              ...tempRet[index],
+              [it.sweatRateCategory?.toLowerCase()]: (tempRet[index][it.sweatRateCategory?.toLowerCase()] ?? 0) + 1,
+            });
+          } else {
+            tempRet.push(
+              {
+                teamId: it.teamId,
+                [it.sweatRateCategory?.toLowerCase()]: 1,
+              }
+            )
+          }
+        }
+      });
+      ret = tempRet?.map(it => ([
+        getTeamNameFromTeamId(it.teamId),
+        it['low'],
+        it['moderate'],
+        it['high'],
+      ]));
+    } else if (metric === 24) {
+      let tempRet = [];
+      analytics?.swrFluid.forEach(it => {
+        const index = tempRet?.findIndex(e => e.teamId === it.teamId);
+        if (["low", "medium", "high"].includes(it.heatSusceptibility?.toLowerCase())) {
+          if (index !== -1) {
+            tempRet.splice(index, 1, {
+              ...tempRet[index],
+              [it.heatSusceptibility?.toLowerCase()]: (tempRet[index][it.heatSusceptibility?.toLowerCase()] ?? 0) + 1,
+            });
+          } else {
+            tempRet.push(
+              {
+                teamId: it.teamId,
+                [it.heatSusceptibility?.toLowerCase()]: 1,
+              }
+            )
+          }
+        }
+      });
+      ret = tempRet?.map(it => ([
+        getTeamNameFromTeamId(it.teamId),
+        it['low'],
+        it['medium'],
+        it['high'],
+      ]));
+    }
+
+    return ret;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metric, analytics, members, unitMetric]);
 
   const providerValue = {
     members,
@@ -354,13 +390,11 @@ export const AnalyticsProvider = (
     setMetric,
     analytics,
     processQuery,
-    getUserNameFromUserId,
-    getTeamNameFromUserId,
-    getTeamNameFromTeamId,
     formatRiskLevel,
     statsBy,
     setStatsBy,
     headers,
+    data,
   };
 
   return (
