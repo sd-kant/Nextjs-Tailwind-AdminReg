@@ -15,7 +15,10 @@ const ResultTableBody = () => {
         <tr key={`query-record-${index}`}>
           {
             row?.map((it, colIndex) => (
-              <td className={clsx(style.Cell)} key={`query-record-${index}-${colIndex}`}>
+              <td
+                className={clsx(style.Cell, colIndex === 0 ? style.FirstColumn : null)}
+                key={`query-record-${index}-${colIndex}`}
+              >
                 {it}
               </td>
             ))

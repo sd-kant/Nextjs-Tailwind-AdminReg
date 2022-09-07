@@ -1,13 +1,23 @@
 .Wrapper {
+  overflow-x: auto;
   .InnerWrapper {
+    display: block;
     margin-top: 20px;
-    max-height: calc(100vh - 200px);
     overflow-y: auto;
 
-    .Table {
-      border-spacing: 0;
-      border-collapse: separate;
+    .TableWrapper {
+      display: inline-block;
+      overflow-x: auto;
+      max-width: 100%;
+      max-height: calc(100vh - 200px);
+
+      .Table {
+        border-spacing: 0;
+        border-collapse: separate;
+      }
     }
+
+
   }
 
   .StatsSelectWrapper {
@@ -16,7 +26,9 @@
 }
 
 @media only screen and (min-width: 768px) {
-  .InnerWrapper {
-    margin-top: 0;
+  .Wrapper {
+    .InnerWrapper {
+      margin-top: 0;
+    }
   }
 }

@@ -11,7 +11,10 @@ const ResultTableHeader = () => {
     <tr>
       {
         headers?.map((it, index) => (
-          <td className={clsx(style.HeaderCell)} key={`header-${index}`}>
+          <td
+            className={clsx(style.HeaderCell, index === 0 ? style.FirstColumn : null)}
+            key={`header-${index}`}
+          >
             {it}
           </td>
         ))

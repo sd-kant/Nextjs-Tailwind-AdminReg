@@ -18,10 +18,12 @@ const QueryResult = (
   return (
     <div className={clsx(style.Wrapper)}>
       <div className={clsx(style.InnerWrapper)}>
-        <table className={clsx(style.Table)}>
-          <ResultTableHeader metric={metric}/>
-          <ResultTableBody metric={metric}/>
-        </table>
+        <div className={clsx(style.TableWrapper)}>
+          <table className={clsx(style.Table)}>
+            <ResultTableHeader metric={metric}/>
+            <ResultTableBody metric={metric}/>
+          </table>
+        </div>
       </div>
 
       <div className={clsx(style.StatsSelectWrapper)}>
