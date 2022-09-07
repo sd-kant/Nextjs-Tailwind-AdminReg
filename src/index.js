@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Provider } from "react-redux";
 import './index.css';
 import App from './App';
@@ -8,8 +8,8 @@ import reportWebVitals from './reportWebVitals';
 import {store} from "./redux/store";
 import {NotificationProvider} from "./providers/NotificationProvider";
 import Notifications from "./views/partials/Notifications";
-
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
   <React.Suspense fallback={"loading..."}>
     <Provider store={store}>
       <NotificationProvider>
@@ -29,8 +29,7 @@ ReactDOM.render(
         </React.StrictMode>
       </NotificationProvider>
     </Provider>
-  </React.Suspense>,
-  document.getElementById('root')
+  </React.Suspense>
 );
 
 // If you want to start measuring performance in your app, pass a function
