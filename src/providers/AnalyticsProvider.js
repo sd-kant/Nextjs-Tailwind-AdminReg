@@ -371,9 +371,17 @@ export const AnalyticsProvider = (
       ]));
     }
 
+    ret = ret ?? [];
+
+    if (headers?.length > 0) {
+      while (ret?.length < 10) {
+        ret.push(Array(headers.length).fill(''));
+      }
+    }
+
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metric, analytics, members, unitMetric]);
+  }, [metric, analytics, members, unitMetric, headers]);
 
   const providerValue = {
     members,
