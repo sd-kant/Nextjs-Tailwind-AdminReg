@@ -380,6 +380,22 @@ export const queryOrganizationAlertMetrics = (orgId, data) => {
   return post(`/organization/${orgId}/data/alertMetrics`, data);
 }
 
+export const queryOrganizationMaxCbt = (orgId, data) => {
+  return post(`/organization/${orgId}/data/maxCbt`, data);
+}
+
+export const queryOrganizationActiveUsers = (orgId, data) => {
+  return post(`/organization/${orgId}/data/activeUsers`, data);
+}
+
+export const queryOrganizationSWRFluid = (orgId, data) => {
+  return post(`/organization/${orgId}/data/fluidMetrics`, data);
+}
+
+export const queryOrganizationAlertedUserCount = (orgId, data) => {
+  return post(`/organization/${orgId}/data/alertedUserCount`, data);
+}
+
 export const getRiskLevels = () => {
   return get('risklevel');
 }

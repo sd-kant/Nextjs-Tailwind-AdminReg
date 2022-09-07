@@ -15,6 +15,12 @@
 
   font-size: 18px;
   line-height: 20.13px;
+
+  &.FirstColumn {
+    position: sticky;
+    left: 0;
+    top: auto;
+  }
 }
 
 @media only screen and (min-width: 768px) {
