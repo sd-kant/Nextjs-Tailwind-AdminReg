@@ -16,12 +16,31 @@
         border-collapse: separate;
       }
     }
-
-
   }
 
   .StatsSelectWrapper {
-    margin-top: 20px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .ExportWrapper {
+      display: flex;
+      margin-top: 10px;
+
+      & > div {
+        width: 135px;
+      }
+
+      & > img {
+        margin-left: 10px;
+        width: 30px;
+        cursor: pointer;
+
+        &.Disabled {
+          cursor: not-allowed;
+        }
+      }
+    }
   }
 }
 
@@ -30,5 +49,21 @@
     .InnerWrapper {
       margin-top: 0;
     }
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .Wrapper {
+    .StatsSelectWrapper {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: auto 300px 1fr;
+      grid-column-gap: 20px;
+
+      .ExportWrapper {
+        margin-top: 0;
+      }
+    }
+
   }
 }

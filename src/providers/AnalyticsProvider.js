@@ -31,12 +31,23 @@ export const AnalyticsProvider = (
   const {pickedTeams, organization, formattedTeams} = useBasicContext();
   const [members, _setMembers] = React.useState();
   const membersRef = React.useRef(members);
+  const [visibleExport, setVisibleExport] = React.useState(false);
+  const [exportOption, setExportOption] = React.useState(null);
   const setMembers = v => {
     _setMembers(v);
     membersRef.current = v;
   }
   const [analytics, setAnalytics] = React.useState(null); // { wearTime: [], alertMetrics: [] }
   const [statsBy, setStatsBy] = React.useState('user'); // user | team
+  const exportOptions = [
+    {
+      label: 'CSV',
+      value: 'csv',
+    },
+    {
+      label: 'XLS',
+      value: 'xls',
+    }];
   React.useEffect(() => {
     let mounted = true;
     getRiskLevels().then(response => {
@@ -374,6 +385,10 @@ export const AnalyticsProvider = (
     ret = ret ?? [];
 
     if (headers?.length > 0) {
+      if (ret?.length > 0) {
+        setVisibleExport(true);
+      }
+
       while (ret?.length < 10) {
         ret.push(Array(headers.length).fill(''));
       }
@@ -403,6 +418,10 @@ export const AnalyticsProvider = (
     setStatsBy,
     headers,
     data,
+    visibleExport,
+    exportOptions,
+    exportOption,
+    setExportOption,
   };
 
   return (
