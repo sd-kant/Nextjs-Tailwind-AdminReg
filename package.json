@@ -45,6 +45,7 @@
     "timezone-soft": "^1.4.0",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5",
     "yup": "^0.32.11"
   },
   "scripts": {

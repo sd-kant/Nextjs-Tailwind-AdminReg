@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as XLSX from 'xlsx/xlsx.mjs';
 import {
   queryOrganizationWearTime,
   queryTeamMembers,
@@ -31,12 +32,23 @@ export const AnalyticsProvider = (
   const {pickedTeams, organization, formattedTeams} = useBasicContext();
   const [members, _setMembers] = React.useState();
   const membersRef = React.useRef(members);
+  const [visibleExport, setVisibleExport] = React.useState(false);
+  const [exportOption, setExportOption] = React.useState(null);
   const setMembers = v => {
     _setMembers(v);
     membersRef.current = v;
   }
   const [analytics, setAnalytics] = React.useState(null); // { wearTime: [], alertMetrics: [] }
   const [statsBy, setStatsBy] = React.useState('user'); // user | team
+  const exportOptions = [
+    {
+      label: 'CSV',
+      value: 'csv',
+    },
+    {
+      label: 'XLSX',
+      value: 'xlsx',
+    }];
   React.useEffect(() => {
     let mounted = true;
     getRiskLevels().then(response => {
@@ -374,6 +386,8 @@ export const AnalyticsProvider = (
     ret = ret ?? [];
 
     if (headers?.length > 0) {
+      setVisibleExport(ret?.length > 0);
+
       while (ret?.length < 10) {
         ret.push(Array(headers.length).fill(''));
       }
@@ -382,6 +396,24 @@ export const AnalyticsProvider = (
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metric, analytics, members, unitMetric, headers]);
+
+  const handleExport = () => {
+    if (visibleExport) {
+      if (['xlsx', 'csv'].includes(exportOption?.value)) {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(data, {
+          origin: 'A2',
+          skipHeader: true
+        });
+        XLSX.utils.sheet_add_aoa(ws, [headers]);
+        const sheetLabel = metrics?.find(it => it.value === metric)?.label ?? 'Sheet';
+        XLSX.utils.book_append_sheet(wb, ws, sheetLabel);
+        XLSX.writeFile(wb, `kenzen-analytics-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`, {
+          bookType: exportOption.value,
+        });
+      }
+    }
+  }
 
   const providerValue = {
     members,
@@ -403,6 +435,11 @@ export const AnalyticsProvider = (
     setStatsBy,
     headers,
     data,
+    visibleExport,
+    exportOptions,
+    exportOption,
+    setExportOption,
+    handleExport,
   };
 
   return (

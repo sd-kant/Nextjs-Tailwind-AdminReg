@@ -8,12 +8,16 @@ import ResultTableBody from "./ResultTableBody";
 import {get} from "lodash";
 import Toggle from "../../components/Toggle";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
+import ResponsiveSelect from "../../components/ResponsiveSelect";
+import {customStyles} from "../DashboardV2";
+import exportIcon from "../../../assets/images/export.svg";
 
 const QueryResult = (
   {
     metric,
   }) => {
-  const {statsBy, setStatsBy} = useAnalyticsContext();
+  const {statsBy, setStatsBy, visibleExport, exportOptions, exportOption, setExportOption, handleExport} = useAnalyticsContext();
+  const ableToExport = visibleExport && Boolean(exportOption);
 
   return (
     <div className={clsx(style.Wrapper)}>
@@ -27,14 +31,39 @@ const QueryResult = (
       </div>
 
       <div className={clsx(style.StatsSelectWrapper)}>
-        <Toggle
-          on={statsBy === 'team'}
-          titleOn={'User'}
-          titleOff={'Team'}
-          handleSwitch={v => {
-            setStatsBy(v ? 'team' : 'user');
-          }}
-        />
+        <div>
+          <Toggle
+            on={statsBy === 'team'}
+            titleOn={'User'}
+            titleOff={'Team'}
+            handleSwitch={v => {
+              setStatsBy(v ? 'team' : 'user');
+            }}
+          />
+        </div>
+        {
+          visibleExport &&
+          <div className={clsx(style.ExportWrapper)}>
+            <ResponsiveSelect
+              className='font-heading-small text-black'
+              isClearable
+              options={exportOptions}
+              value={exportOption}
+              maxMenuHeight={190}
+              menuPortalTarget={document.body}
+              menuPosition={'fixed'}
+              styles={customStyles()}
+              onChange={v => setExportOption(v)}
+            />
+            <img
+              src={exportIcon}
+              className={clsx(!ableToExport ? style.Disabled : null)}
+              alt="export icon"
+              onClick={() => ableToExport ? handleExport() : null}
+            />
+          </div>
+        }
+        <div/>
       </div>
     </div>
   )
