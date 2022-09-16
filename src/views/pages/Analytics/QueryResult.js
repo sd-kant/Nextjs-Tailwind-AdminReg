@@ -16,7 +16,8 @@ const QueryResult = (
   {
     metric,
   }) => {
-  const {statsBy, setStatsBy, visibleExport, exportOptions, exportOption, setExportOption} = useAnalyticsContext();
+  const {statsBy, setStatsBy, visibleExport, exportOptions, exportOption, setExportOption, handleExport} = useAnalyticsContext();
+  const ableToExport = visibleExport && Boolean(exportOption);
 
   return (
     <div className={clsx(style.Wrapper)}>
@@ -54,7 +55,12 @@ const QueryResult = (
               styles={customStyles()}
               onChange={v => setExportOption(v)}
             />
-            <img src={exportIcon} className={clsx(!Boolean(exportOption) ? style.Disabled : null)} alt="export icon"/>
+            <img
+              src={exportIcon}
+              className={clsx(!ableToExport ? style.Disabled : null)}
+              alt="export icon"
+              onClick={() => ableToExport ? handleExport() : null}
+            />
           </div>
         }
         <div/>
