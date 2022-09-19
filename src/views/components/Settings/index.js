@@ -38,7 +38,7 @@ const Settings = (
     setMetric,
     isEntry,
     myOrgId,
-    mode = "dashboard" // or admin
+    mode // dashboard | analytics | admin
   }
 ) => {
   const ref = React.useRef();
@@ -46,6 +46,7 @@ const Settings = (
   const [visiblePopup, setVisiblePopup] = React.useState(false);
   const [visibleLanguageModal, setVisibleLanguageModal] = React.useState(false);
   const [orgLabel, setOrgLabel] = React.useState("");
+  const [openMode, setOpenMode] = React.useState(""); // dashboard | analytics | admin
 
   React.useEffect(() => {
     getCompanyById(myOrgId)
@@ -61,6 +62,9 @@ const Settings = (
   const [leavePopup, setLeavePopup] = React.useState({
     visible: false, title: '',
   });
+  const hasAccessToAnalytics = React.useMemo(() => {
+    return userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
+  }, [userType]);
 
   const role = React.useMemo(() => {
     if (userType?.includes(USER_TYPE_ADMIN)) {
@@ -76,15 +80,6 @@ const Settings = (
   }, [userType]);
   const items = React.useMemo(() => {
     const ret = [
-      {
-        title: mode === "dashboard" ? t("administration") : t("dashboard"),
-        handleClick: () => {
-          setLeavePopup({
-            visible: true,
-            title: mode === "dashboard" ? t("leave team dashboard 2") : t("leave administration 2")
-          });
-        },
-      },
       {
         title: t("user profile"),
         handleClick: () => {
@@ -118,11 +113,77 @@ const Settings = (
           >{t('privacy policy')}</a>,
       },
     ];
-    if (isEntry || !ableToLogin(userType)) {
-      ret.splice(0, 1);
+    if (!isEntry && ableToLogin(userType)) {
+      let newItems = [];
+      if (mode === "dashboard") {
+        newItems = [
+          {
+            title: t("administration"),
+            handleClick: () => {
+              setOpenMode("admin");
+              setLeavePopup({
+                visible: true,
+                title: t("open administration"),
+              });
+            }
+          }
+        ];
+      } else if (mode === "analytics") {
+        newItems = [
+          {
+            title: t("administration"),
+            handleClick: () => {
+              setOpenMode("admin");
+              setLeavePopup({
+                visible: true,
+                title: t("open administration"),
+              });
+            }
+          },
+          {
+            title: t("dashboard"),
+            handleClick: () => {
+              setOpenMode("dashboard");
+              setLeavePopup({
+                visible: true,
+                title: t("open dashboard"),
+              });
+            }
+          },
+        ];
+      } else if (mode === "admin") {
+        newItems = [
+          {
+            title: t("dashboard"),
+            handleClick: () => {
+              setOpenMode("dashboard");
+              setLeavePopup({
+                visible: true,
+                title: t("open dashboard"),
+              });
+            }
+          },
+        ];
+      }
+
+      if (hasAccessToAnalytics && ["admin", "dashboard"].includes(mode)) {
+        newItems.push({
+          title: t("analytics"),
+          handleClick: () => {
+            setOpenMode("analytics");
+            setLeavePopup({
+              visible: true,
+              title: t("open analytics"),
+            });
+          }
+        });
+      }
+
+      ret.splice(0, 0, ...newItems);
     }
+
     return ret;
-  }, [mode, isEntry, t, userType, navigate]);
+  }, [mode, isEntry, t, userType, navigate, hasAccessToAnalytics]);
 
   const direction = React.useMemo(() => {
     return "bottom right";
@@ -136,14 +197,17 @@ const Settings = (
 
   const handleLeave = React.useCallback(() => {
     setLeavePopup({visible: false, title: ''});
-    if (mode === "dashboard") {
+    if (openMode === "admin") {
       const win = window.open("/invite", "_blank");
       win.focus();
-    } else {
+    } else if (openMode === "dashboard") {
       const win = window.open(`/dashboard/multi?${flattened}`, "_blank");
       win.focus();
+    } else if (openMode === "analytics") {
+      const win = window.open("/analytics", "_blank");
+      win.focus();
     }
-  }, [mode, flattened]);
+  }, [openMode, flattened]);
 
   return (
     <>
