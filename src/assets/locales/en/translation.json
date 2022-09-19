@@ -459,8 +459,8 @@
   "remove n users confirmation title": "{{n}} users removed from the {{team}}, Users can be found under “No Team Assigned”",
   "create modify team": "Create or Modify Team",
   "enter team name": "Enter Team Name",
-  "leave team dashboard 2": "Kenzen Administration will open in a new browser window",
-  "leave administration 2": "Kenzen Team Dashboard will open in a new browser window",
+  "open administration": "Kenzen Administration will open in a new browser window",
+  "open dashboard": "Kenzen Team Dashboard will open in a new browser window",
   "error member with same email address": "There is already a team member with the same email address, please try again",
   "save & close": "save and close",
   "support": "Support",
@@ -561,5 +561,7 @@
   "activity login saml mobile": "SSO Login (mobile)",
   "saml logout url": "SAML Logout URL",
   "enter saml logout url": "Please enter a SAML Logout URL",
-  "saml logout url invalid": "Please enter a valid SAML Logout URL"
+  "saml logout url invalid": "Please enter a valid SAML Logout URL",
+  "analytics": "Analytics",
+  "open analytics": "Kenzen Analytics will open in a new browser window"
 }
