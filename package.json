@@ -42,7 +42,7 @@
     "redux-saga": "^1.2.0",
     "sass": "^1.54.5",
     "spacetime": "^7.1.4",
-    "timezone-soft": "^1.4.0",
+    "timezone-soft": "^1.4.1",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5",
