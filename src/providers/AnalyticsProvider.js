@@ -8,6 +8,7 @@ import {
   queryOrganizationMaxCbt,
   queryOrganizationActiveUsers,
   queryOrganizationSWRFluid,
+  queryAmbientTempHumidity, queryOrganizationUsersInCBTZones,
   // queryOrganizationAlertedUserCount,
 } from "../http";
 import {
@@ -109,6 +110,10 @@ export const AnalyticsProvider = (
       {
         label: 'Device Data',
         value: 7,
+      },
+      {
+        label: 'Users in Various CBT zones',
+        value: 8,
       }
     ];
     const teamStatsMetrics = [
@@ -159,8 +164,14 @@ export const AnalyticsProvider = (
       case 4:
         // ret = ['Name', 'Team'];
         break;
+      case 8:
+        ret = ['Temperature Categories', 'User %'];
+        break;
       case 5:
         ret = ['Name', 'Team', 'SWR Category', 'SWR', unitMetric ? 'Fluid Recmdt (L)' : 'Fluid Recmdt (Gal)', 'Previous illness', 'Acclim Status', 'Heat Risk'];
+        break;
+      case 20:
+        ret = ['Team', 'Max Temp', 'Min Temp', 'Avg Temp', 'Max RH', 'Min RH', 'Avg RH'];
         break;
       case 22:
         ret = ['Team', 'Active Users'];
@@ -207,6 +218,14 @@ export const AnalyticsProvider = (
           case 3:
             apiCall = queryOrganizationMaxCbt;
             key = 'maxCbt';
+            break;
+          case 8:
+            apiCall = queryOrganizationUsersInCBTZones;
+            key = 'usersInCBTZones';
+            break;
+          case 20:
+            apiCall = queryAmbientTempHumidity;
+            key = 'tempHumidity';
             break;
           case 5:
           case 23:
@@ -357,7 +376,7 @@ export const AnalyticsProvider = (
       ]));
     } else if (metric === 24) {
       let tempRet = [];
-      analytics?.swrFluid.forEach(it => {
+      analytics?.swrFluid?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
         if (["low", "medium", "high"].includes(it.heatSusceptibility?.toLowerCase())) {
           if (index !== -1) {
@@ -380,6 +399,13 @@ export const AnalyticsProvider = (
         it['low'],
         it['medium'],
         it['high'],
+      ]));
+    } else if (metric === 20) {
+      console.log(analytics?.tempHumidity);
+    } else if (metric === 8) {
+      ret = analytics?.usersInCBTZones?.map(it => ([
+        it.temperatureCategory,
+        it.percentage,
       ]));
     }
 

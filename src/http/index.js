@@ -384,6 +384,10 @@ export const queryOrganizationMaxCbt = (orgId, data) => {
   return post(`/organization/${orgId}/data/maxCbt`, data);
 }
 
+export const queryOrganizationUsersInCBTZones = (orgId, data) => {
+  return post(`/organization/${orgId}/data/temperatureCategories`, data);
+}
+
 export const queryOrganizationActiveUsers = (orgId, data) => {
   return post(`/organization/${orgId}/data/activeUsers`, data);
 }
@@ -394,6 +398,10 @@ export const queryOrganizationSWRFluid = (orgId, data) => {
 
 export const queryOrganizationAlertedUserCount = (orgId, data) => {
   return post(`/organization/${orgId}/data/alertedUserCount`, data);
+}
+
+export const queryAmbientTempHumidity = (orgId, data) => {
+  return post(`/organization/${orgId}/data/tempHumidityRange`, data);
 }
 
 export const getRiskLevels = () => {
