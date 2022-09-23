@@ -149,6 +149,73 @@ export const AnalyticsProvider = (
     return statsBy === 'user' ? userStatsMetrics : teamStatsMetrics;
   }, [statsBy]);
   const [metric, setMetric] = React.useState(null);
+  const [sort, setSort] = React.useState([]);
+  React.useEffect(() => {
+    setSort(null);
+  }, [metric]);
+  const sortTitles = [
+    'A - Z',
+    'Z - A',
+    'Min 2 Max',
+    'Max 2 Min'
+  ];
+
+  const makeOption = (title, actionSorts) => {
+    return {
+      title,
+      action: () => {
+        const v = actionSorts?.map(it => ({
+          index: it[0],
+          direction: it[1],
+          type: it[2],
+        }));
+        setSort(v);
+      },
+      highlight: sort?.[0]?.index === actionSorts?.[0]?.[0] &&
+        sort?.[0]?.direction === actionSorts?.[0]?.[1],
+    }
+  }
+
+  const sortOptions = React.useMemo(() => {
+    let ret = [];
+    switch (metric) {
+      case 1:
+        ret = [
+          {
+            title: 'Sort',
+            options: [
+              makeOption(sortTitles[0], [[0, 'asc', 'string']]),
+              makeOption(sortTitles[1], [[0, 'desc', 'string']]),
+            ]
+          },
+          {
+            title: 'Sort',
+            options: [
+              makeOption(sortTitles[0], [[1, 'asc', 'string']]),
+              makeOption(sortTitles[1], [[1, 'desc', 'string']]),
+            ]
+          },
+          {
+            title: 'Sort',
+            options: [
+              makeOption(sortTitles[2], [[2, 'asc', 'number']]),
+              makeOption(sortTitles[3], [[2, 'desc', 'number']]),
+            ]
+          },
+          {
+            title: 'Sort',
+            options: [
+              makeOption(sortTitles[2], [[3, 'asc', 'number']]),
+              makeOption(sortTitles[3], [[3, 'desc', 'number']]),
+            ]
+          },
+        ];
+        break;
+    }
+
+    return ret;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metric, sort]);
   const headers = React.useMemo(() => {
     let ret = ['Name', 'Team'];
     switch (metric) {
@@ -410,6 +477,29 @@ export const AnalyticsProvider = (
     }
 
     ret = ret ?? [];
+    // sort
+    if (ret?.length > 0 && Boolean(sort) && sort?.length > 0) {
+      // todo update function to accommodate multi-level sort
+      ret = ret.sort((a, b) => {
+        if (sort[0].type === 'string') {
+          const v = a?.[sort[0].index]?.localeCompare(b?.[sort[0].index], undefined, {sensitivity: 'accent'});
+          if (sort[0].direction === 'asc') {
+            return v;
+          } else if (sort[0].direction === 'desc') {
+            return v * -1;
+          }
+        } else if (sort[0].type === "number") {
+          const v = a?.[sort[0].index] - b?.[sort[0].index];
+          if (sort[0].direction === 'asc') {
+            return v;
+          } else if (sort[0].direction === 'desc') {
+            return v * -1;
+          }
+        }
+
+        return 0;
+      });
+    }
 
     if (headers?.length > 0) {
       setVisibleExport(ret?.length > 0);
@@ -421,7 +511,7 @@ export const AnalyticsProvider = (
 
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metric, analytics, members, unitMetric, headers]);
+  }, [metric, analytics, members, unitMetric, headers, sort]);
 
   const handleExport = () => {
     if (visibleExport) {
@@ -460,6 +550,7 @@ export const AnalyticsProvider = (
     statsBy,
     setStatsBy,
     headers,
+    sortOptions,
     data,
     visibleExport,
     exportOptions,
