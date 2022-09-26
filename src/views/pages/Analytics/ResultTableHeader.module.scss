@@ -21,6 +21,19 @@
     left: 0;
     top: auto;
   }
+
+  .ChevronWrapper {
+    display: inline-flex;
+    width: 30px;
+    height: 30px;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+
+    .ChevronIcon {
+      width: 12px;
+    }
+  }
 }
 
 @media only screen and (min-width: 768px) {

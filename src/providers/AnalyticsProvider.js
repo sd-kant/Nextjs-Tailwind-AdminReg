@@ -8,13 +8,14 @@ import {
   queryOrganizationMaxCbt,
   queryOrganizationActiveUsers,
   queryOrganizationSWRFluid,
+  queryAmbientTempHumidity, queryOrganizationUsersInCBTZones,
   // queryOrganizationAlertedUserCount,
 } from "../http";
 import {
-  dateFormat,
+  dateFormat, numMinutesBetweenWithNow,
 } from "../utils";
 import {useBasicContext} from "./BasicProvider";
-import {formatHeartRate} from "../utils/dashboard";
+import {formatHeartRate, heatSusceptibilityPriorities, literToQuart} from "../utils/dashboard";
 import {useUtilsContext} from "./UtilsProvider";
 
 const AnalyticsContext = React.createContext(null);
@@ -25,7 +26,7 @@ export const AnalyticsProvider = (
     setLoading,
     metric: unitMetric,
   }) => {
-  const {formatAlert, formatHeartCbt} = useUtilsContext();
+  const {formatAlert, formatHeartCbt, alertPriorities} = useUtilsContext();
   const [pickedMembers, setPickedMembers] = React.useState([]);
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
@@ -59,6 +60,13 @@ export const AnalyticsProvider = (
       mounted = false;
     }
   }, []);
+
+  const riskPriorities = {
+    "low": 1,
+    "medium": 2,
+    "high": 3,
+    "extreme": 4,
+  }
 
   React.useEffect(() => {
     const membersPromises = [];
@@ -109,6 +117,10 @@ export const AnalyticsProvider = (
       {
         label: 'Device Data',
         value: 7,
+      },
+      {
+        label: 'Users in Various CBT zones',
+        value: 8,
       }
     ];
     const teamStatsMetrics = [
@@ -144,6 +156,124 @@ export const AnalyticsProvider = (
     return statsBy === 'user' ? userStatsMetrics : teamStatsMetrics;
   }, [statsBy]);
   const [metric, setMetric] = React.useState(null);
+  const [sort, setSort] = React.useState([]);
+  React.useEffect(() => {
+    setSort(null);
+  }, [metric]);
+  const sortTitles = [
+    'A - Z',
+    'Z - A',
+    'Min 2 Max',
+    'Max 2 Min',
+    'Most Recent',
+    'Oldest',
+    'At Risk to Safe',
+    'Safe to At Risk',
+    'Extreme to Low',
+    'Low to Extreme',
+    'High to Low',
+    'Low to High',
+  ];
+
+
+  const makeOption = (title, actionSorts) => {
+    return {
+      title,
+      action: () => {
+        const v = actionSorts?.map(it => ({
+          index: it[0],
+          direction: it[1],
+          type: it[2],
+        }));
+        setSort(v);
+      },
+      highlight: sort?.[0]?.index === actionSorts?.[0]?.[0] &&
+        sort?.[0]?.direction === actionSorts?.[0]?.[1],
+    }
+  }
+  /**
+   *
+   * @param title
+   * @param options
+   * @return {{options: *, title: *}}
+   * @description return data will look like below
+   * {
+        title: 'Sort',
+        options: [
+          {
+            title: 'A - Z',
+            action: () => {},
+            highlight: true,
+          },
+          {
+            title: 'Z - A',
+            action: () => {},
+            highlight: false,
+          }
+        ]
+      }
+   *
+   *
+   */
+  const makeSort = (title, options) => ({
+    title,
+    options: options?.map(it => makeOption(it[0], it[1]))
+  });
+
+  const sortOptions = React.useMemo(() => {
+    let ret = [];
+    switch (metric) {
+      case 1:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
+        ];
+        break;
+      case 2:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[4], [[2, 'desc', 'date']]], [sortTitles[5], [[2, 'asc', 'date']]]]),
+          makeSort('Sort', [[sortTitles[6], [[3, 'desc', 'alert']]], [sortTitles[7], [[3, 'asc', 'alert']]]]),
+          makeSort('Sort', [[sortTitles[8], [[4, 'desc', 'risk']]], [sortTitles[9], [[4, 'asc', 'risk']]]]),
+          makeSort('Sort', [[sortTitles[2], [[5, 'asc', 'number']]], [sortTitles[3], [[5, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[6, 'asc', 'number']]], [sortTitles[3], [[6, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[7, 'asc', 'number']]], [sortTitles[3], [[7, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[8, 'asc', 'number']]], [sortTitles[3], [[8, 'desc', 'number']]]]),
+        ];
+        break;
+      case 3:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
+        ];
+        break;
+      case 8:
+        ret = [
+          null,
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+        ];
+        break;
+      case 5:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
+          null,
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
+          null,
+          null,
+          makeSort('Sort', [[sortTitles[10], [[7, 'asc', 'susceptibility']]], [sortTitles[11], [[7, 'desc', 'susceptibility']]]]),
+        ];
+        break;
+    }
+
+    return ret;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metric, sort]);
   const headers = React.useMemo(() => {
     let ret = ['Name', 'Team'];
     switch (metric) {
@@ -159,8 +289,14 @@ export const AnalyticsProvider = (
       case 4:
         // ret = ['Name', 'Team'];
         break;
+      case 8:
+        ret = ['Temperature Categories', 'User %'];
+        break;
       case 5:
-        ret = ['Name', 'Team', 'SWR Category', 'SWR', unitMetric ? 'Fluid Recmdt (L)' : 'Fluid Recmdt (Gal)', 'Previous illness', 'Acclim Status', 'Heat Risk'];
+        ret = ['Name', 'Team', 'SWR Category', unitMetric ? 'SWR (l/h)' : 'SWR (qt/h)', unitMetric ? 'Fluid Recmdt (l/h)' : 'Fluid Recmdt (qt/h)', 'Previous illness', 'Acclim Status', 'Heat Sus'];
+        break;
+      case 20:
+        ret = ['Team', 'Max Temp', 'Min Temp', 'Avg Temp', 'Max RH', 'Min RH', 'Avg RH'];
         break;
       case 22:
         ret = ['Team', 'Active Users'];
@@ -207,6 +343,14 @@ export const AnalyticsProvider = (
           case 3:
             apiCall = queryOrganizationMaxCbt;
             key = 'maxCbt';
+            break;
+          case 8:
+            apiCall = queryOrganizationUsersInCBTZones;
+            key = 'usersInCBTZones';
+            break;
+          case 20:
+            apiCall = queryAmbientTempHumidity;
+            key = 'tempHumidity';
             break;
           case 5:
           case 23:
@@ -298,8 +442,8 @@ export const AnalyticsProvider = (
         getUserNameFromUserId(it.userId),
         getTeamNameFromUserId(it.userId),
         it.sweatRateCategory ?? '',
-        it.sweatRate ?? '',
-        unitMetric ? it.fluidRecommendationL ?? '' : it.fluidRecommendationG ?? '',
+        unitMetric ? it.sweatRate ?? '' : literToQuart(it.sweatRate) ?? '',
+        unitMetric ? it.fluidRecommendationL ?? '' : literToQuart(it.fluidRecommendationL) ?? '',
         it.previousIllness ?? '',
         it.acclimatizationStatus ?? '',
         it.heatSusceptibility ?? '',
@@ -357,7 +501,7 @@ export const AnalyticsProvider = (
       ]));
     } else if (metric === 24) {
       let tempRet = [];
-      analytics?.swrFluid.forEach(it => {
+      analytics?.swrFluid?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
         if (["low", "medium", "high"].includes(it.heatSusceptibility?.toLowerCase())) {
           if (index !== -1) {
@@ -381,9 +525,74 @@ export const AnalyticsProvider = (
         it['medium'],
         it['high'],
       ]));
+    } else if (metric === 20) {
+      console.log(analytics?.tempHumidity);
+    } else if (metric === 8) {
+      ret = analytics?.usersInCBTZones?.map(it => ([
+        it.temperatureCategory,
+        it.percentage,
+      ]));
     }
 
     ret = ret ?? [];
+    // sort
+    if (ret?.length > 0 && Boolean(sort) && sort?.length > 0) {
+      // todo update function to accommodate multi-level sort
+      ret = ret.sort((a, b) => {
+        if (!(a?.[sort[0].index])) return 1;
+        if (!(b?.[sort[0].index])) return -1;
+
+        if (sort[0].type === 'string') {
+          const v = a?.[sort[0].index]?.localeCompare(b?.[sort[0].index], undefined, {sensitivity: 'accent'});
+          if (sort[0].direction === 'asc') {
+            return v;
+          } else if (sort[0].direction === 'desc') {
+            return v * -1;
+          }
+        } else if (sort[0].type === "number") {
+          const v = a?.[sort[0].index] - b?.[sort[0].index];
+          if (sort[0].direction === 'asc') {
+            return v;
+          } else if (sort[0].direction === 'desc') {
+            return v * -1;
+          }
+        } else if (sort[0].type === "date") {
+          const aGap = numMinutesBetweenWithNow(new Date(), new Date(a?.[sort[0].index]));
+          const bGap = numMinutesBetweenWithNow(new Date(), new Date(b?.[sort[0].index]));
+          const v = aGap - bGap;
+          if (sort[0].direction === 'asc') {
+            return v * -1;
+          } else if (sort[0].direction === 'desc') {
+            return v;
+          }
+        } else if (sort[0].type === "risk") {
+          const v = riskPriorities[a?.[sort[0].index]?.toLowerCase()] - riskPriorities[b?.[sort[0].index]?.toLowerCase()];
+          if (sort[0].direction === 'asc') {
+            return v;
+          } else if (sort[0].direction === 'desc') {
+            return v * -1;
+          }
+        } else if (sort[0].type === "alert") {
+          const v = alertPriorities(sort[0].direction)[a?.[sort[0].index]?.toLowerCase()] -
+            alertPriorities(sort[0].direction)[b?.[sort[0].index]?.toLowerCase()];
+          if (sort[0].direction === 'asc') {
+            return v * -1;
+          } else if (sort[0].direction === 'desc') {
+            return v;
+          }
+        } else if (sort[0].type === "susceptibility") {
+          const v = heatSusceptibilityPriorities[a?.[sort[0].index]?.toLowerCase()] -
+            heatSusceptibilityPriorities[b?.[sort[0].index]?.toLowerCase()];
+          if (sort[0].direction === 'asc') {
+            return v;
+          } else if (sort[0].direction === 'desc') {
+            return v * -1;
+          }
+        }
+
+        return 0;
+      });
+    }
 
     if (headers?.length > 0) {
       setVisibleExport(ret?.length > 0);
@@ -395,7 +604,7 @@ export const AnalyticsProvider = (
 
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metric, analytics, members, unitMetric, headers]);
+  }, [metric, analytics, members, unitMetric, headers, sort]);
 
   const handleExport = () => {
     if (visibleExport) {
@@ -434,6 +643,7 @@ export const AnalyticsProvider = (
     statsBy,
     setStatsBy,
     headers,
+    sortOptions,
     data,
     visibleExport,
     exportOptions,
