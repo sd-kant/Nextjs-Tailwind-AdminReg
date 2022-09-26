@@ -34,6 +34,14 @@ export const formatHeartRate = rate => {
   return Math.round(parseFloat(rate));
 };
 
+export const literToQuart = v => {
+  if ([null, undefined, "0", ""].includes(v?.toString())) {
+    return "";
+  }
+
+  return (v * 1.05669).toFixed(2);
+}
+
 export const shortenDate = ({aDateStr, bDateStr}) => {
   const bDate = new Date(bDateStr);
   bDate.setSeconds(0);
@@ -44,6 +52,12 @@ export const shortenDate = ({aDateStr, bDateStr}) => {
 
   return {aDate, bDate};
 }
+
+export const heatSusceptibilityPriorities = {
+  [HEAT_SUSCEPTIBILITY_HIGH.toLowerCase()]: 1,
+  [HEAT_SUSCEPTIBILITY_MEDIUM.toLowerCase()]: 2,
+  [HEAT_SUSCEPTIBILITY_LOW.toLowerCase()]: 3,
+};
 
 export const sortMembers = ({arrOrigin, filter}) => {
   const common = ({arr, invisibleKey, columnPriorities, connectionPriorities, path, filterDirection}) => {
@@ -100,12 +114,6 @@ export const sortMembers = ({arrOrigin, filter}) => {
     "4": 3,
     "5": 3,
   });
-
-  const heatSusceptibilityPriorities = {
-    [HEAT_SUSCEPTIBILITY_HIGH.toLowerCase()]: 1,
-    [HEAT_SUSCEPTIBILITY_MEDIUM.toLowerCase()]: 2,
-    [HEAT_SUSCEPTIBILITY_LOW.toLowerCase()]: 3,
-  };
 
   const getHeatSusceptibilityPriority = ({key, direction}) => {
     return heatSusceptibilityPriorities[key] ?? (direction === 1 ? 4 : 0);

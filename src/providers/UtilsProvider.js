@@ -139,6 +139,12 @@ export const UtilsProviderDraft = (
         };
     }
   };
+  const alertPriorities = direction => ({
+    "at risk": direction === 'asc' ? 2 : 1,
+    "elevated risk": direction === 'asc' ? 1 : 2,
+    "safe": 3,
+    "n/a": 3,
+  });
   // fixme translation
   const formatAlertForDetail = stageId => {
     switch (stageId?.toString()) {
@@ -256,6 +262,7 @@ export const UtilsProviderDraft = (
     formatAlert,
     formatConnectionStatusV2,
     formatActivityLog,
+    alertPriorities,
   };
 
   return (
