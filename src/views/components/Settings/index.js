@@ -194,6 +194,7 @@ const Settings = (
       ref.current.close();
     }
   }, [visiblePopup, leavePopup]);
+  const visibleUnitToggle = React.useMemo(() => ["analytics", "dashboard"].includes(mode), [mode]);
 
   const handleLeave = React.useCallback(() => {
     setLeavePopup({visible: false, title: ''});
@@ -271,7 +272,7 @@ const Settings = (
             ))
           }
           {
-            mode === "dashboard" ?
+            visibleUnitToggle ?
               <div className={clsx(style.MenuItem)}><span className={clsx('font-binary')}>{t("units")}</span>
 
                 <Toggle
