@@ -163,8 +163,8 @@ export const AnalyticsProvider = (
   const sortTitles = [
     'A - Z',
     'Z - A',
-    'Min 2 Max',
-    'Max 2 Min',
+    'Min to Max',
+    'Max to Min',
     'Most Recent',
     'Oldest',
     'At Risk to Safe',
