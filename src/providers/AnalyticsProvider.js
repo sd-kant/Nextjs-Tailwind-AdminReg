@@ -163,8 +163,8 @@ export const AnalyticsProvider = (
   const sortTitles = [
     'A - Z',
     'Z - A',
-    'Min 2 Max',
-    'Max 2 Min',
+    'Min to Max',
+    'Max to Min',
     'Most Recent',
     'Oldest',
     'At Risk to Safe',
@@ -267,6 +267,21 @@ export const AnalyticsProvider = (
           null,
           null,
           makeSort('Sort', [[sortTitles[10], [[7, 'asc', 'susceptibility']]], [sortTitles[11], [[7, 'desc', 'susceptibility']]]]),
+        ];
+        break;
+      case 22:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+        ];
+        break;
+      case 23:
+      case 24:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
     }
