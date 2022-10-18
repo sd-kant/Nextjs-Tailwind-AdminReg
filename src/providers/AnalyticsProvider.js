@@ -8,8 +8,10 @@ import {
   queryOrganizationMaxCbt,
   queryOrganizationActiveUsers,
   queryOrganizationSWRFluid,
-  queryAmbientTempHumidity, queryOrganizationUsersInCBTZones,
-  // queryOrganizationAlertedUserCount,
+  queryAmbientTempHumidity,
+  queryOrganizationUsersInCBTZones,
+  queryOrganizationAlertedUserCount,
+  queryOrganizationFluidMetricsByTeam,
 } from "../http";
 import {
   dateFormat, numMinutesBetweenWithNow,
@@ -284,6 +286,15 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
+      case 26:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
+        ];
+        break;
     }
 
     return ret;
@@ -321,6 +332,12 @@ export const AnalyticsProvider = (
         break;
       case 24:
         ret = ['Team', 'Low Risk', 'Medium Risk', 'High Risk'];
+        break;
+      case 25:
+        ret = ['Team Name', '<38', '38-38.5', '> 38.5', 'Total Alerts', '% of Team with Alerts', '% of Team without Alerts'];
+        break;
+      case 26:
+        ret = ['Team Name', 'Heat Acclimatized Users', 'Heat Unacclimatized Users', 'Previous Illness', 'No Previous Illness'];
         break;
       default:
         console.log('metric not registered');
@@ -380,6 +397,10 @@ export const AnalyticsProvider = (
           case 21:
             /*apiCall = queryOrganizationAlertedUserCount;
             key = 'activeUsers';*/
+            break;
+          case 26:
+            apiCall = queryOrganizationFluidMetricsByTeam;
+            key = 'fluidMetricsByTeam';
             break;
           default:
             console.log("metric is not available");
@@ -547,6 +568,14 @@ export const AnalyticsProvider = (
         it.temperatureCategory,
         it.percentage,
       ]));
+    } else if (metric === 26) {
+      ret = analytics?.fluidMetricsByTeam?.map(it => ([
+        it.teamName ?? '',
+        it.heatAcclimatized ?? '',
+        it.heatUnacclimatized ?? '',
+        it.previousIllness,
+        it.noPreviousIllness ?? '',
+      ]));
     }
 
     ret = ret ?? [];
@@ -554,8 +583,8 @@ export const AnalyticsProvider = (
     if (ret?.length > 0 && Boolean(sort) && sort?.length > 0) {
       // todo update function to accommodate multi-level sort
       ret = ret.sort((a, b) => {
-        if (!(a?.[sort[0].index])) return 1;
-        if (!(b?.[sort[0].index])) return -1;
+        if ([null, undefined, ""].includes(a?.[sort[0].index])) return 1;
+        if ([null, undefined, ""].includes(b?.[sort[0].index])) return -1;
 
         if (sort[0].type === 'string') {
           const v = a?.[sort[0].index]?.localeCompare(b?.[sort[0].index], undefined, {sensitivity: 'accent'});

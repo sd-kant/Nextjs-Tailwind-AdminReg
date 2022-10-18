@@ -407,3 +407,7 @@ export const queryAmbientTempHumidity = (orgId, data) => {
 export const getRiskLevels = () => {
   return get('risklevel');
 }
+
+export const queryOrganizationFluidMetricsByTeam = (orgId, data) => {
+  return post(`/organization/${orgId}/data/fluidMetricsByTeam`, data);
+}
