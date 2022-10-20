@@ -12,6 +12,7 @@ import {
   queryOrganizationUsersInCBTZones,
   queryOrganizationAlertedUserCount,
   queryOrganizationFluidMetricsByTeam,
+  queryOrganizationDeviceData,
 } from "../http";
 import {
   dateFormat, numMinutesBetweenWithNow,
@@ -43,6 +44,8 @@ export const AnalyticsProvider = (
   }
   const [analytics, setAnalytics] = React.useState(null); // { wearTime: [], alertMetrics: [] }
   const [statsBy, setStatsBy] = React.useState('user'); // user | team
+  const [page, setPage] = React.useState(null);
+  const [sizePerPage, setSizePerPage] = React.useState(10);
   const exportOptions = [
     {
       label: 'CSV',
@@ -295,6 +298,15 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
         ];
         break;
+      case 7:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'string']]], [sortTitles[3], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'string']]], [sortTitles[3], [[2, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'string']]], [sortTitles[3], [[3, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'string']]], [sortTitles[3], [[4, 'desc', 'string']]]]),
+        ];
+        break;
     }
 
     return ret;
@@ -314,6 +326,9 @@ export const AnalyticsProvider = (
         break;
       case 4:
         // ret = ['Name', 'Team'];
+        break;
+      case 7:
+        ret = ['Worker Name', 'Firmware Version', 'App Version', 'Platform', 'Date'];
         break;
       case 8:
         ret = ['Temperature Categories', 'User %'];
@@ -363,6 +378,7 @@ export const AnalyticsProvider = (
       if (startDate && endDate && metric) {
         let key = null;
         let apiCall = null;
+        let apiCombineCall = null;
         switch (metric) {
           case 1: // wear time
             apiCall = queryOrganizationWearTime;
@@ -375,6 +391,10 @@ export const AnalyticsProvider = (
           case 3:
             apiCall = queryOrganizationMaxCbt;
             key = 'maxCbt';
+            break;
+          case 7:
+            apiCall = queryOrganizationDeviceData;
+            key = 'deviceData';
             break;
           case 8:
             apiCall = queryOrganizationUsersInCBTZones;
@@ -397,6 +417,11 @@ export const AnalyticsProvider = (
           case 21:
             /*apiCall = queryOrganizationAlertedUserCount;
             key = 'activeUsers';*/
+            break;
+          case 25:
+            apiCall = queryOrganizationUsersInCBTZones;
+            apiCombineCall = queryOrganizationAlertedUserCount;
+            key = 'tempCateInCBTZones';
             break;
           case 26:
             apiCall = queryOrganizationFluidMetricsByTeam;
@@ -422,6 +447,20 @@ export const AnalyticsProvider = (
             .finally(() => {
               setLoading(false);
             });
+
+          if (apiCombineCall) {
+            apiCombineCall(organization, {
+              teamIds: pickedTeams,
+              startDate: dateFormat(new Date(startDate)),
+              endDate: dateFormat(new Date(endDate)),
+            })
+                .then(response => {
+                  console.log(response.data, ' = Alerted User Count');
+                })
+                .finally(() => {
+                  setLoading(false);
+                });
+          }
         }
       }
     }
@@ -576,9 +615,19 @@ export const AnalyticsProvider = (
         it.previousIllness,
         it.noPreviousIllness ?? '',
       ]));
+    } else if (metric === 7) {
+      ret = analytics?.deviceData?.map(it => ([
+        it.fullname ?? '',
+        it.firmwareVersion ?? '',
+        it.version ?? '',
+        it.type,
+        it.ts ?? '',
+      ]));
     }
 
     ret = ret ?? [];
+    setPage(ret.length === 0 ? null : 1);
+
     // sort
     if (ret?.length > 0 && Boolean(sort) && sort?.length > 0) {
       // todo update function to accommodate multi-level sort
@@ -640,15 +689,23 @@ export const AnalyticsProvider = (
 
     if (headers?.length > 0) {
       setVisibleExport(ret?.length > 0);
-
-      while (ret?.length < 10) {
-        ret.push(Array(headers.length).fill(''));
-      }
     }
 
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metric, analytics, members, unitMetric, headers, sort]);
+
+  const pageData = React.useMemo(() => {
+    let ret = [];
+    if (data?.length > 0) {
+      let start = ((page ?? 1) - 1) * sizePerPage;
+      ret = data.slice(start, start + sizePerPage);
+    }
+    while (ret?.length < 10) {
+      ret.push(Array(headers.length).fill(''));
+    }
+    return ret;
+  }, [data, page, sizePerPage, headers]);
 
   const handleExport = () => {
     if (visibleExport) {
@@ -694,6 +751,11 @@ export const AnalyticsProvider = (
     exportOption,
     setExportOption,
     handleExport,
+    page,
+    setPage,
+    sizePerPage,
+    setSizePerPage,
+    pageData,
   };
 
   return (

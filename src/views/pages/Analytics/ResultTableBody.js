@@ -5,13 +5,13 @@ import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 
 const ResultTableBody = () => {
   const {
-    data,
+    pageData,
   } = useAnalyticsContext();
 
   return (
     <tbody>
     {
-      data?.map((row, index) => (
+      pageData?.map((row, index) => (
         <tr key={`query-record-${index}`}>
           {
             row?.map((it, colIndex) => (

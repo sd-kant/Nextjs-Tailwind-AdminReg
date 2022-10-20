@@ -11,6 +11,7 @@ import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import {customStyles} from "../DashboardV2";
 import exportIcon from "../../../assets/images/export.svg";
+import Toolbar from "./Toolbar";
 
 const QueryResult = (
   {
@@ -22,6 +23,7 @@ const QueryResult = (
   return (
     <div className={clsx(style.Wrapper)}>
       <div className={clsx(style.InnerWrapper)}>
+        <Toolbar/>
         <div className={clsx(style.TableWrapper)}>
           <table className={clsx(style.Table)}>
             <ResultTableHeader metric={metric}/>

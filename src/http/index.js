@@ -411,3 +411,7 @@ export const getRiskLevels = () => {
 export const queryOrganizationFluidMetricsByTeam = (orgId, data) => {
   return post(`/organization/${orgId}/data/fluidMetricsByTeam`, data);
 }
+
+export const queryOrganizationDeviceData = (orgId, data) => {
+  return post(`/organization/${orgId}/data/devices`, data);
+}
