@@ -415,3 +415,7 @@ export const queryOrganizationFluidMetricsByTeam = (orgId, data) => {
 export const queryOrganizationDeviceData = (orgId, data) => {
   return post(`/organization/${orgId}/data/devices`, data);
 }
+
+export const queryOrganizationTempCateData = (orgId, data) => {
+  return post(`/organization/${orgId}/data/temperatureCategoriesByUser`, data);
+}

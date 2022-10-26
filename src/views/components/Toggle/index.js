@@ -13,7 +13,7 @@ const ToggleButton = (
       className={clsx(style.ToggleButtonWrapper, selected ? style.Active : style.InActive)}
       onClick={handleClick}
     >
-      <span className={"font-button-label"}>
+      <span className={clsx(style.txt_ellipse1, "font-button-label")}>
         {title}
       </span>
     </div>

@@ -10,6 +10,7 @@ import {useBasicContext} from "../../../providers/BasicProvider";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 import CustomDatePicker from "../../components/CustomDatePicker";
 import calendarIcon from "../../../assets/images/calendar.png";
+import Toggle from "../../components/Toggle";
 
 const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
   <div className={clsx(style.CustomInputWrapper)} onClick={onClick}>
@@ -40,6 +41,7 @@ const FilterBoard = () => {
     metrics, metric, setMetric,
     formattedMembers: members, pickedMembers, setPickedMembers,
     processQuery,
+    showBy, setShowBy,
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
@@ -90,7 +92,7 @@ const FilterBoard = () => {
     if (!(Object.values(errors).some(it => !!it))) {
       processQuery();
     }
-  }
+  };
   const errors = React.useMemo(() => {
     const errors = {
       dateRange: null,
@@ -100,18 +102,30 @@ const FilterBoard = () => {
       errors.dateRange = t("date range invalid")
     }
     if (!metric) {
-      errors.metric = t("metric required");
+      errors.metric = showBy === 'table' ? t("metric required") : t("chart required");
     }
     return errors;
-  }, [startDate, endDate, metric, t]);
+  }, [startDate, endDate, metric, showBy, t]);
 
   const startDateMax = new Date();
   const endDateMax = new Date();
-  endDateMax.setDate(endDateMax.getDate() + 1)
+  endDateMax.setDate(endDateMax.getDate() + 1);
 
   return (
     <div>
       <div className="d-flex flex-column">
+
+        <div className='mb-10'>
+          <Toggle
+              on={showBy === 'chart'}
+              titleOn= {t("table")}
+              titleOff= {t("chart")}
+              handleSwitch={v => {
+                setShowBy(v ? 'chart' : 'table');
+              }}
+          />
+        </div>
+
         <label className='font-input-label'>
           {t("company name")}
         </label>
@@ -149,7 +163,7 @@ const FilterBoard = () => {
         members?.length > 0 ?
           <div className={"d-flex flex-column mt-40"}>
             <span className='font-input-label mb-10'>
-              Users
+              {t("users")}
             </span>
 
             <MultiSelectPopup
@@ -191,7 +205,7 @@ const FilterBoard = () => {
 
       <div className="mt-40 d-flex flex-column">
         <span className='font-input-label'>
-          {t("select metric")}
+          {showBy === 'table' ? t("select metric") : t('select chart')}
         </span>
 
         <ResponsiveSelect
@@ -200,7 +214,7 @@ const FilterBoard = () => {
           options={metrics}
           value={selectedMetric}
           styles={customStyles()}
-          placeholder={t("select metric")}
+          placeholder={showBy === 'table' ? t("select metric") : t("select chart")}
           onChange={v => setMetric(v?.value)}
         />
 

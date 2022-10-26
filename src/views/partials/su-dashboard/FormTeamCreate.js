@@ -11,7 +11,7 @@ import {get} from "lodash";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import countryRegions from 'country-region-data/data.json';
 import {customStyles} from "./FormCompany";
-import CreatableSelect from "react-select/creatable/dist/react-select.esm";
+import CreatableSelect from "react-select/creatable";
 import {useNavigate} from "react-router-dom";
 
 const formSchema = (t) => {

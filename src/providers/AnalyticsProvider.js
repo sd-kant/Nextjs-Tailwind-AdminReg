@@ -13,6 +13,7 @@ import {
   queryOrganizationAlertedUserCount,
   queryOrganizationFluidMetricsByTeam,
   queryOrganizationDeviceData,
+  queryOrganizationTempCateData,
 } from "../http";
 import {
   dateFormat, numMinutesBetweenWithNow,
@@ -20,6 +21,7 @@ import {
 import {useBasicContext} from "./BasicProvider";
 import {formatHeartRate, heatSusceptibilityPriorities, literToQuart} from "../utils/dashboard";
 import {useUtilsContext} from "./UtilsProvider";
+import {useTranslation} from "react-i18next";
 
 const AnalyticsContext = React.createContext(null);
 
@@ -29,6 +31,7 @@ export const AnalyticsProvider = (
     setLoading,
     metric: unitMetric,
   }) => {
+  const {t} = useTranslation();
   const {formatAlert, formatHeartCbt, alertPriorities} = useUtilsContext();
   const [pickedMembers, setPickedMembers] = React.useState([]);
   const [startDate, setStartDate] = React.useState('');
@@ -46,6 +49,7 @@ export const AnalyticsProvider = (
   const [statsBy, setStatsBy] = React.useState('user'); // user | team
   const [page, setPage] = React.useState(null);
   const [sizePerPage, setSizePerPage] = React.useState(10);
+  const [showBy, setShowBy] = React.useState('table');
   const exportOptions = [
     {
       label: 'CSV',
@@ -100,86 +104,95 @@ export const AnalyticsProvider = (
   const metrics = React.useMemo(() => {
     const userStatsMetrics = [
       {
-        label: 'Wear Time',
+        label: t('wear time'),
         value: 1,
       },
       {
-        label: 'Alerts',
+        label: t('alerts'),
         value: 2,
       },
       {
-        label: 'Max Heart CBT',
+        label: t('max heart cbt'),
         value: 3,
       },
       {
-        label: 'SWR & Acclim',
+        label: t('swr & acclim'),
         value: 5,
       },
       {
-        label: 'Time spent in CBT zones',
+        label: t('time spent in cbt zones'),
         value: 6,
       },
       {
-        label: 'Device Data',
+        label: t('device data'),
         value: 7,
       },
       {
-        label: 'Users in Various CBT zones',
+        label: t('users in various cbt zones'),
         value: 8,
       }
     ];
     const teamStatsMetrics = [
       {
-        label: 'Ambient Temp/Humidity',
+        label: t('ambient temp/humidity'),
         value: 20,
       },
       {
-        label: '% of workers with Alerts',
+        label: t('% of workers with alerts'),
         value: 21,
       },
       {
-        label: 'Active Users',
+        label: t('active users'),
         value: 22,
       },
       {
-        label: 'No. of users in SWR Categories',
+        label: t('no. of users in swr categories'),
         value: 23,
       },
       {
-        label: 'No. of users in Heat Susceptibility Categories',
+        label: t('no. of users in heat susceptibility categories'),
         value: 24,
       },
       {
-        label: 'No. of users in CBT zones',
+        label: t('no. of users in cbt zones'),
         value: 25,
       },
       {
-        label: 'No. of users unacclimated, acclimated and persis previous illness',
+        label: t('no. of users unacclimated, acclimated and persis previous illness'),
         value: 26,
       },
     ];
-    return statsBy === 'user' ? userStatsMetrics : teamStatsMetrics;
-  }, [statsBy]);
+    const chartMetrics = [
+      {
+        label: t('heat susceptibility and sweat rate'),
+        value: 30,
+      },
+    ];
+    if (showBy === 'table') {
+      return statsBy === 'user' ? userStatsMetrics : teamStatsMetrics;
+    } else {
+      return chartMetrics;
+    }
+  }, [statsBy, showBy, t]);
   const [metric, setMetric] = React.useState(null);
   const [sort, setSort] = React.useState([]);
   React.useEffect(() => {
     setSort(null);
   }, [metric]);
   const sortTitles = [
-    'A - Z',
-    'Z - A',
-    'Min to Max',
-    'Max to Min',
-    'Most Recent',
-    'Oldest',
-    'At Risk to Safe',
-    'Safe to At Risk',
-    'Extreme to Low',
-    'Low to Extreme',
-    'High to Low',
-    'Low to High',
+    t('a - z'),
+    t('z - a'),
+    t('min to max'),
+    t('max to min'),
+    t('most recent'),
+    t('oldest'),
+    t('risk to safe'),
+    t('safe to risk'),
+    t('extreme to low'),
+    t('low to extreme'),
+    t('high to low'),
+    t('low to high'),
   ];
-
 
   const makeOption = (title, actionSorts) => {
     return {
@@ -253,7 +266,8 @@ export const AnalyticsProvider = (
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[0], [[2, 'asc', 'string']]], [sortTitles[1], [[2, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
       case 8:
@@ -307,59 +321,71 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'string']]], [sortTitles[3], [[4, 'desc', 'string']]]]),
         ];
         break;
+      case 6:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'number']]], [sortTitles[1], [[0, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'string']]], [sortTitles[3], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
+        ];
+        break;
     }
 
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metric, sort]);
   const headers = React.useMemo(() => {
-    let ret = ['Name', 'Team'];
+    let ret = [t('name'), t('team')];
     switch (metric) {
       case 1:
-        ret = ['Name', 'Team', 'Avg Wear Time', 'Total Wear Time'];
+        ret = [t('name'), t('team'), t('avg wear time'), t('total wear time')];
         break;
       case 2:
-        ret = ['Name', 'Team', 'Alert time', 'Alert', 'Heat Risk', 'CBT', 'Temp', 'Humidity', 'Heart Rate Avg'];
+        ret = [t('name'), t('team'), t('alert time'), t('alert'), t('heat risk'), t('cbt'), t('temp'), t('humidity'), t('heart rate avg')];
         break;
       case 3:
-        ret = ['Name', 'Team', 'Max CBT'];
+        ret = [t('name'), t('team'), t('date'), t('max cbt')];
         break;
       case 4:
-        // ret = ['Name', 'Team'];
-        break;
-      case 7:
-        ret = ['Worker Name', 'Firmware Version', 'App Version', 'Platform', 'Date'];
-        break;
-      case 8:
-        ret = ['Temperature Categories', 'User %'];
+        // ret = [t('name'), t('team')];
         break;
       case 5:
-        ret = ['Name', 'Team', 'SWR Category', unitMetric ? 'SWR (l/h)' : 'SWR (qt/h)', unitMetric ? 'Fluid Recmdt (l/h)' : 'Fluid Recmdt (qt/h)', 'Previous illness', 'Acclim Status', 'Heat Sus'];
+        ret = [t('name'), t('team'), t('swr category'), unitMetric ? 'SWR (l/h)' : 'SWR (qt/h)', unitMetric ? t("fluid recmdt n", {n: t('(l/h)')}) : t("fluid recmdt n", {n: t('(qt/h)')}), t('previous illness'), t('acclim status'), t('heat sus')];
+        break;
+      case 6:
+        ret = [t('userId'), t('worker name'), t('time spent in safe to work'), t('time spent in mild heat exhaustion'), t('time spent in moderate hyperthermia')];
+        break;
+      case 7:
+        ret = [t('worker name'), t('firmware version'), t('app version'), t('platform'), t('date')];
+        break;
+      case 8:
+        ret = [t('temperature categories'), t('user %')];
         break;
       case 20:
-        ret = ['Team', 'Max Temp', 'Min Temp', 'Avg Temp', 'Max RH', 'Min RH', 'Avg RH'];
+        ret = [t('team'), t('max temp'), t('min temp'), t('avg temp'), t('max rh'), t('min rh'), t('avg rh')];
         break;
       case 22:
-        ret = ['Team', 'Active Users'];
+        ret = [t('team'), t('active users')];
         break;
       case 23:
-        ret = ['Team', 'Low SWR', 'Moderate SWR', 'High SWR'];
+        ret = [t('team'), t("n swr", {n: t('upper low')}), t("n swr", {n: t('moderate')}), t("n swr", {n: t('high')})];
         break;
       case 24:
-        ret = ['Team', 'Low Risk', 'Medium Risk', 'High Risk'];
+        ret = [t('team'), t("n risk", {n: t('upper low')}), t("n risk", {n: t('medium')}), t("n risk", {n: t('high')})];
         break;
       case 25:
-        ret = ['Team Name', '<38', '38-38.5', '> 38.5', 'Total Alerts', '% of Team with Alerts', '% of Team without Alerts'];
+        ret = [t('team name'), '<38', '38-38.5', '> 38.5', t('total alerts'), t('% of team with alerts'), t('% of team without alerts')];
         break;
       case 26:
-        ret = ['Team Name', 'Heat Acclimatized Users', 'Heat Unacclimatized Users', 'Previous Illness', 'No Previous Illness'];
+        ret = [t('team name'), t('heat acclimatized users'), t('heat unacclimatized users'), t('previous illness'), t('no previous illness')];
         break;
       default:
         console.log('metric not registered');
     }
 
     return ret;
-  }, [metric, unitMetric]);
+  }, [metric, unitMetric, t]);
   const [riskLevels, setRiskLevels] = React.useState(null);
   const formattedMembers = React.useMemo(() => {
     const ret = [];
@@ -379,6 +405,7 @@ export const AnalyticsProvider = (
         let key = null;
         let apiCall = null;
         let apiCombineCall = null;
+        console.log(metric, '============= metric')
         switch (metric) {
           case 1: // wear time
             apiCall = queryOrganizationWearTime;
@@ -391,6 +418,10 @@ export const AnalyticsProvider = (
           case 3:
             apiCall = queryOrganizationMaxCbt;
             key = 'maxCbt';
+            break;
+          case 6:
+            apiCall = queryOrganizationTempCateData;
+            key = 'tempCateData';
             break;
           case 7:
             apiCall = queryOrganizationDeviceData;
@@ -415,8 +446,8 @@ export const AnalyticsProvider = (
             key = 'activeUsers';
             break;
           case 21:
-            /*apiCall = queryOrganizationAlertedUserCount;
-            key = 'activeUsers';*/
+            apiCall = queryOrganizationAlertedUserCount;
+            key = 'activeUsers';
             break;
           case 25:
             apiCall = queryOrganizationUsersInCBTZones;
@@ -426,6 +457,10 @@ export const AnalyticsProvider = (
           case 26:
             apiCall = queryOrganizationFluidMetricsByTeam;
             key = 'fluidMetricsByTeam';
+            break;
+          case 30: // wear time
+            apiCall = queryOrganizationSWRFluid;
+            key = 'HeatSusceptibilitySweatRate';
             break;
           default:
             console.log("metric is not available");
@@ -486,6 +521,15 @@ export const AnalyticsProvider = (
       return formattedTeams?.find(it => it.value?.toString() === teamId?.toString())?.label;
     };
 
+    const getTimeSpentFromUserId = (data, str) => {
+      let findIndex = data.findIndex(a => a.temperatureCategory === str);
+      if (findIndex > -1) {
+        return Math.ceil((data[findIndex]?.count ?? 0) / 60)
+      } else {
+        return 0;
+      }
+    };
+
     let ret = [];
     if (metric === 1) { // wear time
       ret = analytics?.wearTime?.map(it => ([
@@ -510,6 +554,7 @@ export const AnalyticsProvider = (
       ret = analytics?.maxCbt?.map(it => ([
         getUserNameFromUserId(it.userId),
         getTeamNameFromUserId(it.userId),
+        it.utcTs ? new Date(it.utcTs)?.toLocaleString() : '',
         it.maxCbt ? formatHeartCbt(it.maxCbt) : '',
       ]));
     } else if (metric === 5) {
@@ -622,6 +667,14 @@ export const AnalyticsProvider = (
         it.version ?? '',
         it.type,
         it.ts ?? '',
+      ]));
+    } else if (metric === 6) {
+      ret = analytics?.tempCateData?.map(it => ([
+        it.userId,
+        getUserNameFromUserId(it.userId),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Safe to Work 38C'),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Mild Heat Exhaustion 38C – 38.49C'),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Moderate Hyperthermia > 38.5C'),
       ]));
     }
 
@@ -756,6 +809,8 @@ export const AnalyticsProvider = (
     sizePerPage,
     setSizePerPage,
     pageData,
+    showBy,
+    setShowBy,
   };
 
   return (
