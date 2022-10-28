@@ -1,0 +1,56 @@
+.chart_grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 0;
+  margin-top: 75px;
+
+  .txt_center {
+    text-align: center;
+  }
+
+  & > div {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 80%;
+
+    .legend_box_body {
+      display: flex;
+      justify-content: center;
+      align-content: center;
+      margin-top: 50px;
+
+      .legend_flex {
+        display: flex;
+        justify-content: left;
+        align-content: center;
+
+        .legend_box_item {
+          margin-left: 10px;
+          border: 1px solid #fff;
+          width: 20px;
+          height: 20px;
+        }
+        .legend_box_txt {
+          padding-left: 10px;
+          font-size: 16px;
+        }
+      }
+
+      @media screen and (max-width: 1200px) {
+        margin-bottom: 30px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: 1fr;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    & > div {
+      margin: 0 auto;
+      width: 100%;
+      max-width: 350px;
+    }
+  }
+}

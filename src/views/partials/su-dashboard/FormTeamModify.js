@@ -12,7 +12,7 @@ import backIcon from "../../../assets/images/back.svg";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import {getUsersUnderOrganization, queryTeamMembers, updateTeam} from "../../../http";
 import {useOrganizationContext} from "../../../providers/OrganizationProvider";
-import CreatableSelect from "react-select/creatable/dist/react-select.esm";
+import CreatableSelect from "react-select/creatable";
 import {useNavigate} from "react-router-dom";
 
 const formSchema = (t) => {

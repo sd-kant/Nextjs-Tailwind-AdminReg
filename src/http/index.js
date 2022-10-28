@@ -407,3 +407,19 @@ export const queryAmbientTempHumidity = (orgId, data) => {
 export const getRiskLevels = () => {
   return get('risklevel');
 }
+
+export const queryOrganizationFluidMetricsByTeam = (orgId, data) => {
+  return post(`/organization/${orgId}/data/fluidMetricsByTeam`, data);
+}
+
+export const queryOrganizationDeviceData = (orgId, data) => {
+  return post(`/organization/${orgId}/data/devices`, data);
+}
+
+export const queryOrganizationTempCateData = (orgId, data) => {
+  return post(`/organization/${orgId}/data/temperatureCategoriesByUser`, data);
+}
+
+export const queryOrganizationCategoriesUsersInCBTZones = (orgId, data) => {
+  return post(`/organization/${orgId}/data/temperatureCategoriesAndAlerts`, data);
+}
