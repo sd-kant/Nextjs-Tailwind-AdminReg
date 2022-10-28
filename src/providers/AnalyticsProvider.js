@@ -14,6 +14,7 @@ import {
   queryOrganizationFluidMetricsByTeam,
   queryOrganizationDeviceData,
   queryOrganizationTempCateData,
+  queryOrganizationCategoriesUsersInCBTZones,
 } from "../http";
 import {
   dateFormat, numMinutesBetweenWithNow,
@@ -330,6 +331,27 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
         ];
         break;
+      case 25:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[5, 'asc', 'number']]], [sortTitles[3], [[5, 'desc', 'number']]]]),
+        ];
+        break;
+      case 20:
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[5, 'asc', 'number']]], [sortTitles[3], [[5, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[6, 'asc', 'number']]], [sortTitles[3], [[6, 'desc', 'number']]]]),
+        ];
+        break;
     }
 
     return ret;
@@ -354,10 +376,10 @@ export const AnalyticsProvider = (
         ret = [t('name'), t('team'), t('swr category'), unitMetric ? 'SWR (l/h)' : 'SWR (qt/h)', unitMetric ? t("fluid recmdt n", {n: t('(l/h)')}) : t("fluid recmdt n", {n: t('(qt/h)')}), t('previous illness'), t('acclim status'), t('heat sus')];
         break;
       case 6:
-        ret = [t('userId'), t('worker name'), t('time spent in safe to work'), t('time spent in mild heat exhaustion'), t('time spent in moderate hyperthermia')];
+        ret = [t('name'), t('team'), t('time spent in safe to work'), t('time spent in mild heat exhaustion'), t('time spent in moderate hyperthermia')];
         break;
       case 7:
-        ret = [t('worker name'), t('firmware version'), t('app version'), t('platform'), t('date')];
+        ret = [t('name'), t('team'), t('firmware version'), t('app version'), t('platform'), t('date')];
         break;
       case 8:
         ret = [t('temperature categories'), t('user %')];
@@ -375,10 +397,10 @@ export const AnalyticsProvider = (
         ret = [t('team'), t("n risk", {n: t('upper low')}), t("n risk", {n: t('medium')}), t("n risk", {n: t('high')})];
         break;
       case 25:
-        ret = [t('team name'), '<38', '38-38.5', '> 38.5', t('total alerts'), t('% of team with alerts'), t('% of team without alerts')];
+        ret = [t('team'), unitMetric ? '<38' : '<100.4', unitMetric ? '38-38.5' : '100.4-101.3', unitMetric ? '>38.5' : '>101.3', t('total alerts'), t('% of team with alerts'), t('% of team without alerts')];
         break;
       case 26:
-        ret = [t('team name'), t('heat acclimatized users'), t('heat unacclimatized users'), t('previous illness'), t('no previous illness')];
+        ret = [t('team'), t('heat acclimatized users'), t('heat unacclimatized users'), t('previous illness'), t('no previous illness')];
         break;
       default:
         console.log('metric not registered');
@@ -404,8 +426,7 @@ export const AnalyticsProvider = (
       if (startDate && endDate && metric) {
         let key = null;
         let apiCall = null;
-        let apiCombineCall = null;
-        console.log(metric, '============= metric')
+
         switch (metric) {
           case 1: // wear time
             apiCall = queryOrganizationWearTime;
@@ -450,17 +471,16 @@ export const AnalyticsProvider = (
             key = 'activeUsers';
             break;
           case 25:
-            apiCall = queryOrganizationUsersInCBTZones;
-            apiCombineCall = queryOrganizationAlertedUserCount;
+            apiCall = queryOrganizationCategoriesUsersInCBTZones;
             key = 'tempCateInCBTZones';
             break;
           case 26:
             apiCall = queryOrganizationFluidMetricsByTeam;
             key = 'fluidMetricsByTeam';
             break;
-          case 30: // wear time
+          case 30:
             apiCall = queryOrganizationSWRFluid;
-            key = 'HeatSusceptibilitySweatRate';
+            key = 'heatSusceptibilitySweatRate';
             break;
           default:
             console.log("metric is not available");
@@ -482,20 +502,6 @@ export const AnalyticsProvider = (
             .finally(() => {
               setLoading(false);
             });
-
-          if (apiCombineCall) {
-            apiCombineCall(organization, {
-              teamIds: pickedTeams,
-              startDate: dateFormat(new Date(startDate)),
-              endDate: dateFormat(new Date(endDate)),
-            })
-                .then(response => {
-                  console.log(response.data, ' = Alerted User Count');
-                })
-                .finally(() => {
-                  setLoading(false);
-                });
-          }
         }
       }
     }
@@ -646,7 +652,15 @@ export const AnalyticsProvider = (
         it['high'],
       ]));
     } else if (metric === 20) {
-      console.log(analytics?.tempHumidity);
+      ret = analytics?.tempHumidity?.map(it => ([
+        it.teamName ?? '',
+        it.maxTemp ? formatHeartCbt(it.maxTemp) : '',
+        it.minTemp ? formatHeartCbt(it.minTemp) : '',
+        it.avgTemp ? formatHeartCbt(it.avgTemp) : '',
+        it.maxHumidity ?? '',
+        it.minHumidity ?? '',
+        it.avgHumidity ?? '',
+      ]));
     } else if (metric === 8) {
       ret = analytics?.usersInCBTZones?.map(it => ([
         it.temperatureCategory,
@@ -663,6 +677,7 @@ export const AnalyticsProvider = (
     } else if (metric === 7) {
       ret = analytics?.deviceData?.map(it => ([
         it.fullname ?? '',
+        getTeamNameFromTeamId(it.teamId),
         it.firmwareVersion ?? '',
         it.version ?? '',
         it.type,
@@ -670,11 +685,21 @@ export const AnalyticsProvider = (
       ]));
     } else if (metric === 6) {
       ret = analytics?.tempCateData?.map(it => ([
-        it.userId,
         getUserNameFromUserId(it.userId),
+        getTeamNameFromUserId(it.userId),
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Safe to Work 38C'),
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Mild Heat Exhaustion 38C – 38.49C'),
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Moderate Hyperthermia > 38.5C'),
+      ]));
+    } else if (metric === 25) {
+      ret = analytics?.tempCateInCBTZones?.map(it => ([
+        it.teamName ?? '',
+        it.lowCount ?? '',
+        it.mediumCount ?? '',
+        it.highCount,
+        it.alertCount ?? '',
+        it.alertPercentage ?? '',
+        it.noAlertPercentage ?? '',
       ]));
     }
 
@@ -760,6 +785,36 @@ export const AnalyticsProvider = (
     return ret;
   }, [data, page, sizePerPage, headers]);
 
+  const chartData = React.useMemo(() => {
+    if (metric === 30) {
+      let tempRet = [0, 0, 0, 0, 0, 0];
+      let totalHeat = 0, totalSweat = 0;
+      const onCalc = (key) => {
+        if (key !== 2 && key !== 5)
+          return Math.floor(tempRet[key] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1));
+        else {
+          return 100 - Math.floor(tempRet[key === 2 ? 0 : 3] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1)) - Math.floor(tempRet[key === 2 ? 1 : 4] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1))
+        }
+      };
+      analytics?.heatSusceptibilitySweatRate?.forEach(it => {
+        let findHeatIndex = ["low", "medium", "high"].findIndex( a => a === it.heatSusceptibility?.toLowerCase());
+        let findSweatIndex = ["low", "medium", "high"].findIndex(a => a === it.sweatRateCategory?.toLowerCase());
+
+        if (findHeatIndex > -1) {
+          tempRet[findHeatIndex] += 1;
+          totalHeat += 1;
+        }
+        if (findSweatIndex > -1) {
+          tempRet[findSweatIndex + 3] += 1;
+          totalSweat += 1;
+        }
+      });
+      return [onCalc(0), onCalc(1), onCalc(2), onCalc(3), onCalc(4), onCalc(5)];
+    } else {
+      return null;
+    }
+  }, [analytics?.heatSusceptibilitySweatRate, metric]);
+
   const handleExport = () => {
     if (visibleExport) {
       if (['xlsx', 'csv'].includes(exportOption?.value)) {
@@ -809,6 +864,7 @@ export const AnalyticsProvider = (
     sizePerPage,
     setSizePerPage,
     pageData,
+    chartData,
     showBy,
     setShowBy,
   };

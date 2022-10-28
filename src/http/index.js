@@ -419,3 +419,7 @@ export const queryOrganizationDeviceData = (orgId, data) => {
 export const queryOrganizationTempCateData = (orgId, data) => {
   return post(`/organization/${orgId}/data/temperatureCategoriesByUser`, data);
 }
+
+export const queryOrganizationCategoriesUsersInCBTZones = (orgId, data) => {
+  return post(`/organization/${orgId}/data/temperatureCategoriesAndAlerts`, data);
+}

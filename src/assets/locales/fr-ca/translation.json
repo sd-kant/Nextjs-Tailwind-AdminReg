@@ -589,6 +589,7 @@
   "min temp": "Min Temp",
   "avg temp": "Avg Temp",
   "max rh": "Max RH",
+  "min rh": "Min RH",
   "avg rh": "Avg RH",
   "n swr": "{{n}} SWR",
   "n risk": "{{n}} Risque",
@@ -622,5 +623,6 @@
   "userId": "userId",
   "time spent in safe to work": "Temps passé en sécurité au travail 38C",
   "time spent in mild heat exhaustion": "Temps passé dans l’épuisement par la chaleur légère 38C – 38.49C (h)",
-  "time spent in moderate hyperthermia": "Temps passé en hyperthermie modérée > 38,5 °C (h)"
+  "time spent in moderate hyperthermia": "Temps passé en hyperthermie modérée > 38,5 °C (h)",
+  "low %": "Basses"
 }

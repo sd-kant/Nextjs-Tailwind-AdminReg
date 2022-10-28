@@ -589,8 +589,9 @@
   "max temp": "最大温度",
   "min temp": "最小温度",
   "avg temp": "平均温度",
-  "max rh": "マックス RH",
-  "avg rh": "Avg RH",
+  "max rh": "最大 RH",
+  "min rh": "最低限 RH",
+  "avg rh": "平均 RH",
   "n swr": "{{n}} SWR",
   "n risk": "{{n}} リスク",
   "medium": "メディア",
@@ -623,5 +624,6 @@
   "userId": "userId",
   "time spent in safe to work": "安全な作業38Cで過ごした時間",
   "time spent in mild heat exhaustion": "軽度の熱枯渇に費やされた時間 38C – 38.49C (h)",
-  "time spent in moderate hyperthermia": "中等度の温熱療法で過ごした時間&gt;38.5C(h)"
+  "time spent in moderate hyperthermia": "中等度の温熱療法で過ごした時間&gt;38.5C(h)",
+  "low %": "低い"
 }
