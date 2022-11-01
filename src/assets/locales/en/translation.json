@@ -625,6 +625,8 @@
   "time spent in safe to work": "Time spent in Safe to Work 38C",
   "time spent in mild heat exhaustion": "Time spent in Mild Heat Exhaustion 38C – 38.49C (h)",
   "time spent in moderate hyperthermia": "Time spent in Moderate Hyperthermia > 38.5C(h)",
-  "low %": "Low"
-
+  "low %": "Low",
+  "number of alerts by week": "Number of Alerts by Week",
+  "number of alerts": "Number of Alerts",
+  "sweat rate": "Sweat Rate"
 }

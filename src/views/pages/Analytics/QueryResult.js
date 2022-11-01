@@ -13,15 +13,23 @@ import {customStyles} from "../DashboardV2";
 import exportIcon from "../../../assets/images/export.svg";
 import Toolbar from "./Toolbar";
 import {useTranslation} from "react-i18next";
-import ChartDoughnut from "./ChartDoughnut";
+import ChartDoughnut from "./Charts/ChartDoughnut";
+import VerticalBar from "./Charts/VerticalBar";
 
 const QueryResult = (
   {
     metric,
   }) => {
-  const {statsBy, setStatsBy, visibleExport, exportOptions, exportOption, setExportOption, handleExport, showBy} = useAnalyticsContext();
+  const {statsBy, setStatsBy, visibleExport, exportOptions, exportOption, setExportOption, handleExport, showBy, selectedMetric} = useAnalyticsContext();
   const {t} = useTranslation();
   const ableToExport = visibleExport && Boolean(exportOption);
+
+  const ChartComponent = React.useMemo(() => {
+    if (showBy === 'table' || !selectedMetric?.value) return null;
+    if (selectedMetric?.value === 30) return <ChartDoughnut/>;
+    else if (selectedMetric?.value === 31) return <VerticalBar/>;
+    else return <></>
+  }, [selectedMetric, showBy]);
 
   return (
     <div className={clsx(style.Wrapper)}>
@@ -75,7 +83,7 @@ const QueryResult = (
               </div>
             </>
             :
-            <ChartDoughnut />
+            ChartComponent
       }
     </div>
   )

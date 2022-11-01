@@ -41,14 +41,12 @@ const FilterBoard = () => {
     metrics, metric, setMetric,
     formattedMembers: members, pickedMembers, setPickedMembers,
     processQuery,
-    showBy, setShowBy,
+    showBy, setShowBy, selectedMetric
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
   }, [organizations, organization]);
-  const selectedMetric = React.useMemo(() => {
-    return metrics?.find(it => it.value?.toString() === metric?.toString())
-  }, [metric, metrics]);
+
   const label = React.useMemo(() => {
     if (pickedTeams?.length > 0) {
       if (teams?.length > 1 && (pickedTeams?.length === teams?.length)) {

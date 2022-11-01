@@ -4,9 +4,9 @@ import { Chart as ChartJS, ArcElement } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 
 import clsx from 'clsx';
-import style from './ChartDoughnut.module.scss';
+import style from './Chart.module.scss';
 import {useTranslation, withTranslation} from "react-i18next";
-import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
+import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 ChartJS.register(ArcElement);
 
 const plugins = [{
@@ -88,9 +88,9 @@ const ChartDoughnut = () => {
   };
 
   return (
-      <div className={clsx(style.chart_grid2)}>
+      <div className={clsx(style.doughnut_grid2)}>
         <div>
-          <h1 className={clsx(style.txt_center)}>Heat Susceptibility</h1>
+          <h1 className={clsx(style.txt_center)}>{t('heat susceptibility')}</h1>
           <Doughnut data={dataHeat} plugins={plugins} />
 
           <div className={clsx(style.legend_box_body)}>

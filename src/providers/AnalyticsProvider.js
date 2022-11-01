@@ -168,6 +168,10 @@ export const AnalyticsProvider = (
         label: t('heat susceptibility and sweat rate'),
         value: 30,
       },
+      {
+        label: t('number of alerts by week'),
+        value: 31,
+      },
     ];
     if (showBy === 'table') {
       return statsBy === 'user' ? userStatsMetrics : teamStatsMetrics;
@@ -267,7 +271,7 @@ export const AnalyticsProvider = (
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[0], [[2, 'asc', 'string']]], [sortTitles[1], [[2, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[4], [[2, 'asc', 'date']]], [sortTitles[5], [[2, 'desc', 'date']]]]),
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
@@ -316,32 +320,24 @@ export const AnalyticsProvider = (
       case 7:
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'string']]], [sortTitles[3], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'string']]], [sortTitles[3], [[2, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'string']]], [sortTitles[3], [[3, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'string']]], [sortTitles[3], [[4, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[3, 'asc', 'string']]], [sortTitles[1], [[3, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[4, 'asc', 'string']]], [sortTitles[1], [[4, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[4], [[5, 'asc', 'date']]], [sortTitles[5], [[5, 'desc', 'date']]]]),
         ];
         break;
       case 6:
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'number']]], [sortTitles[1], [[0, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'string']]], [sortTitles[3], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
           makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
-        ];
-        break;
-      case 25:
-        ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[5, 'asc', 'number']]], [sortTitles[3], [[5, 'desc', 'number']]]]),
         ];
         break;
       case 20:
+      case 25:
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
@@ -433,6 +429,7 @@ export const AnalyticsProvider = (
             key = 'wearTime';
             break;
           case 2: // alerts
+          case 31:
             apiCall = queryOrganizationAlertMetrics;
             key = 'alertMetrics';
             break;
@@ -810,10 +807,103 @@ export const AnalyticsProvider = (
         }
       });
       return [onCalc(0), onCalc(1), onCalc(2), onCalc(3), onCalc(4), onCalc(5)];
+    } else if (metric === 31) {
+      if (!analytics?.alertMetrics) return null;
+
+      const getThisWeek = () => {
+        let firstDate = new Date();
+        firstDate.setDate(firstDate.getDate() - 6);
+        firstDate.setHours(0, 0, 0);
+        let endDate = new Date(firstDate);
+        endDate.setDate(endDate.getDate() + 7);
+        return {
+          firstDate: firstDate,
+          endDate: endDate
+        }
+      };
+      const getUTCDateList = (dateStr) => {
+        if (!dateStr) return '';
+        let date = new Date(dateStr);
+        let dates = [];
+        for (let k = 0; k <= 6; k ++) {
+          let m = date.getMonth() + 1;
+          let d = date.getDate();
+          m = m >= 10 ? m : '0' + m;
+          d = d >= 10 ? d : '0' + d;
+          dates.push(date.getFullYear() + '-' + m + '-' + d);
+          date.setDate(new Date(date).getDate() + 1);
+        }
+        return dates;
+      };
+      let thisWeek = getThisWeek();
+
+      const getListPerLabel = (list, stageIds) => {
+        let temp = list?.filter(a => stageIds.includes(a.alertStageId));
+        let array = [];
+        let date = thisWeek.firstDate;
+        for (let k = 0; k <= 6; k ++) {
+          let nextDate = new Date(date);
+          nextDate.setDate(nextDate.getDate() + 1);
+          let filterList = temp?.filter(a =>
+              new Date(a.ts).getTime() >= new Date(date).getTime() &&
+              new Date(a.ts).getTime() < new Date(nextDate).getTime()
+          );
+          array.push(filterList.length);
+          date = nextDate;
+        }
+        return array;
+      };
+
+      let thisData = analytics?.alertMetrics?.filter(a =>
+          new Date(a.ts).getTime() >= new Date(thisWeek.firstDate).getTime() &&
+          new Date(a.ts).getTime() < new Date(thisWeek.endDate).getTime()
+      );
+      let arrayPerDate = [
+        getListPerLabel(thisData, [1]), // At Risk id
+        getListPerLabel(thisData, [2]), // Elevated Risk id
+        getListPerLabel(thisData, [3, 4]), // Safe ids
+      ];
+      /**
+       * {
+       *   xLabel: ['2022-10-27', '2022-10-28', ..., '2022-11-02'],
+       *   data: [
+       *      {
+       *       "label": "At Risk",
+       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
+       *       "backgroundColor": "#ffe699"
+       *       },
+       *       {
+       *       "label": "Elevated Risk",
+       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
+       *       "backgroundColor": "#ffe699"
+       *       },
+       *       {
+       *       "label": "Safe",
+       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
+       *       "backgroundColor": "#ed7d31"
+       *       }
+       *   ],
+       * }
+       */
+      const xLabel = getUTCDateList(thisWeek?.firstDate);
+      const colors = ['#ffe699', '#ffc000', '#ed7d31'];
+      let dataSet = [];
+      colors.forEach((item, key) => {
+        dataSet.push({
+          label: formatAlert(key + 1).label,
+          data: xLabel?.map((it, index) => arrayPerDate[key][index]),
+          backgroundColor: colors[key],
+        });
+      });
+
+      return {
+        xLabel: xLabel,
+        data: dataSet,
+      };
     } else {
       return null;
     }
-  }, [analytics?.heatSusceptibilitySweatRate, metric]);
+  }, [analytics, metric, formatAlert]);
 
   const handleExport = () => {
     if (visibleExport) {
@@ -831,7 +921,10 @@ export const AnalyticsProvider = (
         });
       }
     }
-  }
+  };
+  const selectedMetric = React.useMemo(() => {
+    return metrics?.find(it => it.value?.toString() === metric?.toString())
+  }, [metric, metrics]);
 
   const providerValue = {
     members,
@@ -846,6 +939,7 @@ export const AnalyticsProvider = (
     metrics,
     metric,
     setMetric,
+    selectedMetric,
     analytics,
     processQuery,
     formatRiskLevel,

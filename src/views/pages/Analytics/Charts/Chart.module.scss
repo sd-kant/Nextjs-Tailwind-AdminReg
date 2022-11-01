@@ -1,4 +1,4 @@
-.chart_grid2 {
+.doughnut_grid2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 0;
@@ -30,6 +30,7 @@
           width: 20px;
           height: 20px;
         }
+
         .legend_box_txt {
           padding-left: 10px;
           font-size: 16px;
@@ -52,5 +53,40 @@
       width: 100%;
       max-width: 350px;
     }
+  }
+}
+
+.bar_body {
+  overflow: auto;
+  overflow-y: hidden;
+  margin: 55px auto 20px;
+  width: 100%;
+  max-width: 95%;
+  font-family: Ubuntu-Medium, sans-serif;
+
+  .flex_space {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .txt_center {
+    text-align: center;
+  }
+
+  .txt_week,
+  .txt_label {
+    font-size: 18px;
+  }
+
+  .txt_center {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .txt_label {
+    padding-left: 10px;
+    transform: rotate(180deg);
+    writing-mode: tb-rl;
   }
 }
