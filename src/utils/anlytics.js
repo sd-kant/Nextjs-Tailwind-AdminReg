@@ -1,0 +1,51 @@
+export const onCalc = (key, tempRet, totalSweat, totalHeat) => {
+  if (key !== 2 && key !== 5)
+    return Math.floor(tempRet[key] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1));
+  else {
+    return 100 - Math.floor(tempRet[key === 2 ? 0 : 3] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1)) - Math.floor(tempRet[key === 2 ? 1 : 4] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1))
+  }
+};
+
+export const getThisWeek = () => {
+  let firstDate = new Date();
+  firstDate.setDate(firstDate.getDate() - 6);
+  firstDate.setHours(0, 0, 0);
+  let endDate = new Date(firstDate);
+  endDate.setDate(endDate.getDate() + 7);
+  return {
+    firstDate: firstDate,
+    endDate: endDate
+  }
+};
+
+export const getUTCDateList = (dateStr) => {
+  if (!dateStr) return '';
+  let date = new Date(dateStr);
+  let dates = [];
+  for (let k = 0; k <= 6; k ++) {
+    let m = date.getMonth() + 1;
+    let d = date.getDate();
+    m = m >= 10 ? m : '0' + m;
+    d = d >= 10 ? d : '0' + d;
+    dates.push(date.getFullYear() + '-' + m + '-' + d);
+    date.setDate(new Date(date).getDate() + 1);
+  }
+  return dates;
+};
+
+export const getListPerLabel = (list, stageIds, thisWeek) => {
+  let temp = list?.filter(a => stageIds.includes(a.alertStageId));
+  let array = [];
+  let date = thisWeek.firstDate;
+  for (let k = 0; k <= 6; k ++) {
+    let nextDate = new Date(date);
+    nextDate.setDate(nextDate.getDate() + 1);
+    let filterList = temp?.filter(a =>
+        new Date(a.ts).getTime() >= new Date(date).getTime() &&
+        new Date(a.ts).getTime() < new Date(nextDate).getTime()
+    );
+    array.push(filterList.length);
+    date = nextDate;
+  }
+  return array;
+};

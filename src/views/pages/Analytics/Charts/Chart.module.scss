@@ -1,68 +1,7 @@
-.doughnut_grid2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-column-gap: 0;
-  margin-top: 75px;
-
-  .txt_center {
-    text-align: center;
-  }
-
-  & > div {
-    margin: 0 auto;
-    width: 100%;
-    max-width: 80%;
-
-    .legend_box_body {
-      display: flex;
-      justify-content: center;
-      align-content: center;
-      margin-top: 50px;
-
-      .legend_flex {
-        display: flex;
-        justify-content: left;
-        align-content: center;
-
-        .legend_box_item {
-          margin-left: 10px;
-          border: 1px solid #fff;
-          width: 20px;
-          height: 20px;
-        }
-
-        .legend_box_txt {
-          padding-left: 10px;
-          font-size: 16px;
-        }
-      }
-
-      @media screen and (max-width: 1200px) {
-        margin-bottom: 30px;
-      }
-    }
-  }
-
-  @media screen and (max-width: 1200px) {
-    grid-template-columns: 1fr;
-    margin-top: 20px;
-    margin-bottom: 20px;
-
-    & > div {
-      margin: 0 auto;
-      width: 100%;
-      max-width: 350px;
-    }
-  }
-}
-
-.bar_body {
-  overflow: auto;
-  overflow-y: hidden;
-  margin: 55px auto 20px;
-  width: 100%;
-  max-width: 95%;
-  font-family: Ubuntu-Medium, sans-serif;
+.chart_body {
+  overflow-x: auto;
+  margin-bottom: 30px;
+  min-height: 600px;
 
   .flex_space {
     display: flex;
@@ -70,23 +9,104 @@
     align-items: center;
   }
 
-  .txt_center {
-    text-align: center;
+  .doughnut_grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 0;
+    margin: 55px auto 0;
+    width: 1100px;
+
+    .txt_center {
+      text-align: center;
+    }
+
+    & > div {
+      margin: 0 auto 20px;
+      width: 100%;
+      max-width: 80%;
+
+      .legend_box_body {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        margin-top: 50px;
+
+        .legend_flex {
+          display: flex;
+          justify-content: left;
+          align-content: center;
+
+          .legend_box_item {
+            margin-left: 10px;
+            border: 1px solid #fff;
+            width: 20px;
+            height: 20px;
+          }
+
+          .legend_box_txt {
+            padding-left: 10px;
+            font-size: 16px;
+          }
+        }
+
+        @media screen and (max-width: 1200px) {
+          margin-bottom: 30px;
+        }
+      }
+    }
+
+    @media screen and (max-width: 1200px) {
+      grid-template-columns: 1fr;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      width: 100%;
+
+      & > div {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 350px;
+      }
+    }
   }
 
-  .txt_week,
-  .txt_label {
-    font-size: 18px;
+  .bar_body {
+    overflow: auto;
+    overflow-y: hidden;
+    margin: 58px auto 0;
+    width: 900px;
+    font-family: Ubuntu-Medium, sans-serif;
+
+    .txt_center {
+      text-align: center;
+    }
+
+    .txt_week,
+    .txt_label {
+      font-size: 18px;
+    }
+
+    .txt_center {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    .txt_label {
+      padding-left: 10px;
+      transform: rotate(180deg);
+      writing-mode: tb-rl;
+    }
+
+    .bar_canvas {
+      width: calc(100% - 30px);
+    }
   }
 
-  .txt_center {
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
+  .line_body {
+    margin: 65px auto 0;
+    width: 1100px;
 
-  .txt_label {
-    padding-left: 10px;
-    transform: rotate(180deg);
-    writing-mode: tb-rl;
+    .txt_center {
+      text-align: center;
+    }
   }
 }

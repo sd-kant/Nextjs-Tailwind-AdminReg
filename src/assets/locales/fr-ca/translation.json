@@ -627,5 +627,7 @@
   "low %": "Basses",
   "number of alerts by week": "Nombre d’alertes par semaine",
   "number of alerts": "Nombre d’alertes",
-  "sweat rate": "Sensibilité à la chaleur"
+  "sweat rate": "Sensibilité à la chaleur",
+  "no. of people with alerts": "Non. Nombre de personnes ayant des alertes",
+  "no. of people without alerts": "Non. Nombre de personnes sans alertes"
 }

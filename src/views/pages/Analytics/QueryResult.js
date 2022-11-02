@@ -13,8 +13,10 @@ import {customStyles} from "../DashboardV2";
 import exportIcon from "../../../assets/images/export.svg";
 import Toolbar from "./Toolbar";
 import {useTranslation} from "react-i18next";
-import ChartDoughnut from "./Charts/ChartDoughnut";
-import VerticalBar from "./Charts/VerticalBar";
+import ChartTeamDoughnut from "./Charts/ChartTeamDoughnut";
+import ChartTeamVerticalBar from "./Charts/ChartTeamVerticalBar";
+import ChartUserAlertCbt from "./Charts/ChartUserAlertCbt";
+import ChartUserAlertHr from "./Charts/ChartUserAlertHr";
 
 const QueryResult = (
   {
@@ -26,8 +28,10 @@ const QueryResult = (
 
   const ChartComponent = React.useMemo(() => {
     if (showBy === 'table' || !selectedMetric?.value) return null;
-    if (selectedMetric?.value === 30) return <ChartDoughnut/>;
-    else if (selectedMetric?.value === 31) return <VerticalBar/>;
+    if (selectedMetric?.value === 30) return <ChartTeamDoughnut/>;
+    else if (selectedMetric?.value === 31) return <ChartTeamVerticalBar/>;
+    else if (selectedMetric?.value === 40) return <ChartUserAlertCbt/>;
+    else if (selectedMetric?.value === 41) return <ChartUserAlertHr/>;
     else return <></>
   }, [selectedMetric, showBy]);
 
@@ -45,46 +49,45 @@ const QueryResult = (
                   </table>
                 </div>
               </div>
-
-              <div className={clsx(style.StatsSelectWrapper)}>
-                <div>
-                  <Toggle
-                      on={statsBy === 'team'}
-                      titleOn= {t("user")}
-                      titleOff= {t("team")}
-                      handleSwitch={v => {
-                        setStatsBy(v ? 'team' : 'user');
-                      }}
-                  />
-                </div>
-                {
-                  visibleExport &&
-                  <div className={clsx(style.ExportWrapper)}>
-                    <ResponsiveSelect
-                        className='font-heading-small text-black'
-                        isClearable
-                        options={exportOptions}
-                        value={exportOption}
-                        maxMenuHeight={190}
-                        menuPortalTarget={document.body}
-                        menuPosition={'fixed'}
-                        styles={customStyles()}
-                        onChange={v => setExportOption(v)}
-                    />
-                    <img
-                        src={exportIcon}
-                        className={clsx(!ableToExport ? style.Disabled : null)}
-                        alt="export icon"
-                        onClick={() => ableToExport ? handleExport() : null}
-                    />
-                  </div>
-                }
-                <div/>
-              </div>
             </>
             :
             ChartComponent
       }
+      <div className={clsx(style.StatsSelectWrapper)}>
+        <div>
+          <Toggle
+              on={statsBy === 'team'}
+              titleOn= {t("user")}
+              titleOff= {t("team")}
+              handleSwitch={v => {
+                setStatsBy(v ? 'team' : 'user');
+              }}
+          />
+        </div>
+        {
+          visibleExport &&
+          <div className={clsx(style.ExportWrapper)}>
+            <ResponsiveSelect
+                className='font-heading-small text-black'
+                isClearable
+                options={exportOptions}
+                value={exportOption}
+                maxMenuHeight={190}
+                menuPortalTarget={document.body}
+                menuPosition={'fixed'}
+                styles={customStyles()}
+                onChange={v => setExportOption(v)}
+            />
+            <img
+                src={exportIcon}
+                className={clsx(!ableToExport ? style.Disabled : null)}
+                alt="export icon"
+                onClick={() => ableToExport ? handleExport() : null}
+            />
+          </div>
+        }
+        <div/>
+      </div>
     </div>
   )
 }

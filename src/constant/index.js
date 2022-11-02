@@ -238,3 +238,7 @@ export const HEAT_SUSCEPTIBILITY_LOW = "Low";
 export const HEAT_SUSCEPTIBILITY_MEDIUM = "Medium";
 export const HEAT_SUSCEPTIBILITY_HIGH = "High";
 export const ALERT_STAGE_ID_LIST = ["1", "2", "3", "4"];
+
+export const COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
+export const COLOR_WHITE = '#fff';
+export const COLOR_BLUE = '#4473C4';

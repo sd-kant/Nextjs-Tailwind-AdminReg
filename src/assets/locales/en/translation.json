@@ -628,5 +628,7 @@
   "low %": "Low",
   "number of alerts by week": "Number of Alerts by Week",
   "number of alerts": "Number of Alerts",
-  "sweat rate": "Sweat Rate"
+  "sweat rate": "Sweat Rate",
+  "no. of people with alerts": "No. of People with Alerts",
+  "no. of people without alerts": "No. of People without Alerts"
 }

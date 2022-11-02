@@ -17,8 +17,18 @@ import {
   queryOrganizationCategoriesUsersInCBTZones,
 } from "../http";
 import {
-  dateFormat, numMinutesBetweenWithNow,
+  dateFormat,
+  numMinutesBetweenWithNow,
 } from "../utils";
+import {
+  onCalc,
+  getThisWeek,
+  getUTCDateList,
+  getListPerLabel,
+} from "../utils/anlytics";
+import {
+  COLORS
+} from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {formatHeartRate, heatSusceptibilityPriorities, literToQuart} from "../utils/dashboard";
 import {useUtilsContext} from "./UtilsProvider";
@@ -163,7 +173,7 @@ export const AnalyticsProvider = (
         value: 26,
       },
     ];
-    const chartMetrics = [
+    const chartTeamMetrics = [
       {
         label: t('heat susceptibility and sweat rate'),
         value: 30,
@@ -173,10 +183,20 @@ export const AnalyticsProvider = (
         value: 31,
       },
     ];
+    const chartUserMetrics = [
+      {
+        label: t('cbt'),
+        value: 40,
+      },
+      {
+        label: t('hr'),
+        value: 41,
+      },
+    ];
     if (showBy === 'table') {
       return statsBy === 'user' ? userStatsMetrics : teamStatsMetrics;
     } else {
-      return chartMetrics;
+      return statsBy === 'user' ? chartUserMetrics : chartTeamMetrics;
     }
   }, [statsBy, showBy, t]);
   const [metric, setMetric] = React.useState(null);
@@ -308,6 +328,7 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
+      case 21:
       case 26:
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
@@ -383,6 +404,9 @@ export const AnalyticsProvider = (
       case 20:
         ret = [t('team'), t('max temp'), t('min temp'), t('avg temp'), t('max rh'), t('min rh'), t('avg rh')];
         break;
+      case 21:
+        ret = [t('team'), t('% of team with alerts'), t('% of team without alerts'), t('no. of people with alerts'), t('no. of people without alerts')];
+        break;
       case 22:
         ret = [t('team'), t('active users')];
         break;
@@ -456,6 +480,7 @@ export const AnalyticsProvider = (
           case 5:
           case 23:
           case 24:
+          case 30:
             apiCall = queryOrganizationSWRFluid;
             key = 'swrFluid';
             break;
@@ -465,7 +490,7 @@ export const AnalyticsProvider = (
             break;
           case 21:
             apiCall = queryOrganizationAlertedUserCount;
-            key = 'activeUsers';
+            key = 'alertedUserCount';
             break;
           case 25:
             apiCall = queryOrganizationCategoriesUsersInCBTZones;
@@ -474,10 +499,6 @@ export const AnalyticsProvider = (
           case 26:
             apiCall = queryOrganizationFluidMetricsByTeam;
             key = 'fluidMetricsByTeam';
-            break;
-          case 30:
-            apiCall = queryOrganizationSWRFluid;
-            key = 'heatSusceptibilitySweatRate';
             break;
           default:
             console.log("metric is not available");
@@ -698,6 +719,14 @@ export const AnalyticsProvider = (
         it.alertPercentage ?? '',
         it.noAlertPercentage ?? '',
       ]));
+    } else if (metric === 21) {
+      ret = analytics?.alertedUserCount?.map(it => ([
+        it.teamName ?? '',
+        it.alertPercentage ?? '',
+        it.noAlertPercentage ?? '',
+        it.usersWithAlerts,
+        it.activeUsers - it.usersWithAlerts,
+      ]))
     }
 
     ret = ret ?? [];
@@ -786,14 +815,8 @@ export const AnalyticsProvider = (
     if (metric === 30) {
       let tempRet = [0, 0, 0, 0, 0, 0];
       let totalHeat = 0, totalSweat = 0;
-      const onCalc = (key) => {
-        if (key !== 2 && key !== 5)
-          return Math.floor(tempRet[key] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1));
-        else {
-          return 100 - Math.floor(tempRet[key === 2 ? 0 : 3] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1)) - Math.floor(tempRet[key === 2 ? 1 : 4] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1))
-        }
-      };
-      analytics?.heatSusceptibilitySweatRate?.forEach(it => {
+
+      analytics?.swrFluid?.forEach(it => {
         let findHeatIndex = ["low", "medium", "high"].findIndex( a => a === it.heatSusceptibility?.toLowerCase());
         let findSweatIndex = ["low", "medium", "high"].findIndex(a => a === it.sweatRateCategory?.toLowerCase());
 
@@ -806,63 +829,37 @@ export const AnalyticsProvider = (
           totalSweat += 1;
         }
       });
-      return [onCalc(0), onCalc(1), onCalc(2), onCalc(3), onCalc(4), onCalc(5)];
+      return [
+        onCalc(0, tempRet, totalSweat, totalHeat),
+        onCalc(1, tempRet, totalSweat, totalHeat),
+        onCalc(2, tempRet, totalSweat, totalHeat),
+        onCalc(3, tempRet, totalSweat, totalHeat),
+        onCalc(4, tempRet, totalSweat, totalHeat),
+        onCalc(5, tempRet, totalSweat, totalHeat)
+      ];
     } else if (metric === 31) {
       if (!analytics?.alertMetrics) return null;
-
-      const getThisWeek = () => {
-        let firstDate = new Date();
-        firstDate.setDate(firstDate.getDate() - 6);
-        firstDate.setHours(0, 0, 0);
-        let endDate = new Date(firstDate);
-        endDate.setDate(endDate.getDate() + 7);
-        return {
-          firstDate: firstDate,
-          endDate: endDate
-        }
-      };
-      const getUTCDateList = (dateStr) => {
-        if (!dateStr) return '';
-        let date = new Date(dateStr);
-        let dates = [];
-        for (let k = 0; k <= 6; k ++) {
-          let m = date.getMonth() + 1;
-          let d = date.getDate();
-          m = m >= 10 ? m : '0' + m;
-          d = d >= 10 ? d : '0' + d;
-          dates.push(date.getFullYear() + '-' + m + '-' + d);
-          date.setDate(new Date(date).getDate() + 1);
-        }
-        return dates;
-      };
       let thisWeek = getThisWeek();
-
-      const getListPerLabel = (list, stageIds) => {
-        let temp = list?.filter(a => stageIds.includes(a.alertStageId));
-        let array = [];
-        let date = thisWeek.firstDate;
-        for (let k = 0; k <= 6; k ++) {
-          let nextDate = new Date(date);
-          nextDate.setDate(nextDate.getDate() + 1);
-          let filterList = temp?.filter(a =>
-              new Date(a.ts).getTime() >= new Date(date).getTime() &&
-              new Date(a.ts).getTime() < new Date(nextDate).getTime()
-          );
-          array.push(filterList.length);
-          date = nextDate;
-        }
-        return array;
-      };
 
       let thisData = analytics?.alertMetrics?.filter(a =>
           new Date(a.ts).getTime() >= new Date(thisWeek.firstDate).getTime() &&
           new Date(a.ts).getTime() < new Date(thisWeek.endDate).getTime()
       );
       let arrayPerDate = [
-        getListPerLabel(thisData, [1]), // At Risk id
-        getListPerLabel(thisData, [2]), // Elevated Risk id
-        getListPerLabel(thisData, [3, 4]), // Safe ids
+        getListPerLabel(thisData, [1], thisWeek), // At Risk id
+        getListPerLabel(thisData, [2], thisWeek), // Elevated Risk id
+        getListPerLabel(thisData, [3, 4], thisWeek), // Safe ids
       ];
+      const xLabel = getUTCDateList(thisWeek?.firstDate);
+      let dataSet = [];
+      COLORS.forEach((item, key) => {
+        dataSet.push({
+          label: formatAlert(key + 1).label,
+          data: xLabel?.map((it, index) => arrayPerDate[key][index]),
+          backgroundColor: COLORS[key],
+        });
+      });
+
       /**
        * {
        *   xLabel: ['2022-10-27', '2022-10-28', ..., '2022-11-02'],
@@ -885,17 +882,6 @@ export const AnalyticsProvider = (
        *   ],
        * }
        */
-      const xLabel = getUTCDateList(thisWeek?.firstDate);
-      const colors = ['#ffe699', '#ffc000', '#ed7d31'];
-      let dataSet = [];
-      colors.forEach((item, key) => {
-        dataSet.push({
-          label: formatAlert(key + 1).label,
-          data: xLabel?.map((it, index) => arrayPerDate[key][index]),
-          backgroundColor: colors[key],
-        });
-      });
-
       return {
         xLabel: xLabel,
         data: dataSet,
