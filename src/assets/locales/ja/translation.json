@@ -630,5 +630,9 @@
   "number of alerts": "アラートの数",
   "sweat rate": "熱感受性",
   "no. of people with alerts": "いいえ。アラートを持つ人の数",
-  "no. of people without alerts": "いいえ。アラートのない人の数"
+  "no. of people without alerts": "いいえ。アラートのない人の数",
+  "types": "種類",
+  "day": "日目",
+  "select type": "タイプの選択",
+  "select start date": "開始日を選択"
 }

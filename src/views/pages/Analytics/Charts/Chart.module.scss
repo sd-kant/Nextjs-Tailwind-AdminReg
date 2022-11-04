@@ -102,11 +102,21 @@
   }
 
   .line_body {
-    margin: 65px auto 0;
-    width: 1100px;
+    margin: 60px auto 0;
+    width: 1000px;
 
     .txt_center {
       text-align: center;
+    }
+
+    .line_flex {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+
+      .select_mw {
+        width: 300px;
+      }
     }
   }
 }

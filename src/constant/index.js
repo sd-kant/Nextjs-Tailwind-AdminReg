@@ -242,3 +242,7 @@ export const ALERT_STAGE_ID_LIST = ["1", "2", "3", "4"];
 export const COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
 export const COLOR_WHITE = '#fff';
 export const COLOR_BLUE = '#4473C4';
+export const TYPES = [
+  {value: 1, label: i18n.t('day')},
+  {value: 2, label: i18n.t('week')},
+];

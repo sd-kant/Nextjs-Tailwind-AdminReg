@@ -15,8 +15,7 @@ import Toolbar from "./Toolbar";
 import {useTranslation} from "react-i18next";
 import ChartTeamDoughnut from "./Charts/ChartTeamDoughnut";
 import ChartTeamVerticalBar from "./Charts/ChartTeamVerticalBar";
-import ChartUserAlertCbt from "./Charts/ChartUserAlertCbt";
-import ChartUserAlertHr from "./Charts/ChartUserAlertHr";
+import ChartUserAlert from "./Charts/ChartUserAlert";
 
 const QueryResult = (
   {
@@ -30,8 +29,7 @@ const QueryResult = (
     if (showBy === 'table' || !selectedMetric?.value) return null;
     if (selectedMetric?.value === 30) return <ChartTeamDoughnut/>;
     else if (selectedMetric?.value === 31) return <ChartTeamVerticalBar/>;
-    else if (selectedMetric?.value === 40) return <ChartUserAlertCbt/>;
-    else if (selectedMetric?.value === 41) return <ChartUserAlertHr/>;
+    else if (selectedMetric?.value === 40 || selectedMetric?.value === 41) return <ChartUserAlert/>;
     else return <></>
   }, [selectedMetric, showBy]);
 

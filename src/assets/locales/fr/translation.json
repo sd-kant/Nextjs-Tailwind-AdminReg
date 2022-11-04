@@ -629,5 +629,9 @@
   "number of alerts": "Nombre d’alertes",
   "sweat rate": "Sensibilité à la chaleur",
   "no. of people with alerts": "Non. Nombre de personnes ayant des alertes",
-  "no. of people without alerts": "Non. Nombre de personnes sans alertes"
+  "no. of people without alerts": "Non. Nombre de personnes sans alertes",
+  "types": "Types",
+  "day": "Jour",
+  "select type": "Sélectionnez le Type",
+  "select start date": "Sélectionnez la date de début"
 }

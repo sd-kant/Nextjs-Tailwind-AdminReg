@@ -15,6 +15,7 @@ import {
   queryOrganizationDeviceData,
   queryOrganizationTempCateData,
   queryOrganizationCategoriesUsersInCBTZones,
+  getTeamMemberAlerts,
 } from "../http";
 import {
   dateFormat,
@@ -61,6 +62,8 @@ export const AnalyticsProvider = (
   const [page, setPage] = React.useState(null);
   const [sizePerPage, setSizePerPage] = React.useState(10);
   const [showBy, setShowBy] = React.useState('table');
+  const [user, setUser] = React.useState('');
+
   const exportOptions = [
     {
       label: 'CSV',
@@ -500,26 +503,52 @@ export const AnalyticsProvider = (
             apiCall = queryOrganizationFluidMetricsByTeam;
             key = 'fluidMetricsByTeam';
             break;
+          case 40:
+          case 41:
+            apiCall = getTeamMemberAlerts;
+            key = 'teamMemberAlerts';
+            break;
           default:
             console.log("metric is not available");
         }
 
         if (apiCall && key) {
-          setLoading(true);
-          apiCall(organization, {
-            teamIds: pickedTeams,
-            startDate: dateFormat(new Date(startDate)),
-            endDate: dateFormat(new Date(endDate)),
-          })
-            .then(response => {
-              setAnalytics({
-                ...analytics,
-                [key]: response.data,
-              });
+          if (key !== 'teamMemberAlerts') {
+            setLoading(true);
+            apiCall(organization, {
+              teamIds: pickedTeams,
+              startDate: dateFormat(new Date(startDate)),
+              endDate: dateFormat(new Date(endDate)),
             })
-            .finally(() => {
-              setLoading(false);
-            });
+                .then(response => {
+                  setAnalytics({
+                    ...analytics,
+                    [key]: response.data,
+                  });
+                })
+                .finally(() => {
+                  setLoading(false);
+                });
+          } else {
+            let userFilter = members.filter(it => it.userId === user);
+            if (userFilter.length === 1) {
+              setLoading(true);
+              apiCall({
+                teamId: userFilter[0].teamId,
+                userId: userFilter[0].userId,
+                since: new Date(startDate).toISOString()
+              })
+                  .then(response => {
+                    setAnalytics({
+                      ...analytics,
+                      [key]: response.data,
+                    });
+                  })
+                  .finally(() => {
+                    setLoading(false);
+                  });
+            }
+          }
         }
       }
     }
@@ -886,6 +915,8 @@ export const AnalyticsProvider = (
         xLabel: xLabel,
         data: dataSet,
       };
+    } else if (metric === 40 || metric === 41) {
+      return analytics?.teamMemberAlerts || [];
     } else {
       return null;
     }
@@ -911,6 +942,9 @@ export const AnalyticsProvider = (
   const selectedMetric = React.useMemo(() => {
     return metrics?.find(it => it.value?.toString() === metric?.toString())
   }, [metric, metrics]);
+  const selectedMembers = React.useMemo(() => {
+    return formattedMembers?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
+  }, [pickedMembers, formattedMembers]);
 
   const providerValue = {
     members,
@@ -926,6 +960,7 @@ export const AnalyticsProvider = (
     metric,
     setMetric,
     selectedMetric,
+    selectedMembers,
     analytics,
     processQuery,
     formatRiskLevel,
@@ -947,6 +982,8 @@ export const AnalyticsProvider = (
     chartData,
     showBy,
     setShowBy,
+    user,
+    setUser,
   };
 
   return (

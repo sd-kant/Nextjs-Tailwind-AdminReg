@@ -1,3 +1,5 @@
+import {dateFormat} from "./index";
+
 export const onCalc = (key, tempRet, totalSweat, totalHeat) => {
   if (key !== 2 && key !== 5)
     return Math.floor(tempRet[key] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1));
@@ -48,4 +50,43 @@ export const getListPerLabel = (list, stageIds, thisWeek) => {
     date = nextDate;
   }
   return array;
+};
+
+export const getWeeksInMonth = () => {
+  let weeks = [], firstDate = new Date(), lastDate = new Date();
+  firstDate.setMonth(new Date(firstDate).getMonth() - 1);
+
+  // day list of month
+  let dates = [], date = new Date(lastDate.getTime()), value = 0;
+  while (date >= firstDate) {
+    dates.push({
+      value: value,
+      label: dateFormat(new Date(date))
+    });
+    date.setDate(date.getDate() - 1);
+    value += 1;
+  }
+  dates.shift();
+
+  date = lastDate;
+  let flag = false;
+  value = 1;
+  do {
+    if (!flag) {
+      date.setDate(date.getDate() - date.getDay());
+      flag = true;
+    } else {
+      date.setDate(date.getDate() - 7);
+    }
+    weeks.push({
+      value: value,
+      label: dateFormat(new Date(date >= firstDate ? date : firstDate))
+    });
+    value += 1;
+  } while (date >= firstDate);
+
+  return {
+    dates: dates,
+    weeks: weeks,
+  };
 };

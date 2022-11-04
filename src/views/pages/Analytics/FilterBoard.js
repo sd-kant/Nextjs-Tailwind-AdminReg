@@ -41,7 +41,7 @@ const FilterBoard = () => {
     metrics, metric, setMetric,
     formattedMembers: members, pickedMembers, setPickedMembers,
     processQuery,
-    showBy, setShowBy, selectedMetric
+    showBy, setShowBy, selectedMetric, selectedMembers
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
@@ -78,9 +78,7 @@ const FilterBoard = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickedMembers, members]);
-  const selectedMembers = React.useMemo(() => {
-    return members?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
-  }, [pickedMembers, members]);
+
   const submitActivated = React.useMemo(() => {
     return organization && pickedTeams?.length > 0;
   }, [organization, pickedTeams]);
@@ -104,6 +102,26 @@ const FilterBoard = () => {
     }
     return errors;
   }, [startDate, endDate, metric, showBy, t]);
+
+  React.useEffect(() => {
+    if (!selectedMetric) return;
+    if (selectedMetric?.value === 40 || selectedMetric?.value === 41) {
+      setEndDate(new Date());
+      const start = new Date();
+      start.setMonth(start.getMonth() - 1);
+      setStartDate(start);
+    }
+  }, [selectedMetric, setStartDate, setEndDate]);
+
+  // React.useEffect(() => {
+  //   let pickedMemberTemp = [];
+  //   members?.forEach(it => {
+  //     if (pickedMembers.includes(it.value)){
+  //       pickedMemberTemp.push(it.value);
+  //     }
+  //   });
+  //   setPickedMembers(pickedMemberTemp);
+  // }, [members]);
 
   const startDateMax = new Date();
   const endDateMax = new Date();
@@ -185,6 +203,7 @@ const FilterBoard = () => {
           setDate={setStartDate}
           CustomInput={CustomInput}
           maxDate={startDateMax}
+          selectedMetric={selectedMetric}
         />
 
         <CustomDatePicker
@@ -192,6 +211,7 @@ const FilterBoard = () => {
           setDate={setEndDate}
           CustomInput={CustomInput}
           maxDate={endDateMax}
+          selectedMetric={selectedMetric}
         />
 
         {

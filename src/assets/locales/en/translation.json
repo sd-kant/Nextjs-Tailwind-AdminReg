@@ -630,5 +630,9 @@
   "number of alerts": "Number of Alerts",
   "sweat rate": "Sweat Rate",
   "no. of people with alerts": "No. of People with Alerts",
-  "no. of people without alerts": "No. of People without Alerts"
+  "no. of people without alerts": "No. of People without Alerts",
+  "types": "Types",
+  "day": "Day",
+  "select type": "Select Type",
+  "select start date": "Select Start Date"
 }

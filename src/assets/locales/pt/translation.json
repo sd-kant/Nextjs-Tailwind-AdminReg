@@ -629,5 +629,9 @@
   "number of alerts": "Número de alertas",
   "sweat rate": "Suscetibilidade ao calor",
   "no. of people with alerts": "Não. de Pessoas com Alertas",
-  "no. of people without alerts": "Não. de Pessoas sem Alertas"
+  "no. of people without alerts": "Não. de Pessoas sem Alertas",
+  "types": "Tipos",
+  "day": "Dia",
+  "select type": "Selecionar tipo",
+  "select start date": "Selecione a data de início"
 }
