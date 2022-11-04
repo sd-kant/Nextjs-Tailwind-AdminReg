@@ -15,10 +15,21 @@ import {
   queryOrganizationDeviceData,
   queryOrganizationTempCateData,
   queryOrganizationCategoriesUsersInCBTZones,
+  getTeamMemberAlerts,
 } from "../http";
 import {
-  dateFormat, numMinutesBetweenWithNow,
+  dateFormat,
+  numMinutesBetweenWithNow,
 } from "../utils";
+import {
+  onCalc,
+  getThisWeek,
+  getUTCDateList,
+  getListPerLabel,
+} from "../utils/anlytics";
+import {
+  COLORS
+} from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {formatHeartRate, heatSusceptibilityPriorities, literToQuart} from "../utils/dashboard";
 import {useUtilsContext} from "./UtilsProvider";
@@ -51,6 +62,8 @@ export const AnalyticsProvider = (
   const [page, setPage] = React.useState(null);
   const [sizePerPage, setSizePerPage] = React.useState(10);
   const [showBy, setShowBy] = React.useState('table');
+  const [user, setUser] = React.useState('');
+
   const exportOptions = [
     {
       label: 'CSV',
@@ -163,16 +176,30 @@ export const AnalyticsProvider = (
         value: 26,
       },
     ];
-    const chartMetrics = [
+    const chartTeamMetrics = [
       {
         label: t('heat susceptibility and sweat rate'),
         value: 30,
+      },
+      {
+        label: t('number of alerts by week'),
+        value: 31,
+      },
+    ];
+    const chartUserMetrics = [
+      {
+        label: t('cbt'),
+        value: 40,
+      },
+      {
+        label: t('hr'),
+        value: 41,
       },
     ];
     if (showBy === 'table') {
       return statsBy === 'user' ? userStatsMetrics : teamStatsMetrics;
     } else {
-      return chartMetrics;
+      return statsBy === 'user' ? chartUserMetrics : chartTeamMetrics;
     }
   }, [statsBy, showBy, t]);
   const [metric, setMetric] = React.useState(null);
@@ -267,7 +294,7 @@ export const AnalyticsProvider = (
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[0], [[2, 'asc', 'string']]], [sortTitles[1], [[2, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[4], [[2, 'asc', 'date']]], [sortTitles[5], [[2, 'desc', 'date']]]]),
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
@@ -304,6 +331,7 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
+      case 21:
       case 26:
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
@@ -316,32 +344,24 @@ export const AnalyticsProvider = (
       case 7:
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'string']]], [sortTitles[3], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'string']]], [sortTitles[3], [[2, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'string']]], [sortTitles[3], [[3, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'string']]], [sortTitles[3], [[4, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[3, 'asc', 'string']]], [sortTitles[1], [[3, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[4, 'asc', 'string']]], [sortTitles[1], [[4, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[4], [[5, 'asc', 'date']]], [sortTitles[5], [[5, 'desc', 'date']]]]),
         ];
         break;
       case 6:
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'number']]], [sortTitles[1], [[0, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'string']]], [sortTitles[3], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
           makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
-        ];
-        break;
-      case 25:
-        ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[5, 'asc', 'number']]], [sortTitles[3], [[5, 'desc', 'number']]]]),
         ];
         break;
       case 20:
+      case 25:
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
@@ -386,6 +406,9 @@ export const AnalyticsProvider = (
         break;
       case 20:
         ret = [t('team'), t('max temp'), t('min temp'), t('avg temp'), t('max rh'), t('min rh'), t('avg rh')];
+        break;
+      case 21:
+        ret = [t('team'), t('% of team with alerts'), t('% of team without alerts'), t('no. of people with alerts'), t('no. of people without alerts')];
         break;
       case 22:
         ret = [t('team'), t('active users')];
@@ -433,6 +456,7 @@ export const AnalyticsProvider = (
             key = 'wearTime';
             break;
           case 2: // alerts
+          case 31:
             apiCall = queryOrganizationAlertMetrics;
             key = 'alertMetrics';
             break;
@@ -459,6 +483,7 @@ export const AnalyticsProvider = (
           case 5:
           case 23:
           case 24:
+          case 30:
             apiCall = queryOrganizationSWRFluid;
             key = 'swrFluid';
             break;
@@ -468,7 +493,7 @@ export const AnalyticsProvider = (
             break;
           case 21:
             apiCall = queryOrganizationAlertedUserCount;
-            key = 'activeUsers';
+            key = 'alertedUserCount';
             break;
           case 25:
             apiCall = queryOrganizationCategoriesUsersInCBTZones;
@@ -478,30 +503,52 @@ export const AnalyticsProvider = (
             apiCall = queryOrganizationFluidMetricsByTeam;
             key = 'fluidMetricsByTeam';
             break;
-          case 30:
-            apiCall = queryOrganizationSWRFluid;
-            key = 'heatSusceptibilitySweatRate';
+          case 40:
+          case 41:
+            apiCall = getTeamMemberAlerts;
+            key = 'teamMemberAlerts';
             break;
           default:
             console.log("metric is not available");
         }
 
         if (apiCall && key) {
-          setLoading(true);
-          apiCall(organization, {
-            teamIds: pickedTeams,
-            startDate: dateFormat(new Date(startDate)),
-            endDate: dateFormat(new Date(endDate)),
-          })
-            .then(response => {
-              setAnalytics({
-                ...analytics,
-                [key]: response.data,
-              });
+          if (key !== 'teamMemberAlerts') {
+            setLoading(true);
+            apiCall(organization, {
+              teamIds: pickedTeams,
+              startDate: dateFormat(new Date(startDate)),
+              endDate: dateFormat(new Date(endDate)),
             })
-            .finally(() => {
-              setLoading(false);
-            });
+                .then(response => {
+                  setAnalytics({
+                    ...analytics,
+                    [key]: response.data,
+                  });
+                })
+                .finally(() => {
+                  setLoading(false);
+                });
+          } else {
+            let userFilter = members.filter(it => it.userId === user);
+            if (userFilter.length === 1) {
+              setLoading(true);
+              apiCall({
+                teamId: userFilter[0].teamId,
+                userId: userFilter[0].userId,
+                since: new Date(startDate).toISOString()
+              })
+                  .then(response => {
+                    setAnalytics({
+                      ...analytics,
+                      [key]: response.data,
+                    });
+                  })
+                  .finally(() => {
+                    setLoading(false);
+                  });
+            }
+          }
         }
       }
     }
@@ -701,6 +748,14 @@ export const AnalyticsProvider = (
         it.alertPercentage ?? '',
         it.noAlertPercentage ?? '',
       ]));
+    } else if (metric === 21) {
+      ret = analytics?.alertedUserCount?.map(it => ([
+        it.teamName ?? '',
+        it.alertPercentage ?? '',
+        it.noAlertPercentage ?? '',
+        it.usersWithAlerts,
+        it.activeUsers - it.usersWithAlerts,
+      ]))
     }
 
     ret = ret ?? [];
@@ -789,14 +844,8 @@ export const AnalyticsProvider = (
     if (metric === 30) {
       let tempRet = [0, 0, 0, 0, 0, 0];
       let totalHeat = 0, totalSweat = 0;
-      const onCalc = (key) => {
-        if (key !== 2 && key !== 5)
-          return Math.floor(tempRet[key] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1));
-        else {
-          return 100 - Math.floor(tempRet[key === 2 ? 0 : 3] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1)) - Math.floor(tempRet[key === 2 ? 1 : 4] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1))
-        }
-      };
-      analytics?.heatSusceptibilitySweatRate?.forEach(it => {
+
+      analytics?.swrFluid?.forEach(it => {
         let findHeatIndex = ["low", "medium", "high"].findIndex( a => a === it.heatSusceptibility?.toLowerCase());
         let findSweatIndex = ["low", "medium", "high"].findIndex(a => a === it.sweatRateCategory?.toLowerCase());
 
@@ -809,11 +858,69 @@ export const AnalyticsProvider = (
           totalSweat += 1;
         }
       });
-      return [onCalc(0), onCalc(1), onCalc(2), onCalc(3), onCalc(4), onCalc(5)];
+      return [
+        onCalc(0, tempRet, totalSweat, totalHeat),
+        onCalc(1, tempRet, totalSweat, totalHeat),
+        onCalc(2, tempRet, totalSweat, totalHeat),
+        onCalc(3, tempRet, totalSweat, totalHeat),
+        onCalc(4, tempRet, totalSweat, totalHeat),
+        onCalc(5, tempRet, totalSweat, totalHeat)
+      ];
+    } else if (metric === 31) {
+      if (!analytics?.alertMetrics) return null;
+      let thisWeek = getThisWeek();
+
+      let thisData = analytics?.alertMetrics?.filter(a =>
+          new Date(a.ts).getTime() >= new Date(thisWeek.firstDate).getTime() &&
+          new Date(a.ts).getTime() < new Date(thisWeek.endDate).getTime()
+      );
+      let arrayPerDate = [
+        getListPerLabel(thisData, [1], thisWeek), // At Risk id
+        getListPerLabel(thisData, [2], thisWeek), // Elevated Risk id
+        getListPerLabel(thisData, [3, 4], thisWeek), // Safe ids
+      ];
+      const xLabel = getUTCDateList(thisWeek?.firstDate);
+      let dataSet = [];
+      COLORS.forEach((item, key) => {
+        dataSet.push({
+          label: formatAlert(key + 1).label,
+          data: xLabel?.map((it, index) => arrayPerDate[key][index]),
+          backgroundColor: COLORS[key],
+        });
+      });
+
+      /**
+       * {
+       *   xLabel: ['2022-10-27', '2022-10-28', ..., '2022-11-02'],
+       *   data: [
+       *      {
+       *       "label": "At Risk",
+       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
+       *       "backgroundColor": "#ffe699"
+       *       },
+       *       {
+       *       "label": "Elevated Risk",
+       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
+       *       "backgroundColor": "#ffe699"
+       *       },
+       *       {
+       *       "label": "Safe",
+       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
+       *       "backgroundColor": "#ed7d31"
+       *       }
+       *   ],
+       * }
+       */
+      return {
+        xLabel: xLabel,
+        data: dataSet,
+      };
+    } else if (metric === 40 || metric === 41) {
+      return analytics?.teamMemberAlerts || [];
     } else {
       return null;
     }
-  }, [analytics?.heatSusceptibilitySweatRate, metric]);
+  }, [analytics, metric, formatAlert]);
 
   const handleExport = () => {
     if (visibleExport) {
@@ -831,7 +938,13 @@ export const AnalyticsProvider = (
         });
       }
     }
-  }
+  };
+  const selectedMetric = React.useMemo(() => {
+    return metrics?.find(it => it.value?.toString() === metric?.toString())
+  }, [metric, metrics]);
+  const selectedMembers = React.useMemo(() => {
+    return formattedMembers?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
+  }, [pickedMembers, formattedMembers]);
 
   const providerValue = {
     members,
@@ -846,6 +959,8 @@ export const AnalyticsProvider = (
     metrics,
     metric,
     setMetric,
+    selectedMetric,
+    selectedMembers,
     analytics,
     processQuery,
     formatRiskLevel,
@@ -867,6 +982,8 @@ export const AnalyticsProvider = (
     chartData,
     showBy,
     setShowBy,
+    user,
+    setUser,
   };
 
   return (

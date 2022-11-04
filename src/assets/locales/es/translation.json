@@ -624,5 +624,14 @@
   "time spent in safe to work": "Tiempo pasado en Safe to Work 38C",
   "time spent in mild heat exhaustion": "Tiempo pasado en agotamiento por calor leve 38C – 38.49C (h)",
   "time spent in moderate hyperthermia": "Tiempo pasado en hipertermia moderada > 38.5C (h)",
-  "low %": "Bajo"
+  "low %": "Bajo",
+  "number of alerts by week": "Número de alertas por semana",
+  "number of alerts": "Número de alertas",
+  "sweat rate": "Susceptibilidad al calor",
+  "no. of people with alerts": "Lol de Personas con Alertas",
+  "no. of people without alerts": "Lol de Personas sin Alertas",
+  "types": "Tipos",
+  "day": "Dia",
+  "select type": "Seleccionar tipo",
+  "select start date": "Seleccione Fecha de inicio"
 }

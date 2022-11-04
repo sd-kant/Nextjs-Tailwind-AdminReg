@@ -625,5 +625,14 @@
   "time spent in safe to work": "安全な作業38Cで過ごした時間",
   "time spent in mild heat exhaustion": "軽度の熱枯渇に費やされた時間 38C – 38.49C (h)",
   "time spent in moderate hyperthermia": "中等度の温熱療法で過ごした時間&gt;38.5C(h)",
-  "low %": "低い"
+  "low %": "低い",
+  "number of alerts by week": "週別のアラート数",
+  "number of alerts": "アラートの数",
+  "sweat rate": "熱感受性",
+  "no. of people with alerts": "いいえ。アラートを持つ人の数",
+  "no. of people without alerts": "いいえ。アラートのない人の数",
+  "types": "種類",
+  "day": "日目",
+  "select type": "タイプの選択",
+  "select start date": "開始日を選択"
 }

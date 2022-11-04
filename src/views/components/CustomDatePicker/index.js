@@ -72,6 +72,7 @@ const CustomHeader = (
 
 const CustomDatePicker = (
   {
+    selectedMetric,
     date,
     setDate,
     maxDate,
@@ -84,6 +85,7 @@ const CustomDatePicker = (
       selected={date}
       maxDate={maxDate}
       onChange={v => setDate(v)}
+      readOnly={selectedMetric?.value === 40 || selectedMetric?.value === 41}
     />
   );
 };
