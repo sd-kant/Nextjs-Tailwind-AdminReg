@@ -9,8 +9,12 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import {COLOR_BLUE, COLORS, TYPES} from "../../../../constant";
+import {Line} from 'react-chartjs-2';
+import {
+  COLOR_BLUE,
+  COLORS,
+  TYPES
+} from "../../../../constant";
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
@@ -33,15 +37,11 @@ const ChartUserAlert = () => {
   const {
     selectedMetric,
     selectedMembers,
-    user,
+    selectedUser,
     setUser,
     chartData,
   } = useAnalyticsContext();
   const {t} = useTranslation();
-
-  const selectedUser = React.useMemo(() => {
-    return selectedMembers?.find(it => it.value?.toString() === user?.toString())
-  }, [selectedMembers, user]);
 
   const [type, setType] = React.useState(1);
   const [dates, setDates] = React.useState(null);
@@ -84,7 +84,13 @@ const ChartUserAlert = () => {
             (selectedType.value === 1 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(end).getTime()) ||
             (selectedType.value === 2 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(endDayOfWeek).getTime())
         ) {
-          labels.push(new Date(it.ts).toLocaleDateString('en-us', {day:"numeric", hour: "numeric", hour12: false, minute: "2-digit", second: "2-digit"}));
+          labels.push(new Date(it.ts).toLocaleDateString('en-us', {
+            day: "numeric",
+            hour: "numeric",
+            hour12: false,
+            minute: "2-digit",
+            second: "2-digit"
+          }));
           tempData.push(selectedMetric.value === 40 ? it?.heartCbtAvg : it?.heartRateAvg);
         }
       });
@@ -147,7 +153,7 @@ const ChartUserAlert = () => {
 
             <div className='d-flex flex-row ml-15'>
               <span className='font-input-label d-flex align-center'>
-                Date Ranges
+                {t('date range')}
               </span>
 
               <ResponsiveSelect
@@ -163,15 +169,14 @@ const ChartUserAlert = () => {
           </div>
 
           <div className={clsx(style.flex_space)}>
-            <Line options={{radius: 0}} data={data} />
+            <Line options={{radius: 0}} data={data}/>
           </div>
         </div>
       </div>
   )
 };
 
-const mapStateToProps = () => ({
-});
+const mapStateToProps = () => ({});
 
 export default connect(
     mapStateToProps,

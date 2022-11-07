@@ -26,11 +26,11 @@ const QueryResult = (
   const ableToExport = visibleExport && Boolean(exportOption);
 
   const ChartComponent = React.useMemo(() => {
-    if (showBy === 'table' || !selectedMetric?.value) return null;
+    if (showBy === 'table') return null;
     if (selectedMetric?.value === 30) return <ChartTeamDoughnut/>;
     else if (selectedMetric?.value === 31) return <ChartTeamVerticalBar/>;
     else if (selectedMetric?.value === 40 || selectedMetric?.value === 41) return <ChartUserAlert/>;
-    else return <></>
+    else return <div className={clsx(style.EmptyHeight)}/>;
   }, [selectedMetric, showBy]);
 
   return (

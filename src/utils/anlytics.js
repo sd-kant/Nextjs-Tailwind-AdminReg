@@ -1,10 +1,37 @@
 import {dateFormat} from "./index";
 
+export const getUserNameFromUserId = (members, id) => {
+  const user = members?.find(it => it.userId?.toString() === id?.toString());
+  return user ? `${user?.firstName} ${user?.lastName}` : '';
+};
+
+export const getTeamNameFromUserId = (members, formattedTeams, userId) => {
+  const user = members?.find(it => it.userId?.toString() === userId?.toString());
+  if (user?.teamId) {
+    const team = formattedTeams?.find(it => it.value?.toString() === user.teamId?.toString());
+    return team ? team.label : '';
+  }
+  return user ? `${user?.firstName} ${user?.lastName}` : '';
+};
+
+export const getTeamNameFromTeamId = (formattedTeams, teamId) => {
+  return formattedTeams?.find(it => it.value?.toString() === teamId?.toString())?.label;
+};
+
+export const getTimeSpentFromUserId = (data, str) => {
+  let findIndex = data.findIndex(a => a.temperatureCategory === str);
+  if (findIndex > -1) {
+    return Math.ceil((data[findIndex]?.count ?? 0) / 60)
+  } else {
+    return 0;
+  }
+};
+
 export const onCalc = (key, tempRet, totalSweat, totalHeat) => {
   if (key !== 2 && key !== 5)
-    return Math.floor(tempRet[key] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1));
+    return Math.floor(tempRet[key] * 100 / ((key >= 3 ? totalSweat : totalHeat) ?? 1));
   else {
-    return 100 - Math.floor(tempRet[key === 2 ? 0 : 3] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1)) - Math.floor(tempRet[key === 2 ? 1 : 4] * 100/((key >= 3 ? totalSweat : totalHeat) ?? 1))
+    return 100 - Math.floor(tempRet[key === 2 ? 0 : 3] * 100 / ((key >= 3 ? totalSweat : totalHeat) ?? 1)) - Math.floor(tempRet[key === 2 ? 1 : 4] * 100 / ((key >= 3 ? totalSweat : totalHeat) ?? 1))
   }
 };
 
@@ -24,7 +51,7 @@ export const getUTCDateList = (dateStr) => {
   if (!dateStr) return '';
   let date = new Date(dateStr);
   let dates = [];
-  for (let k = 0; k <= 6; k ++) {
+  for (let k = 0; k <= 6; k++) {
     let m = date.getMonth() + 1;
     let d = date.getDate();
     m = m >= 10 ? m : '0' + m;
@@ -39,7 +66,7 @@ export const getListPerLabel = (list, stageIds, thisWeek) => {
   let temp = list?.filter(a => stageIds.includes(a.alertStageId));
   let array = [];
   let date = thisWeek.firstDate;
-  for (let k = 0; k <= 6; k ++) {
+  for (let k = 0; k <= 6; k++) {
     let nextDate = new Date(date);
     nextDate.setDate(nextDate.getDate() + 1);
     let filterList = temp?.filter(a =>

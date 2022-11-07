@@ -5,9 +5,9 @@ import {
   CategoryScale,
   LinearScale,
   BarElement,
-    Tooltip
+  Tooltip
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import {Bar} from 'react-chartjs-2';
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
@@ -26,9 +26,9 @@ const ChartTeamVerticalBar = () => {
     chartData,
   } = useAnalyticsContext();
   const {t} = useTranslation();
-  const labels = chartData?.xLabel;
 
-  if (!chartData?.xLabel) return null;
+  if (!chartData?.labels) return <div className={clsx(style.empty_height)}/>;
+
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.bar_body)}>
@@ -36,7 +36,7 @@ const ChartTeamVerticalBar = () => {
           <div className={clsx(style.flex_space)}>
             <div className={clsx(style.flex_space, style.txt_label)}>{t('number of alerts')}</div>
             <div className={clsx(style.bar_canvas)}>
-              <Bar data={{ labels, datasets: chartData?.data || [], }} />
+              <Bar data={chartData}/>
             </div>
           </div>
           <div className={clsx(style.txt_center, style.txt_week)}>{t('week')}</div>
@@ -45,8 +45,7 @@ const ChartTeamVerticalBar = () => {
   )
 };
 
-const mapStateToProps = () => ({
-});
+const mapStateToProps = () => ({});
 
 export default connect(
     mapStateToProps,

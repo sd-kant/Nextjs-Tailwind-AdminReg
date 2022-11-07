@@ -205,13 +205,13 @@ export const passwordExpirationDaysOptions = [
   {
     title: 60,
     value: 60,
-  },{
+  }, {
     title: 90,
     value: 90,
-  },{
+  }, {
     title: 180,
     value: 180,
-  },{
+  }, {
     title: i18n.t('off'),
     value: 0,
   },
@@ -243,6 +243,20 @@ export const COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
 export const COLOR_WHITE = '#fff';
 export const COLOR_BLUE = '#4473C4';
 export const TYPES = [
-  {value: 1, label: i18n.t('day')},
-  {value: 2, label: i18n.t('week')},
+  {
+    value: 1,
+    label: i18n.t('day')
+  },
+  {
+    value: 2,
+    label: i18n.t('week')
+  },
+];
+export const LABELS_DOUGHNUT = [
+  i18n.t('low %'),
+  i18n.t('medium'),
+  i18n.t('high')
+];
+export const HEAT_LOW_MEDIUM_HIGH = [
+  "low", "medium", "high"
 ];

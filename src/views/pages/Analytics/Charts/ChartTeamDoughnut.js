@@ -7,12 +7,16 @@ import clsx from 'clsx';
 import style from './Chart.module.scss';
 import {useTranslation, withTranslation} from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
-import {COLORS, COLOR_WHITE} from "../../../../constant";
+import {
+  COLORS,
+  COLOR_WHITE,
+  LABELS_DOUGHNUT
+} from "../../../../constant";
 
 ChartJS.register(ArcElement);
 
 const plugins = [{
-  id: 'abc',
+  id: 'doughnut',
   afterDraw(chart) {
     const {ctx} = chart;
     ctx.save();
@@ -52,46 +56,19 @@ const ChartTeamDoughnut = () => {
   } = useAnalyticsContext();
   const {t} = useTranslation();
 
-  const Labels = [t('low %'), t('medium'), t('high'),];
-  const dataHeat = {
-    type: 'doughnut',
-    labels: Labels,
-    datasets: [
-      {
-        label: '# of Heat',
-        data: [chartData ? chartData[0] ?? 0 : 0, chartData ? chartData[1] ?? 0 : 0, chartData ? chartData[2] ?? 0 : 0],
-        backgroundColor: COLORS,
-        borderColor: [COLOR_WHITE, COLOR_WHITE,COLOR_WHITE],
-      },
-    ],
-  };
-
-  const dataSweat = {
-    type: 'doughnut',
-    labels: Labels,
-    datasets: [
-      {
-        label: '# of Sweat',
-        data: [chartData ? chartData[3] ?? 0 : 0, chartData ? chartData[4] ?? 0 : 0, chartData ? chartData[5] ?? 0 : 0],
-        backgroundColor: COLORS,
-        borderColor: [COLOR_WHITE, COLOR_WHITE,COLOR_WHITE],
-      },
-    ],
-  };
-
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.doughnut_grid2)}>
           <div>
             <h1 className={clsx(style.txt_center)}>{t('heat susceptibility')}</h1>
-            <Doughnut data={dataHeat} plugins={plugins} />
+            <Doughnut data={chartData.dataHeat} plugins={plugins} />
 
             <div className={clsx(style.legend_box_body)}>
               {COLORS.map((item, key) => {
                 return (
                     <div key={key} className={clsx(style.legend_flex)}>
                       <div className={clsx(style.legend_box_item)} style={{backgroundColor: item}} />
-                      <div className={clsx(style.legend_box_txt)}>{Labels[key]}</div>
+                      <div className={clsx(style.legend_box_txt)}>{LABELS_DOUGHNUT[key]}</div>
                     </div>
                 )
               })}
@@ -99,14 +76,14 @@ const ChartTeamDoughnut = () => {
           </div>
           <div>
             <h1 className={clsx(style.txt_center)}>Sweat Rate</h1>
-            <Doughnut data={dataSweat} plugins={plugins} />
+            <Doughnut data={chartData.dataSweat} plugins={plugins} />
 
             <div className={clsx(style.legend_box_body)}>
               {COLORS.map((item, key) => {
                 return (
                     <div key={key} className={clsx(style.legend_flex)}>
                       <div className={clsx(style.legend_box_item)} style={{backgroundColor: item}} />
-                      <div className={clsx(style.legend_box_txt)}>{Labels[key]}</div>
+                      <div className={clsx(style.legend_box_txt)}>{LABELS_DOUGHNUT[key]}</div>
                     </div>
                 )
               })}

@@ -26,9 +26,14 @@ import {
   getThisWeek,
   getUTCDateList,
   getListPerLabel,
+  getUserNameFromUserId,
+  getTeamNameFromUserId,
+  getTeamNameFromTeamId,
+  getTimeSpentFromUserId,
 } from "../utils/anlytics";
 import {
-  COLORS
+  COLOR_WHITE,
+  COLORS, HEAT_LOW_MEDIUM_HIGH, LABELS_DOUGHNUT
 } from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {formatHeartRate, heatSusceptibilityPriorities, literToQuart} from "../utils/dashboard";
@@ -38,11 +43,11 @@ import {useTranslation} from "react-i18next";
 const AnalyticsContext = React.createContext(null);
 
 export const AnalyticsProvider = (
-  {
-    children,
-    setLoading,
-    metric: unitMetric,
-  }) => {
+    {
+      children,
+      setLoading,
+      metric: unitMetric,
+    }) => {
   const {t} = useTranslation();
   const {formatAlert, formatHeartCbt, alertPriorities} = useUtilsContext();
   const [pickedMembers, setPickedMembers] = React.useState([]);
@@ -100,17 +105,17 @@ export const AnalyticsProvider = (
       });
       const a = () => new Promise(resolve => {
         Promise.allSettled(membersPromises)
-          .then(results => {
-            results?.forEach((result, index) => {
-              if (result.status === "fulfilled") {
-                if (result.value?.data?.members?.length > 0) {
-                  const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString()) ?? [];
-                  setMembers([...membersRef.current, ...operators]);
+            .then(results => {
+              results?.forEach((result, index) => {
+                if (result.status === "fulfilled") {
+                  if (result.value?.data?.members?.length > 0) {
+                    const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString()) ?? [];
+                    setMembers([...membersRef.current, ...operators]);
+                  }
                 }
-              }
+              })
             })
-          })
-          .finally(() => resolve());
+            .finally(() => resolve());
       });
       Promise.allSettled([a()]).then();
     }
@@ -234,7 +239,7 @@ export const AnalyticsProvider = (
         setSort(v);
       },
       highlight: sort?.[0]?.index === actionSorts?.[0]?.[0] &&
-        sort?.[0]?.direction === actionSorts?.[0]?.[1],
+          sort?.[0]?.direction === actionSorts?.[0]?.[1],
     }
   }
   /**
@@ -557,44 +562,18 @@ export const AnalyticsProvider = (
     return riskLevels?.find(it => it.id?.toString() === id?.toString())?.name;
   }
   const data = React.useMemo(() => {
-    const getUserNameFromUserId = id => {
-      const user = members?.find(it => it.userId?.toString() === id?.toString());
-      return user ? `${user?.firstName} ${user?.lastName}` : '';
-    };
-
-    const getTeamNameFromUserId = userId => {
-      const user = members?.find(it => it.userId?.toString() === userId?.toString());
-      if (user?.teamId) {
-        const team = formattedTeams?.find(it => it.value?.toString() === user.teamId?.toString());
-        return team ? team.label : '';
-      }
-      return user ? `${user?.firstName} ${user?.lastName}` : '';
-    };
-    const getTeamNameFromTeamId = teamId => {
-      return formattedTeams?.find(it => it.value?.toString() === teamId?.toString())?.label;
-    };
-
-    const getTimeSpentFromUserId = (data, str) => {
-      let findIndex = data.findIndex(a => a.temperatureCategory === str);
-      if (findIndex > -1) {
-        return Math.ceil((data[findIndex]?.count ?? 0) / 60)
-      } else {
-        return 0;
-      }
-    };
-
     let ret = [];
     if (metric === 1) { // wear time
       ret = analytics?.wearTime?.map(it => ([
-        getUserNameFromUserId(it.userId),
-        getTeamNameFromUserId(it.userId),
+        getUserNameFromUserId(members, it.userId),
+        getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.avgWearTime ?? '',
         it.wearTime ?? '',
       ]))
     } else if (metric === 2) { // alert metrics
       ret = analytics?.alertMetrics?.map(it => ([
-        getUserNameFromUserId(it.userId),
-        getTeamNameFromUserId(it.userId),
+        getUserNameFromUserId(members, it.userId),
+        getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.ts ? new Date(it.ts)?.toLocaleString() : '',
         it.alertStageId ? formatAlert(it.alertStageId)?.label : '',
         it.risklevelId ? formatRiskLevel(it.risklevelId) : '',
@@ -605,15 +584,15 @@ export const AnalyticsProvider = (
       ]))
     } else if (metric === 3) {
       ret = analytics?.maxCbt?.map(it => ([
-        getUserNameFromUserId(it.userId),
-        getTeamNameFromUserId(it.userId),
+        getUserNameFromUserId(members, it.userId),
+        getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.utcTs ? new Date(it.utcTs)?.toLocaleString() : '',
         it.maxCbt ? formatHeartCbt(it.maxCbt) : '',
       ]));
     } else if (metric === 5) {
       ret = analytics?.swrFluid?.map(it => ([
-        getUserNameFromUserId(it.userId),
-        getTeamNameFromUserId(it.userId),
+        getUserNameFromUserId(members, it.userId),
+        getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.sweatRateCategory ?? '',
         unitMetric ? it.sweatRate ?? '' : literToQuart(it.sweatRate) ?? '',
         unitMetric ? it.fluidRecommendationL ?? '' : literToQuart(it.fluidRecommendationL) ?? '',
@@ -621,6 +600,46 @@ export const AnalyticsProvider = (
         it.acclimatizationStatus ?? '',
         it.heatSusceptibility ?? '',
       ]));
+    } else if (metric === 6) {
+      ret = analytics?.tempCateData?.map(it => ([
+        getUserNameFromUserId(members, it.userId),
+        getTeamNameFromUserId(members, formattedTeams, it.userId),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Safe to Work 38C'),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Mild Heat Exhaustion 38C – 38.49C'),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Moderate Hyperthermia > 38.5C'),
+      ]));
+    } else if (metric === 7) {
+      ret = analytics?.deviceData?.map(it => ([
+        it.fullname ?? '',
+        getTeamNameFromTeamId(formattedTeams, it.teamId),
+        it.firmwareVersion ?? '',
+        it.version ?? '',
+        it.type,
+        it.ts ?? '',
+      ]));
+    } else if (metric === 8) {
+      ret = analytics?.usersInCBTZones?.map(it => ([
+        it.temperatureCategory,
+        it.percentage,
+      ]));
+    } else if (metric === 20) {
+      ret = analytics?.tempHumidity?.map(it => ([
+        it.teamName ?? '',
+        it.maxTemp ? formatHeartCbt(it.maxTemp) : '',
+        it.minTemp ? formatHeartCbt(it.minTemp) : '',
+        it.avgTemp ? formatHeartCbt(it.avgTemp) : '',
+        it.maxHumidity ?? '',
+        it.minHumidity ?? '',
+        it.avgHumidity ?? '',
+      ]));
+    } else if (metric === 21) {
+      ret = analytics?.alertedUserCount?.map(it => ([
+        it.teamName ?? '',
+        it.alertPercentage ?? '',
+        it.noAlertPercentage ?? '',
+        it.usersWithAlerts,
+        it.activeUsers - it.usersWithAlerts,
+      ]))
     } else if (metric === 22) {
       let tempRet = [];
       analytics?.activeUsers?.forEach(it => {
@@ -643,7 +662,7 @@ export const AnalyticsProvider = (
         }
       });
       ret = tempRet?.map(it => ([
-        getTeamNameFromTeamId(it.teamId),
+        getTeamNameFromTeamId(formattedTeams, it.teamId),
         it.cnt,
       ]));
     } else if (metric === 23) {
@@ -657,17 +676,15 @@ export const AnalyticsProvider = (
               [it.sweatRateCategory?.toLowerCase()]: (tempRet[index][it.sweatRateCategory?.toLowerCase()] ?? 0) + 1,
             });
           } else {
-            tempRet.push(
-              {
-                teamId: it.teamId,
-                [it.sweatRateCategory?.toLowerCase()]: 1,
-              }
-            )
+            tempRet.push({
+              teamId: it.teamId,
+              [it.sweatRateCategory?.toLowerCase()]: 1,
+            })
           }
         }
       });
       ret = tempRet?.map(it => ([
-        getTeamNameFromTeamId(it.teamId),
+        getTeamNameFromTeamId(formattedTeams, it.teamId),
         it['low'],
         it['moderate'],
         it['high'],
@@ -676,67 +693,25 @@ export const AnalyticsProvider = (
       let tempRet = [];
       analytics?.swrFluid?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
-        if (["low", "medium", "high"].includes(it.heatSusceptibility?.toLowerCase())) {
+        if (HEAT_LOW_MEDIUM_HIGH.includes(it.heatSusceptibility?.toLowerCase())) {
           if (index !== -1) {
             tempRet.splice(index, 1, {
               ...tempRet[index],
               [it.heatSusceptibility?.toLowerCase()]: (tempRet[index][it.heatSusceptibility?.toLowerCase()] ?? 0) + 1,
             });
           } else {
-            tempRet.push(
-              {
-                teamId: it.teamId,
-                [it.heatSusceptibility?.toLowerCase()]: 1,
-              }
-            )
+            tempRet.push({
+              teamId: it.teamId,
+              [it.heatSusceptibility?.toLowerCase()]: 1,
+            })
           }
         }
       });
       ret = tempRet?.map(it => ([
-        getTeamNameFromTeamId(it.teamId),
+        getTeamNameFromTeamId(formattedTeams, it.teamId),
         it['low'],
         it['medium'],
         it['high'],
-      ]));
-    } else if (metric === 20) {
-      ret = analytics?.tempHumidity?.map(it => ([
-        it.teamName ?? '',
-        it.maxTemp ? formatHeartCbt(it.maxTemp) : '',
-        it.minTemp ? formatHeartCbt(it.minTemp) : '',
-        it.avgTemp ? formatHeartCbt(it.avgTemp) : '',
-        it.maxHumidity ?? '',
-        it.minHumidity ?? '',
-        it.avgHumidity ?? '',
-      ]));
-    } else if (metric === 8) {
-      ret = analytics?.usersInCBTZones?.map(it => ([
-        it.temperatureCategory,
-        it.percentage,
-      ]));
-    } else if (metric === 26) {
-      ret = analytics?.fluidMetricsByTeam?.map(it => ([
-        it.teamName ?? '',
-        it.heatAcclimatized ?? '',
-        it.heatUnacclimatized ?? '',
-        it.previousIllness,
-        it.noPreviousIllness ?? '',
-      ]));
-    } else if (metric === 7) {
-      ret = analytics?.deviceData?.map(it => ([
-        it.fullname ?? '',
-        getTeamNameFromTeamId(it.teamId),
-        it.firmwareVersion ?? '',
-        it.version ?? '',
-        it.type,
-        it.ts ?? '',
-      ]));
-    } else if (metric === 6) {
-      ret = analytics?.tempCateData?.map(it => ([
-        getUserNameFromUserId(it.userId),
-        getTeamNameFromUserId(it.userId),
-        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Safe to Work 38C'),
-        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Mild Heat Exhaustion 38C – 38.49C'),
-        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Moderate Hyperthermia > 38.5C'),
       ]));
     } else if (metric === 25) {
       ret = analytics?.tempCateInCBTZones?.map(it => ([
@@ -748,14 +723,14 @@ export const AnalyticsProvider = (
         it.alertPercentage ?? '',
         it.noAlertPercentage ?? '',
       ]));
-    } else if (metric === 21) {
-      ret = analytics?.alertedUserCount?.map(it => ([
+    } else if (metric === 26) {
+      ret = analytics?.fluidMetricsByTeam?.map(it => ([
         it.teamName ?? '',
-        it.alertPercentage ?? '',
-        it.noAlertPercentage ?? '',
-        it.usersWithAlerts,
-        it.activeUsers - it.usersWithAlerts,
-      ]))
+        it.heatAcclimatized ?? '',
+        it.heatUnacclimatized ?? '',
+        it.previousIllness,
+        it.noPreviousIllness ?? '',
+      ]));
     }
 
     ret = ret ?? [];
@@ -800,7 +775,7 @@ export const AnalyticsProvider = (
           }
         } else if (sort[0].type === "alert") {
           const v = alertPriorities(sort[0].direction)[a?.[sort[0].index]?.toLowerCase()] -
-            alertPriorities(sort[0].direction)[b?.[sort[0].index]?.toLowerCase()];
+              alertPriorities(sort[0].direction)[b?.[sort[0].index]?.toLowerCase()];
           if (sort[0].direction === 'asc') {
             return v * -1;
           } else if (sort[0].direction === 'desc') {
@@ -808,7 +783,7 @@ export const AnalyticsProvider = (
           }
         } else if (sort[0].type === "susceptibility") {
           const v = heatSusceptibilityPriorities[a?.[sort[0].index]?.toLowerCase()] -
-            heatSusceptibilityPriorities[b?.[sort[0].index]?.toLowerCase()];
+              heatSusceptibilityPriorities[b?.[sort[0].index]?.toLowerCase()];
           if (sort[0].direction === 'asc') {
             return v;
           } else if (sort[0].direction === 'desc') {
@@ -846,8 +821,8 @@ export const AnalyticsProvider = (
       let totalHeat = 0, totalSweat = 0;
 
       analytics?.swrFluid?.forEach(it => {
-        let findHeatIndex = ["low", "medium", "high"].findIndex( a => a === it.heatSusceptibility?.toLowerCase());
-        let findSweatIndex = ["low", "medium", "high"].findIndex(a => a === it.sweatRateCategory?.toLowerCase());
+        let findHeatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.heatSusceptibility?.toLowerCase());
+        let findSweatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.sweatRateCategory?.toLowerCase());
 
         if (findHeatIndex > -1) {
           tempRet[findHeatIndex] += 1;
@@ -858,14 +833,37 @@ export const AnalyticsProvider = (
           totalSweat += 1;
         }
       });
-      return [
-        onCalc(0, tempRet, totalSweat, totalHeat),
-        onCalc(1, tempRet, totalSweat, totalHeat),
-        onCalc(2, tempRet, totalSweat, totalHeat),
-        onCalc(3, tempRet, totalSweat, totalHeat),
-        onCalc(4, tempRet, totalSweat, totalHeat),
-        onCalc(5, tempRet, totalSweat, totalHeat)
-      ];
+
+      const dataHeat = {
+        type: 'doughnut',
+        labels: LABELS_DOUGHNUT,
+        datasets: [
+          {
+            label: '# of Heat',
+            data: [onCalc(0, tempRet, totalSweat, totalHeat), onCalc(1, tempRet, totalSweat, totalHeat), onCalc(2, tempRet, totalSweat, totalHeat)],
+            backgroundColor: COLORS,
+            borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE],
+          },
+        ],
+      };
+
+      const dataSweat = {
+        type: 'doughnut',
+        labels: LABELS_DOUGHNUT,
+        datasets: [
+          {
+            label: '# of Sweat',
+            data: [onCalc(3, tempRet, totalSweat, totalHeat), onCalc(4, tempRet, totalSweat, totalHeat), onCalc(5, tempRet, totalSweat, totalHeat)],
+            backgroundColor: COLORS,
+            borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE],
+          },
+        ],
+      };
+
+      return {
+        dataHeat: dataHeat,
+        dataSweat: dataSweat
+      };
     } else if (metric === 31) {
       if (!analytics?.alertMetrics) return null;
       let thisWeek = getThisWeek();
@@ -891,8 +889,8 @@ export const AnalyticsProvider = (
 
       /**
        * {
-       *   xLabel: ['2022-10-27', '2022-10-28', ..., '2022-11-02'],
-       *   data: [
+       *   labels: ['2022-10-27', '2022-10-28', ..., '2022-11-02'],
+       *   datasets: [
        *      {
        *       "label": "At Risk",
        *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
@@ -912,8 +910,8 @@ export const AnalyticsProvider = (
        * }
        */
       return {
-        xLabel: xLabel,
-        data: dataSet,
+        labels: xLabel,
+        datasets: dataSet,
       };
     } else if (metric === 40 || metric === 41) {
       return analytics?.teamMemberAlerts || [];
@@ -945,6 +943,9 @@ export const AnalyticsProvider = (
   const selectedMembers = React.useMemo(() => {
     return formattedMembers?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
   }, [pickedMembers, formattedMembers]);
+  const selectedUser = React.useMemo(() => {
+    return selectedMembers?.find(it => it.value?.toString() === user?.toString())
+  }, [selectedMembers, user]);
 
   const providerValue = {
     members,
@@ -984,12 +985,13 @@ export const AnalyticsProvider = (
     setShowBy,
     user,
     setUser,
+    selectedUser,
   };
 
   return (
-    <AnalyticsContext.Provider value={providerValue}>
-      {children}
-    </AnalyticsContext.Provider>
+      <AnalyticsContext.Provider value={providerValue}>
+        {children}
+      </AnalyticsContext.Provider>
   );
 };
 
