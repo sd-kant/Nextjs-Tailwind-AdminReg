@@ -30,6 +30,7 @@ import {
   getTeamNameFromUserId,
   getTeamNameFromTeamId,
   getTimeSpentFromUserId,
+  onFilterData,
 } from "../utils/anlytics";
 import {
   COLOR_WHITE,
@@ -522,6 +523,7 @@ export const AnalyticsProvider = (
             setLoading(true);
             apiCall(organization, {
               teamIds: pickedTeams,
+              userId: [4,5,6],
               startDate: dateFormat(new Date(startDate)),
               endDate: dateFormat(new Date(endDate)),
             })
@@ -560,18 +562,18 @@ export const AnalyticsProvider = (
   };
   const formatRiskLevel = id => {
     return riskLevels?.find(it => it.id?.toString() === id?.toString())?.name;
-  }
+  };
   const data = React.useMemo(() => {
     let ret = [];
     if (metric === 1) { // wear time
-      ret = analytics?.wearTime?.map(it => ([
+      ret = onFilterData(analytics?.wearTime, pickedMembers)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.avgWearTime ?? '',
         it.wearTime ?? '',
       ]))
     } else if (metric === 2) { // alert metrics
-      ret = analytics?.alertMetrics?.map(it => ([
+      ret = onFilterData(analytics?.alertMetrics, pickedMembers)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.ts ? new Date(it.ts)?.toLocaleString() : '',
@@ -583,14 +585,14 @@ export const AnalyticsProvider = (
         it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : '',
       ]))
     } else if (metric === 3) {
-      ret = analytics?.maxCbt?.map(it => ([
+      ret = onFilterData(analytics?.maxCbt, pickedMembers)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.utcTs ? new Date(it.utcTs)?.toLocaleString() : '',
         it.maxCbt ? formatHeartCbt(it.maxCbt) : '',
       ]));
     } else if (metric === 5) {
-      ret = analytics?.swrFluid?.map(it => ([
+      ret = onFilterData(analytics?.swrFluid, pickedMembers)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.sweatRateCategory ?? '',
@@ -601,7 +603,7 @@ export const AnalyticsProvider = (
         it.heatSusceptibility ?? '',
       ]));
     } else if (metric === 6) {
-      ret = analytics?.tempCateData?.map(it => ([
+      ret = onFilterData(analytics?.tempCateData, pickedMembers)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Safe to Work 38C'),
@@ -609,7 +611,7 @@ export const AnalyticsProvider = (
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Moderate Hyperthermia > 38.5C'),
       ]));
     } else if (metric === 7) {
-      ret = analytics?.deviceData?.map(it => ([
+      ret = onFilterData(analytics?.deviceData, pickedMembers)?.map(it => ([
         it.fullname ?? '',
         getTeamNameFromTeamId(formattedTeams, it.teamId),
         it.firmwareVersion ?? '',
@@ -801,7 +803,7 @@ export const AnalyticsProvider = (
 
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metric, analytics, members, unitMetric, headers, sort]);
+  }, [metric, analytics, members, pickedMembers, unitMetric, headers, sort]);
 
   const pageData = React.useMemo(() => {
     let ret = [];

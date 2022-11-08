@@ -117,3 +117,11 @@ export const getWeeksInMonth = () => {
     weeks: weeks,
   };
 };
+
+export const onFilterData = (data, ids) => {
+  if (ids?.length > 0) {
+    return data?.filter(a => ids.includes(a.userId));
+  } else {
+    return data;
+  }
+};
