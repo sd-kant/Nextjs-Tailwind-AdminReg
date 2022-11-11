@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import style from './Chart.module.scss';
 import {useTranslation, withTranslation} from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
+import {chartPlugins} from "../../../../utils/anlytics";
 
 ChartJS.register(
     CategoryScale,
@@ -28,7 +29,6 @@ const ChartTeamVerticalBar = () => {
   const {t} = useTranslation();
 
   if (!chartData?.labels) return <div className={clsx(style.empty_height)}/>;
-
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.bar_body)}>
@@ -36,7 +36,7 @@ const ChartTeamVerticalBar = () => {
           <div className={clsx(style.flex_space)}>
             <div className={clsx(style.flex_space, style.txt_label)}>{t('number of alerts')}</div>
             <div className={clsx(style.bar_canvas)}>
-              <Bar data={chartData}/>
+              <Bar data={chartData} plugins={chartPlugins('bar', t('no data to display'))}/>
             </div>
           </div>
           <div className={clsx(style.txt_center, style.txt_week)}>{t('week')}</div>

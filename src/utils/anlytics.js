@@ -1,4 +1,5 @@
 import {dateFormat} from "./index";
+import {COLOR_WHITE} from "../constant";
 
 export const getUserNameFromUserId = (members, id) => {
   const user = members?.find(it => it.userId?.toString() === id?.toString());
@@ -118,10 +119,45 @@ export const getWeeksInMonth = () => {
   };
 };
 
-export const onFilterData = (data, ids) => {
-  if (ids?.length > 0) {
-    return data?.filter(a => ids.includes(a.userId));
-  } else {
-    return data;
-  }
+export const onFilterData = (data, userIds, members) => {
+  let ids = members?.map(it => it.userId.toString());
+  let list = members?.length > 0
+      ?
+      data?.filter(it => ids.includes(it.userId?.toString()))
+      :
+      data;
+  return userIds?.length > 0
+      ?
+      list?.filter(it => userIds.includes(it.userId))
+      :
+      list;
+};
+
+export const onFilterDataByOrganization = (data, key) => {
+  return (data && key && Object.keys(data).includes(key.toString()))
+      ?
+      JSON.parse(JSON.stringify(data[[key]]))
+      :
+      {};
+};
+
+export const chartPlugins = (idStr, noDataStr) => {
+  return [{
+    id: idStr,
+    afterDraw(chart) {
+      const {ctx} = chart;
+      ctx.save();
+      let flag = chart.data.datasets[0].data.filter(it => !!it);
+      if (chart.data.datasets[0].data && flag.length === 0) {
+        let width = chart.width;
+        let height = chart.height;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "20px Arial";
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.fillText(noDataStr, width / 2, height / 2);
+        ctx.restore();
+      }
+    }
+  }]
 };

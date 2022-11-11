@@ -13,6 +13,7 @@ import {Line} from 'react-chartjs-2';
 import {
   COLOR_BLUE,
   COLORS,
+  METRIC_CHART_USER_VALUES,
   TYPES
 } from "../../../../constant";
 
@@ -22,7 +23,7 @@ import {useTranslation, withTranslation} from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {customStyles} from "../../DashboardV2";
 import ResponsiveSelect from "../../../components/ResponsiveSelect";
-import {getWeeksInMonth} from "../../../../utils/anlytics";
+import {chartPlugins, getWeeksInMonth} from "../../../../utils/anlytics";
 
 ChartJS.register(
     CategoryScale,
@@ -61,11 +62,11 @@ const ChartUserAlert = () => {
     labels: [],
     datasets: [
       {
-        label: `${selectedMetric?.value === 40 ? 'CBT' : 'Hr'}`,
+        label: `${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'CBT' : 'Hr'}`,
         data: [],
         borderWidth: 4,
-        borderColor: selectedMetric?.value === 40 ? COLORS[2] : COLOR_BLUE,
-        backgroundColor: selectedMetric?.value === 40 ? COLORS[2] : COLOR_BLUE,
+        borderColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+        backgroundColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
       },
     ],
   });
@@ -91,7 +92,7 @@ const ChartUserAlert = () => {
             minute: "2-digit",
             second: "2-digit"
           }));
-          tempData.push(selectedMetric.value === 40 ? it?.heartCbtAvg : it?.heartRateAvg);
+          tempData.push(selectedMetric.value === METRIC_CHART_USER_VALUES[0] ? it?.heartCbtAvg : it?.heartRateAvg);
         }
       });
       labels.reverse();
@@ -101,11 +102,11 @@ const ChartUserAlert = () => {
         labels,
         datasets: [
           {
-            label: `${selectedMetric?.value === 40 ? 'CBT' : 'Hr'}`,
+            label: `${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'CBT' : 'Hr'}`,
             data: tempData,
             borderWidth: 4,
-            borderColor: selectedMetric?.value === 40 ? COLORS[2] : COLOR_BLUE,
-            backgroundColor: selectedMetric?.value === 40 ? COLORS[2] : COLOR_BLUE,
+            borderColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+            backgroundColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
           },
         ],
       })
@@ -115,7 +116,7 @@ const ChartUserAlert = () => {
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
-          <h1 className={clsx(style.txt_center)}>{t(`${selectedMetric?.value === 40 ? 'cbt' : 'hr'}`)}</h1>
+          <h1 className={clsx(style.txt_center)}>{t(`${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'cbt' : 'hr'}`)}</h1>
           <div className={clsx(style.line_flex, 'mb-15')}>
             {
               selectedMembers?.length > 0 ?
@@ -169,7 +170,7 @@ const ChartUserAlert = () => {
           </div>
 
           <div className={clsx(style.flex_space)}>
-            <Line options={{radius: 0}} data={data}/>
+            <Line options={{radius: 0}} data={data} plugins={chartPlugins('line', t('no data to display'))}/>
           </div>
         </div>
       </div>
