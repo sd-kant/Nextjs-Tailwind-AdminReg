@@ -633,5 +633,6 @@
   "types": "Types",
   "day": "Jour",
   "select type": "Sélectionnez le Type",
-  "select start date": "Sélectionnez la date de début"
+  "select start date": "Sélectionnez la date de début",
+  "no data to display": "Aucune donnée à afficher"
 }

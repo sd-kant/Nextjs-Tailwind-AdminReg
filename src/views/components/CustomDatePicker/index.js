@@ -3,6 +3,9 @@ import DatePicker from "react-datepicker";
 import {range} from "lodash";
 
 import "./react-datepicker.css";
+import {
+  METRIC_CHART_USER_VALUES,
+} from "../../../constant";
 
 const years = range(1900, new Date().getFullYear() + 1, 1);
 const months = [
@@ -85,7 +88,7 @@ const CustomDatePicker = (
       selected={date}
       maxDate={maxDate}
       onChange={v => setDate(v)}
-      readOnly={selectedMetric?.value === 40 || selectedMetric?.value === 41}
+      readOnly={METRIC_CHART_USER_VALUES.includes(selectedMetric?.value)}
     />
   );
 };

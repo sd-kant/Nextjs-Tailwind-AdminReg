@@ -42,12 +42,19 @@
       }
     }
   }
+
+  .EmptyHeight {
+    height: 50px;
+  }
 }
 
 @media only screen and (min-width: 768px) {
   .Wrapper {
     .InnerWrapper {
       margin-top: 0;
+    }
+    .EmptyHeight {
+      height: 581px;
     }
   }
 }
@@ -64,6 +71,5 @@
         margin-top: 0;
       }
     }
-
   }
 }

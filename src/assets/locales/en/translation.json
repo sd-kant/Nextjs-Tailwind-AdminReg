@@ -634,5 +634,6 @@
   "types": "Types",
   "day": "Day",
   "select type": "Select Type",
-  "select start date": "Select Start Date"
+  "select start date": "Select Start Date",
+  "no data to display": "No data to display"
 }

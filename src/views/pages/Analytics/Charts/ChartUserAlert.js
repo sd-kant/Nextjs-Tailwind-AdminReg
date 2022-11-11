@@ -9,8 +9,13 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import {COLOR_BLUE, COLORS, TYPES} from "../../../../constant";
+import {Line} from 'react-chartjs-2';
+import {
+  COLOR_BLUE,
+  COLORS,
+  METRIC_CHART_USER_VALUES,
+  TYPES
+} from "../../../../constant";
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
@@ -18,7 +23,8 @@ import {useTranslation, withTranslation} from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {customStyles} from "../../DashboardV2";
 import ResponsiveSelect from "../../../components/ResponsiveSelect";
-import {getWeeksInMonth} from "../../../../utils/anlytics";
+import {chartPlugins, getWeeksInMonth} from "../../../../utils/anlytics";
+import MultiSelectPopup from "../../../components/MultiSelectPopup";
 
 ChartJS.register(
     CategoryScale,
@@ -33,17 +39,14 @@ const ChartUserAlert = () => {
   const {
     selectedMetric,
     selectedMembers,
-    user,
-    setUser,
-    chartData,
+    selectedUsers,
+    setUsers,
+    users,
+    chartData
   } = useAnalyticsContext();
   const {t} = useTranslation();
 
-  const selectedUser = React.useMemo(() => {
-    return selectedMembers?.find(it => it.value?.toString() === user?.toString())
-  }, [selectedMembers, user]);
-
-  const [type, setType] = React.useState(1);
+  const [type, setType] = React.useState(1); // 1 | 2 // 1: day, 2: week
   const [dates, setDates] = React.useState(null);
   const [date, setDate] = React.useState(null);
   const selectedType = React.useMemo(() => {
@@ -57,15 +60,30 @@ const ChartUserAlert = () => {
     return dates?.find(it => it.value?.toString() === date?.toString());
   }, [date, dates]);
 
+  const usersLabel = React.useMemo(() => {
+    if (selectedUsers?.length > 0) {
+      if (selectedUsers?.length > 1 && (selectedMembers?.length === selectedUsers?.length)) {
+        return t("all users");
+      } else if (selectedUsers?.length > 1) {
+        return t("n users selected", {n: selectedUsers.length});
+      } else {
+        return selectedMembers?.find(it => it.value?.toString() === selectedUsers?.[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("select user");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMembers, selectedUsers]);
+
   const [data, setData] = React.useState({
     labels: [],
     datasets: [
       {
-        label: `${selectedMetric?.value === 40 ? 'CBT' : 'Hr'}`,
+        label: `${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'CBT' : 'Hr'}`,
         data: [],
         borderWidth: 4,
-        borderColor: selectedMetric?.value === 40 ? COLORS[2] : COLOR_BLUE,
-        backgroundColor: selectedMetric?.value === 40 ? COLORS[2] : COLOR_BLUE,
+        borderColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+        backgroundColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
       },
     ],
   });
@@ -79,13 +97,20 @@ const ChartUserAlert = () => {
       end.setDate(new Date(end).getDate() + 1);
       endDayOfWeek.setDate(new Date(endDayOfWeek).getDate() + 7);
 
-      chartData?.forEach(it => {
+      let filterUsers = users.filter(it => selectedMembers.findIndex(a => a?.value?.toString() === it.toString()) > -1);
+      chartData.filter(it => filterUsers.includes(it.userId))?.forEach(it => {
         if (
             (selectedType.value === 1 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(end).getTime()) ||
             (selectedType.value === 2 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(endDayOfWeek).getTime())
         ) {
-          labels.push(new Date(it.ts).toLocaleDateString('en-us', {day:"numeric", hour: "numeric", hour12: false, minute: "2-digit", second: "2-digit"}));
-          tempData.push(selectedMetric.value === 40 ? it?.heartCbtAvg : it?.heartRateAvg);
+          labels.push(new Date(it.ts).toLocaleDateString('en-us', {
+            day: "numeric",
+            hour: "numeric",
+            hour12: false,
+            minute: "2-digit",
+            second: "2-digit"
+          }));
+          tempData.push(selectedMetric.value === METRIC_CHART_USER_VALUES[0] ? it?.heartCbtAvg : it?.heartRateAvg);
         }
       });
       labels.reverse();
@@ -95,21 +120,21 @@ const ChartUserAlert = () => {
         labels,
         datasets: [
           {
-            label: `${selectedMetric?.value === 40 ? 'CBT' : 'Hr'}`,
+            label: `${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'CBT' : 'Hr'}`,
             data: tempData,
             borderWidth: 4,
-            borderColor: selectedMetric?.value === 40 ? COLORS[2] : COLOR_BLUE,
-            backgroundColor: selectedMetric?.value === 40 ? COLORS[2] : COLOR_BLUE,
+            borderColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+            backgroundColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
           },
         ],
       })
     }
-  }, [chartData, selectedMetric, selectedType, selectedDate]);
+  }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers]);
 
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
-          <h1 className={clsx(style.txt_center)}>{t(`${selectedMetric?.value === 40 ? 'cbt' : 'hr'}`)}</h1>
+          <h1 className={clsx(style.txt_center)}>{t(`${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'cbt' : 'hr'}`)}</h1>
           <div className={clsx(style.line_flex, 'mb-15')}>
             {
               selectedMembers?.length > 0 ?
@@ -117,16 +142,16 @@ const ChartUserAlert = () => {
                     <span className='font-input-label d-flex align-center'>
                       {t("users")}
                     </span>
-
-                    <ResponsiveSelect
-                        className={clsx(style.select_mw, 'ml-15 font-heading-small text-black')}
-                        isClearable
-                        options={selectedMembers}
-                        value={selectedUser}
-                        styles={customStyles()}
-                        placeholder={t("select user")}
-                        onChange={v => setUser(v?.value)}
-                    />
+                    <div className={clsx(style.select_mw, 'ml-15 font-heading-small text-black')}>
+                      <MultiSelectPopup
+                          label={usersLabel}
+                          options={selectedMembers}
+                          value={selectedUsers}
+                          onChange={v => {
+                            setUsers(v?.map(it => it.value));
+                          }}
+                      />
+                    </div>
                   </div> : <div/>
             }
             <div className='d-flex flex-row ml-15'>
@@ -147,7 +172,7 @@ const ChartUserAlert = () => {
 
             <div className='d-flex flex-row ml-15'>
               <span className='font-input-label d-flex align-center'>
-                Date Ranges
+                {t('date range')}
               </span>
 
               <ResponsiveSelect
@@ -163,15 +188,14 @@ const ChartUserAlert = () => {
           </div>
 
           <div className={clsx(style.flex_space)}>
-            <Line options={{radius: 0}} data={data} />
+            <Line options={{radius: 0}} data={data} plugins={chartPlugins('line', t('no data to display'))}/>
           </div>
         </div>
       </div>
   )
 };
 
-const mapStateToProps = () => ({
-});
+const mapStateToProps = () => ({});
 
 export default connect(
     mapStateToProps,
