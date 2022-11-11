@@ -147,6 +147,36 @@ export const chartPlugins = (idStr, noDataStr) => {
     afterDraw(chart) {
       const {ctx} = chart;
       ctx.save();
+
+      if (idStr === 'doughnut') {
+        chart.data.datasets.forEach((dataset, i) => {
+          chart.getDatasetMeta(i).data.forEach((dataPoint, index) => {
+            const {x, y} = dataPoint.tooltipPosition();
+            const text = chart.data.labels[index] + ': ' + chart.data.datasets[i].data[index] + '%';
+            const textWidth = ctx.measureText(text).width;
+
+            if (chart.data.datasets[i].data[index]) {
+              ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+              ctx.fillRect(x - ((textWidth + 10) / 2), y - 29, textWidth + 15, 24);
+
+              // triangle
+              ctx.beginPath();
+              ctx.moveTo(x, y);
+              ctx.lineTo(x - 5, y - 5);
+              ctx.lineTo(x + 5, y - 5);
+              ctx.fill();
+              ctx.restore();
+
+              //text
+              ctx.font = '12px Arial';
+              ctx.fillStyle = COLOR_WHITE;
+              ctx.fillText(text, x - (textWidth / 2), y - 13);
+              ctx.restore();
+            }
+          })
+        });
+      }
+
       let flag = chart.data.datasets[0].data.filter(it => !!it);
       if (chart.data.datasets[0].data && flag.length === 0) {
         let width = chart.width;

@@ -75,7 +75,7 @@ export const AnalyticsProvider = (
   const [page, setPage] = React.useState(null);
   const [sizePerPage, setSizePerPage] = React.useState(10);
   const [showBy, setShowBy] = React.useState('table');
-  const [user, setUser] = React.useState('');
+  const [users, setUsers] = React.useState([]);
 
   const exportOptions = [
     {
@@ -550,26 +550,43 @@ export const AnalyticsProvider = (
                   setLoading(false);
                 });
           } else {
-            let userFilter = members.filter(it => it.userId === user);
-            if (userFilter.length === 1) {
+            let userFilter = members.filter(it => !!users.includes(it.userId) );
+
+            const userPromises = [];
+            if (userFilter?.length > 0) {
+              userFilter.forEach(user => {
+                userPromises.push(apiCall({
+                  teamId: user.teamId,
+                  userId: user.userId,
+                  since: new Date(startDate).toISOString()
+                }));
+              });
               setLoading(true);
-              apiCall({
-                teamId: userFilter[0].teamId,
-                userId: userFilter[0].userId,
-                since: new Date(startDate).toISOString()
-              })
-                  .then(response => {
-                    setAnalytics({
-                      ...analytics,
-                      [organization]: {
-                        ...focusAnalytics,
-                        [key]: response.data
-                      },
+              let list = [];
+              const a = () => new Promise(resolve => {
+                Promise.allSettled(userPromises)
+                    .then(response => {
+                      response?.forEach((result) => {
+                        if (result.status === "fulfilled") {
+                          if (result.value?.data?.length > 0) {
+                            list = list.concat(result.value.data);
+                          }
+                        }
+                      })
+                    })
+                    .finally(() => {
+                      setAnalytics({
+                        ...analytics,
+                        [organization]: {
+                          ...focusAnalytics,
+                          [key]: list
+                        },
+                      });
+                      setLoading(false);
+                      resolve();
                     });
-                  })
-                  .finally(() => {
-                    setLoading(false);
-                  });
+              });
+              Promise.allSettled([a()]).then();
             }
           }
         }
@@ -886,13 +903,13 @@ export const AnalyticsProvider = (
         dataSweat: dataSweat
       };
     } else if (metric === METRIC_CHART_TEAM_VALUES[1]) { // 31
-      if (!focusAnalytics?.alertMetrics) return null;
       let thisWeek = getThisWeek();
 
-      let thisData = focusAnalytics?.alertMetrics?.filter(a =>
+      let thisData = (focusAnalytics?.alertMetrics || [])?.filter(a =>
           new Date(a.ts).getTime() >= new Date(thisWeek.firstDate).getTime() &&
           new Date(a.ts).getTime() < new Date(thisWeek.endDate).getTime()
       );
+
       let arrayPerDate = [
         getListPerLabel(thisData, [1], thisWeek), // At Risk id
         getListPerLabel(thisData, [2], thisWeek), // Elevated Risk id
@@ -963,13 +980,13 @@ export const AnalyticsProvider = (
   }, [metric, metrics]);
 
   const selectedMembers = React.useMemo(() => {
-    let formattedMembersTemp = formattedMembers.filter(it => members.some(ele => ele.userId.toString() === it.value?.toString() && ele.orgId.toString() === organization.toString()));
+    let formattedMembersTemp = formattedMembers.filter(it => members.some(ele => ele.userId?.toString() === it.value?.toString() && ele.orgId?.toString() === organization?.toString()));
     return formattedMembersTemp?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
   }, [pickedMembers, formattedMembers, members, organization]);
 
-  const selectedUser = React.useMemo(() => {
-    return selectedMembers?.find(it => it.value?.toString() === user?.toString())
-  }, [selectedMembers, user]);
+  const selectedUsers = React.useMemo(() => {
+    return selectedMembers?.filter(it => users.some(ele => ele?.toString() === it.value?.toString()))
+  }, [selectedMembers, users]);
 
   const providerValue = {
     members,
@@ -1008,9 +1025,9 @@ export const AnalyticsProvider = (
     chartData,
     showBy,
     setShowBy,
-    user,
-    setUser,
-    selectedUser,
+    users,
+    setUsers,
+    selectedUsers,
   };
 
   return (

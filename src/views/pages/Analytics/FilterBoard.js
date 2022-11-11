@@ -39,7 +39,7 @@ const FilterBoard = () => {
   const {
     formattedOrganizations: organizations,
     organization, setOrganization,
-    formattedTeams: teams, setPickedTeams,
+    formattedTeams: teams, setPickedTeams
   } = useBasicContext();
   const [submitTried, setSubmitTried] = React.useState(false);
   const {
@@ -53,7 +53,9 @@ const FilterBoard = () => {
     setShowBy,
     selectedMetric,
     selectedTeams,
-    selectedMembers
+    selectedMembers,
+    pickedMembers,
+    selectedUsers
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
@@ -90,10 +92,18 @@ const FilterBoard = () => {
   }, [selectedMembers, members, organization]);
 
   const submitActivated = React.useMemo(() => {
-    return organization && selectedTeams?.length > 0;
-  }, [organization, selectedTeams]);
+    return organization &&
+        selectedTeams?.length > 0 &&
+        (
+            showBy === 'table' || (
+                showBy === 'chart' && (
+                    statsBy === 'team' ||
+                (statsBy === 'user' && pickedMembers?.length > 0 && selectedUsers?.length > 0)))
+        );
+  }, [organization, selectedTeams, statsBy, showBy, pickedMembers, selectedUsers]);
+
   const submit = () => {
-    if (!submitActivated) return;
+    if (!submitActivated && !errors.metric && !errors.dateRange) return;
     setSubmitTried(true);
     if (!(Object.values(errors).some(it => !!it))) {
       processQuery();
@@ -189,7 +199,7 @@ const FilterBoard = () => {
         }
 
         {
-          members?.length > 0 ?
+          (selectedTeams?.length > 0 && members?.length > 0) ?
               <div className={"d-flex flex-column mt-40"}>
             <span className='font-input-label mb-10'>
               {t("users")}
@@ -258,13 +268,13 @@ const FilterBoard = () => {
 
         <div className="mt-40">
           <button
-              className={`${submitActivated ? 'active cursor-pointer' : 'inactive cursor-default'} button`}
+              className={`${(submitActivated && !errors.metric && !errors.dateRange) ? 'active cursor-pointer' : 'inactive cursor-default'} button`}
               onClick={submit}
           ><span className='font-button-label text-white text-uppercase'>{t("process")}</span>
           </button>
         </div>
       </div>
   )
-}
+};
 
 export default FilterBoard;

@@ -24,6 +24,7 @@ import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {customStyles} from "../../DashboardV2";
 import ResponsiveSelect from "../../../components/ResponsiveSelect";
 import {chartPlugins, getWeeksInMonth} from "../../../../utils/anlytics";
+import MultiSelectPopup from "../../../components/MultiSelectPopup";
 
 ChartJS.register(
     CategoryScale,
@@ -38,13 +39,14 @@ const ChartUserAlert = () => {
   const {
     selectedMetric,
     selectedMembers,
-    selectedUser,
-    setUser,
-    chartData,
+    selectedUsers,
+    setUsers,
+    users,
+    chartData
   } = useAnalyticsContext();
   const {t} = useTranslation();
 
-  const [type, setType] = React.useState(1);
+  const [type, setType] = React.useState(1); // 1 | 2 // 1: day, 2: week
   const [dates, setDates] = React.useState(null);
   const [date, setDate] = React.useState(null);
   const selectedType = React.useMemo(() => {
@@ -57,6 +59,21 @@ const ChartUserAlert = () => {
   const selectedDate = React.useMemo(() => {
     return dates?.find(it => it.value?.toString() === date?.toString());
   }, [date, dates]);
+
+  const usersLabel = React.useMemo(() => {
+    if (selectedUsers?.length > 0) {
+      if (selectedUsers?.length > 1 && (selectedMembers?.length === selectedUsers?.length)) {
+        return t("all users");
+      } else if (selectedUsers?.length > 1) {
+        return t("n users selected", {n: selectedUsers.length});
+      } else {
+        return selectedMembers?.find(it => it.value?.toString() === selectedUsers?.[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("select user");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMembers, selectedUsers]);
 
   const [data, setData] = React.useState({
     labels: [],
@@ -80,7 +97,8 @@ const ChartUserAlert = () => {
       end.setDate(new Date(end).getDate() + 1);
       endDayOfWeek.setDate(new Date(endDayOfWeek).getDate() + 7);
 
-      chartData?.forEach(it => {
+      let filterUsers = users.filter(it => selectedMembers.findIndex(a => a?.value?.toString() === it.toString()) > -1);
+      chartData.filter(it => filterUsers.includes(it.userId))?.forEach(it => {
         if (
             (selectedType.value === 1 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(end).getTime()) ||
             (selectedType.value === 2 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(endDayOfWeek).getTime())
@@ -111,7 +129,7 @@ const ChartUserAlert = () => {
         ],
       })
     }
-  }, [chartData, selectedMetric, selectedType, selectedDate]);
+  }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers]);
 
   return (
       <div className={clsx(style.chart_body)}>
@@ -124,16 +142,16 @@ const ChartUserAlert = () => {
                     <span className='font-input-label d-flex align-center'>
                       {t("users")}
                     </span>
-
-                    <ResponsiveSelect
-                        className={clsx(style.select_mw, 'ml-15 font-heading-small text-black')}
-                        isClearable
-                        options={selectedMembers}
-                        value={selectedUser}
-                        styles={customStyles()}
-                        placeholder={t("select user")}
-                        onChange={v => setUser(v?.value)}
-                    />
+                    <div className={clsx(style.select_mw, 'ml-15 font-heading-small text-black')}>
+                      <MultiSelectPopup
+                          label={usersLabel}
+                          options={selectedMembers}
+                          value={selectedUsers}
+                          onChange={v => {
+                            setUsers(v?.map(it => it.value));
+                          }}
+                      />
+                    </div>
                   </div> : <div/>
             }
             <div className='d-flex flex-row ml-15'>
