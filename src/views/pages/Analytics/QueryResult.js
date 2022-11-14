@@ -15,6 +15,7 @@ import Toolbar from "./Toolbar";
 import {useTranslation} from "react-i18next";
 import ChartTeamDoughnut from "./Charts/ChartTeamDoughnut";
 import ChartTeamVerticalBar from "./Charts/ChartTeamVerticalBar";
+import ChartHighestCBT from "./Charts/ChartHighestCBT";
 import ChartUserAlert from "./Charts/ChartUserAlert";
 import {
   METRIC_CHART_TEAM_VALUES,
@@ -25,7 +26,17 @@ const QueryResult = (
   {
     metric,
   }) => {
-  const {statsBy, setStatsBy, visibleExport, exportOptions, exportOption, setExportOption, handleExport, showBy, selectedMetric} = useAnalyticsContext();
+  const {
+    statsBy,
+    setStatsBy,
+    visibleExport,
+    exportOptions,
+    exportOption,
+    setExportOption,
+    handleExport,
+    showBy,
+    selectedMetric
+  } = useAnalyticsContext();
   const {t} = useTranslation();
   const ableToExport = visibleExport && Boolean(exportOption);
 
@@ -35,6 +46,8 @@ const QueryResult = (
       return <ChartTeamDoughnut/>;
     else if (selectedMetric?.value === METRIC_CHART_TEAM_VALUES[1]) // 31
       return <ChartTeamVerticalBar/>;
+    else if (selectedMetric?.value === METRIC_CHART_TEAM_VALUES[2]) // 32
+      return <ChartHighestCBT/>;
     else if (METRIC_CHART_USER_VALUES.includes(selectedMetric?.value)) // 40, 41
       return <ChartUserAlert/>;
     else return <div className={clsx(style.EmptyHeight)}/>;

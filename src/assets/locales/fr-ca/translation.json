@@ -634,5 +634,8 @@
   "day": "Jour",
   "select type": "Sélectionnez le Type",
   "select start date": "Sélectionnez la date de début",
-  "no data to display": "Aucune donnée à afficher"
+  "no data to display": "Aucune donnée à afficher",
+  "highest cbt by time of day and day of week": "TCC la plus élevée par heure de la journée et jour de la semaine",
+  "day of week": "Jour de la semaine",
+  "time of day": "Heure de la journée"
 }

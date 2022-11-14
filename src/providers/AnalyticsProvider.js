@@ -201,6 +201,10 @@ export const AnalyticsProvider = (
         label: t('number of alerts by week'),
         value: METRIC_CHART_TEAM_VALUES[1], // 31
       },
+      {
+        label: t('highest cbt by time of day and day of week'),
+        value: METRIC_CHART_TEAM_VALUES[2], // 32
+      },
     ];
     const chartUserMetrics = [
       {
@@ -951,6 +955,19 @@ export const AnalyticsProvider = (
         labels: xLabel,
         datasets: dataSet,
       };
+    } else if (metric === METRIC_CHART_TEAM_VALUES[2]) { // 32
+      let list = [];
+      for (let i = 0; i < 7; i ++) {
+        let subList = [];
+        for (let j = 0; j < 16; j ++) {
+          let colorNum = Math.ceil(Math.random() * 257) - 1;
+          colorNum = colorNum < 20 ? null : colorNum;
+          subList.push(colorNum);
+        }
+        list.push(subList);
+      }
+
+      return list;
     } else if (METRIC_CHART_USER_VALUES.includes(metric)) { // 40, 41
       return focusAnalytics?.teamMemberAlerts || [];
     } else {

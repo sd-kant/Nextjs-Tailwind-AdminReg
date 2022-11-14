@@ -635,5 +635,8 @@
   "day": "Day",
   "select type": "Select Type",
   "select start date": "Select Start Date",
-  "no data to display": "No data to display"
+  "no data to display": "No data to display",
+  "highest cbt by time of day and day of week": "Highest CBT by Time of Day and Day of Week",
+  "day of week": "Day Of Week",
+  "time of day": "Time of Day"
 }

@@ -635,5 +635,8 @@
   "day": "日目",
   "select type": "タイプの選択",
   "select start date": "開始日を選択",
-  "no data to display": "表示するデータがありません"
+  "no data to display": "表示するデータがありません",
+  "highest cbt by time of day and day of week": "時間帯別および曜日別の最高CBT",
+  "day of week": "曜日",
+  "time of day": "時刻"
 }

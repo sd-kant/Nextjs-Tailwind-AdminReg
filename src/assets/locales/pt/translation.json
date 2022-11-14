@@ -634,5 +634,8 @@
   "day": "Dia",
   "select type": "Selecionar tipo",
   "select start date": "Selecione a data de início",
-  "no data to display": "Sem dados para exibir"
+  "no data to display": "Sem dados para exibir",
+  "highest cbt by time of day and day of week": "Maior TCC por Hora do Dia e Dia da Semana",
+  "day of week": "Dia da Semana",
+  "time of day": "Hora do Dia"
 }

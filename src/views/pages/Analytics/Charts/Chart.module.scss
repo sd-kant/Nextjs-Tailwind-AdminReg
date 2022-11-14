@@ -1,3 +1,5 @@
+@import "../../../../assets/scss/colors";
+
 .chart_body {
   overflow-x: auto;
   margin-bottom: 30px;
@@ -7,6 +9,17 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .txt_label {
+    padding-left: 10px;
+    transform: rotate(180deg);
+    writing-mode: tb-rl;
+  }
+
+  .txt_label,
+  .txt_18 {
+    font-size: 18px;
   }
 
   .doughnut_grid2 {
@@ -80,20 +93,13 @@
       text-align: center;
     }
 
-    .txt_week,
-    .txt_label {
+    .txt_week {
       font-size: 18px;
     }
 
     .txt_center {
       padding-top: 20px;
       padding-bottom: 20px;
-    }
-
-    .txt_label {
-      padding-left: 10px;
-      transform: rotate(180deg);
-      writing-mode: tb-rl;
     }
 
     .bar_canvas {
@@ -116,6 +122,63 @@
 
       .select_mw {
         width: 300px;
+      }
+    }
+  }
+
+  .highest_cbt_body {
+    margin: 58px auto 0;
+    width: 1200px;
+    font-family: Ubuntu-Medium, sans-serif;
+
+    .txt_center {
+      text-align: center;
+    }
+
+    .cbt_chart_w_30 {
+      width: 30px;
+    }
+
+    .cbt_chart_w_remain {
+      width: 100%;
+      max-width: calc(100% - 30px);
+    }
+
+    .day_item_body {
+      height: 70px;
+
+      .day_txt {
+        padding-right: 10px;
+        width: 70px;
+        text-align: right;
+      }
+
+      .day_time_grid16 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        width: 100%;
+        max-width: calc(100% - 70px);
+
+        .div_rect_border,
+        .div_rect {
+          width: 69px;
+          height: 69px;
+        }
+
+        .div_rect_border {
+          border-right: 1px solid $app-white;
+          border-bottom: 1px solid $app-white;
+        }
+      }
+
+      .time_label {
+        display: flex;
+        align-items: center;
+        transform: rotate(180deg);
+        writing-mode: tb-rl;
+        font-size: 14px;
+        width: 70px;
+        height: 80px;
       }
     }
   }
