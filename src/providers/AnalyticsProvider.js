@@ -42,6 +42,7 @@ import {
   METRIC_TABLE_USER_VALUES,
   METRIC_CHART_USER_VALUES,
   METRIC_CHART_TEAM_VALUES,
+  DAY_LIST,
 } from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {formatHeartRate, heatSusceptibilityPriorities, literToQuart} from "../utils/dashboard";
@@ -528,6 +529,10 @@ export const AnalyticsProvider = (
             apiCall = getTeamMemberAlerts;
             key = 'teamMemberAlerts';
             break;
+          case METRIC_CHART_TEAM_VALUES[2]: // 32
+            apiCall = queryOrganizationMaxCbt;
+            key = 'chartCbt';
+            break;
           default:
             console.log("metric is not available");
         }
@@ -956,23 +961,46 @@ export const AnalyticsProvider = (
         datasets: dataSet,
       };
     } else if (metric === METRIC_CHART_TEAM_VALUES[2]) { // 32
+      const day1 = DAY_LIST.slice(0, new Date(endDate).getDay() + 1);
+      const day2 = DAY_LIST.slice(new Date(endDate).getDay() + 1, );
+      let days = day2.concat(day1).reverse();
+
       let list = [];
-      for (let i = 0; i < 7; i ++) {
-        let subList = [];
-        for (let j = 0; j < 16; j ++) {
-          let colorNum = Math.ceil(Math.random() * 257) - 1;
-          colorNum = colorNum < 20 ? null : colorNum;
-          subList.push(colorNum);
-        }
-        list.push(subList);
+      let focusDate = new Date(endDate);
+      focusDate.setHours(0, 0, 0);
+      let maxCbt = focusAnalytics.chartCbt?.sort((a, b) => {
+        return a?.maxCbt > b?.maxCbt ? -1 : 1;
+      });
+      if (maxCbt?.length > 0) {
+        maxCbt = formatHeartCbt(maxCbt[0].maxCbt);
       }
 
-      return list;
+      for (let i = 0; i < 7; i ++) {
+        let subList = [];
+        let filterDataByDate = focusAnalytics.chartCbt?.filter(it => new Date(it?.utcTs).getTime() >= new Date(focusDate).getTime() && new Date(it?.utcTs).getTime() < new Date(focusDate).getTime() + (24 * 60 * 60 * 1000));
+
+        for (let j = 0; j < 16; j ++) {
+          let filterDataByTime = filterDataByDate?.filter(it => new Date(it?.utcTs).getHours() === j + 4).sort((a, b) => {
+            return a?.maxCbt > b?.maxCbt ? -1 : 1;
+          });
+          let tempCbt = filterDataByTime?.length > 0 ? formatHeartCbt(filterDataByTime[0].maxCbt) : 0;
+          subList.push(filterDataByTime?.length > 0 ? (tempCbt * (256 / maxCbt)) : null);
+        }
+
+        list.push(subList);
+        focusDate.setDate(new Date(focusDate).getDate() - 1);
+      }
+
+      return {
+        list: list,
+        dayList: days,
+      };
     } else if (METRIC_CHART_USER_VALUES.includes(metric)) { // 40, 41
       return focusAnalytics?.teamMemberAlerts || [];
     } else {
       return null;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [analytics, metric, formatAlert, organization, selectedTeams]);
 
   const handleExport = () => {

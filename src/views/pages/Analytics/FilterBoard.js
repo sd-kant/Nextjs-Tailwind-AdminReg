@@ -143,6 +143,12 @@ const FilterBoard = () => {
       const start = new Date();
       start.setMonth(start.getMonth() - 1);
       setStartDate(start);
+    } else if (METRIC_CHART_TEAM_VALUES[2] === selectedMetric?.value) {
+      setEndDate(new Date());
+      const start = new Date();
+      start.setDate(start.getDate() - 6);
+      start.setHours(5, 0, 0);
+      setStartDate(start);
     }
   }, [selectedMetric, setStartDate, setEndDate]);
 

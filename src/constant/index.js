@@ -267,13 +267,13 @@ export const METRIC_CHART_USER_VALUES = [40, 41];
 export const METRIC_CHART_TEAM_VALUES = [30, 31, 32];
 
 export const DAY_LIST = [
-  'Sat',
-  'Fri',
-  'Thurs',
-  'Wed',
-  'Tues',
+  'Sun',
   'Mon',
-  'Sun'
+  'Tues',
+  'Wed',
+  'Thurs',
+  'Fri',
+  'Sat',
 ];
 export const TIME_LIST = [
   '05:00:00',
