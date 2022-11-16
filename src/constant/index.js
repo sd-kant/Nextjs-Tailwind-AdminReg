@@ -293,3 +293,5 @@ export const TIME_LIST = [
   '19:00:00',
   '20:00:00'
 ];
+export const HIGHEST_CHART_CELSIUS_MAX = 101.8;
+export const HIGHEST_CHART_CELSIUS_MIN = 98.5;

@@ -18,6 +18,7 @@ import {
   getTeamMemberAlerts,
 } from "../http";
 import {
+  celsiusToFahrenheit,
   dateFormat,
   numMinutesBetweenWithNow,
 } from "../utils";
@@ -42,7 +43,7 @@ import {
   METRIC_TABLE_USER_VALUES,
   METRIC_CHART_USER_VALUES,
   METRIC_CHART_TEAM_VALUES,
-  DAY_LIST,
+  DAY_LIST, HIGHEST_CHART_CELSIUS_MIN, HIGHEST_CHART_CELSIUS_MAX,
 } from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {formatHeartRate, heatSusceptibilityPriorities, literToQuart} from "../utils/dashboard";
@@ -968,23 +969,24 @@ export const AnalyticsProvider = (
       let list = [];
       let focusDate = new Date(endDate);
       focusDate.setHours(0, 0, 0);
-      let maxCbt = focusAnalytics.chartCbt?.sort((a, b) => {
-        return a?.maxCbt > b?.maxCbt ? -1 : 1;
-      });
-      if (maxCbt?.length > 0) {
-        maxCbt = formatHeartCbt(maxCbt[0].maxCbt);
-      }
 
       for (let i = 0; i < 7; i ++) {
         let subList = [];
-        let filterDataByDate = focusAnalytics.chartCbt?.filter(it => new Date(it?.utcTs).getTime() >= new Date(focusDate).getTime() && new Date(it?.utcTs).getTime() < new Date(focusDate).getTime() + (24 * 60 * 60 * 1000));
+        let filterDataByDate = focusAnalytics.chartCbt?.filter(it =>
+            new Date(it?.utcTs).getTime() >= new Date(focusDate).getTime() &&
+            new Date(it?.utcTs).getTime() < new Date(focusDate).getTime() + (24 * 60 * 60 * 1000)
+        );
 
         for (let j = 0; j < 16; j ++) {
-          let filterDataByTime = filterDataByDate?.filter(it => new Date(it?.utcTs).getHours() === j + 4).sort((a, b) => {
+          let filterDataByTime = filterDataByDate?.filter(it =>
+              new Date(it?.utcTs).getHours() === j + 4
+          ).sort((a, b) => {
             return a?.maxCbt > b?.maxCbt ? -1 : 1;
           });
-          let tempCbt = filterDataByTime?.length > 0 ? formatHeartCbt(filterDataByTime[0].maxCbt) : 0;
-          subList.push(filterDataByTime?.length > 0 ? (tempCbt * (256 / maxCbt)) : null);
+          let tempCbt = filterDataByTime?.length > 0 ? celsiusToFahrenheit(filterDataByTime[0].maxCbt) : 0;
+          tempCbt = Math.min(Math.max(tempCbt, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
+          tempCbt = ((HIGHEST_CHART_CELSIUS_MAX - tempCbt) * 255) / HIGHEST_CHART_CELSIUS_MAX;
+          subList.push(filterDataByTime?.length > 0 ? tempCbt.toFixed(2) : null);
         }
 
         list.push(subList);

@@ -39,7 +39,7 @@ const ChartHighestCBT = () => {
                                   <div
                                       key={key + '_' + index}
                                       className={clsx(style.div_rect_border)}
-                                      style={{backgroundColor: `rgb(255, ${chartData?.list[key][index] ? (256 - Number(chartData?.list[key][index])) : 255}, ${chartData?.list[key][index] ? 0 : 255})`}}
+                                      style={{backgroundColor: `rgb(255, ${chartData?.list[key][index] !== null ? chartData?.list[key][index] : 255}, ${chartData?.list[key][index] !== null ? 0 : 255})`}}
                                   />
                               )
                             })
@@ -71,7 +71,25 @@ const ChartHighestCBT = () => {
             </div>
           </div>
 
-          <h1 className={clsx(style.txt_center, style.txt_18, `mt-40`)}>{t('time of day')}</h1>
+          <div className={clsx(style.txt_center)}>
+            <h1 className={clsx(style.txt_18, `mt-40`)}>{t('time of day')}</h1>
+
+            <div className={clsx(style.justify_center)}>
+              <span className='mt-15'>CBT</span>
+              <div>
+                <div className={clsx(style.progress_bar_container, `ml-15`)}>
+                  <div className={clsx(style.progress_bar_child, style.progress)} />
+                  <div className={clsx(style.point99)}/>
+                  <div className={clsx(style.point100)}/>
+                  <div className={clsx(style.point101)}/>
+                  <div className={clsx(style.txt_point99)}>99</div>
+                  <div className={clsx(style.txt_point100)}>100</div>
+                  <div className={clsx(style.txt_point101)}>101</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
       </div>
   )
