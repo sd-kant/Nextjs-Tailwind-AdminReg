@@ -3,9 +3,15 @@ import {connect} from "react-redux";
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
-import {useTranslation, withTranslation} from "react-i18next";
+import {
+  useTranslation,
+  withTranslation
+} from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
-import {DAY_LIST, TIME_LIST} from "../../../../constant";
+import {
+  DAY_LIST,
+  TIME_LIST
+} from "../../../../constant";
 
 const ChartHighestCBT = () => {
   const {
@@ -30,15 +36,22 @@ const ChartHighestCBT = () => {
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.highest_cbt_body)}>
-          <h1 className={clsx(style.txt_center)}>{t('highest cbt by time of day and day of week')}</h1>
+          <h1 className={clsx(style.txt_center)}>
+            {t('highest cbt by time of day and day of week')}
+          </h1>
 
           <div className={clsx(style.flex_space)}>
-            <h1 className={clsx(style.txt_label, style.flex_space, style.cbt_chart_w_30)}>{t('day of week')}</h1>
+            <h1 className={clsx(style.txt_label, style.flex_space, style.cbt_chart_w_30)}>
+              {t('day of week')}
+            </h1>
             <div className={clsx(style.cbt_chart_w_remain)}>
               {
-                dayList.map((item, key) => {
+                dayList?.map((item, key) => {
                   return (
-                      <div key={key} className={clsx(style.flex_space, style.day_item_body)}>
+                      <div
+                          key={key}
+                          className={clsx(style.flex_space, style.day_item_body)}
+                      >
                         <div className={clsx(style.day_txt)}>{item}</div>
 
                         <div className={clsx(style.day_time_grid16)}>
@@ -55,7 +68,13 @@ const ChartHighestCBT = () => {
                                             :
                                             255})`
                                       }}
-                                      onClick={() => chartData?.list[key][index] !== null ? setDetailCbt({dayIndex: key, timeIndex: index}) : null}
+                                      onClick={() =>
+                                          chartData?.list[key][index] !== null
+                                              ?
+                                              setDetailCbt({dayIndex: key, timeIndex: index})
+                                              :
+                                              null
+                                      }
                                   />
                               )
                             })
@@ -95,9 +114,8 @@ const ChartHighestCBT = () => {
 
           <div className={clsx(style.txt_center)}>
             <h1 className={clsx(style.txt_18, `mt-40`)}>{t('time of day')}</h1>
-
             <div className={clsx(style.justify_center)}>
-              <span className='mt-15'>CBT</span>
+              <span className='mt-15'>{t('cbt')}</span>
               <div>
                 <div className={clsx(style.progress_bar_container, `ml-15`)}>
                   <div className={clsx(style.progress_bar_child, style.progress)} />
@@ -108,7 +126,6 @@ const ChartHighestCBT = () => {
                   <div className={clsx(style.txt_point100)}>100</div>
                   <div className={clsx(style.txt_point101)}>101</div>
                 </div>
-
               </div>
             </div>
           </div>

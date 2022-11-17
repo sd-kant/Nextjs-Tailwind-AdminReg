@@ -3,7 +3,10 @@ import {connect} from "react-redux";
 
 import clsx from 'clsx';
 import style from './Toolbar.module.scss';
-import {useTranslation, withTranslation} from "react-i18next";
+import {
+  useTranslation,
+  withTranslation
+} from "react-i18next";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 import {useWidthContext} from "../../../providers/WidthProvider";
 import Pagination from "../../components/Pagination";

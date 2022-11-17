@@ -3,31 +3,32 @@
 .Header {
   position: sticky;
   top: 5px;
+  padding: 10px 0;
   background: $app-bg;
   opacity: 1;
   z-index: 5;
-  padding: 10px 0;
 
   .Second {
-    margin-top: 10px;
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
 
     .PaginationWrapper {
-      margin-top: 5px;
       display: flex;
       flex-direction: row;
       align-items: center;
+      margin-top: 5px;
 
       .SelectorWrapper {
         margin-left: 10px;
+
         .Selector {
-          background: transparent;
-          border: 1px solid #FFFFFF;
+          padding: 5px 20px;
+          border: 1px solid $app-white;
           border-radius: 10px;
           outline: none;
-          padding: 5px 20px;
           color: white;
+          background: transparent;
           text-align: center;
 
           /* for Firefox */
@@ -55,7 +56,7 @@
         height: 30px;
         font-size: 14px;
         font-family: Ubuntu-Bold, sans-serif;
-        background-color: #DE7D2C;
+        background-color: $app-orange;
         color: $app-white;
         cursor: pointer;
 
@@ -92,7 +93,6 @@
     }
   }
 }
-
 
 @media only screen and (min-width: 1024px) {
   .Header {

@@ -43,10 +43,17 @@ import {
   METRIC_TABLE_USER_VALUES,
   METRIC_CHART_USER_VALUES,
   METRIC_CHART_TEAM_VALUES,
-  DAY_LIST, HIGHEST_CHART_CELSIUS_MIN, HIGHEST_CHART_CELSIUS_MAX,
+  DAY_LIST,
+  HIGHEST_CHART_CELSIUS_MIN,
+  HIGHEST_CHART_CELSIUS_MAX,
+  ONE_DAY,
 } from "../constant";
 import {useBasicContext} from "./BasicProvider";
-import {formatHeartRate, heatSusceptibilityPriorities, literToQuart} from "../utils/dashboard";
+import {
+  formatHeartRate,
+  heatSusceptibilityPriorities,
+  literToQuart
+} from "../utils/dashboard";
 import {useUtilsContext} from "./UtilsProvider";
 import {useTranslation} from "react-i18next";
 
@@ -544,7 +551,7 @@ export const AnalyticsProvider = (
 
         if (apiCall && key) {
           let focusAnalytics = onFilterDataByOrganization(analytics, organization);
-          if (key !== 'teamMemberAlerts') {
+          if (!METRIC_CHART_USER_VALUES.includes(metric)) {
             setLoading(true);
             apiCall(organization, {
               teamIds: pickedTeams,
@@ -564,7 +571,7 @@ export const AnalyticsProvider = (
                   setLoading(false);
                 });
           } else {
-            let userFilter = members.filter(it => !!users.includes(it.userId) );
+            let userFilter = members.filter(it => !!users.includes(it.userId));
 
             const userPromises = [];
             if (userFilter?.length > 0) {
@@ -617,6 +624,18 @@ export const AnalyticsProvider = (
     return formattedMembersTemp?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
   }, [pickedMembers, formattedMembers, members, organization]);
 
+  const selectedMetric = React.useMemo(() => {
+    return metrics?.find(it => it.value?.toString() === metric?.toString())
+  }, [metric, metrics]);
+
+  const selectedUsers = React.useMemo(() => {
+    return selectedMembers?.filter(it => users.some(ele => ele?.toString() === it.value?.toString()))
+  }, [selectedMembers, users]);
+
+  React.useEffect(() => {
+    setDetailCbt(null)
+  }, [showBy, statsBy, selectedMembers, selectedMetric, selectedTeams]);
+
   const chartData = React.useMemo(() => {
     let focusAnalytics = selectedTeams?.length > 0 ? onFilterDataByOrganization(analytics, organization) : {};
     if (metric === METRIC_CHART_TEAM_VALUES[0]) { // 30
@@ -643,9 +662,17 @@ export const AnalyticsProvider = (
         datasets: [
           {
             label: '# of Heat',
-            data: [onCalc(0, tempRet, totalSweat, totalHeat), onCalc(1, tempRet, totalSweat, totalHeat), onCalc(2, tempRet, totalSweat, totalHeat)],
+            data: [
+              onCalc(0, tempRet, totalSweat, totalHeat),
+              onCalc(1, tempRet, totalSweat, totalHeat),
+              onCalc(2, tempRet, totalSweat, totalHeat)
+            ],
             backgroundColor: COLORS,
-            borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE],
+            borderColor: [
+              COLOR_WHITE,
+              COLOR_WHITE,
+              COLOR_WHITE
+            ],
           },
         ],
       };
@@ -656,9 +683,17 @@ export const AnalyticsProvider = (
         datasets: [
           {
             label: '# of Sweat',
-            data: [onCalc(3, tempRet, totalSweat, totalHeat), onCalc(4, tempRet, totalSweat, totalHeat), onCalc(5, tempRet, totalSweat, totalHeat)],
+            data: [
+              onCalc(3, tempRet, totalSweat, totalHeat),
+              onCalc(4, tempRet, totalSweat, totalHeat),
+              onCalc(5, tempRet, totalSweat, totalHeat)
+            ],
             backgroundColor: COLORS,
-            borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE],
+            borderColor: [
+              COLOR_WHITE,
+              COLOR_WHITE,
+              COLOR_WHITE
+            ],
           },
         ],
       };
@@ -718,22 +753,21 @@ export const AnalyticsProvider = (
       };
     } else if (metric === METRIC_CHART_TEAM_VALUES[2]) { // 32
       const day1 = DAY_LIST.slice(0, new Date(endDate).getDay() + 1);
-      const day2 = DAY_LIST.slice(new Date(endDate).getDay() + 1, );
-      let days = day2.concat(day1).reverse();
+      const day2 = DAY_LIST.slice(new Date(endDate).getDay() + 1,);
 
       let list = [];
       let focusDate = new Date(endDate);
       focusDate.setHours(0, 0, 0);
 
-      for (let i = 0; i < 7; i ++) {
+      for (let i = 0; i < 7; i++) {
         let subList = [];
         let filterDataByDate = focusAnalytics.chartCbt?.filter(it =>
             selectedMembers?.findIndex(a => a?.value === it?.userId) > -1 &&
             new Date(it?.utcTs).getTime() >= new Date(focusDate).getTime() &&
-            new Date(it?.utcTs).getTime() < new Date(focusDate).getTime() + (24 * 60 * 60 * 1000)
+            new Date(it?.utcTs).getTime() < new Date(focusDate).getTime() + ONE_DAY
         );
 
-        for (let j = 0; j < 16; j ++) {
+        for (let j = 0; j < 16; j++) {
           let filterDataByTime = filterDataByDate?.filter(it =>
               new Date(it?.utcTs).getHours() === j + 4
           ).sort((a, b) => {
@@ -741,18 +775,19 @@ export const AnalyticsProvider = (
           }).map(it => ([
             getUserNameFromUserId(members, it.userId),
             getTeamNameFromUserId(members, formattedTeams, it.userId),
-            it.utcTs ? new Date(it.utcTs)?.toLocaleString() : '',
-            celsiusToFahrenheit(it?.maxCbt),
+            it.utcTs ? new Date(it.utcTs)?.toLocaleString() : ``,
+            it?.maxCbt ? celsiusToFahrenheit(it?.maxCbt) : ``,
           ]));
           let tempCbt = filterDataByTime?.length > 0 ? filterDataByTime[0][3] : 0;
           tempCbt = Math.min(Math.max(tempCbt, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
           tempCbt = ((HIGHEST_CHART_CELSIUS_MAX - tempCbt) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
-          subList.push(filterDataByTime?.length > 0 ? {
-                maxCbt: tempCbt.toFixed(2),
-                details: filterDataByTime
-              }
-              :
-              null
+          subList.push(
+              filterDataByTime?.length > 0 ? {
+                    maxCbt: tempCbt.toFixed(2),
+                    details: filterDataByTime
+                  }
+                  :
+                  null
           );
         }
 
@@ -762,7 +797,7 @@ export const AnalyticsProvider = (
 
       return {
         list: list,
-        dayList: days,
+        dayList: day2.concat(day1).reverse(),
       };
     } else if (METRIC_CHART_USER_VALUES.includes(metric)) { // 40, 41
       return focusAnalytics?.teamMemberAlerts || [];
@@ -943,7 +978,12 @@ export const AnalyticsProvider = (
         it.previousIllness,
         it.noPreviousIllness ?? '',
       ]));
-    } else if (showBy === 'chart' && statsBy === 'team' && detailCbt && metric === METRIC_CHART_TEAM_VALUES[2]) { // detail table of highest CBT chart
+    } else if (
+        showBy === 'chart' &&
+        statsBy === 'team' &&
+        detailCbt &&
+        metric === METRIC_CHART_TEAM_VALUES[2]
+    ) { // detail table of highest CBT chart
       ret = chartData?.list?.length > 0 ? chartData.list[detailCbt.dayIndex][detailCbt.timeIndex]?.details || [] : [];
     }
 
@@ -1048,17 +1088,6 @@ export const AnalyticsProvider = (
       }
     }
   };
-  const selectedMetric = React.useMemo(() => {
-    return metrics?.find(it => it.value?.toString() === metric?.toString())
-  }, [metric, metrics]);
-
-  const selectedUsers = React.useMemo(() => {
-    return selectedMembers?.filter(it => users.some(ele => ele?.toString() === it.value?.toString()))
-  }, [selectedMembers, users]);
-
-  React.useEffect(() => {
-    setDetailCbt(null)
-  }, [showBy, statsBy, selectedMembers, selectedMetric, selectedTeams]);
 
   const providerValue = {
     members,
