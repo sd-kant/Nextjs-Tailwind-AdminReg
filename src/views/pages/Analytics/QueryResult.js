@@ -35,7 +35,8 @@ const QueryResult = (
     setExportOption,
     handleExport,
     showBy,
-    selectedMetric
+    selectedMetric,
+    detailCbt,
   } = useAnalyticsContext();
   const {t} = useTranslation();
   const ableToExport = visibleExport && Boolean(exportOption);
@@ -56,7 +57,10 @@ const QueryResult = (
   return (
     <div className={clsx(style.Wrapper)}>
       {
-        showBy === 'table' ?
+        (
+            showBy === 'table' ||
+            (showBy === 'chart' && statsBy === 'team' && selectedMetric?.value === METRIC_CHART_TEAM_VALUES[2] && detailCbt)
+        ) ?
             <>
               <div className={clsx(style.InnerWrapper)}>
                 <Toolbar/>

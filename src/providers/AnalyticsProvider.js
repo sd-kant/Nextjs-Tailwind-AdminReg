@@ -78,6 +78,7 @@ export const AnalyticsProvider = (
   const [sizePerPage, setSizePerPage] = React.useState(10);
   const [showBy, setShowBy] = React.useState('table');
   const [users, setUsers] = React.useState([]);
+  const [detailCbt, setDetailCbt] = React.useState(null); // {dayIndex: 4, timeIndex: 5}
 
   const exportOptions = [
     {
@@ -313,6 +314,7 @@ export const AnalyticsProvider = (
         ];
         break;
       case METRIC_TABLE_USER_VALUES[2]: // 3
+      case METRIC_CHART_TEAM_VALUES[2]: // 32
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
@@ -409,6 +411,7 @@ export const AnalyticsProvider = (
         ret = [t('name'), t('team'), t('alert time'), t('alert'), t('heat risk'), t('cbt'), t('temp'), t('humidity'), t('heart rate avg')];
         break;
       case METRIC_TABLE_USER_VALUES[2]: // 3
+      case METRIC_CHART_TEAM_VALUES[2]: // 32
         ret = [t('name'), t('team'), t('date'), t('max cbt')];
         break;
       case METRIC_TABLE_USER_VALUES[3]: // 4
@@ -447,6 +450,7 @@ export const AnalyticsProvider = (
       case METRIC_TABLE_TEAM_VALUES[6]: // 26
         ret = [t('team'), t('heat acclimatized users'), t('heat unacclimatized users'), t('previous illness'), t('no previous illness')];
         break;
+
       default:
         console.log('metric not registered');
     }
@@ -607,6 +611,167 @@ export const AnalyticsProvider = (
   const formatRiskLevel = id => {
     return riskLevels?.find(it => it.id?.toString() === id?.toString())?.name;
   };
+
+  const selectedMembers = React.useMemo(() => {
+    let formattedMembersTemp = formattedMembers.filter(it => members.some(ele => ele.userId?.toString() === it.value?.toString() && ele.orgId?.toString() === organization?.toString()));
+    return formattedMembersTemp?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
+  }, [pickedMembers, formattedMembers, members, organization]);
+
+  const chartData = React.useMemo(() => {
+    let focusAnalytics = selectedTeams?.length > 0 ? onFilterDataByOrganization(analytics, organization) : {};
+    if (metric === METRIC_CHART_TEAM_VALUES[0]) { // 30
+      let tempRet = [0, 0, 0, 0, 0, 0];
+      let totalHeat = 0, totalSweat = 0;
+
+      focusAnalytics?.swrFluid?.forEach(it => {
+        let findHeatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.heatSusceptibility?.toLowerCase());
+        let findSweatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.sweatRateCategory?.toLowerCase());
+
+        if (findHeatIndex > -1) {
+          tempRet[findHeatIndex] += 1;
+          totalHeat += 1;
+        }
+        if (findSweatIndex > -1) {
+          tempRet[findSweatIndex + 3] += 1;
+          totalSweat += 1;
+        }
+      });
+
+      const dataHeat = {
+        type: 'doughnut',
+        labels: LABELS_DOUGHNUT,
+        datasets: [
+          {
+            label: '# of Heat',
+            data: [onCalc(0, tempRet, totalSweat, totalHeat), onCalc(1, tempRet, totalSweat, totalHeat), onCalc(2, tempRet, totalSweat, totalHeat)],
+            backgroundColor: COLORS,
+            borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE],
+          },
+        ],
+      };
+
+      const dataSweat = {
+        type: 'doughnut',
+        labels: LABELS_DOUGHNUT,
+        datasets: [
+          {
+            label: '# of Sweat',
+            data: [onCalc(3, tempRet, totalSweat, totalHeat), onCalc(4, tempRet, totalSweat, totalHeat), onCalc(5, tempRet, totalSweat, totalHeat)],
+            backgroundColor: COLORS,
+            borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE],
+          },
+        ],
+      };
+
+      return {
+        dataHeat: dataHeat,
+        dataSweat: dataSweat
+      };
+    } else if (metric === METRIC_CHART_TEAM_VALUES[1]) { // 31
+      let thisWeek = getThisWeek();
+
+      let thisData = (focusAnalytics?.alertMetrics || [])?.filter(a =>
+          new Date(a.ts).getTime() >= new Date(thisWeek.firstDate).getTime() &&
+          new Date(a.ts).getTime() < new Date(thisWeek.endDate).getTime()
+      );
+
+      let arrayPerDate = [
+        getListPerLabel(thisData, [1], thisWeek), // At Risk id
+        getListPerLabel(thisData, [2], thisWeek), // Elevated Risk id
+        getListPerLabel(thisData, [3, 4], thisWeek), // Safe ids
+      ];
+      const xLabel = getUTCDateList(thisWeek?.firstDate);
+      let dataSet = [];
+      COLORS.forEach((item, key) => {
+        dataSet.push({
+          label: formatAlert(key + 1).label,
+          data: xLabel?.map((it, index) => arrayPerDate[key][index]),
+          backgroundColor: COLORS[key],
+        });
+      });
+
+      /**
+       * {
+       *   labels: ['2022-10-27', '2022-10-28', ..., '2022-11-02'],
+       *   datasets: [
+       *      {
+       *       "label": "At Risk",
+       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
+       *       "backgroundColor": "#ffe699"
+       *       },
+       *       {
+       *       "label": "Elevated Risk",
+       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
+       *       "backgroundColor": "#ffe699"
+       *       },
+       *       {
+       *       "label": "Safe",
+       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
+       *       "backgroundColor": "#ed7d31"
+       *       }
+       *   ],
+       * }
+       */
+      return {
+        labels: xLabel,
+        datasets: dataSet,
+      };
+    } else if (metric === METRIC_CHART_TEAM_VALUES[2]) { // 32
+      const day1 = DAY_LIST.slice(0, new Date(endDate).getDay() + 1);
+      const day2 = DAY_LIST.slice(new Date(endDate).getDay() + 1, );
+      let days = day2.concat(day1).reverse();
+
+      let list = [];
+      let focusDate = new Date(endDate);
+      focusDate.setHours(0, 0, 0);
+
+      for (let i = 0; i < 7; i ++) {
+        let subList = [];
+        let filterDataByDate = focusAnalytics.chartCbt?.filter(it =>
+            selectedMembers?.findIndex(a => a?.value === it?.userId) > -1 &&
+            new Date(it?.utcTs).getTime() >= new Date(focusDate).getTime() &&
+            new Date(it?.utcTs).getTime() < new Date(focusDate).getTime() + (24 * 60 * 60 * 1000)
+        );
+
+        for (let j = 0; j < 16; j ++) {
+          let filterDataByTime = filterDataByDate?.filter(it =>
+              new Date(it?.utcTs).getHours() === j + 4
+          ).sort((a, b) => {
+            return a?.maxCbt > b?.maxCbt ? -1 : 1;
+          }).map(it => ([
+            getUserNameFromUserId(members, it.userId),
+            getTeamNameFromUserId(members, formattedTeams, it.userId),
+            it.utcTs ? new Date(it.utcTs)?.toLocaleString() : '',
+            celsiusToFahrenheit(it?.maxCbt),
+          ]));
+          let tempCbt = filterDataByTime?.length > 0 ? filterDataByTime[0][3] : 0;
+          tempCbt = Math.min(Math.max(tempCbt, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
+          tempCbt = ((HIGHEST_CHART_CELSIUS_MAX - tempCbt) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
+          subList.push(filterDataByTime?.length > 0 ? {
+                maxCbt: tempCbt.toFixed(2),
+                details: filterDataByTime
+              }
+              :
+              null
+          );
+        }
+
+        list.push(subList);
+        focusDate.setDate(new Date(focusDate).getDate() - 1);
+      }
+
+      return {
+        list: list,
+        dayList: days,
+      };
+    } else if (METRIC_CHART_USER_VALUES.includes(metric)) { // 40, 41
+      return focusAnalytics?.teamMemberAlerts || [];
+    } else {
+      return null;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [analytics, metric, formatAlert, organization, selectedTeams, selectedMembers]);
+
   const data = React.useMemo(() => {
     let ret = [], focusAnalytics = selectedTeams?.length > 0 ? onFilterDataByOrganization(analytics, organization) : {};
 
@@ -778,6 +943,8 @@ export const AnalyticsProvider = (
         it.previousIllness,
         it.noPreviousIllness ?? '',
       ]));
+    } else if (showBy === 'chart' && statsBy === 'team' && detailCbt && metric === METRIC_CHART_TEAM_VALUES[2]) { // detail table of highest CBT chart
+      ret = chartData?.list?.length > 0 ? chartData.list[detailCbt.dayIndex][detailCbt.timeIndex]?.details || [] : [];
     }
 
     ret = ret ?? [];
@@ -848,7 +1015,7 @@ export const AnalyticsProvider = (
 
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organization, metric, analytics, members, selectedTeams, pickedMembers, unitMetric, headers, sort]);
+  }, [organization, metric, analytics, members, selectedTeams, pickedMembers, unitMetric, headers, sort, detailCbt]);
 
   const pageData = React.useMemo(() => {
     let ret = [];
@@ -856,154 +1023,13 @@ export const AnalyticsProvider = (
       let start = ((page ?? 1) - 1) * sizePerPage;
       ret = data.slice(start, start + sizePerPage);
     }
+
     while (ret?.length < 10) {
       ret.push(Array(headers.length).fill(''));
     }
     return ret;
-  }, [data, page, sizePerPage, headers]);
-
-  const chartData = React.useMemo(() => {
-    let focusAnalytics = selectedTeams?.length > 0 ? onFilterDataByOrganization(analytics, organization) : {};
-    if (metric === METRIC_CHART_TEAM_VALUES[0]) { // 30
-      let tempRet = [0, 0, 0, 0, 0, 0];
-      let totalHeat = 0, totalSweat = 0;
-
-      focusAnalytics?.swrFluid?.forEach(it => {
-        let findHeatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.heatSusceptibility?.toLowerCase());
-        let findSweatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.sweatRateCategory?.toLowerCase());
-
-        if (findHeatIndex > -1) {
-          tempRet[findHeatIndex] += 1;
-          totalHeat += 1;
-        }
-        if (findSweatIndex > -1) {
-          tempRet[findSweatIndex + 3] += 1;
-          totalSweat += 1;
-        }
-      });
-
-      const dataHeat = {
-        type: 'doughnut',
-        labels: LABELS_DOUGHNUT,
-        datasets: [
-          {
-            label: '# of Heat',
-            data: [onCalc(0, tempRet, totalSweat, totalHeat), onCalc(1, tempRet, totalSweat, totalHeat), onCalc(2, tempRet, totalSweat, totalHeat)],
-            backgroundColor: COLORS,
-            borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE],
-          },
-        ],
-      };
-
-      const dataSweat = {
-        type: 'doughnut',
-        labels: LABELS_DOUGHNUT,
-        datasets: [
-          {
-            label: '# of Sweat',
-            data: [onCalc(3, tempRet, totalSweat, totalHeat), onCalc(4, tempRet, totalSweat, totalHeat), onCalc(5, tempRet, totalSweat, totalHeat)],
-            backgroundColor: COLORS,
-            borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE],
-          },
-        ],
-      };
-
-      return {
-        dataHeat: dataHeat,
-        dataSweat: dataSweat
-      };
-    } else if (metric === METRIC_CHART_TEAM_VALUES[1]) { // 31
-      let thisWeek = getThisWeek();
-
-      let thisData = (focusAnalytics?.alertMetrics || [])?.filter(a =>
-          new Date(a.ts).getTime() >= new Date(thisWeek.firstDate).getTime() &&
-          new Date(a.ts).getTime() < new Date(thisWeek.endDate).getTime()
-      );
-
-      let arrayPerDate = [
-        getListPerLabel(thisData, [1], thisWeek), // At Risk id
-        getListPerLabel(thisData, [2], thisWeek), // Elevated Risk id
-        getListPerLabel(thisData, [3, 4], thisWeek), // Safe ids
-      ];
-      const xLabel = getUTCDateList(thisWeek?.firstDate);
-      let dataSet = [];
-      COLORS.forEach((item, key) => {
-        dataSet.push({
-          label: formatAlert(key + 1).label,
-          data: xLabel?.map((it, index) => arrayPerDate[key][index]),
-          backgroundColor: COLORS[key],
-        });
-      });
-
-      /**
-       * {
-       *   labels: ['2022-10-27', '2022-10-28', ..., '2022-11-02'],
-       *   datasets: [
-       *      {
-       *       "label": "At Risk",
-       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
-       *       "backgroundColor": "#ffe699"
-       *       },
-       *       {
-       *       "label": "Elevated Risk",
-       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
-       *       "backgroundColor": "#ffe699"
-       *       },
-       *       {
-       *       "label": "Safe",
-       *       "data": [ 0, 2, 0, 3, 9, 11, 0 ],
-       *       "backgroundColor": "#ed7d31"
-       *       }
-       *   ],
-       * }
-       */
-      return {
-        labels: xLabel,
-        datasets: dataSet,
-      };
-    } else if (metric === METRIC_CHART_TEAM_VALUES[2]) { // 32
-      const day1 = DAY_LIST.slice(0, new Date(endDate).getDay() + 1);
-      const day2 = DAY_LIST.slice(new Date(endDate).getDay() + 1, );
-      let days = day2.concat(day1).reverse();
-
-      let list = [];
-      let focusDate = new Date(endDate);
-      focusDate.setHours(0, 0, 0);
-
-      for (let i = 0; i < 7; i ++) {
-        let subList = [];
-        let filterDataByDate = focusAnalytics.chartCbt?.filter(it =>
-            new Date(it?.utcTs).getTime() >= new Date(focusDate).getTime() &&
-            new Date(it?.utcTs).getTime() < new Date(focusDate).getTime() + (24 * 60 * 60 * 1000)
-        );
-
-        for (let j = 0; j < 16; j ++) {
-          let filterDataByTime = filterDataByDate?.filter(it =>
-              new Date(it?.utcTs).getHours() === j + 4
-          ).sort((a, b) => {
-            return a?.maxCbt > b?.maxCbt ? -1 : 1;
-          });
-          let tempCbt = filterDataByTime?.length > 0 ? celsiusToFahrenheit(filterDataByTime[0].maxCbt) : 0;
-          tempCbt = Math.min(Math.max(tempCbt, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
-          tempCbt = ((HIGHEST_CHART_CELSIUS_MAX - tempCbt) * 255) / HIGHEST_CHART_CELSIUS_MAX;
-          subList.push(filterDataByTime?.length > 0 ? tempCbt.toFixed(2) : null);
-        }
-
-        list.push(subList);
-        focusDate.setDate(new Date(focusDate).getDate() - 1);
-      }
-
-      return {
-        list: list,
-        dayList: days,
-      };
-    } else if (METRIC_CHART_USER_VALUES.includes(metric)) { // 40, 41
-      return focusAnalytics?.teamMemberAlerts || [];
-    } else {
-      return null;
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [analytics, metric, formatAlert, organization, selectedTeams]);
+  }, [data, page, sizePerPage, headers]);
 
   const handleExport = () => {
     if (visibleExport) {
@@ -1026,14 +1052,13 @@ export const AnalyticsProvider = (
     return metrics?.find(it => it.value?.toString() === metric?.toString())
   }, [metric, metrics]);
 
-  const selectedMembers = React.useMemo(() => {
-    let formattedMembersTemp = formattedMembers.filter(it => members.some(ele => ele.userId?.toString() === it.value?.toString() && ele.orgId?.toString() === organization?.toString()));
-    return formattedMembersTemp?.filter(it => pickedMembers.some(ele => ele.toString() === it.value?.toString()))
-  }, [pickedMembers, formattedMembers, members, organization]);
-
   const selectedUsers = React.useMemo(() => {
     return selectedMembers?.filter(it => users.some(ele => ele?.toString() === it.value?.toString()))
   }, [selectedMembers, users]);
+
+  React.useEffect(() => {
+    setDetailCbt(null)
+  }, [showBy, statsBy, selectedMembers, selectedMetric, selectedTeams]);
 
   const providerValue = {
     members,
@@ -1075,6 +1100,8 @@ export const AnalyticsProvider = (
     users,
     setUsers,
     selectedUsers,
+    detailCbt,
+    setDetailCbt
   };
 
   return (

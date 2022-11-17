@@ -11,12 +11,21 @@ const ChartHighestCBT = () => {
   const {
     chartData,
     endDate,
+    setDetailCbt,
   } = useAnalyticsContext();
-
   const {t} = useTranslation();
   const day1 = DAY_LIST.slice(0, new Date(endDate).getDay() + 1);
   const day2 = DAY_LIST.slice(new Date(endDate).getDay() + 1, );
   const dayList = day2.concat(day1).reverse();
+
+  const onCheckEmptyData = () => {
+    if (!chartData) return 0;
+    let flag = 0;
+    chartData?.list?.forEach(it => {
+      flag += it.filter(a => !!a).length;
+    });
+    return flag;
+  };
 
   return (
       <div className={clsx(style.chart_body)}>
@@ -38,8 +47,15 @@ const ChartHighestCBT = () => {
                               return (
                                   <div
                                       key={key + '_' + index}
-                                      className={clsx(style.div_rect_border)}
-                                      style={{backgroundColor: `rgb(255, ${chartData?.list[key][index] !== null ? chartData?.list[key][index] : 255}, ${chartData?.list[key][index] !== null ? 0 : 255})`}}
+                                      className={clsx(style.div_rect, chartData?.list[key][index] !== null ? style.rect_hover : ``)}
+                                      style={{
+                                        backgroundColor: `rgb(255, ${chartData?.list[key][index] !== null
+                                            ?
+                                            chartData?.list[key][index].maxCbt : 255}, ${chartData?.list[key][index] !== null ? 0 
+                                            :
+                                            255})`
+                                      }}
+                                      onClick={() => chartData?.list[key][index] !== null ? setDetailCbt({dayIndex: key, timeIndex: index}) : null}
                                   />
                               )
                             })
@@ -68,6 +84,12 @@ const ChartHighestCBT = () => {
                   </div>
                 </div>
               </div>
+
+              {
+                !onCheckEmptyData() && (
+                    <div className={clsx(style.cbt_empty_data)}>{t('no data to display')}</div>
+                )
+              }
             </div>
           </div>
 

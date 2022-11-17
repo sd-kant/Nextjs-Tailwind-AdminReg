@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 
 import clsx from 'clsx';
 import style from './Toolbar.module.scss';
-import {withTranslation} from "react-i18next";
+import {useTranslation, withTranslation} from "react-i18next";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 import {useWidthContext} from "../../../providers/WidthProvider";
 import Pagination from "../../components/Pagination";
@@ -15,8 +15,10 @@ const Toolbar = () => {
     setPage,
     sizePerPage,
     setSizePerPage,
+    detailCbt,
+    setDetailCbt
   } = useAnalyticsContext();
-
+  const {t} = useTranslation();
   const {tableWidth} = useWidthContext();
 
   const handleClickEnd = React.useCallback(() => {
@@ -71,6 +73,16 @@ const Toolbar = () => {
                 </select>
               </div>
             </React.Fragment>
+            {
+              detailCbt && (
+                  <button
+                      className={clsx(style.btn_back)}
+                      onClick={() => setDetailCbt(null)}
+                  >
+                    <span className={clsx(style.txt_ellipse1)}>{t('back')}</span>
+                  </button>
+              )
+            }
           </div>
         </div>
       </div>

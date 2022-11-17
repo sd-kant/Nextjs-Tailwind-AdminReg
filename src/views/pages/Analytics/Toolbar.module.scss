@@ -45,6 +45,36 @@
           }
         }
       }
+
+      .btn_back {
+        margin-left: 20px;
+        padding: 0 10px;
+        border-radius: 10px;
+        border: none;
+        width: 80px;
+        height: 30px;
+        font-size: 14px;
+        font-family: Ubuntu-Bold, sans-serif;
+        background-color: #DE7D2C;
+        color: $app-white;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+
+      .txt_ellipse1 {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        width: 60px;
+        text-align: center;
+        white-space: normal;
+        -webkit-line-clamp: 1;
+      }
     }
   }
 }

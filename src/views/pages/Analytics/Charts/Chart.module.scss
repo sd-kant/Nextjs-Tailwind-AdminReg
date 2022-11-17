@@ -140,8 +140,22 @@
     }
 
     .cbt_chart_w_remain {
+      position: relative;
       width: 100%;
       max-width: calc(100% - 30px);
+
+      .cbt_empty_data {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-20%, -50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif, sans-serif;
+        color: $app-black;
+      }
     }
 
     .day_item_body {
@@ -159,15 +173,16 @@
         width: 100%;
         max-width: calc(100% - 70px);
 
-        .div_rect_border,
         .div_rect {
-          width: 69px;
-          height: 69px;
-        }
-
-        .div_rect_border {
           border-right: 1px solid $app-white;
           border-bottom: 1px solid $app-white;
+          width: 69px;
+          height: 69px;
+
+          &.rect_hover:hover {
+            opacity: 0.7;
+            cursor: pointer;
+          }
         }
       }
 
