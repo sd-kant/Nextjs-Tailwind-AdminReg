@@ -19,9 +19,9 @@
   }
 
   .StatsSelectWrapper {
-    margin-top: 10px;
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
 
     .ExportWrapper {
       display: flex;
@@ -53,6 +53,7 @@
     .InnerWrapper {
       margin-top: 0;
     }
+
     .EmptyHeight {
       height: 581px;
     }
@@ -62,10 +63,10 @@
 @media only screen and (min-width: 1024px) {
   .Wrapper {
     .StatsSelectWrapper {
-      margin-top: 10px;
       display: grid;
       grid-template-columns: auto 300px 1fr;
       grid-column-gap: 20px;
+      margin-top: 10px;
 
       .ExportWrapper {
         margin-top: 0;

@@ -19,11 +19,17 @@ import {
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
-import {useTranslation, withTranslation} from "react-i18next";
+import {
+  useTranslation,
+  withTranslation
+} from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {customStyles} from "../../DashboardV2";
 import ResponsiveSelect from "../../../components/ResponsiveSelect";
-import {chartPlugins, getWeeksInMonth} from "../../../../utils/anlytics";
+import {
+  chartPlugins,
+  getWeeksInMonth
+} from "../../../../utils/anlytics";
 import MultiSelectPopup from "../../../components/MultiSelectPopup";
 
 ChartJS.register(
@@ -63,14 +69,14 @@ const ChartUserAlert = () => {
   const usersLabel = React.useMemo(() => {
     if (selectedUsers?.length > 0) {
       if (selectedUsers?.length > 1 && (selectedMembers?.length === selectedUsers?.length)) {
-        return t("all users");
+        return t(`all users`);
       } else if (selectedUsers?.length > 1) {
-        return t("n users selected", {n: selectedUsers.length});
+        return t(`n users selected`, {n: selectedUsers.length});
       } else {
         return selectedMembers?.find(it => it.value?.toString() === selectedUsers?.[0]?.value?.toString())?.label;
       }
     } else {
-      return t("select user");
+      return t(`select user`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMembers, selectedUsers]);
@@ -134,15 +140,17 @@ const ChartUserAlert = () => {
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
-          <h1 className={clsx(style.txt_center)}>{t(`${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'cbt' : 'hr'}`)}</h1>
-          <div className={clsx(style.line_flex, 'mb-15')}>
+          <h1 className={clsx(style.txt_center)}>
+            {t(`${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'cbt' : 'hr'}`)}
+          </h1>
+          <div className={clsx(style.line_flex, `mb-15`)}>
             {
               selectedMembers?.length > 0 ?
                   <div className={"d-flex flex-row"}>
                     <span className='font-input-label d-flex align-center'>
-                      {t("users")}
+                      {t(`users`)}
                     </span>
-                    <div className={clsx(style.select_mw, 'ml-15 font-heading-small text-black')}>
+                    <div className={clsx(style.select_mw, `ml-15 font-heading-small text-black`)}>
                       <MultiSelectPopup
                           label={usersLabel}
                           options={selectedMembers}
@@ -156,39 +164,43 @@ const ChartUserAlert = () => {
             }
             <div className='d-flex flex-row ml-15'>
               <span className='font-input-label d-flex align-center'>
-                {t("types")}
+                {t(`types`)}
               </span>
 
               <ResponsiveSelect
-                  className={clsx(style.select_mw, 'ml-15 font-heading-small text-black')}
+                  className={clsx(style.select_mw, `ml-15 font-heading-small text-black`)}
                   isClearable
                   options={TYPES}
                   value={selectedType}
                   styles={customStyles()}
-                  placeholder={t("select type")}
+                  placeholder={t(`select type`)}
                   onChange={v => setType(v?.value)}
               />
             </div>
 
             <div className='d-flex flex-row ml-15'>
               <span className='font-input-label d-flex align-center'>
-                {t('date range')}
+                {t(`date range`)}
               </span>
 
               <ResponsiveSelect
-                  className={clsx(style.select_mw, 'ml-15 font-heading-small text-black')}
+                  className={clsx(style.select_mw, `ml-15 font-heading-small text-black`)}
                   isClearable
                   options={dates}
                   value={selectedDate}
                   styles={customStyles()}
-                  placeholder={t("select start date")}
+                  placeholder={t(`select start date`)}
                   onChange={v => setDate(v?.value)}
               />
             </div>
           </div>
 
           <div className={clsx(style.flex_space)}>
-            <Line options={{radius: 0}} data={data} plugins={chartPlugins('line', t('no data to display'))}/>
+            <Line
+                options={{radius: 0}}
+                data={data}
+                plugins={chartPlugins(`line`, t(`no data to display`))}
+            />
           </div>
         </div>
       </div>

@@ -3,16 +3,16 @@ import {COLOR_WHITE} from "../constant";
 
 export const getUserNameFromUserId = (members, id) => {
   const user = members?.find(it => it.userId?.toString() === id?.toString());
-  return user ? `${user?.firstName} ${user?.lastName}` : '';
+  return user ? `${user?.firstName} ${user?.lastName}` : ``;
 };
 
 export const getTeamNameFromUserId = (members, formattedTeams, userId) => {
   const user = members?.find(it => it.userId?.toString() === userId?.toString());
   if (user?.teamId) {
     const team = formattedTeams?.find(it => it.value?.toString() === user.teamId?.toString());
-    return team ? team.label : '';
+    return team ? team.label : ``;
   }
-  return user ? `${user?.firstName} ${user?.lastName}` : '';
+  return user ? `${user?.firstName} ${user?.lastName}` : ``;
 };
 
 export const getTeamNameFromTeamId = (formattedTeams, teamId) => {
@@ -55,9 +55,9 @@ export const getUTCDateList = (dateStr) => {
   for (let k = 0; k <= 6; k++) {
     let m = date.getMonth() + 1;
     let d = date.getDate();
-    m = m >= 10 ? m : '0' + m;
-    d = d >= 10 ? d : '0' + d;
-    dates.push(date.getFullYear() + '-' + m + '-' + d);
+    m = m >= 10 ? m : `0` + m;
+    d = d >= 10 ? d : `0` + d;
+    dates.push(date.getFullYear() + `-` + m + `-` + d);
     date.setDate(new Date(date).getDate() + 1);
   }
   return dates;
@@ -148,11 +148,11 @@ export const chartPlugins = (idStr, noDataStr) => {
       const {ctx} = chart;
       ctx.save();
 
-      if (idStr === 'doughnut') {
+      if (idStr === `doughnut`) {
         chart.data.datasets.forEach((dataset, i) => {
           chart.getDatasetMeta(i).data.forEach((dataPoint, index) => {
             const {x, y} = dataPoint.tooltipPosition();
-            const text = chart.data.labels[index] + ': ' + chart.data.datasets[i].data[index] + '%';
+            const text = chart.data.labels[index] + `: ` + chart.data.datasets[i].data[index] + `%`;
             const textWidth = ctx.measureText(text).width;
 
             if (chart.data.datasets[i].data[index]) {
@@ -168,7 +168,7 @@ export const chartPlugins = (idStr, noDataStr) => {
               ctx.restore();
 
               //text
-              ctx.font = '12px Arial';
+              ctx.font = `12px Arial`;
               ctx.fillStyle = COLOR_WHITE;
               ctx.fillText(text, x - (textWidth / 2), y - 13);
               ctx.restore();
@@ -181,9 +181,9 @@ export const chartPlugins = (idStr, noDataStr) => {
       if (chart.data.datasets[0].data && flag.length === 0) {
         let width = chart.width;
         let height = chart.height;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.font = "20px Arial";
+        ctx.textAlign = `center`;
+        ctx.textBaseline = `middle`;
+        ctx.font = `20px Arial`;
         ctx.fillStyle = COLOR_WHITE;
         ctx.fillText(noDataStr, width / 2, height / 2);
         ctx.restore();

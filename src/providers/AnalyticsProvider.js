@@ -329,12 +329,6 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_TABLE_USER_VALUES[7]: // 8
-        ret = [
-          null,
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
-        ];
-        break;
       case METRIC_TABLE_USER_VALUES[4]: // 5
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
@@ -347,26 +341,10 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[10], [[7, 'asc', 'susceptibility']]], [sortTitles[11], [[7, 'desc', 'susceptibility']]]]),
         ];
         break;
-      case METRIC_TABLE_TEAM_VALUES[2]: // 22
+      case METRIC_TABLE_USER_VALUES[5]: // 6
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
-        ];
-        break;
-      case METRIC_TABLE_TEAM_VALUES[3]: // 23
-      case METRIC_TABLE_TEAM_VALUES[4]: // 24
-        ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
-        ];
-        break;
-      case METRIC_TABLE_TEAM_VALUES[1]: // 21
-      case METRIC_TABLE_TEAM_VALUES[6]: // 26
-        ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'number']]], [sortTitles[1], [[0, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
           makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
@@ -382,13 +360,10 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[4], [[5, 'asc', 'date']]], [sortTitles[5], [[5, 'desc', 'date']]]]),
         ];
         break;
-      case METRIC_TABLE_USER_VALUES[5]: // 6
+      case METRIC_TABLE_USER_VALUES[7]: // 8
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'number']]], [sortTitles[1], [[0, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
+          null,
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_TABLE_TEAM_VALUES[0]: // 20
@@ -401,6 +376,31 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
           makeSort('Sort', [[sortTitles[2], [[5, 'asc', 'number']]], [sortTitles[3], [[5, 'desc', 'number']]]]),
           makeSort('Sort', [[sortTitles[2], [[6, 'asc', 'number']]], [sortTitles[3], [[6, 'desc', 'number']]]]),
+        ];
+        break;
+      case METRIC_TABLE_TEAM_VALUES[1]: // 21
+      case METRIC_TABLE_TEAM_VALUES[6]: // 26
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
+        ];
+        break;
+      case METRIC_TABLE_TEAM_VALUES[2]: // 22
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+        ];
+        break;
+      case METRIC_TABLE_TEAM_VALUES[3]: // 23
+      case METRIC_TABLE_TEAM_VALUES[4]: // 24
+        ret = [
+          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
     }
@@ -520,13 +520,13 @@ export const AnalyticsProvider = (
             apiCall = queryOrganizationSWRFluid;
             key = 'swrFluid';
             break;
-          case METRIC_TABLE_TEAM_VALUES[2]: // 22
-            apiCall = queryOrganizationActiveUsers;
-            key = 'activeUsers';
-            break;
           case METRIC_TABLE_TEAM_VALUES[1]: // 21
             apiCall = queryOrganizationAlertedUserCount;
             key = 'alertedUserCount';
+            break;
+          case METRIC_TABLE_TEAM_VALUES[2]: // 22
+            apiCall = queryOrganizationActiveUsers;
+            key = 'activeUsers';
             break;
           case METRIC_TABLE_TEAM_VALUES[5]: // 25
             apiCall = queryOrganizationCategoriesUsersInCBTZones;
@@ -536,14 +536,14 @@ export const AnalyticsProvider = (
             apiCall = queryOrganizationFluidMetricsByTeam;
             key = 'fluidMetricsByTeam';
             break;
+          case METRIC_CHART_TEAM_VALUES[2]: // 32
+            apiCall = queryOrganizationMaxCbt;
+            key = 'chartCbt';
+            break;
           case METRIC_CHART_USER_VALUES[0]: // 40
           case METRIC_CHART_USER_VALUES[1]: // 41
             apiCall = getTeamMemberAlerts;
             key = 'teamMemberAlerts';
-            break;
-          case METRIC_CHART_TEAM_VALUES[2]: // 32
-            apiCall = queryOrganizationMaxCbt;
-            key = 'chartCbt';
             break;
           default:
             console.log("metric is not available");
@@ -814,55 +814,55 @@ export const AnalyticsProvider = (
       ret = onFilterData(focusAnalytics?.wearTime, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
-        it.avgWearTime ?? '',
-        it.wearTime ?? '',
+        it.avgWearTime ?? ``,
+        it.wearTime ?? ``,
       ]))
     } else if (metric === METRIC_TABLE_USER_VALUES[1]) { // 2, alert metrics
       ret = onFilterData(focusAnalytics?.alertMetrics, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
-        it.ts ? new Date(it.ts)?.toLocaleString() : '',
-        it.alertStageId ? formatAlert(it.alertStageId)?.label : '',
-        it.risklevelId ? formatRiskLevel(it.risklevelId) : '',
-        it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : '',
-        it.temperature ? formatHeartCbt(it.temperature) : '',
+        it.ts ? new Date(it.ts)?.toLocaleString() : ``,
+        it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
+        it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
+        it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
+        it.temperature ? formatHeartCbt(it.temperature) : ``,
         it.humidity ?? '',
-        it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : '',
+        it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``,
       ]))
     } else if (metric === METRIC_TABLE_USER_VALUES[2]) { // 3
       ret = onFilterData(focusAnalytics?.maxCbt, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
-        it.utcTs ? new Date(it.utcTs)?.toLocaleString() : '',
-        it.maxCbt ? formatHeartCbt(it.maxCbt) : '',
+        it.utcTs ? new Date(it.utcTs)?.toLocaleString() : ``,
+        it.maxCbt ? formatHeartCbt(it.maxCbt) : ``,
       ]));
     } else if (metric === METRIC_TABLE_USER_VALUES[4]) { // 5
       ret = onFilterData(focusAnalytics?.swrFluid, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
-        it.sweatRateCategory ?? '',
-        unitMetric ? it.sweatRate ?? '' : literToQuart(it.sweatRate) ?? '',
-        unitMetric ? it.fluidRecommendationL ?? '' : literToQuart(it.fluidRecommendationL) ?? '',
-        it.previousIllness ?? '',
-        it.acclimatizationStatus ?? '',
-        it.heatSusceptibility ?? '',
+        it.sweatRateCategory ?? ``,
+        unitMetric ? it.sweatRate ?? `` : literToQuart(it.sweatRate) ?? ``,
+        unitMetric ? it.fluidRecommendationL ?? `` : literToQuart(it.fluidRecommendationL) ?? ``,
+        it.previousIllness ?? ``,
+        it.acclimatizationStatus ?? ``,
+        it.heatSusceptibility ?? ``,
       ]));
     } else if (metric === METRIC_TABLE_USER_VALUES[5]) { // 6
       ret = onFilterData(focusAnalytics?.tempCateData, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
-        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Safe to Work 38C'),
-        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Mild Heat Exhaustion 38C – 38.49C'),
-        getTimeSpentFromUserId(it?.temperatureCategoryCounts, 'Moderate Hyperthermia > 38.5C'),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Safe to Work 38C`),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Mild Heat Exhaustion 38C – 38.49C`),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Moderate Hyperthermia > 38.5C`),
       ]));
     } else if (metric === METRIC_TABLE_USER_VALUES[6]) { // 7
       ret = onFilterData(focusAnalytics?.deviceData, pickedMembers, members)?.map(it => ([
-        it.fullname ?? '',
+        it.fullname ?? ``,
         getTeamNameFromTeamId(formattedTeams, it.teamId),
-        it.firmwareVersion ?? '',
-        it.version ?? '',
+        it.firmwareVersion ?? ``,
+        it.version ?? ``,
         it.type,
-        it.ts ?? '',
+        it.ts ?? ``,
       ]));
     } else if (metric === METRIC_TABLE_USER_VALUES[7]) { // 8
       ret = focusAnalytics?.usersInCBTZones?.map(it => ([
@@ -871,19 +871,19 @@ export const AnalyticsProvider = (
       ]));
     } else if (metric === METRIC_TABLE_TEAM_VALUES[0]) { // 20
       ret = focusAnalytics?.tempHumidity?.map(it => ([
-        it.teamName ?? '',
-        it.maxTemp ? formatHeartCbt(it.maxTemp) : '',
-        it.minTemp ? formatHeartCbt(it.minTemp) : '',
-        it.avgTemp ? formatHeartCbt(it.avgTemp) : '',
-        it.maxHumidity ?? '',
-        it.minHumidity ?? '',
-        it.avgHumidity ?? '',
+        it.teamName ?? ``,
+        it.maxTemp ? formatHeartCbt(it.maxTemp) : ``,
+        it.minTemp ? formatHeartCbt(it.minTemp) : ``,
+        it.avgTemp ? formatHeartCbt(it.avgTemp) : ``,
+        it.maxHumidity ?? ``,
+        it.minHumidity ?? ``,
+        it.avgHumidity ?? ``,
       ]));
     } else if (metric === METRIC_TABLE_TEAM_VALUES[1]) { // 21
       ret = focusAnalytics?.alertedUserCount?.map(it => ([
-        it.teamName ?? '',
-        it.alertPercentage ?? '',
-        it.noAlertPercentage ?? '',
+        it.teamName ?? ``,
+        it.alertPercentage ?? ``,
+        it.noAlertPercentage ?? ``,
         it.usersWithAlerts,
         it.activeUsers - it.usersWithAlerts,
       ]))
@@ -916,7 +916,7 @@ export const AnalyticsProvider = (
       let tempRet = [];
       focusAnalytics?.swrFluid?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
-        if (["low", "moderate", "high"].includes(it.sweatRateCategory?.toLowerCase())) {
+        if ([`low`, `moderate`, `high`].includes(it.sweatRateCategory?.toLowerCase())) {
           if (index !== -1) {
             tempRet.splice(index, 1, {
               ...tempRet[index],
@@ -932,9 +932,9 @@ export const AnalyticsProvider = (
       });
       ret = tempRet?.map(it => ([
         getTeamNameFromTeamId(formattedTeams, it.teamId),
-        it['low'],
-        it['moderate'],
-        it['high'],
+        it[`low`],
+        it[`moderate`],
+        it[`high`],
       ]));
     } else if (metric === METRIC_TABLE_TEAM_VALUES[4]) { // 24
       let tempRet = [];
@@ -956,34 +956,34 @@ export const AnalyticsProvider = (
       });
       ret = tempRet?.map(it => ([
         getTeamNameFromTeamId(formattedTeams, it.teamId),
-        it['low'],
-        it['medium'],
-        it['high'],
+        it[`low`],
+        it[`medium`],
+        it[`high`],
       ]));
     } else if (metric === METRIC_TABLE_TEAM_VALUES[5]) { // 25
       ret = focusAnalytics?.tempCateInCBTZones?.map(it => ([
-        it.teamName ?? '',
-        it.lowCount ?? '',
-        it.mediumCount ?? '',
+        it.teamName ?? ``,
+        it.lowCount ?? ``,
+        it.mediumCount ?? ``,
         it.highCount,
-        it.alertCount ?? '',
-        it.alertPercentage ?? '',
-        it.noAlertPercentage ?? '',
+        it.alertCount ?? ``,
+        it.alertPercentage ?? ``,
+        it.noAlertPercentage ?? ``,
       ]));
     } else if (metric === METRIC_TABLE_TEAM_VALUES[6]) { // 26
       ret = focusAnalytics?.fluidMetricsByTeam?.map(it => ([
-        it.teamName ?? '',
-        it.heatAcclimatized ?? '',
-        it.heatUnacclimatized ?? '',
+        it.teamName ?? ``,
+        it.heatAcclimatized ?? ``,
+        it.heatUnacclimatized ?? ``,
         it.previousIllness,
-        it.noPreviousIllness ?? '',
+        it.noPreviousIllness ?? ``,
       ]));
     } else if (
-        showBy === 'chart' &&
-        statsBy === 'team' &&
+        showBy === `chart` &&
+        statsBy === `team` &&
         detailCbt &&
         metric === METRIC_CHART_TEAM_VALUES[2]
-    ) { // detail table of highest CBT chart
+    ) { // detail table of highest CBT chart, 30, 31, 32
       ret = chartData?.list?.length > 0 ? chartData.list[detailCbt.dayIndex][detailCbt.timeIndex]?.details || [] : [];
     }
 
@@ -997,50 +997,50 @@ export const AnalyticsProvider = (
         if ([null, undefined, ""].includes(a?.[sort[0].index])) return 1;
         if ([null, undefined, ""].includes(b?.[sort[0].index])) return -1;
 
-        if (sort[0].type === 'string') {
-          const v = a?.[sort[0].index]?.localeCompare(b?.[sort[0].index], undefined, {sensitivity: 'accent'});
-          if (sort[0].direction === 'asc') {
+        if (sort[0].type === `string`) {
+          const v = a?.[sort[0].index]?.localeCompare(b?.[sort[0].index], undefined, {sensitivity: `accent`});
+          if (sort[0].direction === `asc`) {
             return v;
-          } else if (sort[0].direction === 'desc') {
+          } else if (sort[0].direction === `desc`) {
             return v * -1;
           }
-        } else if (sort[0].type === "number") {
+        } else if (sort[0].type === `number`) {
           const v = a?.[sort[0].index] - b?.[sort[0].index];
-          if (sort[0].direction === 'asc') {
+          if (sort[0].direction === `asc`) {
             return v;
-          } else if (sort[0].direction === 'desc') {
+          } else if (sort[0].direction === `desc`) {
             return v * -1;
           }
-        } else if (sort[0].type === "date") {
+        } else if (sort[0].type === `date`) {
           const aGap = numMinutesBetweenWithNow(new Date(), new Date(a?.[sort[0].index]));
           const bGap = numMinutesBetweenWithNow(new Date(), new Date(b?.[sort[0].index]));
           const v = aGap - bGap;
-          if (sort[0].direction === 'asc') {
+          if (sort[0].direction === `asc`) {
             return v * -1;
-          } else if (sort[0].direction === 'desc') {
+          } else if (sort[0].direction === `desc`) {
             return v;
           }
-        } else if (sort[0].type === "risk") {
+        } else if (sort[0].type === `risk`) {
           const v = riskPriorities[a?.[sort[0].index]?.toLowerCase()] - riskPriorities[b?.[sort[0].index]?.toLowerCase()];
-          if (sort[0].direction === 'asc') {
+          if (sort[0].direction === `asc`) {
             return v;
-          } else if (sort[0].direction === 'desc') {
+          } else if (sort[0].direction === `desc`) {
             return v * -1;
           }
-        } else if (sort[0].type === "alert") {
+        } else if (sort[0].type === `alert`) {
           const v = alertPriorities(sort[0].direction)[a?.[sort[0].index]?.toLowerCase()] -
               alertPriorities(sort[0].direction)[b?.[sort[0].index]?.toLowerCase()];
-          if (sort[0].direction === 'asc') {
+          if (sort[0].direction === `asc`) {
             return v * -1;
-          } else if (sort[0].direction === 'desc') {
+          } else if (sort[0].direction === `desc`) {
             return v;
           }
-        } else if (sort[0].type === "susceptibility") {
+        } else if (sort[0].type === `susceptibility`) {
           const v = heatSusceptibilityPriorities[a?.[sort[0].index]?.toLowerCase()] -
               heatSusceptibilityPriorities[b?.[sort[0].index]?.toLowerCase()];
-          if (sort[0].direction === 'asc') {
+          if (sort[0].direction === `asc`) {
             return v;
-          } else if (sort[0].direction === 'desc') {
+          } else if (sort[0].direction === `desc`) {
             return v * -1;
           }
         }
@@ -1065,7 +1065,7 @@ export const AnalyticsProvider = (
     }
 
     while (ret?.length < 10) {
-      ret.push(Array(headers.length).fill(''));
+      ret.push(Array(headers.length).fill(``));
     }
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1073,14 +1073,14 @@ export const AnalyticsProvider = (
 
   const handleExport = () => {
     if (visibleExport) {
-      if (['xlsx', 'csv'].includes(exportOption?.value)) {
+      if ([`xlsx`, `csv`].includes(exportOption?.value)) {
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(data, {
-          origin: 'A2',
+          origin: `A2`,
           skipHeader: true
         });
         XLSX.utils.sheet_add_aoa(ws, [headers]);
-        const sheetLabel = metrics?.find(it => it.value === metric)?.label ?? 'Sheet';
+        const sheetLabel = metrics?.find(it => it.value === metric)?.label ?? `Sheet`;
         XLSX.utils.book_append_sheet(wb, ws, sheetLabel);
         XLSX.writeFile(wb, `kenzen-analytics-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`, {
           bookType: exportOption.value,

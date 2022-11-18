@@ -43,6 +43,7 @@ const QueryResult = (
 
   const ChartComponent = React.useMemo(() => {
     if (showBy === 'table') return null;
+
     if (selectedMetric?.value === METRIC_CHART_TEAM_VALUES[0]) // 30
       return <ChartTeamDoughnut/>;
     else if (selectedMetric?.value === METRIC_CHART_TEAM_VALUES[1]) // 31

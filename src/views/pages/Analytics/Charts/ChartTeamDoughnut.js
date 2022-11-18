@@ -5,7 +5,10 @@ import { Doughnut } from 'react-chartjs-2';
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
-import {useTranslation, withTranslation} from "react-i18next";
+import {
+  useTranslation,
+  withTranslation
+} from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {
   COLORS,
@@ -25,8 +28,13 @@ const ChartTeamDoughnut = () => {
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.doughnut_grid2)}>
           <div>
-            <h1 className={clsx(style.txt_center)}>{t('heat susceptibility')}</h1>
-            <Doughnut data={chartData.dataHeat} plugins={chartPlugins('doughnut', t('no data to display'))} />
+            <h1 className={clsx(style.txt_center)}>
+              {t(`heat susceptibility`)}
+            </h1>
+            <Doughnut
+                data={chartData.dataHeat}
+                plugins={chartPlugins(`doughnut`, t(`no data to display`))}
+            />
 
             <div className={clsx(style.legend_box_body)}>
               {COLORS.map((item, key) => {
@@ -40,8 +48,13 @@ const ChartTeamDoughnut = () => {
             </div>
           </div>
           <div>
-            <h1 className={clsx(style.txt_center)}>Sweat Rate</h1>
-            <Doughnut data={chartData.dataSweat} plugins={chartPlugins('doughnut', t('no data to display'))} />
+            <h1 className={clsx(style.txt_center)}>
+              {t(`sweat rate`)}
+            </h1>
+            <Doughnut
+                data={chartData.dataSweat}
+                plugins={chartPlugins(`doughnut`, t(`no data to display`))}
+            />
 
             <div className={clsx(style.legend_box_body)}>
               {COLORS.map((item, key) => {

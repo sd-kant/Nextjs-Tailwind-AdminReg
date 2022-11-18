@@ -1,19 +1,19 @@
 @import "src/assets/scss/colors";
 
 .Cell {
-  background: $app-list-bg;
-  text-align: center;
+  padding: 0 5px;
   border: 1px solid $app-bg;
   height: 45px;
-  padding: 0 5px;
+  background: $app-list-bg;
+  text-align: center;
 
   font-size: 14px;
   line-height: 21px;
 
   &.FirstColumn {
     position: sticky;
-    left: 0;
     top: auto;
+    left: 0;
     //border-top-width: 1px;
   }
 }
