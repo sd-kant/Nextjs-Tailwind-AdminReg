@@ -14,7 +14,7 @@ const ActivityLogs = (
   const {t} = useTranslation();
   const {activitiesFilter, loading: logsLoading} = useUserSubscriptionContext();
   const timezone = React.useMemo(() => {
-    const a = soft(gmt)[0];
+    const a = gmt ? soft(gmt)[0] : null;
     if (a) {
       return {
         name: gmt,
@@ -29,6 +29,7 @@ const ActivityLogs = (
       };
     }
   }, [gmt]);
+
   return (
     <React.Fragment>
       {
