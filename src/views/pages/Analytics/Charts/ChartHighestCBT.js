@@ -9,21 +9,16 @@ import {
 } from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {
-  DAY_LIST,
   TIME_LIST
 } from "../../../../constant";
 
 const ChartHighestCBT = () => {
   const {
     chartData,
-    endDate,
     setDetailCbt,
   } = useAnalyticsContext();
-  const {t} = useTranslation();
-  const day1 = DAY_LIST.slice(0, new Date(endDate).getDay() + 1);
-  const day2 = DAY_LIST.slice(new Date(endDate).getDay() + 1, );
-  const dayList = day2.concat(day1).reverse();
 
+  const {t} = useTranslation();
   const onCheckEmptyData = () => {
     if (!chartData) return 0;
     let flag = 0;
@@ -46,7 +41,7 @@ const ChartHighestCBT = () => {
             </h1>
             <div className={clsx(style.cbt_chart_w_remain)}>
               {
-                dayList?.map((item, key) => {
+                chartData?.dayList?.map((item, key) => {
                   return (
                       <div
                           key={key}
