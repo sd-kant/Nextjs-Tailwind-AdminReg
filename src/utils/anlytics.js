@@ -1,4 +1,4 @@
-import {dateFormat} from "./index";
+import {dateFormat, timeOnOtherZone} from "./index";
 import {COLOR_WHITE} from "../constant";
 
 export const getUserNameFromUserId = (members, id) => {
@@ -36,18 +36,6 @@ export const onCalc = (key, tempRet, totalSweat, totalHeat) => {
   }
 };
 
-export const getThisWeek = () => {
-  let firstDate = new Date();
-  firstDate.setDate(firstDate.getDate() - 6);
-  firstDate.setHours(0, 0, 0);
-  let endDate = new Date(firstDate);
-  endDate.setDate(endDate.getDate() + 7);
-  return {
-    firstDate: firstDate,
-    endDate: endDate
-  }
-};
-
 export const getUTCDateList = (dateStr) => {
   if (!dateStr) return '';
   let date = new Date(dateStr);
@@ -80,13 +68,13 @@ export const getListPerLabel = (list, stageIds, thisWeek) => {
   return array;
 };
 
-export const getWeeksInMonth = () => {
-  let weeks = [], firstDate = new Date(), lastDate = new Date();
+export const getWeeksInMonth = (timezone) => {
+  let weeks = [], firstDate = new Date(timeOnOtherZone(new Date(), timezone)), lastDate = new Date(timeOnOtherZone(new Date(), timezone));
   firstDate.setMonth(new Date(firstDate).getMonth() - 1);
 
   // day list of month
   let dates = [], date = new Date(lastDate.getTime()), value = 0;
-  while (date >= firstDate) {
+  while (date > firstDate) {
     dates.push({
       value: value,
       label: dateFormat(new Date(date))
@@ -94,7 +82,7 @@ export const getWeeksInMonth = () => {
     date.setDate(date.getDate() - 1);
     value += 1;
   }
-  dates.shift();
+  // dates.shift();
 
   date = lastDate;
   let flag = false;
@@ -190,4 +178,37 @@ export const chartPlugins = (idStr, noDataStr) => {
       }
     }
   }]
+};
+
+export const getThisWeek = (timeZone) => {
+  let firstDate = new Date();
+  if (timeZone) {
+    let tempDate = timeOnOtherZone(new Date(), timeZone);
+    let arr = tempDate.split(' ');
+    tempDate = arr[0] + ' 00:00:00 ' + arr[2];
+    firstDate = new Date(tempDate);
+  }
+  firstDate.setDate(firstDate.getDate() - 6);
+  let endDate = new Date(firstDate);
+  endDate.setDate(endDate.getDate() + 6);
+
+  return {
+    firstDate: firstDate,
+    endDate: endDate
+  }
+};
+
+export const getTimezoneOffset = (timeZone, date = new Date()) => {
+  const tz = date.toLocaleString("en", {timeZone, timeStyle: "long"}).split(" ").slice(-1)[0];
+  const dateString = date.toString();
+  // return UTC offset in millis
+  return Date.parse(`${dateString} UTC`) - Date.parse(`${dateString} ${tz}`);
+};
+
+export const convertTZ = (date, tzString) => {
+  if (tzString !== 'utc') {
+    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
+  }
+  else
+    return new Date((typeof date === "string" ? new Date(date) : date)).toUTCString();
 };

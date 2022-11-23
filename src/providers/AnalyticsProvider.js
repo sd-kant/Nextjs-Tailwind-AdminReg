@@ -20,7 +20,7 @@ import {
 import {
   celsiusToFahrenheit,
   dateFormat,
-  numMinutesBetweenWithNow,
+  numMinutesBetweenWithNow, timeOnOtherZone,
 } from "../utils";
 import {
   onCalc,
@@ -56,6 +56,7 @@ import {
 } from "../utils/dashboard";
 import {useUtilsContext} from "./UtilsProvider";
 import {useTranslation} from "react-i18next";
+import soft from "timezone-soft";
 
 const AnalyticsContext = React.createContext(null);
 
@@ -632,12 +633,30 @@ export const AnalyticsProvider = (
     return selectedMembers?.filter(it => users.some(ele => ele?.toString() === it.value?.toString()))
   }, [selectedMembers, users]);
 
+  const timeZone = React.useMemo(() => {
+    const a = (selectedTeams?.length === 1 && selectedTeams[0]?.region) ? soft(selectedTeams?.length === 1 && selectedTeams[0]?.region)[0] : null;
+    if (a) {
+      return {
+        name: a?.iana,
+        valid: true,
+        displayName: a.standard?.abbr,
+      };
+    } else {
+      return {
+        name: null,
+        valid: false,
+        displayName: null,
+      };
+    }
+  }, [selectedTeams]);
+
   React.useEffect(() => {
     setDetailCbt(null)
   }, [showBy, statsBy, selectedMembers, selectedMetric, selectedTeams]);
 
   const chartData = React.useMemo(() => {
     let focusAnalytics = selectedTeams?.length > 0 ? onFilterDataByOrganization(analytics, organization) : {};
+
     if (metric === METRIC_CHART_TEAM_VALUES[0]) { // 30
       let tempRet = [0, 0, 0, 0, 0, 0];
       let totalHeat = 0, totalSweat = 0;
@@ -703,11 +722,20 @@ export const AnalyticsProvider = (
         dataSweat: dataSweat
       };
     } else if (metric === METRIC_CHART_TEAM_VALUES[1]) { // 31
-      let thisWeek = getThisWeek();
+      let thisWeek = getThisWeek(timeZone);
 
-      let thisData = (focusAnalytics?.alertMetrics || [])?.filter(a =>
+      let thisData = (focusAnalytics?.alertMetrics || [])?.map(it => ({
+        userId: it?.userId,
+        risklevelId: it?.risklevelId,
+        alertStageId: it?.alertStageId,
+        heartCbtAvg: it?.heartCbtAvg,
+        heartRateAvg: it?.heartRateAvg,
+        humidity: it?.humidity,
+        temperature: it?.temperature,
+        ts: timeOnOtherZone(it?.ts, timeZone),
+      }))?.filter(a =>
           new Date(a.ts).getTime() >= new Date(thisWeek.firstDate).getTime() &&
-          new Date(a.ts).getTime() < new Date(thisWeek.endDate).getTime()
+          new Date(a.ts).getTime() < new Date(thisWeek.endDate).getTime() + ONE_DAY
       );
 
       let arrayPerDate = [
@@ -757,25 +785,29 @@ export const AnalyticsProvider = (
 
       let list = [];
       let focusDate = new Date(endDate);
-      focusDate.setHours(0, 0, 0);
+      let dataCbt = focusAnalytics.chartCbt?.map(it => ({
+        maxCbt: it?.maxCbt,
+        userId: it?.userId,
+        utcTs: timeOnOtherZone(it?.utcTs, timeZone),
+      }));
 
       for (let i = 0; i < 7; i++) {
         let subList = [];
-        let filterDataByDate = focusAnalytics.chartCbt?.filter(it =>
+        let filterDataByDate = dataCbt?.filter(it =>
             selectedMembers?.findIndex(a => a?.value === it?.userId) > -1 &&
             new Date(it?.utcTs).getTime() >= new Date(focusDate).getTime() &&
             new Date(it?.utcTs).getTime() < new Date(focusDate).getTime() + ONE_DAY
         );
 
-        for (let j = 0; j < 16; j++) {
+        for (let j = 0; j < 24; j++) {
           let filterDataByTime = filterDataByDate?.filter(it =>
-              new Date(it?.utcTs).getHours() === j + 4
+              new Date(it?.utcTs).getHours() === j
           ).sort((a, b) => {
             return a?.maxCbt > b?.maxCbt ? -1 : 1;
           }).map(it => ([
             getUserNameFromUserId(members, it.userId),
             getTeamNameFromUserId(members, formattedTeams, it.userId),
-            it.utcTs ? new Date(it.utcTs)?.toLocaleString() : ``,
+            it.utcTs ? it.utcTs : ``,
             it?.maxCbt ? celsiusToFahrenheit(it?.maxCbt) : ``,
           ]));
           let tempCbt = filterDataByTime?.length > 0 ? filterDataByTime[0][3] : 0;
@@ -800,12 +832,22 @@ export const AnalyticsProvider = (
         dayList: day2.concat(day1).reverse(),
       };
     } else if (METRIC_CHART_USER_VALUES.includes(metric)) { // 40, 41
-      return focusAnalytics?.teamMemberAlerts || [];
+      return (focusAnalytics?.teamMemberAlerts || []).map(it => ({
+        userId: it?.userId,
+        teamId: it?.teamId,
+        alertCounter: it?.alertCounter,
+        alertResponseId: it?.alertResponseId,
+        alertStageId: it?.alertStageId,
+        gmt: it?.gmt,
+        heartCbtAvg: it?.heartCbtAvg,
+        heartRateAvg: it?.heartRateAvg,
+        ts: timeOnOtherZone(it?.ts, timeZone),
+      }));
     } else {
       return null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [analytics, metric, formatAlert, organization, selectedTeams, selectedMembers]);
+  }, [analytics, metric, formatAlert, organization, selectedTeams, selectedMembers, timeZone]);
 
   const data = React.useMemo(() => {
     let ret = [], focusAnalytics = selectedTeams?.length > 0 ? onFilterDataByOrganization(analytics, organization) : {};
@@ -1130,7 +1172,8 @@ export const AnalyticsProvider = (
     setUsers,
     selectedUsers,
     detailCbt,
-    setDetailCbt
+    setDetailCbt,
+    timeZone,
   };
 
   return (

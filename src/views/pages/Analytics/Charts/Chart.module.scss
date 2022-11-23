@@ -159,25 +159,25 @@
     }
 
     .day_item_body {
-      height: 70px;
+      height: 50px;
 
       .day_txt {
-        padding-right: 10px;
-        width: 70px;
+        padding-right: 8px;
+        width: 50px;
         text-align: right;
       }
 
       .day_time_grid16 {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         width: 100%;
-        max-width: calc(100% - 70px);
+        max-width: calc(100% - 50px);
 
         .div_rect {
           border-right: 1px solid $app-white;
           border-bottom: 1px solid $app-white;
-          width: 69px;
-          height: 69px;
+          width: 49px;
+          height: 49px;
 
           &.rect_hover:hover {
             opacity: 0.7;
@@ -189,7 +189,7 @@
       .time_label {
         display: flex;
         align-items: center;
-        width: 70px;
+        width: 50px;
         height: 80px;
         transform: rotate(180deg);
         writing-mode: tb-rl;
@@ -201,7 +201,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 30px auto;
+      margin: 31px auto 32px;
     }
 
     .progress_bar_container {

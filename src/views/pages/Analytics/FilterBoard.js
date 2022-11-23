@@ -17,6 +17,7 @@ import {
   METRIC_CHART_USER_VALUES,
   METRIC_CHART_TEAM_VALUES,
 } from "../../../constant";
+import {getThisWeek} from "../../../utils/anlytics";
 
 const CustomInput = React.forwardRef(({value, onClick}, ref) => (
     <div className={clsx(style.CustomInputWrapper)} onClick={onClick}>
@@ -55,7 +56,8 @@ const FilterBoard = () => {
     selectedTeams,
     selectedMembers,
     pickedMembers,
-    selectedUsers
+    selectedUsers,
+    timeZone,
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
@@ -144,13 +146,11 @@ const FilterBoard = () => {
       start.setMonth(start.getMonth() - 1);
       setStartDate(start);
     } else if (METRIC_CHART_TEAM_VALUES[2] === selectedMetric?.value) {
-      setEndDate(new Date());
-      const start = new Date();
-      start.setDate(start.getDate() - 6);
-      start.setHours(5, 0, 0);
-      setStartDate(start);
+      const week = getThisWeek(timeZone);
+      setStartDate(new Date(week.firstDate));
+      setEndDate(new Date(week.endDate));
     }
-  }, [selectedMetric, setStartDate, setEndDate]);
+  }, [selectedMetric, setStartDate, setEndDate, timeZone]);
 
   const startDateMax = new Date();
   const endDateMax = new Date();

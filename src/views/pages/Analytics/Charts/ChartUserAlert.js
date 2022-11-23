@@ -31,6 +31,7 @@ import {
   getWeeksInMonth
 } from "../../../../utils/anlytics";
 import MultiSelectPopup from "../../../components/MultiSelectPopup";
+import {timeOnOtherZone} from "../../../../utils";
 
 ChartJS.register(
     CategoryScale,
@@ -44,11 +45,13 @@ ChartJS.register(
 const ChartUserAlert = () => {
   const {
     selectedMetric,
+    selectedTeams,
     selectedMembers,
     selectedUsers,
     setUsers,
     users,
-    chartData
+    chartData,
+    timeZone
   } = useAnalyticsContext();
   const {t} = useTranslation();
 
@@ -56,12 +59,12 @@ const ChartUserAlert = () => {
   const [dates, setDates] = React.useState(null);
   const [date, setDate] = React.useState(null);
   const selectedType = React.useMemo(() => {
-    let dateList = getWeeksInMonth();
+    let dateList = getWeeksInMonth(timeZone);
     dateList = type === 1 ? dateList.dates : type === 2 ? dateList.weeks : [];
     setDates(dateList);
     setDate(dateList?.length > 0 ? dateList[0].value : null);
     return TYPES?.find(it => it.value?.toString() === type?.toString());
-  }, [type]);
+  }, [type, timeZone]);
   const selectedDate = React.useMemo(() => {
     return dates?.find(it => it.value?.toString() === date?.toString());
   }, [date, dates]);
@@ -97,8 +100,9 @@ const ChartUserAlert = () => {
   React.useEffect(() => {
     if (selectedDate) {
       let labels = [], tempData = [];
-      let start = new Date(selectedDate.label);
-      start.setHours(new Date().getHours(), new Date().getMinutes());
+      // let start = new Date(convertTZ(new Date(selectedDate.label), timeZone));
+      let start = new Date(timeOnOtherZone(new Date(selectedDate.label), timeZone));
+      // start.setHours(new Date().getHours(), new Date().getMinutes());
       let end = new Date(start), endDayOfWeek = new Date(start);
       end.setDate(new Date(end).getDate() + 1);
       endDayOfWeek.setDate(new Date(endDayOfWeek).getDate() + 7);
@@ -135,8 +139,8 @@ const ChartUserAlert = () => {
         ],
       })
     }
-  }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers]);
-
+  }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone]);
+  // console.log(data, '=================== chart data');
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
