@@ -197,18 +197,3 @@ export const getThisWeek = (timeZone) => {
     endDate: endDate
   }
 };
-
-export const getTimezoneOffset = (timeZone, date = new Date()) => {
-  const tz = date.toLocaleString("en", {timeZone, timeStyle: "long"}).split(" ").slice(-1)[0];
-  const dateString = date.toString();
-  // return UTC offset in millis
-  return Date.parse(`${dateString} UTC`) - Date.parse(`${dateString} ${tz}`);
-};
-
-export const convertTZ = (date, tzString) => {
-  if (tzString !== 'utc') {
-    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));
-  }
-  else
-    return new Date((typeof date === "string" ? new Date(date) : date)).toUTCString();
-};

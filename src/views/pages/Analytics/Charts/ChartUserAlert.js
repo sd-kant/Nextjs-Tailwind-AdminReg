@@ -100,9 +100,8 @@ const ChartUserAlert = () => {
   React.useEffect(() => {
     if (selectedDate) {
       let labels = [], tempData = [];
-      // let start = new Date(convertTZ(new Date(selectedDate.label), timeZone));
+
       let start = new Date(timeOnOtherZone(new Date(selectedDate.label), timeZone));
-      // start.setHours(new Date().getHours(), new Date().getMinutes());
       let end = new Date(start), endDayOfWeek = new Date(start);
       end.setDate(new Date(end).getDate() + 1);
       endDayOfWeek.setDate(new Date(endDayOfWeek).getDate() + 7);
@@ -113,7 +112,7 @@ const ChartUserAlert = () => {
             (selectedType.value === 1 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(end).getTime()) ||
             (selectedType.value === 2 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(endDayOfWeek).getTime())
         ) {
-          labels.push(new Date(it.ts).toLocaleDateString('en-us', {
+          labels.push(new Date(timeOnOtherZone(it.ts, timeZone)).toLocaleDateString('en-us', {
             day: "numeric",
             hour: "numeric",
             hour12: false,
@@ -140,7 +139,7 @@ const ChartUserAlert = () => {
       })
     }
   }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone]);
-  // console.log(data, '=================== chart data');
+
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>

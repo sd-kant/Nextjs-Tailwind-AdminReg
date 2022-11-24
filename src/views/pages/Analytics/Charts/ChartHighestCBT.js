@@ -14,7 +14,7 @@ import {
 
 const ChartHighestCBT = () => {
   const {
-    chartData,
+    maxCBTTileData: chartData,
     setDetailCbt,
   } = useAnalyticsContext();
 

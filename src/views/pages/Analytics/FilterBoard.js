@@ -17,7 +17,9 @@ import {
   METRIC_CHART_USER_VALUES,
   METRIC_CHART_TEAM_VALUES,
 } from "../../../constant";
-import {getThisWeek} from "../../../utils/anlytics";
+import {
+  getThisWeek
+} from "../../../utils/anlytics";
 
 const CustomInput = React.forwardRef(({value, onClick}, ref) => (
     <div className={clsx(style.CustomInputWrapper)} onClick={onClick}>
