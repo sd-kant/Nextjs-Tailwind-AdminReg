@@ -55,16 +55,16 @@ const ChartHighestCBT = () => {
                               return (
                                   <div
                                       key={key + '_' + index}
-                                      className={clsx(style.div_rect, chartData?.list[key][index] !== null ? style.rect_hover : ``)}
+                                      className={clsx(style.div_rect, (chartData?.list?.length === 7 && chartData?.list[key][index] !== null) ? style.rect_hover : ``)}
                                       style={{
-                                        backgroundColor: `rgb(255, ${chartData?.list[key][index] !== null
+                                        backgroundColor: `rgb(255, ${(chartData?.list?.length === 7 && chartData?.list[key][index] !== null)
                                             ?
-                                            chartData?.list[key][index].maxCbt : 255}, ${chartData?.list[key][index] !== null ? 0 
+                                            chartData?.list[key][index].maxCbt : 255}, ${(chartData?.list?.length === 7 && chartData?.list[key][index] !== null) ? 0 
                                             :
                                             255})`
                                       }}
                                       onClick={() =>
-                                          chartData?.list[key][index] !== null
+                                          (chartData?.list?.length === 7 && chartData?.list[key][index] !== null)
                                               ?
                                               setDetailCbt({dayIndex: key, timeIndex: index})
                                               :

@@ -305,4 +305,3 @@ export const TIME_LIST = [
 
 export const HIGHEST_CHART_CELSIUS_MAX = 101.8;
 export const HIGHEST_CHART_CELSIUS_MIN = 98.5;
-export const ONE_DAY = 24 * 60 * 60 * 1000;

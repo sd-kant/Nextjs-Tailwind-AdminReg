@@ -59,7 +59,6 @@ const FilterBoard = () => {
     selectedMembers,
     pickedMembers,
     selectedUsers,
-    timeZone,
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
@@ -148,11 +147,11 @@ const FilterBoard = () => {
       start.setMonth(start.getMonth() - 1);
       setStartDate(start);
     } else if (METRIC_CHART_TEAM_VALUES[2] === selectedMetric?.value) {
-      const week = getThisWeek(timeZone);
-      setStartDate(new Date(week.firstDate));
-      setEndDate(new Date(week.endDate));
+      const week = getThisWeek();
+      setStartDate(week.startDate);
+      setEndDate(week.endDate);
     }
-  }, [selectedMetric, setStartDate, setEndDate, timeZone]);
+  }, [selectedMetric, setStartDate, setEndDate]);
 
   const startDateMax = new Date();
   const endDateMax = new Date();

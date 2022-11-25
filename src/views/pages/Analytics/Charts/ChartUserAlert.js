@@ -31,7 +31,7 @@ import {
   getWeeksInMonth
 } from "../../../../utils/anlytics";
 import MultiSelectPopup from "../../../components/MultiSelectPopup";
-import {timeOnOtherZone} from "../../../../utils";
+import spacetime from "spacetime";
 
 ChartJS.register(
     CategoryScale,
@@ -65,6 +65,7 @@ const ChartUserAlert = () => {
     setDate(dateList?.length > 0 ? dateList[0].value : null);
     return TYPES?.find(it => it.value?.toString() === type?.toString());
   }, [type, timeZone]);
+
   const selectedDate = React.useMemo(() => {
     return dates?.find(it => it.value?.toString() === date?.toString());
   }, [date, dates]);
@@ -100,25 +101,18 @@ const ChartUserAlert = () => {
   React.useEffect(() => {
     if (selectedDate) {
       let labels = [], tempData = [];
+      let dateList = getWeeksInMonth(timeZone);
 
-      let start = new Date(timeOnOtherZone(new Date(selectedDate.label), timeZone));
-      let end = new Date(start), endDayOfWeek = new Date(start);
-      end.setDate(new Date(end).getDate() + 1);
-      endDayOfWeek.setDate(new Date(endDayOfWeek).getDate() + 7);
+      let start = selectedDate.label;
+      dateList = selectedType.value === 1 ? dateList.dates : dateList.weeks;
+
+      let findIndex = dateList.findIndex(it => it.value === selectedDate.value);
+      let end = findIndex === 0 ? spacetime(new Date(), timeZone.name) : dateList[findIndex - 1].label;
 
       let filterUsers = users.filter(it => selectedMembers.findIndex(a => a?.value?.toString() === it.toString()) > -1);
       chartData.filter(it => filterUsers.includes(it.userId))?.forEach(it => {
-        if (
-            (selectedType.value === 1 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(end).getTime()) ||
-            (selectedType.value === 2 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(endDayOfWeek).getTime())
-        ) {
-          labels.push(new Date(timeOnOtherZone(it.ts, timeZone)).toLocaleDateString('en-us', {
-            day: "numeric",
-            hour: "numeric",
-            hour12: false,
-            minute: "2-digit",
-            second: "2-digit"
-          }));
+        if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
+          labels.push(spacetime(it.ts, timeZone.name).unixFmt('dd hh:mm:ss'));
           tempData.push(selectedMetric.value === METRIC_CHART_USER_VALUES[0] ? it?.heartCbtAvg : it?.heartRateAvg);
         }
       });

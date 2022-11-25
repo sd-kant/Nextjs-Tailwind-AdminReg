@@ -20,11 +20,10 @@ import {
 import {
   celsiusToFahrenheit,
   dateFormat,
-  numMinutesBetweenWithNow, timeOnOtherZone,
+  numMinutesBetweenWithNow,
 } from "../utils";
 import {
   onCalc,
-  getThisWeek,
   getUTCDateList,
   getListPerLabel,
   getUserNameFromUserId,
@@ -32,7 +31,7 @@ import {
   getTeamNameFromTeamId,
   getTimeSpentFromUserId,
   onFilterData,
-  onFilterDataByOrganization,
+  onFilterDataByOrganization, getThisWeekByTeam,
 } from "../utils/anlytics";
 import {
   COLOR_WHITE,
@@ -57,6 +56,7 @@ import {useUtilsContext} from "./UtilsProvider";
 import {useTranslation} from "react-i18next";
 import soft from "timezone-soft";
 import spacetime from "spacetime";
+
 const AnalyticsContext = React.createContext(null);
 
 export const AnalyticsProvider = (
@@ -552,11 +552,18 @@ export const AnalyticsProvider = (
         if (apiCall && key) {
           let focusAnalytics = onFilterDataByOrganization(analytics, organization);
           if (!METRIC_CHART_USER_VALUES.includes(metric)) {
+            let startD = new Date(startDate);
+            let endD = new Date(endDate);
+
+            if (METRIC_CHART_TEAM_VALUES.includes(metric)) {
+              startD.setDate(startD.getDate() - 2);
+              endD.setDate(endD.getDate() + 2);
+            }
             setLoading(true);
             apiCall(organization, {
               teamIds: pickedTeams,
-              startDate: dateFormat(new Date(startDate)),
-              endDate: dateFormat(new Date(endDate)),
+              startDate: dateFormat(new Date(startD)),
+              endDate: dateFormat(new Date(endD)),
             })
                 .then(response => {
                   setAnalytics({
@@ -575,11 +582,14 @@ export const AnalyticsProvider = (
 
             const userPromises = [];
             if (userFilter?.length > 0) {
+              let startD = new Date(startDate);
+              startD.setDate(startD.getDate() - 2);
+
               userFilter.forEach(user => {
                 userPromises.push(apiCall({
                   teamId: user.teamId,
                   userId: user.userId,
-                  since: new Date(startDate).toISOString()
+                  since: new Date(startD).toISOString()
                 }));
               });
               setLoading(true);
@@ -720,31 +730,36 @@ export const AnalyticsProvider = (
         dataHeat: dataHeat,
         dataSweat: dataSweat
       };
-    } else if (metric === METRIC_CHART_TEAM_VALUES[1]) { // 31
-      let thisWeek = getThisWeek(timeZone);
+    } else if (METRIC_CHART_USER_VALUES.includes(metric)) { // 40, 41
+      return (focusAnalytics?.teamMemberAlerts || []).sort((a, b) => {
+        return new Date(a?.ts).getTime() > new Date(b.ts).getTime() ? -1 : 1;
+      });
+    } else {
+      return null;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [analytics, metric, formatAlert, organization, selectedTeams, selectedMembers, timeZone]);
 
-      let x = new Date();
-      const endD = spacetime(x, timeZone.name);
+  const maxCBTTileData = React.useMemo(() => {
+    let focusAnalytics = selectedTeams?.length > 0 ? onFilterDataByOrganization(analytics, organization) : {};
+    let list = [];
+    let dayList = [];
 
-      const t = new Date(x);
-      t.setDate(t.getDate() - 7);
+    if (metric === METRIC_CHART_TEAM_VALUES[1]) { // 31
+      let thisWeek = getThisWeekByTeam(timeZone);
+      const endD = thisWeek.endDate;
+      let startD = thisWeek.startDate;
 
-      const startD = spacetime([
-        t.getFullYear(),
-        t.getMonth(),
-        t.getDate(),
-      ], timeZone.name);
-
-      let thisData = focusAnalytics?.alertMetrics?.filter(it =>
-          spacetime(it.ts).isBefore(endD) && spacetime(it.ts).isAfter(startD)
-      );
+      let thisData = focusAnalytics?.alertMetrics?.filter(it => {
+        return spacetime(it.ts).isBefore(endD) && spacetime(it.ts).isAfter(startD);
+      });
 
       let arrayPerDate = [
-        getListPerLabel(thisData, [1], thisWeek), // At Risk id
-        getListPerLabel(thisData, [2], thisWeek), // Elevated Risk id
-        getListPerLabel(thisData, [3, 4], thisWeek), // Safe ids
+        getListPerLabel(thisData, timeZone, [1], startD, endD), // At Risk id
+        getListPerLabel(thisData, timeZone, [2], startD, endD), // Elevated Risk id
+        getListPerLabel(thisData, timeZone, [3, 4], startD, endD), // Safe ids
       ];
-      const xLabel = getUTCDateList(thisWeek?.firstDate);
+      const xLabel = getUTCDateList(startD, endD);
       let dataSet = [];
       COLORS.forEach((item, key) => {
         dataSet.push({
@@ -780,92 +795,55 @@ export const AnalyticsProvider = (
         labels: xLabel,
         datasets: dataSet,
       };
-    }
-    else if (METRIC_CHART_USER_VALUES.includes(metric)) { // 40, 41
-      return (focusAnalytics?.teamMemberAlerts || []).map(it => ({
-        userId: it?.userId,
-        teamId: it?.teamId,
-        alertCounter: it?.alertCounter,
-        alertResponseId: it?.alertResponseId,
-        alertStageId: it?.alertStageId,
-        gmt: it?.gmt,
-        heartCbtAvg: it?.heartCbtAvg,
-        heartRateAvg: it?.heartRateAvg,
-        ts: timeOnOtherZone(it?.ts, timeZone),
-      }));
-    } else {
-      return null;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [analytics, metric, formatAlert, organization, selectedTeams, selectedMembers, timeZone]);
+    } else if (metric === METRIC_CHART_TEAM_VALUES[2]) { // 32
+      let thisWeek = getThisWeekByTeam(timeZone);
+      const endD = thisWeek.endDate;
+      let startD = thisWeek.startDate;
 
-  const maxCBTTileData = React.useMemo(() => {
-    let focusAnalytics = selectedTeams?.length > 0 ? onFilterDataByOrganization(analytics, organization) : {};
-    let list = [];
-    let dayList = [];
+      while (startD.isBefore(endD)) {
+        const subList = [];
+        const endDByOneDay = startD.add(1, 'day');
 
-    if (metric === METRIC_CHART_TEAM_VALUES[2]) { // 32
-      if (startDate && endDate) {
-        let x = new Date(startDate);
+        const dailyData = focusAnalytics.chartCbt?.filter(it =>
+            selectedMembers?.findIndex(a => a?.value === it?.userId) > -1 &&
+            spacetime(it.utcTs).isBefore(endDByOneDay) &&
+            spacetime(it.utcTs).isAfter(startD)
+        );
 
-        while (x.getTime() <= new Date(endDate).getTime()) {
-          const subList = [];
-          const startD = spacetime([
-            x.getFullYear(),
-            x.getMonth(),
-            x.getDate(),
-          ], timeZone.name);
+        let startHour = startD;
 
-          const t = new Date(x);
-          t.setDate(t.getDate() + 1);
-
-          const endD = spacetime([
-            t.getFullYear(),
-            t.getMonth(),
-            t.getDate(),
-          ], timeZone.name);
-
-          const dailyData = focusAnalytics.chartCbt?.filter(it =>
-              selectedMembers?.findIndex(a => a?.value === it?.userId) > -1 &&
-              spacetime(it.utcTs).isBefore(endD) &&
-              spacetime(it.utcTs).isAfter(startD)
+        while (startHour.isBefore(endDByOneDay)) {
+          let endHour = startHour.add(1, 'hour');
+          const hourlyDate = dailyData?.filter(it => {
+            return spacetime(it.utcTs).isBefore(endHour) && spacetime(it.utcTs).isAfter(startHour);
+          })
+              .sort((a, b) => {
+                return a?.maxCbt > b?.maxCbt ? -1 : 1;
+              })
+              .map(it => ([
+                getUserNameFromUserId(members, it.userId),
+                getTeamNameFromUserId(members, formattedTeams, it.userId),
+                it.utcTs ? it.utcTs : ``,
+                it?.maxCbt ? celsiusToFahrenheit(it?.maxCbt) : ``,
+              ]));
+          let tempCbt = hourlyDate?.length > 0 ? hourlyDate[0][3] : 0;
+          tempCbt = Math.min(Math.max(tempCbt, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
+          tempCbt = ((HIGHEST_CHART_CELSIUS_MAX - tempCbt) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
+          subList.push(
+              hourlyDate?.length > 0 ? {
+                    maxCbt: tempCbt.toFixed(2),
+                    details: hourlyDate
+                  }
+                  :
+                  null
           );
 
-          let startHour = startD;
-
-          while (startHour.isBefore(endD)) {
-            let endHour = startHour.add(1, 'hour');
-            const hourlyDate = dailyData?.filter(it => {
-              return spacetime(it.utcTs).isBefore(endHour) && spacetime(it.utcTs).isAfter(startHour);
-            })
-                .sort((a, b) => {
-                  return a?.maxCbt > b?.maxCbt ? -1 : 1;
-                })
-                .map(it => ([
-                  getUserNameFromUserId(members, it.userId),
-                  getTeamNameFromUserId(members, formattedTeams, it.userId),
-                  it.utcTs ? it.utcTs : ``,
-                  it?.maxCbt ? celsiusToFahrenheit(it?.maxCbt) : ``,
-                ]));
-            let tempCbt = hourlyDate?.length > 0 ? hourlyDate[0][3] : 0;
-            tempCbt = Math.min(Math.max(tempCbt, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
-            tempCbt = ((HIGHEST_CHART_CELSIUS_MAX - tempCbt) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
-            subList.push(
-                hourlyDate?.length > 0 ? {
-                      maxCbt: tempCbt.toFixed(2),
-                      details: hourlyDate
-                    }
-                    :
-                    null
-            );
-
-            startHour = startHour.add(1, 'hour');
-          }
-          list.unshift(subList);
-
-          dayList.unshift(DAY_LIST[x.getDay()]);
-          x.setDate(x.getDate() + 1);
+          startHour = startHour.add(1, 'hour');
         }
+        list.unshift(subList);
+
+        dayList.unshift(DAY_LIST[startD.day()]);
+        startD = endDByOneDay;
       }
 
       return {

@@ -1,5 +1,5 @@
-import {dateFormat, timeOnOtherZone} from "./index";
 import {COLOR_WHITE} from "../constant";
+import spacetime from "spacetime";
 
 export const getUserNameFromUserId = (members, id) => {
   const user = members?.find(it => it.userId?.toString() === id?.toString());
@@ -36,70 +36,77 @@ export const onCalc = (key, tempRet, totalSweat, totalHeat) => {
   }
 };
 
-export const getUTCDateList = (dateStr) => {
-  if (!dateStr) return '';
-  let date = new Date(dateStr);
+export const getUTCDateList = (startD, endD) => {
+  if (!startD || !endD) return '';
+  let startDate = startD;
   let dates = [];
-  for (let k = 0; k <= 6; k++) {
-    let m = date.getMonth() + 1;
-    let d = date.getDate();
-    m = m >= 10 ? m : `0` + m;
-    d = d >= 10 ? d : `0` + d;
-    dates.push(date.getFullYear() + `-` + m + `-` + d);
-    date.setDate(new Date(date).getDate() + 1);
+  while (startDate.isBefore(endD)) {
+    dates.push(startDate.unixFmt(`yyyy-MM-dd`));
+    startDate = startDate.add(1, 'day');
   }
   return dates;
 };
 
-export const getListPerLabel = (list, stageIds, thisWeek) => {
+export const getListPerLabel = (list, timezone, stageIds, startD, endD) => {
   let temp = list?.filter(a => stageIds.includes(a.alertStageId));
   let array = [];
-  let date = thisWeek.firstDate;
-  for (let k = 0; k <= 6; k++) {
-    let nextDate = new Date(date);
-    nextDate.setDate(nextDate.getDate() + 1);
-    let filterList = temp?.filter(a =>
-        new Date(a.ts).getTime() >= new Date(date).getTime() &&
-        new Date(a.ts).getTime() < new Date(nextDate).getTime()
-    );
-    array.push(filterList.length);
-    date = nextDate;
+  let startDate = startD;
+  while (startDate.isBefore(endD)) {
+    let endDate = startDate.add(1, 'day');
+    let filterList = temp?.filter(it => {
+      return spacetime(it.ts, timezone.name).isBefore(endDate) && spacetime(it.ts, timezone.name).isAfter(startDate);
+    });
+    array.push(filterList?.length);
+    startDate = endDate;
   }
+
   return array;
 };
 
 export const getWeeksInMonth = (timezone) => {
-  let weeks = [], firstDate = new Date(timeOnOtherZone(new Date(), timezone)), lastDate = new Date(timeOnOtherZone(new Date(), timezone));
-  firstDate.setMonth(new Date(firstDate).getMonth() - 1);
+  let weeks = [], dates = [], value = 0;
+
+  let timeLocal = new Date();
+  let endD = spacetime(timeLocal, timezone.name); // 2022-11-24 05:40:00
+  let startMonthD = endD;
+
+  startMonthD = startMonthD
+      .subtract(1, `month`)
+      .add( - startMonthD.hour(), `hour`)
+      .add( - startMonthD.minute(), `minute`)
+      .add( - startMonthD.second(), `second`); // 2022-11-18 00:00:00
 
   // day list of month
-  let dates = [], date = new Date(lastDate.getTime()), value = 0;
-  while (date > firstDate) {
+  let startD = endD;
+
+  while (startD.isAfter(startMonthD)) {
     dates.push({
       value: value,
-      label: dateFormat(new Date(date))
+      label: startD.format('yyyy-mm-DD')
     });
-    date.setDate(date.getDate() - 1);
+    startD = startD.subtract(1, 'day');
     value += 1;
   }
-  // dates.shift();
 
-  date = lastDate;
-  let flag = false;
-  value = 1;
-  do {
-    if (!flag) {
-      date.setDate(date.getDate() - date.getDay());
-      flag = true;
-    } else {
-      date.setDate(date.getDate() - 7);
-    }
+  value = 0;
+  endD = endD
+      .subtract(endD.day(), `day`)
+      .add( - endD.hour(), `hour`)
+      .add( - endD.minute(), `minute`)
+      .add( - endD.second(), `second`); // 2022-11-18 00:00:00
+
+  while (startMonthD.isBefore(endD)) {
     weeks.push({
       value: value,
-      label: dateFormat(new Date(date >= firstDate ? date : firstDate))
+      label: endD.format('yyyy-mm-DD')
     });
     value += 1;
-  } while (date >= firstDate);
+    endD = endD.subtract(7, 'day');
+  }
+  weeks.push({
+    value: value,
+    label: startMonthD.format('yyyy-mm-DD')
+  });
 
   return {
     dates: dates,
@@ -180,20 +187,30 @@ export const chartPlugins = (idStr, noDataStr) => {
   }]
 };
 
-export const getThisWeek = (timeZone) => {
-  let firstDate = new Date();
-  if (timeZone) {
-    let tempDate = timeOnOtherZone(new Date(), timeZone);
-    let arr = tempDate.split(' ');
-    tempDate = arr[0] + ' 00:00:00 ' + arr[2];
-    firstDate = new Date(tempDate);
-  }
-  firstDate.setDate(firstDate.getDate() - 6);
-  let endDate = new Date(firstDate);
-  endDate.setDate(endDate.getDate() + 6);
+export const getThisWeek = () => {
+  let endDate = new Date();
+  endDate.setHours(0, 0, 0);
+
+  let startDate = new Date(endDate);
+  startDate.setDate(startDate.getDate() - 6);
 
   return {
-    firstDate: firstDate,
+    startDate: startDate,
     endDate: endDate
+  }
+};
+
+export const getThisWeekByTeam = (timeZone) => {
+  let timeLocal = new Date();
+  const endD = spacetime(timeLocal, timeZone.name); // 2022-11-24 05:40:00
+
+  timeLocal.setDate(timeLocal.getDate() - 6); // 2022-11-18 05:40:00
+  let startD = spacetime(timeLocal, timeZone.name);
+
+  startD = startD.add(-startD.hour(), 'hour').add(-startD.minute(), 'minute').add(-startD.second(), 'second'); // 2022-11-18 00:00:00
+
+  return {
+    startDate: startD,
+    endDate: endD
   }
 };
