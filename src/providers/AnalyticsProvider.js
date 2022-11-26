@@ -31,7 +31,8 @@ import {
   getTeamNameFromTeamId,
   getTimeSpentFromUserId,
   onFilterData,
-  onFilterDataByOrganization, getThisWeekByTeam,
+  onFilterDataByOrganization,
+  getThisWeekByTeam,
 } from "../utils/anlytics";
 import {
   COLOR_WHITE,
@@ -552,12 +553,12 @@ export const AnalyticsProvider = (
         if (apiCall && key) {
           let focusAnalytics = onFilterDataByOrganization(analytics, organization);
           if (!METRIC_CHART_USER_VALUES.includes(metric)) {
-            let startD = new Date(startDate);
-            let endD = new Date(endDate);
+            let startD = new Date(startDate); // 2022-04-05
+            let endD = new Date(endDate); // 2022-11-24
 
-            if (METRIC_CHART_TEAM_VALUES.includes(metric)) {
-              startD.setDate(startD.getDate() - 2);
-              endD.setDate(endD.getDate() + 2);
+            if (METRIC_CHART_TEAM_VALUES.includes(metric)) { // team chart only
+              startD.setDate(startD.getDate() - 2); // 2022-04-03
+              endD.setDate(endD.getDate() + 2); // 2022-11-26
             }
             setLoading(true);
             apiCall(organization, {
@@ -582,8 +583,8 @@ export const AnalyticsProvider = (
 
             const userPromises = [];
             if (userFilter?.length > 0) {
-              let startD = new Date(startDate);
-              startD.setDate(startD.getDate() - 2);
+              let startD = new Date(startDate); // 2022-10-24
+              startD.setDate(startD.getDate() - 2); // 2022-10-22
 
               userFilter.forEach(user => {
                 userPromises.push(apiCall({
@@ -712,9 +713,9 @@ export const AnalyticsProvider = (
           {
             label: '# of Sweat',
             data: [
-              onCalc(3, tempRet, totalSweat, totalHeat),
-              onCalc(4, tempRet, totalSweat, totalHeat),
-              onCalc(5, tempRet, totalSweat, totalHeat)
+              onCalc(3, tempRet, totalSweat, totalHeat), // ex. 60
+              onCalc(4, tempRet, totalSweat, totalHeat), // ex. 20
+              onCalc(5, tempRet, totalSweat, totalHeat)  // ex. 20
             ],
             backgroundColor: COLORS,
             borderColor: [
@@ -848,13 +849,13 @@ export const AnalyticsProvider = (
 
       return {
         list: list?.length === 0 ? [
-          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''], // 24 values of 1st row (ex. Sat)
+          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''], // 24 values of 2nd row (ex. Fri)
+          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''], // 24 values of 3rd row (ex. Thurs)
+          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''], // 24 values of 4th row (ex. Wed)
+          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''], // 24 values of 5th row (ex. Tues)
+          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''], // 24 values of 6th row (ex. Mon)
+          ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''], // 24 values of 7th row (ex. Sun)
         ] : list,
         dayList: dayList?.length > 0 ? dayList : ['Sat', 'Fri', 'Thurs', 'Wed', 'Tues', 'Mon', 'Sun'],
       };

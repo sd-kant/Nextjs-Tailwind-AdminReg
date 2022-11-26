@@ -142,6 +142,7 @@ const FilterBoard = () => {
   React.useEffect(() => {
     if (!selectedMetric) return;
     if (METRIC_CHART_USER_VALUES.includes(selectedMetric?.value)) {
+      // local time
       setEndDate(new Date());
       const start = new Date();
       start.setMonth(start.getMonth() - 1);

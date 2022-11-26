@@ -60,54 +60,82 @@ export const getListPerLabel = (list, timezone, stageIds, startD, endD) => {
     startDate = endDate;
   }
 
+  /**
+   * counts per day by stageId
+   * [1, 4, 7, 0, 0, 3]
+   */
   return array;
 };
 
 export const getWeeksInMonth = (timezone) => {
   let weeks = [], dates = [], value = 0;
 
-  let timeLocal = new Date();
-  let endD = spacetime(timeLocal, timezone.name); // 2022-11-24 05:40:00
-  let startMonthD = endD;
+  let timeLocal = new Date(); // 2022-11-24 05:40:00
+  let endD = spacetime(timeLocal, timezone.name);
+  let startMonthD = endD; // 2022-11-24 05:40:00
 
+  // 2022-10-24 00:00:00
   startMonthD = startMonthD
       .subtract(1, `month`)
-      .add( - startMonthD.hour(), `hour`)
-      .add( - startMonthD.minute(), `minute`)
-      .add( - startMonthD.second(), `second`); // 2022-11-18 00:00:00
+      .subtract(startMonthD.hour(), `hour`)
+      .subtract(startMonthD.minute(), `minute`)
+      .subtract(startMonthD.second(), `second`);
 
   // day list of month
-  let startD = endD;
+  let endMonthD = endD;
 
-  while (startD.isAfter(startMonthD)) {
+  while (endMonthD.isAfter(startMonthD)) {
     dates.push({
       value: value,
-      label: startD.format('yyyy-mm-DD')
+      label: endMonthD.format('yyyy-mm-DD')
     });
-    startD = startD.subtract(1, 'day');
+    endMonthD = endMonthD.subtract(1, 'day');
     value += 1;
   }
 
   value = 0;
-  endD = endD
-      .subtract(endD.day(), `day`)
-      .add( - endD.hour(), `hour`)
-      .add( - endD.minute(), `minute`)
-      .add( - endD.second(), `second`); // 2022-11-18 00:00:00
 
-  while (startMonthD.isBefore(endD)) {
+  // 2022-11-24 00:00:00, Thur -> 2022-11-20 00:00:00, Sun
+  let endWeekD = endD
+      .subtract(endD.day(), `day`)
+      .subtract(endD.hour(), `hour`)
+      .subtract(endD.minute(), `minute`)
+      .subtract(endD.second(), `second`);
+
+  while (endWeekD.isAfter(startMonthD)) {
     weeks.push({
       value: value,
-      label: endD.format('yyyy-mm-DD')
+      label: endWeekD.format('yyyy-mm-DD')
     });
     value += 1;
-    endD = endD.subtract(7, 'day');
-  }
-  weeks.push({
-    value: value,
-    label: startMonthD.format('yyyy-mm-DD')
-  });
 
+    // 2022-11-13 00:00:00, Sun
+    endWeekD = endWeekD.subtract(7, 'day');
+  }
+  if (!endWeekD.isEqual(startMonthD)) {
+    weeks.push({
+      value: value,
+      label: startMonthD.format('yyyy-mm-DD')
+    });
+  }
+
+  /**
+   dates = [
+     {value: 0, label: 2022-11-24},
+     {value: 1, label: 2022-11-23},
+     {value: 2, label: 2022-11-22},
+     ... ,
+     {value: 21, label: 2022-10-24}
+   ]
+
+   weeks = [
+     {value: 0, label: 2022-11-20},
+     {value: 1, label: 2022-11-13},
+     {value: 2, label: 2022-11-06},
+     {value: 3, label: 2022-10-30},
+     {value: 4, label: 2022-10-24},
+   ]
+   */
   return {
     dates: dates,
     weeks: weeks,
@@ -128,10 +156,16 @@ export const onFilterData = (data, userIds, members) => {
       list;
 };
 
-export const onFilterDataByOrganization = (data, key) => {
-  return (data && key && Object.keys(data).includes(key.toString()))
+/**
+ * filtering by organizationId
+ * @param data
+ * @param orgId
+ * @returns {any}
+ */
+export const onFilterDataByOrganization = (data, orgId) => {
+  return (data && orgId && Object.keys(data).includes(orgId.toString()))
       ?
-      JSON.parse(JSON.stringify(data[[key]]))
+      JSON.parse(JSON.stringify(data[[orgId]]))
       :
       {};
 };
@@ -189,9 +223,12 @@ export const chartPlugins = (idStr, noDataStr) => {
 
 export const getThisWeek = () => {
   let endDate = new Date();
+  // 2022-11-24 00:00:00
   endDate.setHours(0, 0, 0);
 
   let startDate = new Date(endDate);
+
+  // 2022-11-18 00:00:00
   startDate.setDate(startDate.getDate() - 6);
 
   return {
@@ -201,14 +238,24 @@ export const getThisWeek = () => {
 };
 
 export const getThisWeekByTeam = (timeZone) => {
+  // 2022-11-24 05:40:00
   let timeLocal = new Date();
-  const endD = spacetime(timeLocal, timeZone.name); // 2022-11-24 05:40:00
+  const endD = spacetime(timeLocal, timeZone.name);
 
-  timeLocal.setDate(timeLocal.getDate() - 6); // 2022-11-18 05:40:00
+  // 2022-11-18 05:40:00
+  timeLocal.setDate(timeLocal.getDate() - 6);
   let startD = spacetime(timeLocal, timeZone.name);
 
-  startD = startD.add(-startD.hour(), 'hour').add(-startD.minute(), 'minute').add(-startD.second(), 'second'); // 2022-11-18 00:00:00
+  // 2022-11-18 00:00:00
+  startD = startD
+      .add(-startD.hour(), 'hour')
+      .add(-startD.minute(), 'minute')
+      .add(-startD.second(), 'second');
 
+  /**
+    startD = 2022-11-18 00:00:00
+    endD = 2022-11-24 05:40:00 -> current date
+   */
   return {
     startDate: startD,
     endDate: endD

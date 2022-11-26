@@ -56,8 +56,27 @@ const ChartUserAlert = () => {
   const {t} = useTranslation();
 
   const [type, setType] = React.useState(1); // 1 | 2 // 1: day, 2: week
+
+  /**
+   List of dates split into week and month ranges ->
+   ex. [
+     {value: 0, label: 2022-11-20},
+     {value: 1, label: 2022-11-13},
+     {value: 2, label: 2022-11-6},
+     {value: 3, label: 2022-10-30},
+     {value: 4, label: 2022-10-24},
+   ]
+   */
   const [dates, setDates] = React.useState(null);
+
+  /**
+   value of selected item from Date Range options [{value: 0, label: 2022-11-24}, {value: 2, label: 2022-11-23}, ]
+   */
   const [date, setDate] = React.useState(null);
+
+  /**
+   * @type {{label: string, value: number} | {label: string, value: number}}
+   */
   const selectedType = React.useMemo(() => {
     let dateList = getWeeksInMonth(timeZone);
     dateList = type === 1 ? dateList.dates : type === 2 ? dateList.weeks : [];
@@ -66,6 +85,10 @@ const ChartUserAlert = () => {
     return TYPES?.find(it => it.value?.toString() === type?.toString());
   }, [type, timeZone]);
 
+  /**
+   selected start date from date range options
+   ex. {value: 2, label: 2022-11-23}
+   */
   const selectedDate = React.useMemo(() => {
     return dates?.find(it => it.value?.toString() === date?.toString());
   }, [date, dates]);
@@ -85,6 +108,14 @@ const ChartUserAlert = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMembers, selectedUsers]);
 
+  /**
+   labels: [
+    '21 12:33:46', '21 09:01:43', '21 09:04:44', ... , '24 04:51:32', '24 05:11:33'
+   ],
+   datasets -> data: [
+    0, 36.8, 36.5, ... , 38.5, 37.7
+   ]
+   */
   const [data, setData] = React.useState({
     labels: [],
     datasets: [
