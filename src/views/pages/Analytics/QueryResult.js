@@ -18,8 +18,8 @@ import ChartTeamVerticalBar from "./Charts/ChartTeamVerticalBar";
 import ChartHighestCBT from "./Charts/ChartHighestCBT";
 import ChartUserAlert from "./Charts/ChartUserAlert";
 import {
-  METRIC_CHART_TEAM_VALUES,
-  METRIC_CHART_USER_VALUES
+  METRIC_TEAM_CHART_VALUES,
+  METRIC_USER_CHART_VALUES
 } from "../../../constant";
 
 const QueryResult = (
@@ -44,13 +44,13 @@ const QueryResult = (
   const ChartComponent = React.useMemo(() => {
     if (showBy === 'table') return null;
 
-    if (selectedMetric?.value === METRIC_CHART_TEAM_VALUES[0]) // 30
+    if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES[0]) // 30
       return <ChartTeamDoughnut/>;
-    else if (selectedMetric?.value === METRIC_CHART_TEAM_VALUES[1]) // 31
+    else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES[1]) // 31
       return <ChartTeamVerticalBar/>;
-    else if (selectedMetric?.value === METRIC_CHART_TEAM_VALUES[2]) // 32
+    else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES[2]) // 32
       return <ChartHighestCBT/>;
-    else if (METRIC_CHART_USER_VALUES.includes(selectedMetric?.value)) // 40, 41
+    else if (METRIC_USER_CHART_VALUES.includes(selectedMetric?.value)) // 40, 41
       return <ChartUserAlert/>;
     else return <div className={clsx(style.EmptyHeight)}/>;
   }, [selectedMetric, showBy]);
@@ -60,7 +60,7 @@ const QueryResult = (
       {
         (
             showBy === 'table' ||
-            (showBy === 'chart' && statsBy === 'team' && selectedMetric?.value === METRIC_CHART_TEAM_VALUES[2] && detailCbt)
+            (showBy === 'chart' && statsBy === 'team' && selectedMetric?.value === METRIC_TEAM_CHART_VALUES[2] && detailCbt)
         ) ?
             <>
               <div className={clsx(style.InnerWrapper)}>

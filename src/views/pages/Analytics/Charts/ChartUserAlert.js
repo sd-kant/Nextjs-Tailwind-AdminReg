@@ -13,7 +13,7 @@ import {Line} from 'react-chartjs-2';
 import {
   COLOR_BLUE,
   COLORS,
-  METRIC_CHART_USER_VALUES,
+  METRIC_USER_CHART_VALUES,
   TYPES
 } from "../../../../constant";
 
@@ -120,11 +120,11 @@ const ChartUserAlert = () => {
     labels: [],
     datasets: [
       {
-        label: `${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'CBT' : 'Hr'}`,
+        label: `${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? 'CBT' : 'Hr'}`,
         data: [],
         borderWidth: 4,
-        borderColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
-        backgroundColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+        borderColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+        backgroundColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
       },
     ],
   });
@@ -144,7 +144,7 @@ const ChartUserAlert = () => {
       chartData.filter(it => filterUsers.includes(it.userId))?.forEach(it => {
         if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
           labels.push(spacetime(it.ts, timeZone.name).unixFmt('dd hh:mm:ss'));
-          tempData.push(selectedMetric.value === METRIC_CHART_USER_VALUES[0] ? it?.heartCbtAvg : it?.heartRateAvg);
+          tempData.push(selectedMetric.value === METRIC_USER_CHART_VALUES[0] ? it?.heartCbtAvg : it?.heartRateAvg);
         }
       });
       labels.reverse();
@@ -154,11 +154,11 @@ const ChartUserAlert = () => {
         labels,
         datasets: [
           {
-            label: `${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'CBT' : 'Hr'}`,
+            label: `${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? 'CBT' : 'Hr'}`,
             data: tempData,
             borderWidth: 4,
-            borderColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
-            backgroundColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+            borderColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+            backgroundColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
           },
         ],
       })
@@ -169,7 +169,7 @@ const ChartUserAlert = () => {
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
           <h1 className={clsx(style.txt_center)}>
-            {t(`${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'cbt' : 'hr'}`)}
+            {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? 'cbt' : 'hr'}`)}
           </h1>
           <div className={clsx(style.line_flex, `mb-15`)}>
             {

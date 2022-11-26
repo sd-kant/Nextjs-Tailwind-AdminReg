@@ -261,10 +261,10 @@ export const HEAT_LOW_MEDIUM_HIGH = [
   "low", "medium", "high"
 ];
 
-export const METRIC_TABLE_USER_VALUES = [1, 2, 3, 4, 5, 6, 7, 8];
-export const METRIC_TABLE_TEAM_VALUES = [20, 21, 22, 23, 24, 25, 26];
-export const METRIC_CHART_USER_VALUES = [40, 41];
-export const METRIC_CHART_TEAM_VALUES = [30, 31, 32];
+export const METRIC_USER_TABLE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8];
+export const METRIC_TEAM_TABLE_VALUES = [20, 21, 22, 23, 24, 25, 26];
+export const METRIC_USER_CHART_VALUES = [40, 41];
+export const METRIC_TEAM_CHART_VALUES = [30, 31, 32];
 
 export const DAY_LIST = [
   'Sun',

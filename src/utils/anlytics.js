@@ -36,7 +36,7 @@ export const onCalc = (key, tempRet, totalSweat, totalHeat) => {
   }
 };
 
-export const getUTCDateList = (startD, endD) => {
+export const getDateList = (startD, endD) => {
   if (!startD || !endD) return '';
   let startDate = startD;
   let dates = [];
@@ -47,7 +47,14 @@ export const getUTCDateList = (startD, endD) => {
   return dates;
 };
 
-export const getListPerLabel = (list, timezone, stageIds, startD, endD) => {
+export const getListPerLabel = (
+  {
+    list,
+    timezone,
+    stageIds,
+    startD,
+    endD,
+  }) => {
   let temp = list?.filter(a => stageIds.includes(a.alertStageId));
   let array = [];
   let startDate = startD;
@@ -77,9 +84,7 @@ export const getWeeksInMonth = (timezone) => {
   // 2022-10-24 00:00:00
   startMonthD = startMonthD
       .subtract(1, `month`)
-      .subtract(startMonthD.hour(), `hour`)
-      .subtract(startMonthD.minute(), `minute`)
-      .subtract(startMonthD.second(), `second`);
+      .time('12:00am');
 
   // day list of month
   let endMonthD = endD;
@@ -98,9 +103,7 @@ export const getWeeksInMonth = (timezone) => {
   // 2022-11-24 00:00:00, Thur -> 2022-11-20 00:00:00, Sun
   let endWeekD = endD
       .subtract(endD.day(), `day`)
-      .subtract(endD.hour(), `hour`)
-      .subtract(endD.minute(), `minute`)
-      .subtract(endD.second(), `second`);
+      .time('12:00am');
 
   while (endWeekD.isAfter(startMonthD)) {
     weeks.push({
@@ -247,10 +250,7 @@ export const getThisWeekByTeam = (timeZone) => {
   let startD = spacetime(timeLocal, timeZone.name);
 
   // 2022-11-18 00:00:00
-  startD = startD
-      .add(-startD.hour(), 'hour')
-      .add(-startD.minute(), 'minute')
-      .add(-startD.second(), 'second');
+  startD = startD.time('12:00am');
 
   /**
     startD = 2022-11-18 00:00:00
