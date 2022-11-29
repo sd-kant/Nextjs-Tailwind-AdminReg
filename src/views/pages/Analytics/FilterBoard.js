@@ -12,11 +12,14 @@ import CustomDatePicker from "../../components/CustomDatePicker";
 import calendarIcon from "../../../assets/images/calendar.png";
 import Toggle from "../../components/Toggle";
 import {
-  METRIC_TABLE_USER_VALUES,
-  METRIC_TABLE_TEAM_VALUES,
-  METRIC_CHART_USER_VALUES,
-  METRIC_CHART_TEAM_VALUES,
+  METRIC_USER_TABLE_VALUES,
+  METRIC_TEAM_TABLE_VALUES,
+  METRIC_USER_CHART_VALUES,
+  METRIC_TEAM_CHART_VALUES,
 } from "../../../constant";
+import {
+  getThisWeek
+} from "../../../utils/anlytics";
 
 const CustomInput = React.forwardRef(({value, onClick}, ref) => (
     <div className={clsx(style.CustomInputWrapper)} onClick={onClick}>
@@ -55,7 +58,7 @@ const FilterBoard = () => {
     selectedTeams,
     selectedMembers,
     pickedMembers,
-    selectedUsers
+    selectedUsers,
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
@@ -66,7 +69,7 @@ const FilterBoard = () => {
       if (teams?.length > 1 && (selectedTeams?.length === teams?.length)) {
         return t("all teams");
       } else if (selectedTeams?.length > 1) {
-        return t("n teams selected", {n: selectedTeams.length});
+        return t("n teams selected", {n: selectedTeams?.length});
       } else {
         return teams?.find(it => it.value?.toString() === selectedTeams[0]?.value?.toString())?.label;
       }
@@ -81,7 +84,7 @@ const FilterBoard = () => {
       if (members?.length > 1 && (selectedMembers?.length === members?.length)) {
         return t("all users");
       } else if (selectedMembers?.length > 1) {
-        return t("n users selected", {n: selectedMembers.length});
+        return t("n users selected", {n: selectedMembers?.length});
       } else {
         return members?.find(it => it.value?.toString() === selectedMembers?.[0]?.value?.toString())?.label;
       }
@@ -122,12 +125,12 @@ const FilterBoard = () => {
         (
             metric && (
                 (showBy === 'table' && (
-                    (statsBy === 'user' && !METRIC_TABLE_USER_VALUES.includes(metric)) ||
-                    (statsBy === 'team' && !METRIC_TABLE_TEAM_VALUES.includes(metric))
+                    (statsBy === 'user' && !METRIC_USER_TABLE_VALUES.includes(metric)) ||
+                    (statsBy === 'team' && !METRIC_TEAM_TABLE_VALUES.includes(metric))
                 )) ||
                 (showBy === 'chart' && (
-                    (statsBy === 'user' && !METRIC_CHART_USER_VALUES.includes(metric)) ||
-                    (statsBy === 'team' && !METRIC_CHART_TEAM_VALUES.includes(metric))
+                    (statsBy === 'user' && !METRIC_USER_CHART_VALUES.includes(metric)) ||
+                    (statsBy === 'team' && !METRIC_TEAM_CHART_VALUES.includes(metric))
                 ))
             ))
     ) {
@@ -138,17 +141,16 @@ const FilterBoard = () => {
 
   React.useEffect(() => {
     if (!selectedMetric) return;
-    if (METRIC_CHART_USER_VALUES.includes(selectedMetric?.value)) {
+    if (METRIC_USER_CHART_VALUES.includes(selectedMetric?.value)) {
+      // local time
       setEndDate(new Date());
       const start = new Date();
       start.setMonth(start.getMonth() - 1);
       setStartDate(start);
-    } else if (METRIC_CHART_TEAM_VALUES[2] === selectedMetric?.value) {
-      setEndDate(new Date());
-      const start = new Date();
-      start.setDate(start.getDate() - 6);
-      start.setHours(5, 0, 0);
-      setStartDate(start);
+    } else if (METRIC_TEAM_CHART_VALUES[2] === selectedMetric?.value) {
+      const week = getThisWeek();
+      setStartDate(week.startDate);
+      setEndDate(week.endDate);
     }
   }, [selectedMetric, setStartDate, setEndDate]);
 

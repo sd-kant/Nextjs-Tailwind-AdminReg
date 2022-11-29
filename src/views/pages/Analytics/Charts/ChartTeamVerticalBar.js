@@ -27,7 +27,7 @@ ChartJS.register(
 
 const ChartTeamVerticalBar = () => {
   const {
-    chartData,
+    maxCBTTileData: chartData,
   } = useAnalyticsContext();
   const {t} = useTranslation();
 

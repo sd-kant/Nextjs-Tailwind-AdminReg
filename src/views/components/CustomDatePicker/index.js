@@ -4,8 +4,8 @@ import {range} from "lodash";
 
 import "./react-datepicker.css";
 import {
-  METRIC_CHART_TEAM_VALUES,
-  METRIC_CHART_USER_VALUES,
+  METRIC_TEAM_CHART_VALUES,
+  METRIC_USER_CHART_VALUES,
 } from "../../../constant";
 
 const years = range(1900, new Date().getFullYear() + 1, 1);
@@ -89,7 +89,7 @@ const CustomDatePicker = (
       selected={date}
       maxDate={maxDate}
       onChange={v => setDate(v)}
-      readOnly={METRIC_CHART_USER_VALUES.includes(selectedMetric?.value) || METRIC_CHART_TEAM_VALUES[2] === selectedMetric?.value}
+      readOnly={METRIC_USER_CHART_VALUES.includes(selectedMetric?.value) || METRIC_TEAM_CHART_VALUES[2] === selectedMetric?.value}
     />
   );
 };

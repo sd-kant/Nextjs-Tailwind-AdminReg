@@ -1,5 +1,5 @@
-import {dateFormat} from "./index";
 import {COLOR_WHITE} from "../constant";
+import spacetime from "spacetime";
 
 export const getUserNameFromUserId = (members, id) => {
   const user = members?.find(it => it.userId?.toString() === id?.toString());
@@ -36,83 +36,109 @@ export const onCalc = (key, tempRet, totalSweat, totalHeat) => {
   }
 };
 
-export const getThisWeek = () => {
-  let firstDate = new Date();
-  firstDate.setDate(firstDate.getDate() - 6);
-  firstDate.setHours(0, 0, 0);
-  let endDate = new Date(firstDate);
-  endDate.setDate(endDate.getDate() + 7);
-  return {
-    firstDate: firstDate,
-    endDate: endDate
-  }
-};
-
-export const getUTCDateList = (dateStr) => {
-  if (!dateStr) return '';
-  let date = new Date(dateStr);
+export const getDateList = (startD, endD) => {
+  if (!startD || !endD) return '';
+  let startDate = startD;
   let dates = [];
-  for (let k = 0; k <= 6; k++) {
-    let m = date.getMonth() + 1;
-    let d = date.getDate();
-    m = m >= 10 ? m : `0` + m;
-    d = d >= 10 ? d : `0` + d;
-    dates.push(date.getFullYear() + `-` + m + `-` + d);
-    date.setDate(new Date(date).getDate() + 1);
+  while (startDate.isBefore(endD)) {
+    dates.push(startDate.unixFmt(`yyyy-MM-dd`));
+    startDate = startDate.add(1, 'day');
   }
   return dates;
 };
 
-export const getListPerLabel = (list, stageIds, thisWeek) => {
+export const getListPerLabel = (
+  {
+    list,
+    timezone,
+    stageIds,
+    startD,
+    endD,
+  }) => {
   let temp = list?.filter(a => stageIds.includes(a.alertStageId));
   let array = [];
-  let date = thisWeek.firstDate;
-  for (let k = 0; k <= 6; k++) {
-    let nextDate = new Date(date);
-    nextDate.setDate(nextDate.getDate() + 1);
-    let filterList = temp?.filter(a =>
-        new Date(a.ts).getTime() >= new Date(date).getTime() &&
-        new Date(a.ts).getTime() < new Date(nextDate).getTime()
-    );
-    array.push(filterList.length);
-    date = nextDate;
+  let startDate = startD;
+  while (startDate.isBefore(endD)) {
+    let endDate = startDate.add(1, 'day');
+    let filterList = temp?.filter(it => {
+      return spacetime(it.ts, timezone.name).isBefore(endDate) && spacetime(it.ts, timezone.name).isAfter(startDate);
+    });
+    array.push(filterList?.length);
+    startDate = endDate;
   }
+
+  /**
+   * counts per day by stageId
+   * [1, 4, 7, 0, 0, 3]
+   */
   return array;
 };
 
-export const getWeeksInMonth = () => {
-  let weeks = [], firstDate = new Date(), lastDate = new Date();
-  firstDate.setMonth(new Date(firstDate).getMonth() - 1);
+export const getWeeksInMonth = (timezone) => {
+  let weeks = [], dates = [], value = 0;
+
+  let timeLocal = new Date(); // 2022-11-24 05:40:00
+  let endD = spacetime(timeLocal, timezone.name);
+  let startMonthD = endD; // 2022-11-24 05:40:00
+
+  // 2022-10-24 00:00:00
+  startMonthD = startMonthD
+      .subtract(1, `month`)
+      .time('12:00am');
 
   // day list of month
-  let dates = [], date = new Date(lastDate.getTime()), value = 0;
-  while (date >= firstDate) {
+  let endMonthD = endD;
+
+  while (endMonthD.isAfter(startMonthD)) {
     dates.push({
       value: value,
-      label: dateFormat(new Date(date))
+      label: endMonthD.format('yyyy-mm-DD')
     });
-    date.setDate(date.getDate() - 1);
+    endMonthD = endMonthD.subtract(1, 'day');
     value += 1;
   }
-  dates.shift();
 
-  date = lastDate;
-  let flag = false;
-  value = 1;
-  do {
-    if (!flag) {
-      date.setDate(date.getDate() - date.getDay());
-      flag = true;
-    } else {
-      date.setDate(date.getDate() - 7);
-    }
+  value = 0;
+
+  // 2022-11-24 00:00:00, Thur -> 2022-11-20 00:00:00, Sun
+  let endWeekD = endD
+      .subtract(endD.day(), `day`)
+      .time('12:00am');
+
+  while (endWeekD.isAfter(startMonthD)) {
     weeks.push({
       value: value,
-      label: dateFormat(new Date(date >= firstDate ? date : firstDate))
+      label: endWeekD.format('yyyy-mm-DD')
     });
     value += 1;
-  } while (date >= firstDate);
 
+    // 2022-11-13 00:00:00, Sun
+    endWeekD = endWeekD.subtract(7, 'day');
+  }
+  if (!endWeekD.isEqual(startMonthD)) {
+    weeks.push({
+      value: value,
+      label: startMonthD.format('yyyy-mm-DD')
+    });
+  }
+
+  /**
+   dates = [
+     {value: 0, label: 2022-11-24},
+     {value: 1, label: 2022-11-23},
+     {value: 2, label: 2022-11-22},
+     ... ,
+     {value: 21, label: 2022-10-24}
+   ]
+
+   weeks = [
+     {value: 0, label: 2022-11-20},
+     {value: 1, label: 2022-11-13},
+     {value: 2, label: 2022-11-06},
+     {value: 3, label: 2022-10-30},
+     {value: 4, label: 2022-10-24},
+   ]
+   */
   return {
     dates: dates,
     weeks: weeks,
@@ -133,10 +159,16 @@ export const onFilterData = (data, userIds, members) => {
       list;
 };
 
-export const onFilterDataByOrganization = (data, key) => {
-  return (data && key && Object.keys(data).includes(key.toString()))
+/**
+ * filtering by organizationId
+ * @param data
+ * @param orgId
+ * @returns {any}
+ */
+export const onFilterDataByOrganization = (data, orgId) => {
+  return (data && orgId && Object.keys(data).includes(orgId.toString()))
       ?
-      JSON.parse(JSON.stringify(data[[key]]))
+      JSON.parse(JSON.stringify(data[[orgId]]))
       :
       {};
 };
@@ -190,4 +222,42 @@ export const chartPlugins = (idStr, noDataStr) => {
       }
     }
   }]
+};
+
+export const getThisWeek = () => {
+  let endDate = new Date();
+  // 2022-11-24 00:00:00
+  endDate.setHours(0, 0, 0);
+
+  let startDate = new Date(endDate);
+
+  // 2022-11-18 00:00:00
+  startDate.setDate(startDate.getDate() - 6);
+
+  return {
+    startDate: startDate,
+    endDate: endDate
+  }
+};
+
+export const getThisWeekByTeam = (timeZone) => {
+  // 2022-11-24 05:40:00
+  let timeLocal = new Date();
+  const endD = spacetime(timeLocal, timeZone.name);
+
+  // 2022-11-18 05:40:00
+  timeLocal.setDate(timeLocal.getDate() - 6);
+  let startD = spacetime(timeLocal, timeZone.name);
+
+  // 2022-11-18 00:00:00
+  startD = startD.time('12:00am');
+
+  /**
+    startD = 2022-11-18 00:00:00
+    endD = 2022-11-24 05:40:00 -> current date
+   */
+  return {
+    startDate: startD,
+    endDate: endD
+  }
 };

@@ -66,7 +66,6 @@ const MemberDetail = (
     stat: null, alertsForMe: null, lastSyncStr: null, numberOfAlerts: null, settings: {hideCbtHR: false}
   };
   const hideCbtHR = data?.settings?.hideCbtHR;
-  console.log("member", data);
   let badgeColorStyle = style.Off;
   if (connectionObj?.value?.toString() === "3") {
     if (["1", "2"].includes(alertObj?.value?.toString())) {

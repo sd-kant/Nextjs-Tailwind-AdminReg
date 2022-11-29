@@ -13,7 +13,7 @@ import {Line} from 'react-chartjs-2';
 import {
   COLOR_BLUE,
   COLORS,
-  METRIC_CHART_USER_VALUES,
+  METRIC_USER_CHART_VALUES,
   TYPES
 } from "../../../../constant";
 
@@ -31,6 +31,7 @@ import {
   getWeeksInMonth
 } from "../../../../utils/anlytics";
 import MultiSelectPopup from "../../../components/MultiSelectPopup";
+import spacetime from "spacetime";
 
 ChartJS.register(
     CategoryScale,
@@ -44,24 +45,50 @@ ChartJS.register(
 const ChartUserAlert = () => {
   const {
     selectedMetric,
+    selectedTeams,
     selectedMembers,
     selectedUsers,
     setUsers,
     users,
-    chartData
+    chartData,
+    timeZone
   } = useAnalyticsContext();
   const {t} = useTranslation();
 
   const [type, setType] = React.useState(1); // 1 | 2 // 1: day, 2: week
+
+  /**
+   List of dates split into week and month ranges ->
+   ex. [
+     {value: 0, label: 2022-11-20},
+     {value: 1, label: 2022-11-13},
+     {value: 2, label: 2022-11-6},
+     {value: 3, label: 2022-10-30},
+     {value: 4, label: 2022-10-24},
+   ]
+   */
   const [dates, setDates] = React.useState(null);
+
+  /**
+   value of selected item from Date Range options [{value: 0, label: 2022-11-24}, {value: 2, label: 2022-11-23}, ]
+   */
   const [date, setDate] = React.useState(null);
+
+  /**
+   * @type {{label: string, value: number} | {label: string, value: number}}
+   */
   const selectedType = React.useMemo(() => {
-    let dateList = getWeeksInMonth();
+    let dateList = getWeeksInMonth(timeZone);
     dateList = type === 1 ? dateList.dates : type === 2 ? dateList.weeks : [];
     setDates(dateList);
     setDate(dateList?.length > 0 ? dateList[0].value : null);
     return TYPES?.find(it => it.value?.toString() === type?.toString());
-  }, [type]);
+  }, [type, timeZone]);
+
+  /**
+   selected start date from date range options
+   ex. {value: 2, label: 2022-11-23}
+   */
   const selectedDate = React.useMemo(() => {
     return dates?.find(it => it.value?.toString() === date?.toString());
   }, [date, dates]);
@@ -81,15 +108,23 @@ const ChartUserAlert = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMembers, selectedUsers]);
 
+  /**
+   labels: [
+    '21 12:33:46', '21 09:01:43', '21 09:04:44', ... , '24 04:51:32', '24 05:11:33'
+   ],
+   datasets -> data: [
+    0, 36.8, 36.5, ... , 38.5, 37.7
+   ]
+   */
   const [data, setData] = React.useState({
     labels: [],
     datasets: [
       {
-        label: `${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'CBT' : 'Hr'}`,
+        label: `${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? 'CBT' : 'Hr'}`,
         data: [],
         borderWidth: 4,
-        borderColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
-        backgroundColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+        borderColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+        backgroundColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
       },
     ],
   });
@@ -97,26 +132,19 @@ const ChartUserAlert = () => {
   React.useEffect(() => {
     if (selectedDate) {
       let labels = [], tempData = [];
-      let start = new Date(selectedDate.label);
-      start.setHours(new Date().getHours(), new Date().getMinutes());
-      let end = new Date(start), endDayOfWeek = new Date(start);
-      end.setDate(new Date(end).getDate() + 1);
-      endDayOfWeek.setDate(new Date(endDayOfWeek).getDate() + 7);
+      let dateList = getWeeksInMonth(timeZone);
+
+      let start = selectedDate.label;
+      dateList = selectedType.value === 1 ? dateList.dates : dateList.weeks;
+
+      let findIndex = dateList.findIndex(it => it.value === selectedDate.value);
+      let end = findIndex === 0 ? spacetime(new Date(), timeZone.name) : dateList[findIndex - 1].label;
 
       let filterUsers = users.filter(it => selectedMembers.findIndex(a => a?.value?.toString() === it.toString()) > -1);
       chartData.filter(it => filterUsers.includes(it.userId))?.forEach(it => {
-        if (
-            (selectedType.value === 1 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(end).getTime()) ||
-            (selectedType.value === 2 && new Date(it.ts).getTime() >= new Date(start).getTime() && new Date(it.ts).getTime() < new Date(endDayOfWeek).getTime())
-        ) {
-          labels.push(new Date(it.ts).toLocaleDateString('en-us', {
-            day: "numeric",
-            hour: "numeric",
-            hour12: false,
-            minute: "2-digit",
-            second: "2-digit"
-          }));
-          tempData.push(selectedMetric.value === METRIC_CHART_USER_VALUES[0] ? it?.heartCbtAvg : it?.heartRateAvg);
+        if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
+          labels.push(spacetime(it.ts, timeZone.name).unixFmt('dd hh:mm:ss'));
+          tempData.push(selectedMetric.value === METRIC_USER_CHART_VALUES[0] ? it?.heartCbtAvg : it?.heartRateAvg);
         }
       });
       labels.reverse();
@@ -126,22 +154,22 @@ const ChartUserAlert = () => {
         labels,
         datasets: [
           {
-            label: `${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'CBT' : 'Hr'}`,
+            label: `${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? 'CBT' : 'Hr'}`,
             data: tempData,
             borderWidth: 4,
-            borderColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
-            backgroundColor: selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+            borderColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
+            backgroundColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
           },
         ],
       })
     }
-  }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers]);
+  }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone]);
 
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
           <h1 className={clsx(style.txt_center)}>
-            {t(`${selectedMetric?.value === METRIC_CHART_USER_VALUES[0] ? 'cbt' : 'hr'}`)}
+            {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? 'cbt' : 'hr'}`)}
           </h1>
           <div className={clsx(style.line_flex, `mb-15`)}>
             {

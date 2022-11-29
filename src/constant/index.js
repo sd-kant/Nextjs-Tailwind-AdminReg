@@ -261,10 +261,10 @@ export const HEAT_LOW_MEDIUM_HIGH = [
   "low", "medium", "high"
 ];
 
-export const METRIC_TABLE_USER_VALUES = [1, 2, 3, 4, 5, 6, 7, 8];
-export const METRIC_TABLE_TEAM_VALUES = [20, 21, 22, 23, 24, 25, 26];
-export const METRIC_CHART_USER_VALUES = [40, 41];
-export const METRIC_CHART_TEAM_VALUES = [30, 31, 32];
+export const METRIC_USER_TABLE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8];
+export const METRIC_TEAM_TABLE_VALUES = [20, 21, 22, 23, 24, 25, 26];
+export const METRIC_USER_CHART_VALUES = [40, 41];
+export const METRIC_TEAM_CHART_VALUES = [30, 31, 32];
 
 export const DAY_LIST = [
   'Sun',
@@ -277,6 +277,11 @@ export const DAY_LIST = [
 ];
 
 export const TIME_LIST = [
+  '00:00:00',
+  '01:00:00',
+  '02:00:00',
+  '03:00:00',
+  '04:00:00',
   '05:00:00',
   '06:00:00',
   '07:00:00',
@@ -292,9 +297,11 @@ export const TIME_LIST = [
   '17:00:00',
   '18:00:00',
   '19:00:00',
-  '20:00:00'
+  '20:00:00',
+  '21:00:00',
+  '22:00:00',
+  '23:00:00'
 ];
 
 export const HIGHEST_CHART_CELSIUS_MAX = 101.8;
 export const HIGHEST_CHART_CELSIUS_MIN = 98.5;
-export const ONE_DAY = 24 * 60 * 60 * 1000;
