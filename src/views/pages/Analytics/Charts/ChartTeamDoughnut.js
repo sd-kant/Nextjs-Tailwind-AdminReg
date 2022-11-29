@@ -11,7 +11,7 @@ import {
 } from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {
-  COLORS,
+  HEAT_SWEAT_CHART_COLORS,
   LABELS_DOUGHNUT
 } from "../../../../constant";
 import {chartPlugins} from "../../../../utils/anlytics";
@@ -37,7 +37,7 @@ const ChartTeamDoughnut = () => {
             />
 
             <div className={clsx(style.legend_box_body)}>
-              {COLORS.map((item, key) => {
+              {HEAT_SWEAT_CHART_COLORS.map((item, key) => {
                 return (
                     <div key={key} className={clsx(style.legend_flex)}>
                       <div className={clsx(style.legend_box_item)} style={{backgroundColor: item}} />
@@ -57,7 +57,7 @@ const ChartTeamDoughnut = () => {
             />
 
             <div className={clsx(style.legend_box_body)}>
-              {COLORS.map((item, key) => {
+              {HEAT_SWEAT_CHART_COLORS.map((item, key) => {
                 return (
                     <div key={key} className={clsx(style.legend_flex)}>
                       <div className={clsx(style.legend_box_item)} style={{backgroundColor: item}} />

@@ -239,9 +239,22 @@ export const HEAT_SUSCEPTIBILITY_MEDIUM = "Medium";
 export const HEAT_SUSCEPTIBILITY_HIGH = "High";
 export const ALERT_STAGE_ID_LIST = ["1", "2", "3", "4"];
 
-export const COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
+export const HEAT_SWEAT_CHART_COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
 export const COLOR_WHITE = '#fff';
-export const COLOR_BLUE = '#4473C4';
+export const HR_CHART_COLORS = ['#4473C4', '#3a4fc4', '#34aac4', '#0cc4ba'];
+export const CBT_CHART_COLORS = ['#ed7d31', '#bf6038', '#954b26', '#4d2511'];
+export const INIT_USER_CHART_ALERT_DATA = {
+  labels: [],
+  datasets: [
+    {
+      label: ``,
+      data: [],
+      borderWidth: 3,
+      borderColor: ``,
+      backgroundColor: ``,
+    },
+  ],
+};
 export const TYPES = [
   {
     value: 1,
@@ -305,3 +318,20 @@ export const TIME_LIST = [
 
 export const HIGHEST_CHART_CELSIUS_MAX = 101.8;
 export const HIGHEST_CHART_CELSIUS_MIN = 98.5;
+
+export const ANALYTICS_API_KEYS = [
+    'wearTime',
+    'alertMetrics',
+    'maxCbt',
+    'tempCateData',
+    'deviceData',
+    'usersInCBTZones',
+    'tempHumidity',
+    'swrFluid',
+    'alertedUserCount',
+    'activeUsers',
+    'tempCateInCBTZones',
+    'fluidMetricsByTeam',
+    'chartCbt',
+    'teamMemberAlerts',
+];

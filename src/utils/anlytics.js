@@ -145,13 +145,19 @@ export const getWeeksInMonth = (timezone) => {
   };
 };
 
-export const onFilterData = (data, userIds, members) => {
+export const onFilterData = (data, key, userIds, members) => {
+  if (!key) return [];
+
+  if (!Object.keys(data).includes(key)) return [];
+
+  if (userIds === null && members === null) return data[[key]] || [];
+
   let ids = members?.map(it => it.userId.toString());
   let list = members?.length > 0
       ?
-      data?.filter(it => ids.includes(it.userId?.toString()))
+      data[[key]]?.filter(it => ids.includes(it.userId?.toString()))
       :
-      data;
+      data[[key]] || [];
   return userIds?.length > 0
       ?
       list?.filter(it => userIds.includes(it.userId))
@@ -209,8 +215,12 @@ export const chartPlugins = (idStr, noDataStr) => {
         });
       }
 
-      let flag = chart.data.datasets[0].data.filter(it => !!it);
-      if (chart.data.datasets[0].data && flag.length === 0) {
+      let flag = 0;
+      chart.data.datasets?.forEach(it => {
+        flag += it.data.filter(it => !!it)?.length;
+      });
+
+      if (flag === 0) {
         let width = chart.width;
         let height = chart.height;
         ctx.textAlign = `center`;

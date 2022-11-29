@@ -89,7 +89,11 @@ const CustomDatePicker = (
       selected={date}
       maxDate={maxDate}
       onChange={v => setDate(v)}
-      readOnly={METRIC_USER_CHART_VALUES.includes(selectedMetric?.value) || METRIC_TEAM_CHART_VALUES[2] === selectedMetric?.value}
+      readOnly={
+        METRIC_USER_CHART_VALUES.includes(selectedMetric?.value) ||
+        METRIC_TEAM_CHART_VALUES[1] === selectedMetric?.value ||
+        METRIC_TEAM_CHART_VALUES[2] === selectedMetric?.value
+      }
     />
   );
 };

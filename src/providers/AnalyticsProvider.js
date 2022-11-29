@@ -36,7 +36,7 @@ import {
 } from "../utils/anlytics";
 import {
   COLOR_WHITE,
-  COLORS,
+  HEAT_SWEAT_CHART_COLORS,
   HEAT_LOW_MEDIUM_HIGH,
   LABELS_DOUGHNUT,
   METRIC_TEAM_TABLE_VALUES,
@@ -46,6 +46,7 @@ import {
   DAY_LIST,
   HIGHEST_CHART_CELSIUS_MIN,
   HIGHEST_CHART_CELSIUS_MAX,
+  ANALYTICS_API_KEYS,
 } from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {
@@ -492,64 +493,64 @@ export const AnalyticsProvider = (
         switch (metric) {
           case METRIC_USER_TABLE_VALUES[0]: // 1, wear time
             apiCall = queryOrganizationWearTime;
-            key = 'wearTime';
+            key = ANALYTICS_API_KEYS[0];
             break;
           case METRIC_USER_TABLE_VALUES[1]: // 2, alerts
           case METRIC_TEAM_CHART_VALUES[1]: // 31
             apiCall = queryOrganizationAlertMetrics;
-            key = 'alertMetrics';
+            key = ANALYTICS_API_KEYS[1];
             break;
           case METRIC_USER_TABLE_VALUES[2]: // 3
             apiCall = queryOrganizationMaxCbt;
-            key = 'maxCbt';
+            key = ANALYTICS_API_KEYS[2];
             break;
           case METRIC_USER_TABLE_VALUES[5]: // 6
             apiCall = queryOrganizationTempCateData;
-            key = 'tempCateData';
+            key = ANALYTICS_API_KEYS[3];
             break;
           case METRIC_USER_TABLE_VALUES[6]: // 7
             apiCall = queryOrganizationDeviceData;
-            key = 'deviceData';
+            key = ANALYTICS_API_KEYS[4];
             break;
           case METRIC_USER_TABLE_VALUES[7]: // 8
             apiCall = queryOrganizationUsersInCBTZones;
-            key = 'usersInCBTZones';
+            key = ANALYTICS_API_KEYS[5];
             break;
           case METRIC_TEAM_TABLE_VALUES[0]: // 20
             apiCall = queryAmbientTempHumidity;
-            key = 'tempHumidity';
+            key = ANALYTICS_API_KEYS[6];
             break;
           case METRIC_USER_TABLE_VALUES[4]: // 5
           case METRIC_TEAM_TABLE_VALUES[3]: // 23
           case METRIC_TEAM_TABLE_VALUES[4]: // 24
           case METRIC_TEAM_CHART_VALUES[0]: // 30
             apiCall = queryOrganizationSWRFluid;
-            key = 'swrFluid';
+            key = ANALYTICS_API_KEYS[7];
             break;
           case METRIC_TEAM_TABLE_VALUES[1]: // 21
             apiCall = queryOrganizationAlertedUserCount;
-            key = 'alertedUserCount';
+            key = ANALYTICS_API_KEYS[8];
             break;
           case METRIC_TEAM_TABLE_VALUES[2]: // 22
             apiCall = queryOrganizationActiveUsers;
-            key = 'activeUsers';
+            key = ANALYTICS_API_KEYS[9];
             break;
           case METRIC_TEAM_TABLE_VALUES[5]: // 25
             apiCall = queryOrganizationCategoriesUsersInCBTZones;
-            key = 'tempCateInCBTZones';
+            key = ANALYTICS_API_KEYS[10];
             break;
           case METRIC_TEAM_TABLE_VALUES[6]: // 26
             apiCall = queryOrganizationFluidMetricsByTeam;
-            key = 'fluidMetricsByTeam';
+            key = ANALYTICS_API_KEYS[11];
             break;
           case METRIC_TEAM_CHART_VALUES[2]: // 32
             apiCall = queryOrganizationMaxCbt;
-            key = 'chartCbt';
+            key = ANALYTICS_API_KEYS[12];
             break;
           case METRIC_USER_CHART_VALUES[0]: // 40
           case METRIC_USER_CHART_VALUES[1]: // 41
             apiCall = getTeamMemberAlerts;
-            key = 'teamMemberAlerts';
+            key = ANALYTICS_API_KEYS[13];
             break;
           default:
             console.log("metric is not available");
@@ -676,7 +677,7 @@ export const AnalyticsProvider = (
       let tempRet = [0, 0, 0, 0, 0, 0];
       let totalHeat = 0, totalSweat = 0;
 
-      organizationAnalytics?.swrFluid?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[7], null, null)?.forEach(it => {
         let findHeatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.heatSusceptibility?.toLowerCase());
         let findSweatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.sweatRateCategory?.toLowerCase());
 
@@ -721,7 +722,7 @@ export const AnalyticsProvider = (
               {
                 label: label,
                 data,
-                backgroundColor: COLORS,
+                backgroundColor: HEAT_SWEAT_CHART_COLORS,
                 borderColor: [
                   COLOR_WHITE,
                   COLOR_WHITE,
@@ -739,7 +740,7 @@ export const AnalyticsProvider = (
         dataSweat: dataChart('sweat'),
       };
     } else if (METRIC_USER_CHART_VALUES.includes(metric)) { // 40, 41
-      return (organizationAnalytics?.teamMemberAlerts || []).sort((a, b) => {
+      return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[13], null, null).sort((a, b) => {
         return new Date(a?.ts).getTime() > new Date(b.ts).getTime() ? -1 : 1;
       });
     } else {
@@ -756,7 +757,7 @@ export const AnalyticsProvider = (
     let startD = thisWeek.startDate;
 
     if (metric === METRIC_TEAM_CHART_VALUES[1]) { // 31
-      let thisData = organizationAnalytics?.alertMetrics?.filter(it => spacetime(it.ts).isBefore(endD) && spacetime(it.ts).isAfter(startD));
+      let thisData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[1], null, null)?.filter(it => spacetime(it.ts).isBefore(endD) && spacetime(it.ts).isAfter(startD));
 
       let arrayPerDate = [
         getListPerLabel({list: thisData, timezone: timeZone, stageIds: [1], startD, endD}), // At Risk id
@@ -766,19 +767,19 @@ export const AnalyticsProvider = (
       const xLabel = getDateList(startD, endD);
       const dataSet = [
         {
-          label: formatAlert(1), // At Risk
+          label: formatAlert(1).label, // At Risk
           data: xLabel?.map((it, index) => arrayPerDate[0][index]),
-          backgroundColor: COLORS[0],
+          backgroundColor: HEAT_SWEAT_CHART_COLORS[0],
         },
         {
-          label: formatAlert(2), // Elevated Risk
+          label: formatAlert(2).label, // Elevated Risk
           data: xLabel?.map((it, index) => arrayPerDate[1][index]),
-          backgroundColor: COLORS[1],
+          backgroundColor: HEAT_SWEAT_CHART_COLORS[1],
         },
         {
-          label: formatAlert(3), // Safe
+          label: formatAlert(3).label, // Safe
           data: xLabel?.map((it, index) => arrayPerDate[2][index]),
-          backgroundColor: COLORS[2],
+          backgroundColor: HEAT_SWEAT_CHART_COLORS[2],
         },
       ];
 
@@ -813,7 +814,7 @@ export const AnalyticsProvider = (
         const subList = [];
         const endDByOneDay = startD.add(1, 'day');
 
-        const dailyData = organizationAnalytics?.chartCbt?.filter(it =>
+        const dailyData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[12], null, null)?.filter(it =>
           selectedMembers?.findIndex(a => a?.value === it?.userId) > -1 &&
           spacetime(it.utcTs).isBefore(endDByOneDay) &&
           spacetime(it.utcTs).isAfter(startD)
@@ -867,14 +868,14 @@ export const AnalyticsProvider = (
     let ret = [];
 
     if (metric === METRIC_USER_TABLE_VALUES[0]) { // 1, wear time
-      ret = onFilterData(organizationAnalytics?.wearTime, pickedMembers, members)?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[0], pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.avgWearTime ?? ``,
         it.wearTime ?? ``,
       ]))
     } else if (metric === METRIC_USER_TABLE_VALUES[1]) { // 2, alert metrics
-      ret = onFilterData(organizationAnalytics?.alertMetrics, pickedMembers, members)?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[1], pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.ts ? new Date(it.ts)?.toLocaleString() : ``,
@@ -886,14 +887,14 @@ export const AnalyticsProvider = (
         it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``,
       ]))
     } else if (metric === METRIC_USER_TABLE_VALUES[2]) { // 3
-      ret = onFilterData(organizationAnalytics?.maxCbt, pickedMembers, members)?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[2], pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.utcTs ? new Date(it.utcTs)?.toLocaleString() : ``,
         it.maxCbt ? formatHeartCbt(it.maxCbt) : ``,
       ]));
     } else if (metric === METRIC_USER_TABLE_VALUES[4]) { // 5
-      ret = onFilterData(organizationAnalytics?.swrFluid, pickedMembers, members)?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[7], pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.sweatRateCategory ?? ``,
@@ -904,7 +905,7 @@ export const AnalyticsProvider = (
         it.heatSusceptibility ?? ``,
       ]));
     } else if (metric === METRIC_USER_TABLE_VALUES[5]) { // 6
-      ret = onFilterData(organizationAnalytics?.tempCateData, pickedMembers, members)?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[3], pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Safe to Work 38C`),
@@ -912,7 +913,7 @@ export const AnalyticsProvider = (
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Moderate Hyperthermia > 38.5C`),
       ]));
     } else if (metric === METRIC_USER_TABLE_VALUES[6]) { // 7
-      ret = onFilterData(organizationAnalytics?.deviceData, pickedMembers, members)?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[4], pickedMembers, members)?.map(it => ([
         it.fullname ?? ``,
         getTeamNameFromTeamId(formattedTeams, it.teamId),
         it.firmwareVersion ?? ``,
@@ -921,12 +922,12 @@ export const AnalyticsProvider = (
         it.ts ?? ``,
       ]));
     } else if (metric === METRIC_USER_TABLE_VALUES[7]) { // 8
-      ret = organizationAnalytics?.usersInCBTZones?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[5], null, null)?.map(it => ([
         it.temperatureCategory,
         it.percentage,
       ]));
     } else if (metric === METRIC_TEAM_TABLE_VALUES[0]) { // 20
-      ret = organizationAnalytics?.tempHumidity?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[6], null, null)?.map(it => ([
         it.teamName ?? ``,
         it.maxTemp ? formatHeartCbt(it.maxTemp) : ``,
         it.minTemp ? formatHeartCbt(it.minTemp) : ``,
@@ -936,7 +937,7 @@ export const AnalyticsProvider = (
         it.avgHumidity ?? ``,
       ]));
     } else if (metric === METRIC_TEAM_TABLE_VALUES[1]) { // 21
-      ret = organizationAnalytics?.alertedUserCount?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[8], null, null)?.map(it => ([
         it.teamName ?? ``,
         it.alertPercentage ?? ``,
         it.noAlertPercentage ?? ``,
@@ -945,7 +946,7 @@ export const AnalyticsProvider = (
       ]))
     } else if (metric === METRIC_TEAM_TABLE_VALUES[2]) { // 22
       let tempRet = [];
-      organizationAnalytics?.activeUsers?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[9], null, null)?.forEach(it => {
         const member = members?.find(ele => ele.userId === it.userId);
         const memberTeamId = member?.teamId;
         if (memberTeamId) {
@@ -970,7 +971,7 @@ export const AnalyticsProvider = (
       ]));
     } else if (metric === METRIC_TEAM_TABLE_VALUES[3]) { // 23
       let tempRet = [];
-      organizationAnalytics?.swrFluid?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[7], null, null)?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
         if ([`low`, `moderate`, `high`].includes(it.sweatRateCategory?.toLowerCase())) {
           if (index !== -1) {
@@ -994,7 +995,7 @@ export const AnalyticsProvider = (
       ]));
     } else if (metric === METRIC_TEAM_TABLE_VALUES[4]) { // 24
       let tempRet = [];
-      organizationAnalytics?.swrFluid?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[7], null, null)?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
         if (HEAT_LOW_MEDIUM_HIGH.includes(it.heatSusceptibility?.toLowerCase())) {
           if (index !== -1) {
@@ -1017,7 +1018,7 @@ export const AnalyticsProvider = (
         it[`high`],
       ]));
     } else if (metric === METRIC_TEAM_TABLE_VALUES[5]) { // 25
-      ret = organizationAnalytics?.tempCateInCBTZones?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[10], null, null)?.map(it => ([
         it.teamName ?? ``,
         it.lowCount ?? ``,
         it.mediumCount ?? ``,
@@ -1027,7 +1028,7 @@ export const AnalyticsProvider = (
         it.noAlertPercentage ?? ``,
       ]));
     } else if (metric === METRIC_TEAM_TABLE_VALUES[6]) { // 26
-      ret = organizationAnalytics?.fluidMetricsByTeam?.map(it => ([
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS[11], null, null)?.map(it => ([
         it.teamName ?? ``,
         it.heatAcclimatized ?? ``,
         it.heatUnacclimatized ?? ``,

@@ -147,7 +147,10 @@ const FilterBoard = () => {
       const start = new Date();
       start.setMonth(start.getMonth() - 1);
       setStartDate(start);
-    } else if (METRIC_TEAM_CHART_VALUES[2] === selectedMetric?.value) {
+    } else if (
+        METRIC_TEAM_CHART_VALUES[1] === selectedMetric?.value ||
+        METRIC_TEAM_CHART_VALUES[2] === selectedMetric?.value
+    ) {
       const week = getThisWeek();
       setStartDate(week.startDate);
       setEndDate(week.endDate);
@@ -236,7 +239,6 @@ const FilterBoard = () => {
               maxDate={startDateMax}
               selectedMetric={selectedMetric}
           />
-
           <CustomDatePicker
               date={endDate}
               setDate={setEndDate}
