@@ -638,5 +638,13 @@
   "highest cbt by time of day and day of week": "Maior TCC por Hora do Dia e Dia da Semana",
   "day of week": "Dia da Semana",
   "time of day": "Hora do Dia",
-  "back": "Volto"
+  "back": "Volto",
+
+  "sun": "Dom",
+  "mon": "Seg",
+  "tues": "Terç",
+  "wed": "Qua",
+  "thurs": "Qui",
+  "fri": "Sex",
+  "sat": "Sáb"
 }

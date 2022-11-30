@@ -639,5 +639,13 @@
   "highest cbt by time of day and day of week": "Highest CBT by Time of Day and Day of Week",
   "day of week": "Day Of Week",
   "time of day": "Time of Day",
-  "back": "Back"
+  "back": "Back",
+
+  "sun": "Sun",
+  "mon": "Mon",
+  "tues": "Tues",
+  "wed": "Wed",
+  "thurs": "Thurs",
+  "fri": "Fri",
+  "sat": "Sat"
 }

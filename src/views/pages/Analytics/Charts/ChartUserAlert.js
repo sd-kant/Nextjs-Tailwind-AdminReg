@@ -11,10 +11,9 @@ import {
 } from 'chart.js';
 import {Line} from 'react-chartjs-2';
 import {
-  HR_CHART_COLORS,
-  CBT_CHART_COLORS,
   METRIC_USER_CHART_VALUES,
-  TYPES, INIT_USER_CHART_ALERT_DATA,
+  TYPES,
+  INIT_USER_CHART_ALERT_DATA,
 } from "../../../../constant";
 
 import clsx from 'clsx';
@@ -28,7 +27,8 @@ import {customStyles} from "../../DashboardV2";
 import ResponsiveSelect from "../../../components/ResponsiveSelect";
 import {
   chartPlugins,
-  getWeeksInMonth
+  getWeeksInMonth,
+  randomHexColorCode
 } from "../../../../utils/anlytics";
 import MultiSelectPopup from "../../../components/MultiSelectPopup";
 import spacetime from "spacetime";
@@ -127,7 +127,7 @@ const ChartUserAlert = () => {
       let findIndex = dateList.findIndex(it => it.value === selectedDate.value);
       let end = findIndex === 0 ? spacetime(new Date(), timeZone.name) : dateList[findIndex - 1].label;
 
-      let filterUsers = users.filter(it => selectedMembers.findIndex(a => a?.value?.toString() === it.toString()) > -1)?.sort((a, b) => a > b ? 1 : -1);
+      let filterUsers = users?.filter(it => selectedMembers?.findIndex(a => a?.value?.toString() === it.toString()) > -1)?.sort((a, b) => a > b ? 1 : -1);
 
       chartData.filter(it => filterUsers.includes(it.userId))?.forEach(it => {
         if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
@@ -136,7 +136,6 @@ const ChartUserAlert = () => {
       });
       labels.reverse();
 
-      let colorIndex = 0;
       filterUsers?.forEach(userId => {
         tempData = new Array(labels?.length || 0).fill('');
         let emptyFlag = false;
@@ -144,21 +143,21 @@ const ChartUserAlert = () => {
           if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
             let findIndex = labels?.findIndex(label => label === (spacetime(it.ts, timeZone.name).unixFmt('dd hh:mm:ss')));
             if (findIndex > -1) {
-              tempData[findIndex] = selectedMetric.value === METRIC_USER_CHART_VALUES[0] ? it?.heartCbtAvg : it?.heartRateAvg;
+              tempData[findIndex] = selectedMetric.value === METRIC_USER_CHART_VALUES.CBT ? it?.heartCbtAvg : it?.heartRateAvg;
               emptyFlag = true;
             }
           }
         });
 
         if (emptyFlag) {
+          let color = randomHexColorCode();
           datasets.push({
-            label: `${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? `CBT: userId-${userId}` : `Hr: userId-${userId}`}`,
+            label: `${selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT ? `CBT: userId-${userId}` : `Hr: userId-${userId}`}`,
             data: tempData,
             borderWidth: 3,
-            borderColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? CBT_CHART_COLORS[colorIndex] : HR_CHART_COLORS[colorIndex],
-            backgroundColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? CBT_CHART_COLORS[colorIndex] : HR_CHART_COLORS[colorIndex],
+            borderColor: color,
+            backgroundColor: color
           });
-          colorIndex += 1;
         }
       });
 
@@ -170,7 +169,7 @@ const ChartUserAlert = () => {
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
           <h1 className={clsx(style.txt_center)}>
-            {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? 'cbt' : 'hr'}`)}
+            {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT ? 'cbt' : 'hr'}`)}
           </h1>
           <div className={clsx(style.line_flex, `mb-15`)}>
             {

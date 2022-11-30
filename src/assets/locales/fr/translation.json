@@ -638,5 +638,13 @@
   "highest cbt by time of day and day of week": "TCC la plus élevée par heure de la journée et jour de la semaine",
   "day of week": "Jour de la semaine",
   "time of day": "Heure de la journée",
-  "back": "Nous ne pouvons pas supprimer votre"
+  "back": "Nous ne pouvons pas supprimer votre",
+
+  "sun": "Dim",
+  "mon": "Lun",
+  "tues": "Mar",
+  "wed": "Mer",
+  "thurs": "Jeu",
+  "fri": "Ven",
+  "sat": "Sam"
 }

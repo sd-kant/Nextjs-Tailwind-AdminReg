@@ -638,5 +638,13 @@
   "highest cbt by time of day and day of week": "TCC más alta por hora del día y día de la semana",
   "day of week": "Día de la semana",
   "time of day": "Hora del día",
-  "back": "Remontan"
+  "back": "Remontan",
+
+  "sun": "Dom",
+  "mon": "Lun",
+  "tues": "Mart",
+  "wed": "Mié",
+  "thurs": "Jue",
+  "fri": "Vie",
+  "sat": "Sáb"
 }

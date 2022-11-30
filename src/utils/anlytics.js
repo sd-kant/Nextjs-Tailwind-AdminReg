@@ -271,3 +271,24 @@ export const getThisWeekByTeam = (timeZone) => {
     endDate: endD
   }
 };
+
+/**
+ * generating hexadecimal number
+ */
+export const randomHexColorCode = () => {
+  let n = (Math.random() * 0xfffff * 1000000).toString(16);
+  return '#' + n.slice(0, 6);
+};
+
+/**
+ * checking if the constant values include the selected metric
+ * data: json data
+ */
+export const checkMetric = (data, metric) => {
+  let keys = Object.keys(data);
+  let flag = 0;
+  keys.forEach(it => {
+    flag += (Number(data[[it]]) === metric ? 1 : 0);
+  });
+  return flag > 0;
+};

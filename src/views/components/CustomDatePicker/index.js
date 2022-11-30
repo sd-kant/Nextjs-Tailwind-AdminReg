@@ -7,6 +7,7 @@ import {
   METRIC_TEAM_CHART_VALUES,
   METRIC_USER_CHART_VALUES,
 } from "../../../constant";
+import {checkMetric} from "../../../utils/anlytics";
 
 const years = range(1900, new Date().getFullYear() + 1, 1);
 const months = [
@@ -72,7 +73,7 @@ const CustomHeader = (
       {">"}
     </button>
   </div>
-)
+);
 
 const CustomDatePicker = (
   {
@@ -90,9 +91,9 @@ const CustomDatePicker = (
       maxDate={maxDate}
       onChange={v => setDate(v)}
       readOnly={
-        METRIC_USER_CHART_VALUES.includes(selectedMetric?.value) ||
-        METRIC_TEAM_CHART_VALUES[1] === selectedMetric?.value ||
-        METRIC_TEAM_CHART_VALUES[2] === selectedMetric?.value
+        (selectedMetric?.value && checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) ||
+        METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
+        METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK === selectedMetric?.value
       }
     />
   );

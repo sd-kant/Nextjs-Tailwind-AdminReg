@@ -18,6 +18,7 @@ import {
   METRIC_TEAM_CHART_VALUES,
 } from "../../../constant";
 import {
+  checkMetric,
   getThisWeek
 } from "../../../utils/anlytics";
 
@@ -125,12 +126,12 @@ const FilterBoard = () => {
         (
             metric && (
                 (showBy === 'table' && (
-                    (statsBy === 'user' && !METRIC_USER_TABLE_VALUES.includes(metric)) ||
-                    (statsBy === 'team' && !METRIC_TEAM_TABLE_VALUES.includes(metric))
+                    (statsBy === 'user' && !checkMetric(METRIC_USER_TABLE_VALUES, metric)) ||
+                    (statsBy === 'team' && !checkMetric(METRIC_TEAM_TABLE_VALUES, metric))
                 )) ||
                 (showBy === 'chart' && (
-                    (statsBy === 'user' && !METRIC_USER_CHART_VALUES.includes(metric)) ||
-                    (statsBy === 'team' && !METRIC_TEAM_CHART_VALUES.includes(metric))
+                    (statsBy === 'user' && !checkMetric(METRIC_USER_CHART_VALUES, metric)) ||
+                    (statsBy === 'team' && !checkMetric(METRIC_TEAM_CHART_VALUES, metric))
                 ))
             ))
     ) {
@@ -141,15 +142,15 @@ const FilterBoard = () => {
 
   React.useEffect(() => {
     if (!selectedMetric) return;
-    if (METRIC_USER_CHART_VALUES.includes(selectedMetric?.value)) {
+    if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) {
       // local time
       setEndDate(new Date());
       const start = new Date();
       start.setMonth(start.getMonth() - 1);
       setStartDate(start);
     } else if (
-        METRIC_TEAM_CHART_VALUES[1] === selectedMetric?.value ||
-        METRIC_TEAM_CHART_VALUES[2] === selectedMetric?.value
+        METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
+        METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK === selectedMetric?.value
     ) {
       const week = getThisWeek();
       setStartDate(week.startDate);
