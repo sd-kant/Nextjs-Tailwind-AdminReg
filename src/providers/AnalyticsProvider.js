@@ -917,9 +917,9 @@ export const AnalyticsProvider = (
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.DEVICE_DATA, pickedMembers, members)?.map(it => ([
         it.fullname ?? ``,
         getTeamNameFromTeamId(formattedTeams, it.teamId),
-        it.firmwareVersion ?? ``,
+        it.osVersion ?? ``,
         it.version ?? ``,
-        it.type,
+        it.type ?? ``,
         it.ts ?? ``,
       ]));
     } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) { // 8
