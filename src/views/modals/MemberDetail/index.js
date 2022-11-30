@@ -384,7 +384,7 @@ const MemberDetail = (
                   <img src={thermometer} alt="thermometer" width={15}/>
                   {
                     hideCbtHR ?
-                      <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon"/> : <span className={'font-big-number'}>{formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}</span>
+                      <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon"/> : <span className={'font-big-number'}>{stat?.chargingFlag ? "--" : formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}</span>
                   }
                 </div>
 
@@ -406,7 +406,7 @@ const MemberDetail = (
                   <img src={heart} alt="heart" width={30}/>
                   {
                     hideCbtHR ?
-                      <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon"/> : <span className={clsx('font-big-number')}>{formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)}</span>
+                      <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon"/> : <span className={clsx('font-big-number')}>{stat?.chargingFlag ? "--" : formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)}</span>
                   }
                 </div>
                 {
