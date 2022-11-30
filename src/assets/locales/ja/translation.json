@@ -639,5 +639,13 @@
   "highest cbt by time of day and day of week": "時間帯別および曜日別の最高CBT",
   "day of week": "曜日",
   "time of day": "時刻",
-  "back": "戻る"
+  "back": "戻る",
+
+  "sun": "日曜",
+  "mon": "月曜",
+  "tues": "火曜",
+  "wed": "水曜",
+  "thurs": "木曜",
+  "fri": "金曜",
+  "sat": "土曜"
 }

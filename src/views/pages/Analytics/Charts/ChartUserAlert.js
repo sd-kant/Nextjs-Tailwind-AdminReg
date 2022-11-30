@@ -11,10 +11,9 @@ import {
 } from 'chart.js';
 import {Line} from 'react-chartjs-2';
 import {
-  COLOR_BLUE,
-  COLORS,
   METRIC_USER_CHART_VALUES,
-  TYPES
+  TYPES,
+  INIT_USER_CHART_ALERT_DATA,
 } from "../../../../constant";
 
 import clsx from 'clsx';
@@ -28,7 +27,8 @@ import {customStyles} from "../../DashboardV2";
 import ResponsiveSelect from "../../../components/ResponsiveSelect";
 import {
   chartPlugins,
-  getWeeksInMonth
+  getWeeksInMonth,
+  randomHexColorCode
 } from "../../../../utils/anlytics";
 import MultiSelectPopup from "../../../components/MultiSelectPopup";
 import spacetime from "spacetime";
@@ -112,26 +112,13 @@ const ChartUserAlert = () => {
    labels: [
     '21 12:33:46', '21 09:01:43', '21 09:04:44', ... , '24 04:51:32', '24 05:11:33'
    ],
-   datasets -> data: [
-    0, 36.8, 36.5, ... , 38.5, 37.7
-   ]
+   datasets -> data: [ 0, 36.8, 36.5, ... , 38.5, 37.7 ]
    */
-  const [data, setData] = React.useState({
-    labels: [],
-    datasets: [
-      {
-        label: `${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? 'CBT' : 'Hr'}`,
-        data: [],
-        borderWidth: 4,
-        borderColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
-        backgroundColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
-      },
-    ],
-  });
+  const [data, setData] = React.useState(INIT_USER_CHART_ALERT_DATA);
 
   React.useEffect(() => {
     if (selectedDate) {
-      let labels = [], tempData = [];
+      let labels = [], tempData = [], datasets = [];
       let dateList = getWeeksInMonth(timeZone);
 
       let start = selectedDate.label;
@@ -140,28 +127,41 @@ const ChartUserAlert = () => {
       let findIndex = dateList.findIndex(it => it.value === selectedDate.value);
       let end = findIndex === 0 ? spacetime(new Date(), timeZone.name) : dateList[findIndex - 1].label;
 
-      let filterUsers = users.filter(it => selectedMembers.findIndex(a => a?.value?.toString() === it.toString()) > -1);
+      let filterUsers = users?.filter(it => selectedMembers?.findIndex(a => a?.value?.toString() === it.toString()) > -1)?.sort((a, b) => a > b ? 1 : -1);
+
       chartData.filter(it => filterUsers.includes(it.userId))?.forEach(it => {
         if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
           labels.push(spacetime(it.ts, timeZone.name).unixFmt('dd hh:mm:ss'));
-          tempData.push(selectedMetric.value === METRIC_USER_CHART_VALUES[0] ? it?.heartCbtAvg : it?.heartRateAvg);
         }
       });
       labels.reverse();
-      tempData.reverse();
 
-      setData({
-        labels,
-        datasets: [
-          {
-            label: `${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? 'CBT' : 'Hr'}`,
+      filterUsers?.forEach(userId => {
+        tempData = new Array(labels?.length || 0).fill('');
+        let emptyFlag = false;
+        chartData.filter(it => userId.toString() === it.userId.toString())?.forEach(it => {
+          if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
+            let findIndex = labels?.findIndex(label => label === (spacetime(it.ts, timeZone.name).unixFmt('dd hh:mm:ss')));
+            if (findIndex > -1) {
+              tempData[findIndex] = selectedMetric.value === METRIC_USER_CHART_VALUES.CBT ? it?.heartCbtAvg : it?.heartRateAvg;
+              emptyFlag = true;
+            }
+          }
+        });
+
+        if (emptyFlag) {
+          let color = randomHexColorCode();
+          datasets.push({
+            label: `${selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT ? `CBT: userId-${userId}` : `Hr: userId-${userId}`}`,
             data: tempData,
-            borderWidth: 4,
-            borderColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
-            backgroundColor: selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? COLORS[2] : COLOR_BLUE,
-          },
-        ],
-      })
+            borderWidth: 3,
+            borderColor: color,
+            backgroundColor: color
+          });
+        }
+      });
+
+      setData(labels?.length > 0 ? { labels, datasets } : INIT_USER_CHART_ALERT_DATA);
     }
   }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone]);
 
@@ -169,7 +169,7 @@ const ChartUserAlert = () => {
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
           <h1 className={clsx(style.txt_center)}>
-            {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES[0] ? 'cbt' : 'hr'}`)}
+            {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT ? 'cbt' : 'hr'}`)}
           </h1>
           <div className={clsx(style.line_flex, `mb-15`)}>
             {

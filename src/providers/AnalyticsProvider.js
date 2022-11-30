@@ -33,10 +33,11 @@ import {
   onFilterData,
   onFilterDataByOrganization,
   getThisWeekByTeam,
+  checkMetric,
 } from "../utils/anlytics";
 import {
   COLOR_WHITE,
-  COLORS,
+  HEAT_SWEAT_CHART_COLORS,
   HEAT_LOW_MEDIUM_HIGH,
   LABELS_DOUGHNUT,
   METRIC_TEAM_TABLE_VALUES,
@@ -46,6 +47,7 @@ import {
   DAY_LIST,
   HIGHEST_CHART_CELSIUS_MIN,
   HIGHEST_CHART_CELSIUS_MAX,
+  ANALYTICS_API_KEYS,
 } from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {
@@ -101,7 +103,7 @@ export const AnalyticsProvider = (
     let mounted = true;
     getRiskLevels().then(response => {
       if (mounted) setRiskLevels(response.data);
-    })
+    });
 
     return () => {
       mounted = false;
@@ -113,7 +115,7 @@ export const AnalyticsProvider = (
     "medium": 2,
     "high": 3,
     "extreme": 4,
-  }
+  };
   const selectedTeams = React.useMemo(() => {
     return formattedTeams?.filter(it => pickedTeams.some(ele => ele.toString() === it.value?.toString()))
   }, [pickedTeams, formattedTeams]);
@@ -146,85 +148,85 @@ export const AnalyticsProvider = (
     const userStatsMetrics = [
       {
         label: t('wear time'),
-        value: METRIC_USER_TABLE_VALUES[0], // 1
+        value: METRIC_USER_TABLE_VALUES.WEAR_TIME, // 1
       },
       {
         label: t('alerts'),
-        value: METRIC_USER_TABLE_VALUES[1], // 2
+        value: METRIC_USER_TABLE_VALUES.ALERTS, // 2
       },
       {
         label: t('max heart cbt'),
-        value: METRIC_USER_TABLE_VALUES[2], // 3
+        value: METRIC_USER_TABLE_VALUES.MAX_HEART_CBT, // 3
       },
       {
         label: t('swr & acclim'),
-        value: METRIC_USER_TABLE_VALUES[4], // 5
+        value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM, // 5
       },
       {
         label: t('time spent in cbt zones'),
-        value: METRIC_USER_TABLE_VALUES[5], // 6
+        value: METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES, // 6
       },
       {
         label: t('device data'),
-        value: METRIC_USER_TABLE_VALUES[6], // 7
+        value: METRIC_USER_TABLE_VALUES.DEVICE_DATA, // 7
       },
       {
         label: t('users in various cbt zones'),
-        value: METRIC_USER_TABLE_VALUES[7], // 8
+        value: METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES, // 8
       }
     ];
     const teamStatsMetrics = [
       {
         label: t('ambient temp/humidity'),
-        value: METRIC_TEAM_TABLE_VALUES[0], // 20
+        value: METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY, // 20
       },
       {
         label: t('% of workers with alerts'),
-        value: METRIC_TEAM_TABLE_VALUES[1], // 21
+        value: METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS, // 21
       },
       {
         label: t('active users'),
-        value: METRIC_TEAM_TABLE_VALUES[2], // 22
+        value: METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS, // 22
       },
       {
         label: t('no. of users in swr categories'),
-        value: METRIC_TEAM_TABLE_VALUES[3], // 23
+        value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE, // 23
       },
       {
         label: t('no. of users in heat susceptibility categories'),
-        value: METRIC_TEAM_TABLE_VALUES[4], // 24
+        value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE, // 24
       },
       {
         label: t('no. of users in cbt zones'),
-        value: METRIC_TEAM_TABLE_VALUES[5], // 25
+        value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES, // 25
       },
       {
         label: t('no. of users unacclimated, acclimated and persis previous illness'),
-        value: METRIC_TEAM_TABLE_VALUES[6], // 26
+        value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED, // 26
       },
     ];
     const chartTeamMetrics = [
       {
         label: t('heat susceptibility and sweat rate'),
-        value: METRIC_TEAM_CHART_VALUES[0], // 30
+        value: METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE, // 30
       },
       {
         label: t('number of alerts by week'),
-        value: METRIC_TEAM_CHART_VALUES[1], // 31
+        value: METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK, // 31
       },
       {
         label: t('highest cbt by time of day and day of week'),
-        value: METRIC_TEAM_CHART_VALUES[2], // 32
+        value: METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK, // 32
       },
     ];
     const chartUserMetrics = [
       {
         label: t('cbt'),
-        value: METRIC_USER_CHART_VALUES[0], // 40
+        value: METRIC_USER_CHART_VALUES.CBT, // 40
       },
       {
         label: t('hr'),
-        value: METRIC_USER_CHART_VALUES[1], // 41
+        value: METRIC_USER_CHART_VALUES.HR, // 41
       },
     ];
     if (showBy === 'table') {
@@ -300,7 +302,7 @@ export const AnalyticsProvider = (
   const sortOptions = React.useMemo(() => {
     let ret = [];
     switch (metric) {
-      case METRIC_USER_TABLE_VALUES[0]: // 1
+      case METRIC_USER_TABLE_VALUES.WEAR_TIME: // 1
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
@@ -308,7 +310,7 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_USER_TABLE_VALUES[1]: // 2
+      case METRIC_USER_TABLE_VALUES.ALERTS: // 2
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
@@ -321,8 +323,8 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[8, 'asc', 'number']]], [sortTitles[3], [[8, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_USER_TABLE_VALUES[2]: // 3
-      case METRIC_TEAM_CHART_VALUES[2]: // 32
+      case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
+      case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
@@ -330,7 +332,7 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_USER_TABLE_VALUES[4]: // 5
+      case METRIC_USER_TABLE_VALUES.SWR_ACCLIM: // 5
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
@@ -342,7 +344,7 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[10], [[7, 'asc', 'susceptibility']]], [sortTitles[11], [[7, 'desc', 'susceptibility']]]]),
         ];
         break;
-      case METRIC_USER_TABLE_VALUES[5]: // 6
+      case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'number']]], [sortTitles[1], [[0, 'desc', 'number']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
@@ -351,7 +353,7 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_USER_TABLE_VALUES[6]: // 7
+      case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
@@ -361,14 +363,14 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[4], [[5, 'asc', 'date']]], [sortTitles[5], [[5, 'desc', 'date']]]]),
         ];
         break;
-      case METRIC_USER_TABLE_VALUES[7]: // 8
+      case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
         ret = [
           null,
           makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_TEAM_TABLE_VALUES[0]: // 20
-      case METRIC_TEAM_TABLE_VALUES[5]: // 25
+      case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
+      case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
@@ -379,8 +381,8 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[6, 'asc', 'number']]], [sortTitles[3], [[6, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_TEAM_TABLE_VALUES[1]: // 21
-      case METRIC_TEAM_TABLE_VALUES[6]: // 26
+      case METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS: // 21
+      case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
@@ -389,14 +391,14 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_TEAM_TABLE_VALUES[2]: // 22
+      case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_TEAM_TABLE_VALUES[3]: // 23
-      case METRIC_TEAM_TABLE_VALUES[4]: // 24
+      case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
+      case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
         ret = [
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
@@ -412,50 +414,50 @@ export const AnalyticsProvider = (
   const headers = React.useMemo(() => {
     let ret = [t('name'), t('team')];
     switch (metric) {
-      case METRIC_USER_TABLE_VALUES[0]: // 1
+      case METRIC_USER_TABLE_VALUES.WEAR_TIME: // 1
         ret = [t('name'), t('team'), t('avg wear time'), t('total wear time')];
         break;
-      case METRIC_USER_TABLE_VALUES[1]: // 2
+      case METRIC_USER_TABLE_VALUES.ALERTS: // 2
         ret = [t('name'), t('team'), t('alert time'), t('alert'), t('heat risk'), t('cbt'), t('temp'), t('humidity'), t('heart rate avg')];
         break;
-      case METRIC_USER_TABLE_VALUES[2]: // 3
-      case METRIC_TEAM_CHART_VALUES[2]: // 32
+      case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
+      case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
         ret = [t('name'), t('team'), t('date'), t('max cbt')];
         break;
-      case METRIC_USER_TABLE_VALUES[3]: // 4
+      case 4:
         // ret = [t('name'), t('team')];
         break;
-      case METRIC_USER_TABLE_VALUES[4]: // 5
+      case METRIC_USER_TABLE_VALUES.SWR_ACCLIM: // 5
         ret = [t('name'), t('team'), t('swr category'), unitMetric ? 'SWR (l/h)' : 'SWR (qt/h)', unitMetric ? t("fluid recmdt n", {n: t('(l/h)')}) : t("fluid recmdt n", {n: t('(qt/h)')}), t('previous illness'), t('acclim status'), t('heat sus')]; // fixme
         break;
-      case METRIC_USER_TABLE_VALUES[5]: // 6
+      case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
         ret = [t('name'), t('team'), t('time spent in safe to work'), t('time spent in mild heat exhaustion'), t('time spent in moderate hyperthermia')];
         break;
-      case METRIC_USER_TABLE_VALUES[6]: // 7
+      case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
         ret = [t('name'), t('team'), t('firmware version'), t('app version'), t('platform'), t('date')];
         break;
-      case METRIC_USER_TABLE_VALUES[7]: // 8
+      case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
         ret = [t('temperature categories'), t('user %')];
         break;
-      case METRIC_TEAM_TABLE_VALUES[0]: // 20
+      case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
         ret = [t('team'), t('max temp'), t('min temp'), t('avg temp'), t('max rh'), t('min rh'), t('avg rh')];
         break;
-      case METRIC_TEAM_TABLE_VALUES[1]: // 21
+      case METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS: // 21
         ret = [t('team'), t('% of team with alerts'), t('% of team without alerts'), t('no. of people with alerts'), t('no. of people without alerts')];
         break;
-      case METRIC_TEAM_TABLE_VALUES[2]: // 22
+      case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
         ret = [t('team'), t('active users')];
         break;
-      case METRIC_TEAM_TABLE_VALUES[3]: // 23
+      case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
         ret = [t('team'), t("n swr", {n: t('upper low')}), t("n swr", {n: t('moderate')}), t("n swr", {n: t('high')})];
         break;
-      case METRIC_TEAM_TABLE_VALUES[4]: // 24
+      case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
         ret = [t('team'), t("n risk", {n: t('upper low')}), t("n risk", {n: t('medium')}), t("n risk", {n: t('high')})];
         break;
-      case METRIC_TEAM_TABLE_VALUES[5]: // 25
+      case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
         ret = [t('team'), unitMetric ? '<38' : '<100.4', unitMetric ? '38-38.5' : '100.4-101.3', unitMetric ? '>38.5' : '>101.3', t('total alerts'), t('% of team with alerts'), t('% of team without alerts')];
         break;
-      case METRIC_TEAM_TABLE_VALUES[6]: // 26
+      case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
         ret = [t('team'), t('heat acclimatized users'), t('heat unacclimatized users'), t('previous illness'), t('no previous illness')];
         break;
 
@@ -490,73 +492,73 @@ export const AnalyticsProvider = (
         let apiCall = null;
 
         switch (metric) {
-          case METRIC_USER_TABLE_VALUES[0]: // 1, wear time
+          case METRIC_USER_TABLE_VALUES.WEAR_TIME: // 1, wear time
             apiCall = queryOrganizationWearTime;
-            key = 'wearTime';
+            key = ANALYTICS_API_KEYS.WEAR_TIME;
             break;
-          case METRIC_USER_TABLE_VALUES[1]: // 2, alerts
-          case METRIC_TEAM_CHART_VALUES[1]: // 31
+          case METRIC_USER_TABLE_VALUES.ALERTS: // 2, alerts
+          case METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK: // 31
             apiCall = queryOrganizationAlertMetrics;
-            key = 'alertMetrics';
+            key = ANALYTICS_API_KEYS.ALERT_METRICS;
             break;
-          case METRIC_USER_TABLE_VALUES[2]: // 3
+          case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
             apiCall = queryOrganizationMaxCbt;
-            key = 'maxCbt';
+            key = ANALYTICS_API_KEYS.MAX_CBT;
             break;
-          case METRIC_USER_TABLE_VALUES[5]: // 6
+          case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
             apiCall = queryOrganizationTempCateData;
-            key = 'tempCateData';
+            key = ANALYTICS_API_KEYS.TEMP_CATE_DATA;
             break;
-          case METRIC_USER_TABLE_VALUES[6]: // 7
+          case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
             apiCall = queryOrganizationDeviceData;
-            key = 'deviceData';
+            key = ANALYTICS_API_KEYS.DEVICE_DATA;
             break;
-          case METRIC_USER_TABLE_VALUES[7]: // 8
+          case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
             apiCall = queryOrganizationUsersInCBTZones;
-            key = 'usersInCBTZones';
+            key = ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES;
             break;
-          case METRIC_TEAM_TABLE_VALUES[0]: // 20
+          case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
             apiCall = queryAmbientTempHumidity;
-            key = 'tempHumidity';
+            key = ANALYTICS_API_KEYS.TEMP_HUMIDITY;
             break;
-          case METRIC_USER_TABLE_VALUES[4]: // 5
-          case METRIC_TEAM_TABLE_VALUES[3]: // 23
-          case METRIC_TEAM_TABLE_VALUES[4]: // 24
-          case METRIC_TEAM_CHART_VALUES[0]: // 30
+          case METRIC_USER_TABLE_VALUES.SWR_ACCLIM: // 5
+          case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
+          case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
+          case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
             apiCall = queryOrganizationSWRFluid;
-            key = 'swrFluid';
+            key = ANALYTICS_API_KEYS.SWR_FLUID;
             break;
-          case METRIC_TEAM_TABLE_VALUES[1]: // 21
+          case METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS: // 21
             apiCall = queryOrganizationAlertedUserCount;
-            key = 'alertedUserCount';
+            key = ANALYTICS_API_KEYS.ALERT_USER_COUNT;
             break;
-          case METRIC_TEAM_TABLE_VALUES[2]: // 22
+          case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
             apiCall = queryOrganizationActiveUsers;
-            key = 'activeUsers';
+            key = ANALYTICS_API_KEYS.ACTIVE_USERS;
             break;
-          case METRIC_TEAM_TABLE_VALUES[5]: // 25
+          case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
             apiCall = queryOrganizationCategoriesUsersInCBTZones;
-            key = 'tempCateInCBTZones';
+            key = ANALYTICS_API_KEYS.TEMP_CATE_IN_CBT_ZONES;
             break;
-          case METRIC_TEAM_TABLE_VALUES[6]: // 26
+          case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
             apiCall = queryOrganizationFluidMetricsByTeam;
-            key = 'fluidMetricsByTeam';
+            key = ANALYTICS_API_KEYS.FLUID_METRICS_BY_TEAM;
             break;
-          case METRIC_TEAM_CHART_VALUES[2]: // 32
+          case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
             apiCall = queryOrganizationMaxCbt;
-            key = 'chartCbt';
+            key = ANALYTICS_API_KEYS.CHART_CBT;
             break;
-          case METRIC_USER_CHART_VALUES[0]: // 40
-          case METRIC_USER_CHART_VALUES[1]: // 41
+          case METRIC_USER_CHART_VALUES.CBT: // 40
+          case METRIC_USER_CHART_VALUES.HR: // 41
             apiCall = getTeamMemberAlerts;
-            key = 'teamMemberAlerts';
+            key = ANALYTICS_API_KEYS.TEAM_MEMBER_ALERTS;
             break;
           default:
             console.log("metric is not available");
         }
 
         if (apiCall && key) {
-          if (METRIC_USER_CHART_VALUES.includes(metric)) {
+          if (checkMetric(METRIC_USER_CHART_VALUES, metric)) {
             let userFilter = members?.filter(it => users.includes(it.userId));
 
             const userPromises = [];
@@ -602,7 +604,7 @@ export const AnalyticsProvider = (
             let startD = new Date(startDate); // e.g. 2022-04-05
             let endD = new Date(endDate); // e.g. 2022-11-24
 
-            if (METRIC_TEAM_CHART_VALUES.includes(metric)) { // team chart only
+            if (checkMetric(METRIC_TEAM_CHART_VALUES, metric)) { // team chart only
               startD.setDate(startD.getDate() - 2); // e.g. 2022-04-03
               endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
             }
@@ -672,11 +674,11 @@ export const AnalyticsProvider = (
   }, [showBy, statsBy, selectedMembers, selectedMetric, selectedTeams]);
 
   const chartData = React.useMemo(() => {
-    if (metric === METRIC_TEAM_CHART_VALUES[0]) { // 30
+    if (metric === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE) { // 30
       let tempRet = [0, 0, 0, 0, 0, 0];
       let totalHeat = 0, totalSweat = 0;
 
-      organizationAnalytics?.swrFluid?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, null)?.forEach(it => {
         let findHeatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.heatSusceptibility?.toLowerCase());
         let findSweatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.sweatRateCategory?.toLowerCase());
 
@@ -721,7 +723,7 @@ export const AnalyticsProvider = (
               {
                 label: label,
                 data,
-                backgroundColor: COLORS,
+                backgroundColor: HEAT_SWEAT_CHART_COLORS,
                 borderColor: [
                   COLOR_WHITE,
                   COLOR_WHITE,
@@ -738,8 +740,8 @@ export const AnalyticsProvider = (
         dataHeat: dataChart('heat'),
         dataSweat: dataChart('sweat'),
       };
-    } else if (METRIC_USER_CHART_VALUES.includes(metric)) { // 40, 41
-      return (organizationAnalytics?.teamMemberAlerts || []).sort((a, b) => {
+    } else if (checkMetric(METRIC_USER_CHART_VALUES, metric)) { // 40, 41
+      return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEAM_MEMBER_ALERTS, null, null).sort((a, b) => {
         return new Date(a?.ts).getTime() > new Date(b.ts).getTime() ? -1 : 1;
       });
     } else {
@@ -755,8 +757,8 @@ export const AnalyticsProvider = (
     const endD = thisWeek.endDate;
     let startD = thisWeek.startDate;
 
-    if (metric === METRIC_TEAM_CHART_VALUES[1]) { // 31
-      let thisData = organizationAnalytics?.alertMetrics?.filter(it => spacetime(it.ts).isBefore(endD) && spacetime(it.ts).isAfter(startD));
+    if (metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK) { // 31
+      let thisData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ALERT_METRICS, null, null)?.filter(it => spacetime(it.ts).isBefore(endD) && spacetime(it.ts).isAfter(startD));
 
       let arrayPerDate = [
         getListPerLabel({list: thisData, timezone: timeZone, stageIds: [1], startD, endD}), // At Risk id
@@ -766,19 +768,19 @@ export const AnalyticsProvider = (
       const xLabel = getDateList(startD, endD);
       const dataSet = [
         {
-          label: formatAlert(1), // At Risk
+          label: formatAlert(1).label, // At Risk
           data: xLabel?.map((it, index) => arrayPerDate[0][index]),
-          backgroundColor: COLORS[0],
+          backgroundColor: HEAT_SWEAT_CHART_COLORS[0],
         },
         {
-          label: formatAlert(2), // Elevated Risk
+          label: formatAlert(2).label, // Elevated Risk
           data: xLabel?.map((it, index) => arrayPerDate[1][index]),
-          backgroundColor: COLORS[1],
+          backgroundColor: HEAT_SWEAT_CHART_COLORS[1],
         },
         {
-          label: formatAlert(3), // Safe
+          label: formatAlert(3).label, // Safe
           data: xLabel?.map((it, index) => arrayPerDate[2][index]),
-          backgroundColor: COLORS[2],
+          backgroundColor: HEAT_SWEAT_CHART_COLORS[2],
         },
       ];
 
@@ -808,12 +810,12 @@ export const AnalyticsProvider = (
         labels: xLabel,
         datasets: dataSet,
       };
-    } else if (metric === METRIC_TEAM_CHART_VALUES[2]) { // 32
+    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) { // 32
       while (startD.isBefore(endD)) {
         const subList = [];
         const endDByOneDay = startD.add(1, 'day');
 
-        const dailyData = organizationAnalytics?.chartCbt?.filter(it =>
+        const dailyData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.CHART_CBT, null, null)?.filter(it =>
           selectedMembers?.findIndex(a => a?.value === it?.userId) > -1 &&
           spacetime(it.utcTs).isBefore(endDByOneDay) &&
           spacetime(it.utcTs).isAfter(startD)
@@ -857,7 +859,7 @@ export const AnalyticsProvider = (
 
       return {
         list: list?.length === 0 ? new Array(7).fill(new Array(24).fill('')) : list,
-        dayList: dayList?.length > 0 ? dayList : ['Sat', 'Fri', 'Thurs', 'Wed', 'Tues', 'Mon', 'Sun'], // todo i18n
+        dayList: dayList?.length > 0 ? dayList : DAY_LIST.reverse()
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -866,15 +868,15 @@ export const AnalyticsProvider = (
   const data = React.useMemo(() => {
     let ret = [];
 
-    if (metric === METRIC_USER_TABLE_VALUES[0]) { // 1, wear time
-      ret = onFilterData(organizationAnalytics?.wearTime, pickedMembers, members)?.map(it => ([
+    if (metric === METRIC_USER_TABLE_VALUES.WEAR_TIME) { // 1, wear time
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.WEAR_TIME, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.avgWearTime ?? ``,
         it.wearTime ?? ``,
       ]))
-    } else if (metric === METRIC_USER_TABLE_VALUES[1]) { // 2, alert metrics
-      ret = onFilterData(organizationAnalytics?.alertMetrics, pickedMembers, members)?.map(it => ([
+    } else if (metric === METRIC_USER_TABLE_VALUES.ALERTS) { // 2, alert metrics
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ALERT_METRICS, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.ts ? new Date(it.ts)?.toLocaleString() : ``,
@@ -885,15 +887,15 @@ export const AnalyticsProvider = (
         it.humidity ?? '',
         it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``,
       ]))
-    } else if (metric === METRIC_USER_TABLE_VALUES[2]) { // 3
-      ret = onFilterData(organizationAnalytics?.maxCbt, pickedMembers, members)?.map(it => ([
+    } else if (metric === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT) { // 3
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.utcTs ? new Date(it.utcTs)?.toLocaleString() : ``,
         it.maxCbt ? formatHeartCbt(it.maxCbt) : ``,
       ]));
-    } else if (metric === METRIC_USER_TABLE_VALUES[4]) { // 5
-      ret = onFilterData(organizationAnalytics?.swrFluid, pickedMembers, members)?.map(it => ([
+    } else if (metric === METRIC_USER_TABLE_VALUES.SWR_ACCLIM) { // 5
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.sweatRateCategory ?? ``,
@@ -903,30 +905,30 @@ export const AnalyticsProvider = (
         it.acclimatizationStatus ?? ``,
         it.heatSusceptibility ?? ``,
       ]));
-    } else if (metric === METRIC_USER_TABLE_VALUES[5]) { // 6
-      ret = onFilterData(organizationAnalytics?.tempCateData, pickedMembers, members)?.map(it => ([
+    } else if (metric === METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES) { // 6
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_CATE_DATA, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Safe to Work 38C`),
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Mild Heat Exhaustion 38C – 38.49C`),
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Moderate Hyperthermia > 38.5C`),
       ]));
-    } else if (metric === METRIC_USER_TABLE_VALUES[6]) { // 7
-      ret = onFilterData(organizationAnalytics?.deviceData, pickedMembers, members)?.map(it => ([
+    } else if (metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA) { // 7
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.DEVICE_DATA, pickedMembers, members)?.map(it => ([
         it.fullname ?? ``,
         getTeamNameFromTeamId(formattedTeams, it.teamId),
-        it.firmwareVersion ?? ``,
+        it.osVersion ?? ``,
         it.version ?? ``,
-        it.type,
+        it.type ?? ``,
         it.ts ?? ``,
       ]));
-    } else if (metric === METRIC_USER_TABLE_VALUES[7]) { // 8
-      ret = organizationAnalytics?.usersInCBTZones?.map(it => ([
+    } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) { // 8
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES, null, null)?.map(it => ([
         it.temperatureCategory,
         it.percentage,
       ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES[0]) { // 20
-      ret = organizationAnalytics?.tempHumidity?.map(it => ([
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY) { // 20
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_HUMIDITY, null, null)?.map(it => ([
         it.teamName ?? ``,
         it.maxTemp ? formatHeartCbt(it.maxTemp) : ``,
         it.minTemp ? formatHeartCbt(it.minTemp) : ``,
@@ -935,17 +937,17 @@ export const AnalyticsProvider = (
         it.minHumidity ?? ``,
         it.avgHumidity ?? ``,
       ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES[1]) { // 21
-      ret = organizationAnalytics?.alertedUserCount?.map(it => ([
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS) { // 21
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ALERT_USER_COUNT, null, null)?.map(it => ([
         it.teamName ?? ``,
         it.alertPercentage ?? ``,
         it.noAlertPercentage ?? ``,
         it.usersWithAlerts,
         it.activeUsers - it.usersWithAlerts,
       ]))
-    } else if (metric === METRIC_TEAM_TABLE_VALUES[2]) { // 22
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS) { // 22
       let tempRet = [];
-      organizationAnalytics?.activeUsers?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ACTIVE_USERS, null, null)?.forEach(it => {
         const member = members?.find(ele => ele.userId === it.userId);
         const memberTeamId = member?.teamId;
         if (memberTeamId) {
@@ -968,9 +970,9 @@ export const AnalyticsProvider = (
         getTeamNameFromTeamId(formattedTeams, it.teamId),
         it.cnt,
       ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES[3]) { // 23
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE) { // 23
       let tempRet = [];
-      organizationAnalytics?.swrFluid?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, null)?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
         if ([`low`, `moderate`, `high`].includes(it.sweatRateCategory?.toLowerCase())) {
           if (index !== -1) {
@@ -992,9 +994,9 @@ export const AnalyticsProvider = (
         it[`moderate`],
         it[`high`],
       ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES[4]) { // 24
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE) { // 24
       let tempRet = [];
-      organizationAnalytics?.swrFluid?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, null)?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
         if (HEAT_LOW_MEDIUM_HIGH.includes(it.heatSusceptibility?.toLowerCase())) {
           if (index !== -1) {
@@ -1016,8 +1018,8 @@ export const AnalyticsProvider = (
         it[`medium`],
         it[`high`],
       ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES[5]) { // 25
-      ret = organizationAnalytics?.tempCateInCBTZones?.map(it => ([
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES) { // 25
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_CATE_IN_CBT_ZONES, null, null)?.map(it => ([
         it.teamName ?? ``,
         it.lowCount ?? ``,
         it.mediumCount ?? ``,
@@ -1026,8 +1028,8 @@ export const AnalyticsProvider = (
         it.alertPercentage ?? ``,
         it.noAlertPercentage ?? ``,
       ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES[6]) { // 26
-      ret = organizationAnalytics?.fluidMetricsByTeam?.map(it => ([
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED) { // 26
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.FLUID_METRICS_BY_TEAM, null, null)?.map(it => ([
         it.teamName ?? ``,
         it.heatAcclimatized ?? ``,
         it.heatUnacclimatized ?? ``,
@@ -1038,7 +1040,7 @@ export const AnalyticsProvider = (
       showBy === `chart` &&
       statsBy === `team` &&
       detailCbt &&
-      metric === METRIC_TEAM_CHART_VALUES[2]
+      metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK
     ) { // detail table of highest CBT chart, 30, 31, 32
       ret = maxCBTTileData?.list?.length > 0 ? maxCBTTileData.list[detailCbt.dayIndex][detailCbt.timeIndex]?.details || [] : [];
     }

@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.8.26";
+export const CURRENT_VERSION = "3.8.27";
 export const AVAILABLE_COUNTRIES = [
   {
     "value": "AU",
@@ -239,9 +239,20 @@ export const HEAT_SUSCEPTIBILITY_MEDIUM = "Medium";
 export const HEAT_SUSCEPTIBILITY_HIGH = "High";
 export const ALERT_STAGE_ID_LIST = ["1", "2", "3", "4"];
 
-export const COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
+export const HEAT_SWEAT_CHART_COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
 export const COLOR_WHITE = '#fff';
-export const COLOR_BLUE = '#4473C4';
+export const INIT_USER_CHART_ALERT_DATA = {
+  labels: [],
+  datasets: [
+    {
+      label: ``,
+      data: [],
+      borderWidth: 3,
+      borderColor: ``,
+      backgroundColor: ``,
+    },
+  ],
+};
 export const TYPES = [
   {
     value: 1,
@@ -261,21 +272,74 @@ export const HEAT_LOW_MEDIUM_HIGH = [
   "low", "medium", "high"
 ];
 
-export const METRIC_USER_TABLE_VALUES = [1, 2, 3, 4, 5, 6, 7, 8];
-export const METRIC_TEAM_TABLE_VALUES = [20, 21, 22, 23, 24, 25, 26];
-export const METRIC_USER_CHART_VALUES = [40, 41];
-export const METRIC_TEAM_CHART_VALUES = [30, 31, 32];
+export const ANALYTICS_API_KEYS = {
+  WEAR_TIME: 'wearTime',
+  ALERT_METRICS: 'alertMetrics',
+  MAX_CBT: 'maxCbt',
+  TEMP_CATE_DATA: 'tempCateData',
+  DEVICE_DATA: 'deviceData',
+  USERS_IN_CBT_ZONES: 'usersInCBTZones',
+  TEMP_HUMIDITY: 'tempHumidity',
+  SWR_FLUID: 'swrFluid',
+  ALERT_USER_COUNT: 'alertedUserCount',
+  ACTIVE_USERS: 'activeUsers',
+  TEMP_CATE_IN_CBT_ZONES: 'tempCateInCBTZones',
+  FLUID_METRICS_BY_TEAM: 'fluidMetricsByTeam',
+  CHART_CBT: 'chartCbt',
+  TEAM_MEMBER_ALERTS: 'teamMemberAlerts',
+};
+
+export const METRIC_USER_TABLE_VALUES = {
+  WEAR_TIME:  1,
+  ALERTS: 2,
+  MAX_HEART_CBT: 3,
+  SWR_ACCLIM: 5,
+  TIME_SPENT_IN_CBT_ZONES: 6,
+  DEVICE_DATA: 7,
+  USERS_IN_VARIOUS_CBT_ZONES: 8,
+};
+export const METRIC_TEAM_TABLE_VALUES = {
+  AMBIENT_TEMP_HUMIDITY: 20,
+  PERCENT_WORKERS_ALERTS: 21,
+  ACTIVE_USERS: 22,
+  NO_USERS_IN_SWR_CATE: 23,
+  NO_USERS_IN_HEAT_CATE: 24,
+  NO_USERS_IN_CBT_ZONES: 25,
+  NO_USERS_UNACCLIMATED_ACCLIMATED: 26,
+};
+export const METRIC_USER_CHART_VALUES = {
+  CBT: 40,
+  HR: 41,
+};
+export const METRIC_TEAM_CHART_VALUES = {
+  HEAT_SUSCEPTIBILITY_SWEAT_RATE: 30,
+  NUMBER_ALERTS_WEEK: 31,
+  HIGHEST_CBT_TIME_DAY_WEEK: 32,
+};
 
 export const DAY_LIST = [
-  'Sun',
-  'Mon',
-  'Tues',
-  'Wed',
-  'Thurs',
-  'Fri',
-  'Sat',
+  i18n.t('sun'),
+  i18n.t('mon'),
+  i18n.t('tues'),
+  i18n.t('wed'),
+  i18n.t('thurs'),
+  i18n.t('fri'),
+  i18n.t('sat'),
 ];
-
+export const MONTH_LIST = [
+  i18n.t("jan"),
+  i18n.t("feb"),
+  i18n.t("mar"),
+  i18n.t("apr"),
+  i18n.t("may"),
+  i18n.t("june"),
+  i18n.t("july"),
+  i18n.t("aug"),
+  i18n.t("sep"),
+  i18n.t("oct"),
+  i18n.t("nov"),
+  i18n.t("dec")
+];
 export const TIME_LIST = [
   '00:00:00',
   '01:00:00',

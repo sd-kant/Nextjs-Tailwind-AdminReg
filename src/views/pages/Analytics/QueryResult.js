@@ -21,6 +21,7 @@ import {
   METRIC_TEAM_CHART_VALUES,
   METRIC_USER_CHART_VALUES
 } from "../../../constant";
+import {checkMetric} from "../../../utils/anlytics";
 
 const QueryResult = (
   {
@@ -44,13 +45,13 @@ const QueryResult = (
   const ChartComponent = React.useMemo(() => {
     if (showBy === 'table') return null;
 
-    if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES[0]) // 30
+    if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE) // 30
       return <ChartTeamDoughnut/>;
-    else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES[1]) // 31
+    else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK) // 31
       return <ChartTeamVerticalBar/>;
-    else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES[2]) // 32
+    else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) // 32
       return <ChartHighestCBT/>;
-    else if (METRIC_USER_CHART_VALUES.includes(selectedMetric?.value)) // 40, 41
+    else if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) // 40, 41
       return <ChartUserAlert/>;
     else return <div className={clsx(style.EmptyHeight)}/>;
   }, [selectedMetric, showBy]);
@@ -60,7 +61,7 @@ const QueryResult = (
       {
         (
             showBy === 'table' ||
-            (showBy === 'chart' && statsBy === 'team' && selectedMetric?.value === METRIC_TEAM_CHART_VALUES[2] && detailCbt)
+            (showBy === 'chart' && statsBy === 'team' && selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && detailCbt)
         ) ?
             <>
               <div className={clsx(style.InnerWrapper)}>
