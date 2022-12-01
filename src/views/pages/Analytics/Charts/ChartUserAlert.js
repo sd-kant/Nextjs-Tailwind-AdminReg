@@ -55,7 +55,7 @@ const ChartUserAlert = () => {
   } = useAnalyticsContext();
   const {t} = useTranslation();
 
-  const [type, setType] = React.useState(1); // 1 | 2 // 1: day, 2: week
+  const [type, setType] = React.useState(2); // 1 | 2 // 1: day, 2: week
 
   /**
    List of dates split into week and month ranges ->

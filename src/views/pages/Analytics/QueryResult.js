@@ -19,14 +19,16 @@ import ChartHighestCBT from "./Charts/ChartHighestCBT";
 import ChartUserAlert from "./Charts/ChartUserAlert";
 import {
   METRIC_TEAM_CHART_VALUES,
-  METRIC_USER_CHART_VALUES
+  METRIC_TEAM_TABLE_VALUES,
+  METRIC_USER_CHART_VALUES,
+  METRIC_USER_TABLE_VALUES
 } from "../../../constant";
 import {checkMetric} from "../../../utils/anlytics";
 
 const QueryResult = (
-  {
-    metric,
-  }) => {
+    {
+      metric,
+    }) => {
   const {
     statsBy,
     setStatsBy,
@@ -35,84 +37,109 @@ const QueryResult = (
     exportOption,
     setExportOption,
     handleExport,
-    showBy,
     selectedMetric,
-    detailCbt,
+    // detailCbt,
   } = useAnalyticsContext();
   const {t} = useTranslation();
   const ableToExport = visibleExport && Boolean(exportOption);
 
   const ChartComponent = React.useMemo(() => {
-    if (showBy === 'table') return null;
-
-    if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE) // 30
+    if (
+        selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM ||
+        selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE ||
+        selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE ||
+        selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
+    ) // 5, 23, 24, 30
       return <ChartTeamDoughnut/>;
-    else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK) // 31
+    else if (
+        selectedMetric?.value === METRIC_USER_TABLE_VALUES.ALERTS ||
+        selectedMetric?.value === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
+    ) // 2, 31
       return <ChartTeamVerticalBar/>;
-    else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) // 32
+    else if (
+        selectedMetric?.value === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT ||
+        selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK
+    ) // 3, 32
       return <ChartHighestCBT/>;
     else if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) // 40, 41
       return <ChartUserAlert/>;
-    else return <div className={clsx(style.EmptyHeight)}/>;
-  }, [selectedMetric, showBy]);
+    else return <div />;
+  }, [selectedMetric]);
+
+  const checkTableChartTogether = () => {
+    if (!selectedMetric) return false;
+    else {
+      return (
+          [
+            METRIC_USER_TABLE_VALUES.SWR_ACCLIM,
+            METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
+            METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
+            METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE,
+            METRIC_USER_TABLE_VALUES.ALERTS,
+            METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK,
+            METRIC_USER_TABLE_VALUES.MAX_HEART_CBT,
+            METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK,
+          ].includes(selectedMetric?.value)
+      )
+    }
+  };
 
   return (
-    <div className={clsx(style.Wrapper)}>
-      {
-        (
-            showBy === 'table' ||
-            (showBy === 'chart' && statsBy === 'team' && selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && detailCbt)
-        ) ?
-            <>
-              <div className={clsx(style.InnerWrapper)}>
-                <Toolbar/>
-                <div className={clsx(style.TableWrapper)}>
-                  <table className={clsx(style.Table)}>
-                    <ResultTableHeader metric={metric}/>
-                    <ResultTableBody metric={metric}/>
-                  </table>
+      <div className={clsx(style.Wrapper)}>
+        <div className={clsx(checkTableChartTogether() ? style.WrapperTableChart : style.WrapperTbl)}>
+          {
+            !checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) && (
+                <div className={clsx(checkTableChartTogether() ? style.InnerWrapper : style.CenterWrapper)}>
+                  <Toolbar/>
+                  <div className={clsx(style.TableWrapper)}>
+                    <table className={clsx(style.Table)}>
+                      <ResultTableHeader metric={metric}/>
+                      <ResultTableBody metric={metric}/>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            </>
-            :
-            ChartComponent
-      }
-      <div className={clsx(style.StatsSelectWrapper)}>
-        <div>
-          <Toggle
-              on={statsBy === 'team'}
-              titleOn= {t("user")}
-              titleOff= {t("team")}
-              handleSwitch={v => {
-                setStatsBy(v ? 'team' : 'user');
-              }}
-          />
+            )
+          }
+
+          {ChartComponent}
         </div>
-        {
-          (visibleExport && showBy === 'table') &&
-          <div className={clsx(style.ExportWrapper)}>
-            <ResponsiveSelect
-                className='font-heading-small text-black'
-                isClearable
-                options={exportOptions}
-                value={exportOption}
-                maxMenuHeight={190}
-                menuPortalTarget={document.body}
-                menuPosition={'fixed'}
-                styles={customStyles()}
-                onChange={v => setExportOption(v)}
-            />
-            <img
-                src={exportIcon}
-                className={clsx(!ableToExport ? style.Disabled : null)}
-                alt="export icon"
-                onClick={() => ableToExport ? handleExport() : null}
+
+        <div className={clsx(style.StatsSelectWrapper)}>
+          <div>
+            <Toggle
+                on={statsBy === 'team'}
+                titleOn={t("user")}
+                titleOff={t("team")}
+                handleSwitch={v => {
+                  setStatsBy(v ? 'team' : 'user');
+                }}
             />
           </div>
-        }
-        <div/>
+          {
+            (visibleExport) &&
+            <div className={clsx(style.ExportWrapper)}>
+              <ResponsiveSelect
+                  className='font-heading-small text-black'
+                  isClearable
+                  options={exportOptions}
+                  value={exportOption}
+                  maxMenuHeight={190}
+                  menuPortalTarget={document.body}
+                  menuPosition={'fixed'}
+                  styles={customStyles()}
+                  onChange={v => setExportOption(v)}
+              />
+              <img
+                  src={exportIcon}
+                  className={clsx(!ableToExport ? style.Disabled : null)}
+                  alt="export icon"
+                  onClick={() => ableToExport ? handleExport() : null}
+              />
+            </div>
+          }
+          <div/>
+        </div>
       </div>
-    </div>
   )
 }
 
@@ -121,6 +148,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(
-  mapStateToProps,
-  null
+    mapStateToProps,
+    null
 )(QueryResult);

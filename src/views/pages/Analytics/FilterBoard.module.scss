@@ -4,6 +4,7 @@
 
 .CustomInputWrapper {
   position: relative;
+
   .CalendarIcon {
     position: absolute;
     top: calc(50% + 5px);
@@ -11,5 +12,55 @@
     transform: translateY(-50%);
     width: 20px;
     height: 21px;
+  }
+}
+
+.FilterDiv {
+  display: flex;
+  align-content: flex-start;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+
+  @media screen and (max-width: 480px) {
+    display: block;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  label {
+    margin-top: 15px !important;
+  }
+
+  & > div {
+    margin-right: 12px;
+    min-width: 240px;
+
+    .FlexLeft {
+      display: flex;
+      justify-content: left;
+
+      & > div:nth-child(1) {
+        margin-right: 12px;
+      }
+
+      input {
+        min-width: 150px;
+        max-width: 200px;
+        height: 46px;
+      }
+
+      @media screen and (max-width: 480px) {
+        display: block;
+
+        input {
+          min-width: unset;
+          max-width: unset;
+          height: 46px;
+        }
+      }
+    }
   }
 }

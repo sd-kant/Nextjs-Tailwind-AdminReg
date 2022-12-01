@@ -2,8 +2,7 @@
 
 .chart_body {
   overflow-x: auto;
-  margin-bottom: 30px;
-  min-height: 600px;
+  min-height: 580px;
 
   .flex_space {
     display: flex;
@@ -26,7 +25,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 0;
-    margin: 55px auto 0;
+    margin: 35px auto 0;
     width: 1100px;
 
     .txt_center {
@@ -85,7 +84,7 @@
   .bar_body {
     overflow: auto;
     overflow-y: hidden;
-    margin: 58px auto 0;
+    margin: 0 auto;
     width: 900px;
     font-family: Ubuntu-Medium, sans-serif;
 
@@ -108,7 +107,7 @@
   }
 
   .line_body {
-    margin: 60px auto 0;
+    margin: 0 auto;
     width: 1000px;
 
     .txt_center {
@@ -127,7 +126,7 @@
   }
 
   .highest_cbt_body {
-    margin: 58px auto 0;
+    margin: 0 auto;
     width: 1200px;
     font-family: Ubuntu-Medium, sans-serif;
 

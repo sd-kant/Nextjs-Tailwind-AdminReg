@@ -19,7 +19,7 @@ const Toolbar = () => {
     sizePerPage,
     setSizePerPage,
     detailCbt,
-    setDetailCbt
+    setDetailCbt,
   } = useAnalyticsContext();
   const {t} = useTranslation();
   const {tableWidth} = useWidthContext();

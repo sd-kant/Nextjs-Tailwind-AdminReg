@@ -1,7 +1,25 @@
 .Wrapper {
   overflow-x: auto;
-  .InnerWrapper {
-    display: block;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  .WrapperTableChart {
+    display: grid;
+    grid-template-columns: 600px 1fr;
+    grid-column-gap: 50px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+  }
+
+  .WrapperTbl {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 50px;
+    padding-right: 10px;
+  }
+
+  .InnerWrapper,
+  .CenterWrapper {
     margin-top: 20px;
     overflow-y: auto;
 
@@ -18,14 +36,28 @@
     }
   }
 
+  .InnerWrapper {
+    display: block;
+  }
+
+  .CenterWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
   .StatsSelectWrapper {
     display: flex;
-    flex-direction: column;
     margin-top: 10px;
+
+    div:nth-child(1) {
+      margin-right: 10px;
+      width: fit-content;
+    }
 
     .ExportWrapper {
       display: flex;
-      margin-top: 10px;
 
       & > div {
         width: 135px;
@@ -50,7 +82,8 @@
 
 @media only screen and (min-width: 768px) {
   .Wrapper {
-    .InnerWrapper {
+    .InnerWrapper,
+    .CenterWrapper {
       margin-top: 0;
     }
 
@@ -60,17 +93,35 @@
   }
 }
 
-@media only screen and (min-width: 1024px) {
+@media only screen and (max-width: 480px) {
   .Wrapper {
     .StatsSelectWrapper {
-      display: grid;
-      grid-template-columns: auto 300px 1fr;
-      grid-column-gap: 20px;
-      margin-top: 10px;
+      display: block;
+
+      div:nth-child(1) {
+        margin-right: 0;
+      }
 
       .ExportWrapper {
-        margin-top: 0;
+        margin-top: 10px;
       }
+    }
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .Wrapper {
+    .WrapperTableChart {
+      grid-template-columns: 1fr;
+      grid-row-gap: 50px;
+      padding-right: 10px;
+    }
+
+    .InnerWrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
   }
 }
