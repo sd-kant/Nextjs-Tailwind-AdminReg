@@ -24,6 +24,7 @@ const ChartTeamDoughnut = () => {
   } = useAnalyticsContext();
   const {t} = useTranslation();
 
+  if (!chartData) return null;
   return (
       <div className={clsx(style.chart_body)}>
         <div className={clsx(style.doughnut_grid2)}>
@@ -32,7 +33,7 @@ const ChartTeamDoughnut = () => {
               {t(`heat susceptibility`)}
             </h1>
             <Doughnut
-                data={chartData.dataHeat}
+                data={chartData?.dataHeat}
                 plugins={chartPlugins(`doughnut`, t(`no data to display`))}
             />
 
@@ -52,7 +53,7 @@ const ChartTeamDoughnut = () => {
               {t(`sweat rate`)}
             </h1>
             <Doughnut
-                data={chartData.dataSweat}
+                data={chartData?.dataSweat}
                 plugins={chartPlugins(`doughnut`, t(`no data to display`))}
             />
 

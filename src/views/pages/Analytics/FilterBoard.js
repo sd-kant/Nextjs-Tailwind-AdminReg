@@ -10,7 +10,7 @@ import {useBasicContext} from "../../../providers/BasicProvider";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 import CustomDatePicker from "../../components/CustomDatePicker";
 import calendarIcon from "../../../assets/images/calendar.png";
-import Toggle from "../../components/Toggle";
+
 import {
   METRIC_USER_TABLE_VALUES,
   METRIC_TEAM_TABLE_VALUES,
@@ -52,9 +52,7 @@ const FilterBoard = () => {
     formattedMembers: members,
     setPickedMembers,
     processQuery,
-    showBy,
     statsBy,
-    setShowBy,
     selectedMetric,
     selectedTeams,
     selectedMembers,
@@ -97,14 +95,16 @@ const FilterBoard = () => {
 
   const submitActivated = React.useMemo(() => {
     return organization &&
-        selectedTeams?.length > 0 &&
-        (
-            showBy === 'table' || (
-                showBy === 'chart' && (
-                    statsBy === 'team' ||
-                (statsBy === 'user' && pickedMembers?.length > 0 && selectedUsers?.length > 0)))
+        selectedTeams?.length > 0 && (
+            statsBy === 'team' ||
+            (
+                statsBy === 'user' && (
+                    checkMetric(METRIC_USER_TABLE_VALUES, metric) || (
+                        checkMetric(METRIC_USER_CHART_VALUES, metric) && pickedMembers?.length > 0 && selectedUsers?.length > 0)
+                )
+            )
         );
-  }, [organization, selectedTeams, statsBy, showBy, pickedMembers, selectedUsers]);
+  }, [organization, selectedTeams, statsBy, pickedMembers, selectedUsers, metric]);
 
   const submit = () => {
     if (!submitActivated && !errors.metric && !errors.dateRange) return;
@@ -125,20 +125,14 @@ const FilterBoard = () => {
         !metric ||
         (
             metric && (
-                (showBy === 'table' && (
-                    (statsBy === 'user' && !checkMetric(METRIC_USER_TABLE_VALUES, metric)) ||
-                    (statsBy === 'team' && !checkMetric(METRIC_TEAM_TABLE_VALUES, metric))
-                )) ||
-                (showBy === 'chart' && (
-                    (statsBy === 'user' && !checkMetric(METRIC_USER_CHART_VALUES, metric)) ||
-                    (statsBy === 'team' && !checkMetric(METRIC_TEAM_CHART_VALUES, metric))
-                ))
+                (statsBy === 'user' && (!checkMetric(METRIC_USER_TABLE_VALUES, metric) && !checkMetric(METRIC_USER_CHART_VALUES, metric))) ||
+                (statsBy === 'team' && (!checkMetric(METRIC_TEAM_TABLE_VALUES, metric) && !checkMetric(METRIC_TEAM_CHART_VALUES, metric)))
             ))
     ) {
-      errors.metric = showBy === 'table' ? t("metric required") : t("chart required");
+      errors.metric = t("metric required");
     }
     return errors;
-  }, [startDate, endDate, metric, statsBy, showBy, t]);
+  }, [startDate, endDate, metric, statsBy, t]);
 
   React.useEffect(() => {
     if (!selectedMetric) return;
@@ -164,125 +158,117 @@ const FilterBoard = () => {
 
   return (
       <div>
-        <div className="d-flex flex-column">
+        <div className={clsx(style.FilterDiv, "d-flex justify-start")}>
+          <div className="d-flex flex-column">
 
-          <div className='mb-10'>
-            <Toggle
-                on={showBy === 'chart'}
-                titleOn={t("table")}
-                titleOff={t("chart")}
-                handleSwitch={v => {
-                  setShowBy(v ? 'chart' : 'table');
-                }}
+            <label className='font-input-label'>
+              {t("company name")}
+            </label>
+
+            <ResponsiveSelect
+                className='mt-10 font-heading-small text-black'
+                isClearable
+                options={organizations}
+                value={selectedOrganization}
+                styles={customStyles()}
+                placeholder={t("select company")}
+                onChange={v => setOrganization(v?.value)}
             />
           </div>
 
-          <label className='font-input-label'>
-            {t("company name")}
-          </label>
+          {
+            teams?.length > 0 ?
+                <div className={"d-flex flex-column"}>
+                  <label className='font-input-label mb-10'>
+                    {t("team")}
+                  </label>
 
-          <ResponsiveSelect
-              className='mt-10 font-heading-small text-black'
-              isClearable
-              options={organizations}
-              value={selectedOrganization}
-              styles={customStyles()}
-              placeholder={t("select company")}
-              onChange={v => setOrganization(v?.value)}
-          />
-        </div>
-
-        {
-          teams?.length > 0 ?
-              <div className={"d-flex flex-column mt-40"}>
-            <span className='font-input-label mb-10'>
-              {t("team")}
-            </span>
-
-                <MultiSelectPopup
-                    label={label}
-                    options={teams}
-                    value={selectedTeams}
-                    onChange={v => {
-                      setPickedTeams(v?.map(it => it.value));
-                    }}
-                />
-              </div> : null
-        }
-
-        {
-          (selectedTeams?.length > 0 && members?.length > 0) ?
-              <div className={"d-flex flex-column mt-40"}>
-            <span className='font-input-label mb-10'>
-              {t("users")}
-            </span>
-
-                <MultiSelectPopup
-                    label={userLabel}
-                    options={members}
-                    value={selectedMembers}
-                    onChange={v => {
-                      setPickedMembers(v?.map(it => it.value));
-                    }}
-                />
-              </div> : null
-        }
-
-        <div className="mt-40 d-flex flex-column">
-        <span className='font-input-label'>
-          {t("date range")}
-        </span>
-
-          <CustomDatePicker
-              date={startDate}
-              setDate={setStartDate}
-              CustomInput={CustomInput}
-              maxDate={startDateMax}
-              selectedMetric={selectedMetric}
-          />
-          <CustomDatePicker
-              date={endDate}
-              setDate={setEndDate}
-              CustomInput={CustomInput}
-              maxDate={endDateMax}
-              selectedMetric={selectedMetric}
-          />
+                  <MultiSelectPopup
+                      label={label}
+                      options={teams}
+                      value={selectedTeams}
+                      onChange={v => {
+                        setPickedTeams(v?.map(it => it.value));
+                      }}
+                  />
+                </div> : null
+          }
 
           {
-            submitTried && errors?.dateRange && (
-                <span className="font-helper-text text-error mt-10">{errors.dateRange}</span>
-            )
+            (selectedTeams?.length > 0 && members?.length > 0) ?
+                <div className={"d-flex flex-column"}>
+                  <label className='font-input-label mb-10'>
+                    {t("users")}
+                  </label>
+
+                  <MultiSelectPopup
+                      label={userLabel}
+                      options={members}
+                      value={selectedMembers}
+                      onChange={v => {
+                        setPickedMembers(v?.map(it => it.value));
+                      }}
+                  />
+                </div> : null
           }
-        </div>
 
-        <div className="mt-40 d-flex flex-column">
-        <span className='font-input-label'>
-          {showBy === 'table' ? t("select metric") : t('select chart')}
-        </span>
+          <div className="d-flex flex-column">
+            <label className='font-input-label'>
+              {t("date range")}
+            </label>
 
-          <ResponsiveSelect
-              className='mt-10 font-heading-small text-black'
-              isClearable
-              options={metrics}
-              value={selectedMetric}
-              styles={customStyles()}
-              placeholder={showBy === 'table' ? t("select metric") : t("select chart")}
-              onChange={v => setMetric(v?.value)}
-          />
+            <div className={clsx(style.FlexLeft)}>
+              <CustomDatePicker
+                  date={startDate}
+                  setDate={setStartDate}
+                  CustomInput={CustomInput}
+                  maxDate={startDateMax}
+                  selectedMetric={selectedMetric}
+              />
+              <CustomDatePicker
+                  date={endDate}
+                  setDate={setEndDate}
+                  CustomInput={CustomInput}
+                  maxDate={endDateMax}
+                  selectedMetric={selectedMetric}
+              />
+            </div>
 
-          {
-            submitTried && errors?.metric && (
-                <span className="font-helper-text text-error mt-10">{errors.metric}</span>
-            )
-          }
-        </div>
+            {
+              submitTried && errors?.dateRange && (
+                  <span className="font-helper-text text-error mt-10">{errors.dateRange}</span>
+              )
+            }
+          </div>
 
-        <div className="mt-40">
-          <button
-              className={`${(submitActivated && !errors.metric && !errors.dateRange) ? 'active cursor-pointer' : 'inactive cursor-default'} button`}
-              onClick={submit}
-          ><span className='font-button-label text-white text-uppercase'>{t("process")}</span>
-          </button>
+          <div className="d-flex flex-column">
+            <label className='font-input-label'>
+              {t("select metric")}
+            </label>
+
+            <ResponsiveSelect
+                className='mt-10 font-heading-small text-black'
+                isClearable
+                options={metrics}
+                value={selectedMetric}
+                styles={customStyles()}
+                placeholder={t("select metric")}
+                onChange={v => setMetric(v?.value)}
+            />
+
+            {
+              submitTried && errors?.metric && (
+                  <span className="font-helper-text text-error mt-10">{errors.metric}</span>
+              )
+            }
+          </div>
+          <div className="mt-40">
+            <button
+                className={`${(submitActivated && !errors.metric && !errors.dateRange) ? 'active cursor-pointer' : 'inactive cursor-default'} button`}
+                onClick={submit}
+            ><span className='font-button-label text-white text-uppercase'>{t("process")}</span>
+            </button>
+          </div>
         </div>
       </div>
   )

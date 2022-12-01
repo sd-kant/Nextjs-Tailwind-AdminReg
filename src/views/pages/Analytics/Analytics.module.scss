@@ -1,20 +1,11 @@
 .Wrapper {
   display: flex;
   flex-direction: column;
-  padding: 10px 20px;
-}
-
-@media only screen and (min-width: 768px) {
-  .Wrapper {
-    display: grid;
-    grid-template-columns: 325px 1fr;
-    grid-column-gap: 20px;
-  }
+  padding: 0 20px 10px;
 }
 
 @media only screen and (min-width: 1024px) {
   .Wrapper {
-    display: grid;
-    grid-template-columns: 375px 1fr;
+    display: block;
   }
 }
