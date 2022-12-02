@@ -230,6 +230,10 @@ const ChartUserAlert = () => {
                 plugins={chartPlugins(`line`, t(`no data to display`))}
             />
           </div>
+
+          <div className={clsx(style.txt_center, `mt-40`)}>
+            {timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``}
+          </div>
         </div>
       </div>
   )

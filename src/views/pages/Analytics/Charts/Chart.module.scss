@@ -21,6 +21,12 @@
     font-size: 18px;
   }
 
+  .chart_label {
+    padding-top: 10px;
+    font-size: 22px;
+    font-weight: 500;
+  }
+
   .doughnut_grid2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -162,7 +168,7 @@
 
       .day_txt {
         padding-right: 8px;
-        width: 50px;
+        width: 60px;
         text-align: right;
       }
 
@@ -170,7 +176,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         width: 100%;
-        max-width: calc(100% - 50px);
+        max-width: calc(100% - 60px);
 
         .div_rect {
           border-right: 1px solid $app-white;

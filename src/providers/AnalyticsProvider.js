@@ -856,7 +856,7 @@ export const AnalyticsProvider = (
         }
         list.unshift(subList);
 
-        dayList.unshift(DAY_LIST[startD.day()]);
+        dayList.unshift(DAY_LIST[startD.day()] + `, ` + (startD.month() + 1) + `/` + startD.date());
         startD = endDByOneDay;
       }
 

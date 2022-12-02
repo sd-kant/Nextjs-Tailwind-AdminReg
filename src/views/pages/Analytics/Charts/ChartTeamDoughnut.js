@@ -12,17 +12,40 @@ import {
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {
   HEAT_SWEAT_CHART_COLORS,
-  LABELS_DOUGHNUT
+  LABELS_DOUGHNUT,
+  METRIC_USER_TABLE_VALUES
 } from "../../../../constant";
 import {chartPlugins} from "../../../../utils/anlytics";
+import {useBasicContext} from "../../../../providers/BasicProvider";
 
 ChartJS.register(ArcElement);
 
 const ChartTeamDoughnut = () => {
   const {
     chartData,
+    selectedMetric,
+    selectedTeams
   } = useAnalyticsContext();
   const {t} = useTranslation();
+
+  const {
+    formattedTeams: teams
+  } = useBasicContext();
+
+  const label = React.useMemo(() => {
+    if (selectedTeams?.length > 0) {
+      if (teams?.length > 1 && (selectedTeams?.length === teams?.length)) {
+        return t("all teams");
+      } else if (selectedTeams?.length > 1) {
+        return t("n teams selected", {n: selectedTeams?.length});
+      } else {
+        return teams?.find(it => it.value?.toString() === selectedTeams[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("n team", {n: 0});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTeams, teams]);
 
   if (!chartData) return null;
   return (
@@ -31,7 +54,13 @@ const ChartTeamDoughnut = () => {
           <div>
             <h1 className={clsx(style.txt_center)}>
               {t(`heat susceptibility`)}
+              {
+                selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM && (
+                    <div className={clsx(style.chart_label)}>{t('for n', {n: label})}</div>
+                )
+              }
             </h1>
+
             <Doughnut
                 data={chartData?.dataHeat}
                 plugins={chartPlugins(`doughnut`, t(`no data to display`))}
@@ -51,6 +80,11 @@ const ChartTeamDoughnut = () => {
           <div>
             <h1 className={clsx(style.txt_center)}>
               {t(`sweat rate`)}
+              {
+                selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM && label && (
+                    <div className={style.chart_label}>{t('for n', {n: label})}</div>
+                )
+              }
             </h1>
             <Doughnut
                 data={chartData?.dataSweat}
