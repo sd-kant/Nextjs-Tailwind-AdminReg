@@ -645,5 +645,10 @@
   "wed": "Qua",
   "thurs": "Qui",
   "fri": "Sex",
-  "sat": "Sáb"
+  "sat": "Sáb",
+  "n user": "{{n}} usuário",
+  "n team": "{{n}} equipe",
+  "past 7 days of m in n": "Últimos 7 dias de {{m}} em {{n}}",
+  "past 7 days of n": "Últimos 7 dias de {{n}}",
+  "for n": "durante {{n}}"
 }

@@ -9,16 +9,59 @@ import {
 } from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {
+  METRIC_USER_TABLE_VALUES,
   TIME_LIST
 } from "../../../../constant";
+import {useBasicContext} from "../../../../providers/BasicProvider";
 
 const ChartHighestCBT = () => {
   const {
     maxCBTTileData: chartData,
+    formattedMembers: members,
     setDetailCbt,
+    selectedTeams,
+    selectedMetric,
+    selectedMembers,
+    organization,
+    timeZone,
   } = useAnalyticsContext();
 
   const {t} = useTranslation();
+
+  const {
+    formattedTeams: teams
+  } = useBasicContext();
+
+  const label = React.useMemo(() => {
+    if (selectedTeams?.length > 0) {
+      if (teams?.length > 1 && (selectedTeams?.length === teams?.length)) {
+        return t("all teams");
+      } else if (selectedTeams?.length > 1) {
+        return t("n teams selected", {n: selectedTeams?.length});
+      } else {
+        return teams?.find(it => it.value?.toString() === selectedTeams[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("n team", {n: 0});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTeams, teams]);
+
+  const userLabel = React.useMemo(() => {
+    if (selectedMembers?.length > 0) {
+      if (members?.length > 1 && (selectedMembers?.length === members?.length)) {
+        return t("all users");
+      } else if (selectedMembers?.length > 1) {
+        return t("n users selected", {n: selectedMembers?.length});
+      } else {
+        return members?.find(it => it.value?.toString() === selectedMembers?.[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("n user", {n: 0});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMembers, members, organization]);
+
   const onCheckEmptyData = () => {
     if (!chartData) return 0;
     let flag = 0;
@@ -33,6 +76,11 @@ const ChartHighestCBT = () => {
       <div className={clsx(style.highest_cbt_body)}>
         <h1 className={clsx(style.txt_center)}>
           {t(`highest cbt by time of day and day of week`)}
+          {
+            selectedMetric?.value === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT && (
+                <div className={clsx(style.chart_label)}>{t('past 7 days of m in n', {m: userLabel, n: label})}</div>
+            )
+          }
         </h1>
 
         <div className={clsx(style.flex_space)}>
@@ -52,6 +100,12 @@ const ChartHighestCBT = () => {
                     <div className={clsx(style.day_time_grid16)}>
                       {
                         TIME_LIST?.map((col, index) => {
+                          let tooltip = ``;
+                          if (chartData?.list?.length === 7 && chartData?.list[key][index] !== null) {
+                            tooltip = chartData?.list[key][index]?.details?.length > 0 ? chartData?.list[key][index]?.details[0] : ``;
+                            tooltip = tooltip[1] + `, ` + tooltip[0] + `, ` + tooltip[3];
+                          }
+
                           return (
                             <div
                               key={key + '_' + index}
@@ -73,6 +127,7 @@ const ChartHighestCBT = () => {
                                   :
                                   null
                               }
+                              title={tooltip}
                             />
                           )
                         })
@@ -111,6 +166,10 @@ const ChartHighestCBT = () => {
         </div>
 
         <div className={clsx(style.txt_center)}>
+          <div className={clsx(style.txt_center, `mt-40`)}>
+            {timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``}
+          </div>
+
           <h1 className={clsx(style.txt_18, `mt-40`)}>{t(`time of day`)}</h1>
           <div className={clsx(style.justify_center)}>
             <span className='mt-15'>{t(`cbt`)}</span>
