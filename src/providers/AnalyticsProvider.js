@@ -836,7 +836,7 @@ export const AnalyticsProvider = (
             .sort((a, b) => {
               return a?.maxCbt > b?.maxCbt ? -1 : 1;
             })
-            .map(it => {
+            .forEach(it => {
               hourlyData.push([
                 getUserNameFromUserId(members, it.userId),
                 getTeamNameFromUserId(members, formattedTeams, it.userId),
