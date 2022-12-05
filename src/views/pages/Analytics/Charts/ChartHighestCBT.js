@@ -12,55 +12,20 @@ import {
   METRIC_USER_TABLE_VALUES,
   TIME_LIST
 } from "../../../../constant";
-import {useBasicContext} from "../../../../providers/BasicProvider";
 
 const ChartHighestCBT = () => {
   const {
     maxCBTTileData: chartData,
-    formattedMembers: members,
     setDetailCbt,
     selectedTeams,
     selectedMetric,
     selectedMembers,
-    organization,
     timeZone,
+    teamLabel,
+    userLabel,
   } = useAnalyticsContext();
 
   const {t} = useTranslation();
-
-  const {
-    formattedTeams: teams
-  } = useBasicContext();
-
-  const label = React.useMemo(() => {
-    if (selectedTeams?.length > 0) {
-      if (teams?.length > 1 && (selectedTeams?.length === teams?.length)) {
-        return t("all teams");
-      } else if (selectedTeams?.length > 1) {
-        return t("n teams selected", {n: selectedTeams?.length});
-      } else {
-        return teams?.find(it => it.value?.toString() === selectedTeams[0]?.value?.toString())?.label;
-      }
-    } else {
-      return t("n team", {n: 0});
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTeams, teams]);
-
-  const userLabel = React.useMemo(() => {
-    if (selectedMembers?.length > 0) {
-      if (members?.length > 1 && (selectedMembers?.length === members?.length)) {
-        return t("all users");
-      } else if (selectedMembers?.length > 1) {
-        return t("n users selected", {n: selectedMembers?.length});
-      } else {
-        return members?.find(it => it.value?.toString() === selectedMembers?.[0]?.value?.toString())?.label;
-      }
-    } else {
-      return t("n user", {n: 0});
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMembers, members, organization]);
 
   const onCheckEmptyData = () => {
     if (!chartData) return 0;
@@ -78,7 +43,9 @@ const ChartHighestCBT = () => {
           {t(`highest cbt by time of day and day of week`)}
           {
             selectedMetric?.value === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT && (
-                <div className={clsx(style.chart_label)}>{t('past 7 days of m in n', {m: userLabel, n: label})}</div>
+                <div className={clsx(style.chart_label)}>
+                  {t('past 7 days of m in n', {m: selectedMembers?.length > 0 ? userLabel : t("n user", {n: 0}), n: selectedTeams?.length > 0 ? teamLabel : t("n user", {n: 0})})}
+                </div>
             )
           }
         </h1>
@@ -167,7 +134,11 @@ const ChartHighestCBT = () => {
 
         <div className={clsx(style.txt_center)}>
           <div className={clsx(style.txt_center, `mt-40`)}>
-            {timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``}
+            {selectedTeams?.length === 1 ?
+                timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``
+                :
+                `UTC`
+            }
           </div>
 
           <h1 className={clsx(style.txt_18, `mt-40`)}>{t(`time of day`)}</h1>

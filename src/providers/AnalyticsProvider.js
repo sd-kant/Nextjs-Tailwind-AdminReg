@@ -1141,6 +1141,35 @@ export const AnalyticsProvider = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, page, sizePerPage, headers]);
 
+  const teamLabel = React.useMemo(() => {
+    if (selectedTeams?.length > 0) {
+      if (formattedTeams?.length > 1 && (selectedTeams?.length === formattedTeams?.length)) {
+        return t("all teams");
+      } else if (selectedTeams?.length > 1) {
+        return t("n teams selected", {n: selectedTeams?.length});
+      } else {
+        return formattedTeams?.find(it => it.value?.toString() === selectedTeams[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("select team");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTeams, formattedTeams]);
+  const userLabel = React.useMemo(() => {
+    if (selectedMembers?.length > 0) {
+      if (formattedMembers?.length > 1 && (selectedMembers?.length === formattedMembers?.length)) {
+        return t("all users");
+      } else if (selectedMembers?.length > 1) {
+        return t("n users selected", {n: selectedMembers?.length});
+      } else {
+        return formattedMembers?.find(it => it.value?.toString() === selectedMembers?.[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("select user");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMembers, formattedMembers, organization]);
+
   const handleExport = () => {
     if (visibleExport) {
       if ([`xlsx`, `csv`].includes(exportOption?.value)) {
@@ -1201,6 +1230,8 @@ export const AnalyticsProvider = (
     setDetailCbt,
     timeZone,
     maxCBTTileData,
+    teamLabel,
+    userLabel,
   };
 
   return (

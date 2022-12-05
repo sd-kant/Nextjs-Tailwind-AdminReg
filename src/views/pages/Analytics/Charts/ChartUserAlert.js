@@ -232,7 +232,11 @@ const ChartUserAlert = () => {
           </div>
 
           <div className={clsx(style.txt_center, `mt-40`)}>
-            {timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``}
+            {selectedTeams?.length === 1 ?
+                timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``
+                :
+                `UTC`
+            }
           </div>
         </div>
       </div>
