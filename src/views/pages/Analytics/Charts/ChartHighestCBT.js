@@ -67,11 +67,6 @@ const ChartHighestCBT = () => {
                     <div className={clsx(style.day_time_grid16)}>
                       {
                         TIME_LIST?.map((col, index) => {
-                          let tooltip = ``;
-                          if (chartData?.list?.length === 7 && chartData?.list[key][index] !== null) {
-                            tooltip = chartData?.list[key][index]?.details?.length > 0 ? chartData?.list[key][index]?.details[0] : ``;
-                            tooltip = tooltip[1] + `, ` + tooltip[0] + `, ` + tooltip[3];
-                          }
 
                           return (
                             <div
@@ -94,7 +89,7 @@ const ChartHighestCBT = () => {
                                   :
                                   null
                               }
-                              title={tooltip}
+                              title={chartData?.list[key][index]?.tooltip}
                             />
                           )
                         })

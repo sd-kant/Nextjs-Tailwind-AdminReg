@@ -838,15 +838,23 @@ export const AnalyticsProvider = (
               getUserNameFromUserId(members, it.userId),
               getTeamNameFromUserId(members, formattedTeams, it.userId),
               it.utcTs ? it.utcTs : ``,
-              it?.maxCbt ? celsiusToFahrenheit(it?.maxCbt) : ``,
+              it?.maxCbt ? formatHeartCbt(it?.maxCbt) : ``,
             ]));
-          let tempCbt = hourlyDate?.length > 0 ? hourlyDate[0][3] : 0;
+          let tempCbt = hourlyDate?.length > 0 ? (unitMetric ? celsiusToFahrenheit(hourlyDate[0][3]) : hourlyDate[0][3]) : 0;
           tempCbt = Math.min(Math.max(tempCbt, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
           tempCbt = ((HIGHEST_CHART_CELSIUS_MAX - tempCbt) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
+
+          let tooltip = ``;
+          if (hourlyDate?.length > 0) {
+            let firstItem = hourlyDate?.length > 0 ? hourlyDate[0] : ``;
+            tooltip = firstItem[1] + `, ` + firstItem[0] + `, ` + firstItem[3];
+          }
+
           subList.push(
             hourlyDate?.length > 0 ? {
                 maxCbt: tempCbt.toFixed(2),
-                details: hourlyDate
+                details: hourlyDate,
+                tooltip: tooltip,
               }
               :
               null
