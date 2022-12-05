@@ -12,8 +12,12 @@ import {
   METRIC_USER_TABLE_VALUES,
   TIME_LIST
 } from "../../../../constant";
+import {get} from "lodash";
 
-const ChartHighestCBT = () => {
+const ChartHighestCBT = (
+    {
+      metric: unitMetric,
+    }) => {
   const {
     maxCBTTileData: chartData,
     setDetailCbt,
@@ -77,7 +81,7 @@ const ChartHighestCBT = () => {
                                   `rgb(
                                     255, 
                                     ${(chartData?.list?.length === 7 && chartData?.list[key][index] !== null) 
-                                    ? chartData?.list[key][index].maxCbt : 255}, 
+                                    ? chartData?.list[key][index].maxCbtColor : 255}, 
                                     ${(chartData?.list?.length === 7 && chartData?.list[key][index] !== null)
                                     ? 0 : 255}
                                   )`
@@ -145,9 +149,9 @@ const ChartHighestCBT = () => {
                 <div className={clsx(style.point99)}/>
                 <div className={clsx(style.point100)}/>
                 <div className={clsx(style.point101)}/>
-                <div className={clsx(style.txt_point99)}>99</div>
-                <div className={clsx(style.txt_point100)}>100</div>
-                <div className={clsx(style.txt_point101)}>101</div>
+                <div className={clsx(style.txt_point99)}>{unitMetric ? 37.22: 99}</div>
+                <div className={clsx(style.txt_point100)}>{unitMetric ? 37.77: 100}</div>
+                <div className={clsx(style.txt_point101)}>{unitMetric ? 38.33: 101}</div>
               </div>
             </div>
           </div>
@@ -157,7 +161,9 @@ const ChartHighestCBT = () => {
   )
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  metric: get(state, 'ui.metric'),
+});
 
 export default connect(
   mapStateToProps,
