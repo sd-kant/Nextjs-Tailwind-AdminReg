@@ -838,15 +838,23 @@ export const AnalyticsProvider = (
               getUserNameFromUserId(members, it.userId),
               getTeamNameFromUserId(members, formattedTeams, it.userId),
               it.utcTs ? it.utcTs : ``,
-              it?.maxCbt ? celsiusToFahrenheit(it?.maxCbt) : ``,
+              it?.maxCbt ? formatHeartCbt(it?.maxCbt) : ``,
             ]));
-          let tempCbt = hourlyDate?.length > 0 ? hourlyDate[0][3] : 0;
+          let tempCbt = hourlyDate?.length > 0 ? (unitMetric ? celsiusToFahrenheit(hourlyDate[0][3]) : hourlyDate[0][3]) : 0;
           tempCbt = Math.min(Math.max(tempCbt, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
           tempCbt = ((HIGHEST_CHART_CELSIUS_MAX - tempCbt) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
+
+          let tooltip = ``;
+          if (hourlyDate?.length > 0) {
+            let firstItem = hourlyDate?.length > 0 ? hourlyDate[0] : ``;
+            tooltip = firstItem[1] + `, ` + firstItem[0] + `, ` + firstItem[3];
+          }
+
           subList.push(
             hourlyDate?.length > 0 ? {
                 maxCbt: tempCbt.toFixed(2),
-                details: hourlyDate
+                details: hourlyDate,
+                tooltip: tooltip,
               }
               :
               null
@@ -1141,6 +1149,35 @@ export const AnalyticsProvider = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, page, sizePerPage, headers]);
 
+  const teamLabel = React.useMemo(() => {
+    if (selectedTeams?.length > 0) {
+      if (formattedTeams?.length > 1 && (selectedTeams?.length === formattedTeams?.length)) {
+        return t("all teams");
+      } else if (selectedTeams?.length > 1) {
+        return t("n teams selected", {n: selectedTeams?.length});
+      } else {
+        return formattedTeams?.find(it => it.value?.toString() === selectedTeams[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("select team");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTeams, formattedTeams]);
+  const userLabel = React.useMemo(() => {
+    if (selectedMembers?.length > 0) {
+      if (formattedMembers?.length > 1 && (selectedMembers?.length === formattedMembers?.length)) {
+        return t("all users");
+      } else if (selectedMembers?.length > 1) {
+        return t("n users selected", {n: selectedMembers?.length});
+      } else {
+        return formattedMembers?.find(it => it.value?.toString() === selectedMembers?.[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("select user");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMembers, formattedMembers, organization]);
+
   const handleExport = () => {
     if (visibleExport) {
       if ([`xlsx`, `csv`].includes(exportOption?.value)) {
@@ -1201,6 +1238,8 @@ export const AnalyticsProvider = (
     setDetailCbt,
     timeZone,
     maxCBTTileData,
+    teamLabel,
+    userLabel,
   };
 
   return (

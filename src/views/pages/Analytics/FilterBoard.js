@@ -58,40 +58,12 @@ const FilterBoard = () => {
     selectedMembers,
     pickedMembers,
     selectedUsers,
+    teamLabel,
+    userLabel,
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
   }, [organizations, organization]);
-
-  const label = React.useMemo(() => {
-    if (selectedTeams?.length > 0) {
-      if (teams?.length > 1 && (selectedTeams?.length === teams?.length)) {
-        return t("all teams");
-      } else if (selectedTeams?.length > 1) {
-        return t("n teams selected", {n: selectedTeams?.length});
-      } else {
-        return teams?.find(it => it.value?.toString() === selectedTeams[0]?.value?.toString())?.label;
-      }
-    } else {
-      return t("select team");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTeams, teams]);
-
-  const userLabel = React.useMemo(() => {
-    if (selectedMembers?.length > 0) {
-      if (members?.length > 1 && (selectedMembers?.length === members?.length)) {
-        return t("all users");
-      } else if (selectedMembers?.length > 1) {
-        return t("n users selected", {n: selectedMembers?.length});
-      } else {
-        return members?.find(it => it.value?.toString() === selectedMembers?.[0]?.value?.toString())?.label;
-      }
-    } else {
-      return t("select user");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMembers, members, organization]);
 
   const submitActivated = React.useMemo(() => {
     return organization &&
@@ -184,7 +156,7 @@ const FilterBoard = () => {
                   </label>
 
                   <MultiSelectPopup
-                      label={label}
+                      label={teamLabel}
                       options={teams}
                       value={selectedTeams}
                       onChange={v => {
