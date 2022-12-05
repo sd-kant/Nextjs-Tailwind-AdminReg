@@ -33,6 +33,7 @@ import {
 import MultiSelectPopup from "../../../components/MultiSelectPopup";
 import spacetime from "spacetime";
 import {useUtilsContext} from "../../../../providers/UtilsProvider";
+import {formatHeartRate} from "../../../../utils/dashboard";
 
 ChartJS.register(
     CategoryScale,
@@ -147,7 +148,7 @@ const ChartUserAlert = () => {
               tempData[findIndex] = selectedMetric.value === METRIC_USER_CHART_VALUES.CBT ?
                   (it?.heartCbtAvg ? formatHeartCbt(it?.heartCbtAvg) : 0)
                   :
-                  (it?.heartRateAvg ? formatHeartCbt(it?.heartRateAvg) : 0);
+                  (it?.heartRateAvg ? formatHeartRate(it?.heartRateAvg) : 0);
               emptyFlag = true;
             }
           }

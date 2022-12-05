@@ -828,32 +828,37 @@ export const AnalyticsProvider = (
 
         while (startHour.isBefore(endDByOneDay)) {
           let endHour = startHour.add(1, 'hour');
-          const hourlyDate = dailyData?.filter(it => {
+          const hourlyData = [];
+          const tempData = [];
+          dailyData?.filter(it => {
             return spacetime(it.utcTs).isBefore(endHour) && spacetime(it.utcTs).isAfter(startHour);
           })
             .sort((a, b) => {
               return a?.maxCbt > b?.maxCbt ? -1 : 1;
             })
-            .map(it => ([
-              getUserNameFromUserId(members, it.userId),
-              getTeamNameFromUserId(members, formattedTeams, it.userId),
-              it.utcTs ? it.utcTs : ``,
-              it?.maxCbt ? formatHeartCbt(it?.maxCbt) : ``,
-            ]));
-          let tempCbt = hourlyDate?.length > 0 ? (unitMetric ? celsiusToFahrenheit(hourlyDate[0][3]) : hourlyDate[0][3]) : 0;
-          tempCbt = Math.min(Math.max(tempCbt, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
-          tempCbt = ((HIGHEST_CHART_CELSIUS_MAX - tempCbt) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
+            .forEach(it => {
+              hourlyData.push([
+                getUserNameFromUserId(members, it.userId),
+                getTeamNameFromUserId(members, formattedTeams, it.userId),
+                it.utcTs ? it.utcTs : ``,
+                it?.maxCbt ? formatHeartCbt(it?.maxCbt) : ``,
+              ]);
+              tempData.push(it?.maxCbt ? it?.maxCbt : ``);
+            });
+          let maxCbtColor = tempData?.length > 0 ? celsiusToFahrenheit(tempData[0]) : 0;
+          maxCbtColor = Math.min(Math.max(maxCbtColor, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
+          maxCbtColor = ((HIGHEST_CHART_CELSIUS_MAX - maxCbtColor) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
 
           let tooltip = ``;
-          if (hourlyDate?.length > 0) {
-            let firstItem = hourlyDate?.length > 0 ? hourlyDate[0] : ``;
+          if (hourlyData?.length > 0) {
+            let firstItem = hourlyData?.length > 0 ? hourlyData[0] : ``;
             tooltip = firstItem[1] + `, ` + firstItem[0] + `, ` + firstItem[3];
           }
 
           subList.push(
-            hourlyDate?.length > 0 ? {
-                maxCbt: tempCbt.toFixed(2),
-                details: hourlyDate,
+              hourlyData?.length > 0 ? {
+                maxCbtColor: maxCbtColor.toFixed(2),
+                details: hourlyData,
                 tooltip: tooltip,
               }
               :
