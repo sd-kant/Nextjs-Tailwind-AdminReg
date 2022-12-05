@@ -149,9 +149,9 @@ const ChartHighestCBT = (
                 <div className={clsx(style.point99)}/>
                 <div className={clsx(style.point100)}/>
                 <div className={clsx(style.point101)}/>
-                <div className={clsx(style.txt_point99)}>{unitMetric ? 37.22: 99}</div>
-                <div className={clsx(style.txt_point100)}>{unitMetric ? 37.77: 100}</div>
-                <div className={clsx(style.txt_point101)}>{unitMetric ? 38.33: 101}</div>
+                <div className={clsx(style.txt_point99)}>{unitMetric ? 37.22 : 99}</div>
+                <div className={clsx(style.txt_point100)}>{unitMetric ? 37.77 : 100}</div>
+                <div className={clsx(style.txt_point101)}>{unitMetric ? 38.33 : 101}</div>
               </div>
             </div>
           </div>
