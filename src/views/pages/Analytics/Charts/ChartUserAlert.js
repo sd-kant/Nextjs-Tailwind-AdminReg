@@ -32,6 +32,8 @@ import {
 } from "../../../../utils/anlytics";
 import MultiSelectPopup from "../../../components/MultiSelectPopup";
 import spacetime from "spacetime";
+import {useUtilsContext} from "../../../../providers/UtilsProvider";
+import {formatHeartRate} from "../../../../utils/dashboard";
 
 ChartJS.register(
     CategoryScale,
@@ -51,10 +53,11 @@ const ChartUserAlert = () => {
     setUsers,
     users,
     chartData,
-    timeZone
+    timeZone,
+    chartRef,
   } = useAnalyticsContext();
   const {t} = useTranslation();
-
+  const {formatHeartCbt} = useUtilsContext();
   const [type, setType] = React.useState(2); // 1 | 2 // 1: day, 2: week
 
   /**
@@ -129,7 +132,7 @@ const ChartUserAlert = () => {
 
       let filterUsers = users?.filter(it => selectedMembers?.findIndex(a => a?.value?.toString() === it.toString()) > -1)?.sort((a, b) => a > b ? 1 : -1);
 
-      chartData.filter(it => filterUsers.includes(it.userId))?.forEach(it => {
+      chartData?.filter(it => filterUsers.includes(it.userId))?.forEach(it => {
         if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
           labels.push(spacetime(it.ts, timeZone.name).unixFmt('dd hh:mm:ss'));
         }
@@ -139,11 +142,14 @@ const ChartUserAlert = () => {
       filterUsers?.forEach(userId => {
         tempData = new Array(labels?.length || 0).fill('');
         let emptyFlag = false;
-        chartData.filter(it => userId.toString() === it.userId.toString())?.forEach(it => {
+        chartData?.filter(it => userId.toString() === it.userId.toString())?.forEach(it => {
           if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
             let findIndex = labels?.findIndex(label => label === (spacetime(it.ts, timeZone.name).unixFmt('dd hh:mm:ss')));
             if (findIndex > -1) {
-              tempData[findIndex] = selectedMetric.value === METRIC_USER_CHART_VALUES.CBT ? it?.heartCbtAvg : it?.heartRateAvg;
+              tempData[findIndex] = selectedMetric.value === METRIC_USER_CHART_VALUES.CBT ?
+                  (it?.heartCbtAvg ? formatHeartCbt(it?.heartCbtAvg) : 0)
+                  :
+                  (it?.heartRateAvg ? formatHeartRate(it?.heartRateAvg) : 0);
               emptyFlag = true;
             }
           }
@@ -163,10 +169,10 @@ const ChartUserAlert = () => {
 
       setData(labels?.length > 0 ? { labels, datasets } : INIT_USER_CHART_ALERT_DATA);
     }
-  }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone]);
+  }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone, formatHeartCbt]);
 
   return (
-      <div className={clsx(style.chart_body)}>
+      <div ref={chartRef} className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
           <h1 className={clsx(style.txt_center)}>
             {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT ? 'cbt' : 'hr'}`)}
@@ -229,6 +235,14 @@ const ChartUserAlert = () => {
                 data={data}
                 plugins={chartPlugins(`line`, t(`no data to display`))}
             />
+          </div>
+
+          <div className={clsx(style.txt_center, `mt-40`)}>
+            {selectedTeams?.length === 1 ?
+                timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``
+                :
+                `UTC`
+            }
           </div>
         </div>
       </div>

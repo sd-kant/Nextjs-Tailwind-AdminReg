@@ -12,7 +12,8 @@ import {
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {
   HEAT_SWEAT_CHART_COLORS,
-  LABELS_DOUGHNUT
+  LABELS_DOUGHNUT,
+  METRIC_USER_TABLE_VALUES
 } from "../../../../constant";
 import {chartPlugins} from "../../../../utils/anlytics";
 
@@ -21,20 +22,32 @@ ChartJS.register(ArcElement);
 const ChartTeamDoughnut = () => {
   const {
     chartData,
+    selectedMetric,
+    selectedTeams,
+    teamLabel,
+    chartRef,
   } = useAnalyticsContext();
   const {t} = useTranslation();
 
   if (!chartData) return null;
   return (
-      <div className={clsx(style.chart_body)}>
+      <div ref={chartRef} className={clsx(style.chart_body)}>
         <div className={clsx(style.doughnut_grid2)}>
           <div>
             <h1 className={clsx(style.txt_center)}>
               {t(`heat susceptibility`)}
+              {
+                selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM && (
+                    <div className={clsx(style.chart_label)}>
+                      {t('for n', {n: selectedTeams?.length > 0 ? teamLabel : t("n team", {n: 0})})}
+                    </div>
+                )
+              }
             </h1>
+
             <Doughnut
                 data={chartData?.dataHeat}
-                plugins={chartPlugins(`doughnut`, t(`no data to display`))}
+                plugins={chartPlugins(`doughnut1`, t(`no data to display`))}
             />
 
             <div className={clsx(style.legend_box_body)}>
@@ -51,10 +64,15 @@ const ChartTeamDoughnut = () => {
           <div>
             <h1 className={clsx(style.txt_center)}>
               {t(`sweat rate`)}
+              {
+                selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM && teamLabel && (
+                    <div className={style.chart_label}>{t('for n', {n: selectedTeams?.length > 0 ? teamLabel : t("n team", {n: 0})})}</div>
+                )
+              }
             </h1>
             <Doughnut
                 data={chartData?.dataSweat}
-                plugins={chartPlugins(`doughnut`, t(`no data to display`))}
+                plugins={chartPlugins(`doughnut2`, t(`no data to display`))}
             />
 
             <div className={clsx(style.legend_box_body)}>

@@ -49,6 +49,16 @@ const Toolbar = () => {
       <div className={clsx(style.Header)} style={{width: `${tableWidth}px`}}>
         <div className={clsx(style.Second)}>
           <div className={clsx(style.PaginationWrapper)}>
+            {
+              detailCbt && (
+                  <button
+                      className={clsx(style.btn_back)}
+                      onClick={() => setDetailCbt(null)}
+                  >
+                    <span className={clsx(style.txt_ellipse1)}>{t('back')}</span>
+                  </button>
+              )
+            }
             <React.Fragment>
               {
                 data?.length > 0 && (
@@ -76,16 +86,6 @@ const Toolbar = () => {
                 </select>
               </div>
             </React.Fragment>
-            {
-              detailCbt && (
-                  <button
-                      className={clsx(style.btn_back)}
-                      onClick={() => setDetailCbt(null)}
-                  >
-                    <span className={clsx(style.txt_ellipse1)}>{t('back')}</span>
-                  </button>
-              )
-            }
           </div>
         </div>
       </div>

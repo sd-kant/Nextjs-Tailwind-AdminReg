@@ -186,7 +186,7 @@ export const chartPlugins = (idStr, noDataStr) => {
       const {ctx} = chart;
       ctx.save();
 
-      if (idStr === `doughnut`) {
+      if ([`doughnut1`, `doughnut2`].includes(idStr)) {
         chart.data.datasets.forEach((dataset, i) => {
           chart.getDatasetMeta(i).data.forEach((dataPoint, index) => {
             const {x, y} = dataPoint.tooltipPosition();

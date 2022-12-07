@@ -88,6 +88,7 @@ export const AnalyticsProvider = (
   const [sizePerPage, setSizePerPage] = React.useState(10);
   const [users, setUsers] = React.useState([]);
   const [detailCbt, setDetailCbt] = React.useState(null); // {dayIndex: 4, timeIndex: 5}
+  const chartRef = React.useRef(null); // for chart print
 
   const exportOptions = [
     {
@@ -828,25 +829,38 @@ export const AnalyticsProvider = (
 
         while (startHour.isBefore(endDByOneDay)) {
           let endHour = startHour.add(1, 'hour');
-          const hourlyDate = dailyData?.filter(it => {
+          const hourlyData = [];
+          const tempData = [];
+          dailyData?.filter(it => {
             return spacetime(it.utcTs).isBefore(endHour) && spacetime(it.utcTs).isAfter(startHour);
           })
             .sort((a, b) => {
               return a?.maxCbt > b?.maxCbt ? -1 : 1;
             })
-            .map(it => ([
-              getUserNameFromUserId(members, it.userId),
-              getTeamNameFromUserId(members, formattedTeams, it.userId),
-              it.utcTs ? it.utcTs : ``,
-              it?.maxCbt ? celsiusToFahrenheit(it?.maxCbt) : ``,
-            ]));
-          let tempCbt = hourlyDate?.length > 0 ? hourlyDate[0][3] : 0;
-          tempCbt = Math.min(Math.max(tempCbt, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
-          tempCbt = ((HIGHEST_CHART_CELSIUS_MAX - tempCbt) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
+            .forEach(it => {
+              hourlyData.push([
+                getUserNameFromUserId(members, it.userId),
+                getTeamNameFromUserId(members, formattedTeams, it.userId),
+                it.utcTs ? it.utcTs : ``,
+                it?.maxCbt ? formatHeartCbt(it?.maxCbt) : ``,
+              ]);
+              tempData.push(it?.maxCbt ? it?.maxCbt : ``);
+            });
+          let maxCbtColor = tempData?.length > 0 ? celsiusToFahrenheit(tempData[0]) : 0;
+          maxCbtColor = Math.min(Math.max(maxCbtColor, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
+          maxCbtColor = ((HIGHEST_CHART_CELSIUS_MAX - maxCbtColor) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
+
+          let tooltip = ``;
+          if (hourlyData?.length > 0) {
+            let firstItem = hourlyData?.length > 0 ? hourlyData[0] : ``;
+            tooltip = firstItem[1] + `, ` + firstItem[0] + `, ` + firstItem[3];
+          }
+
           subList.push(
-            hourlyDate?.length > 0 ? {
-                maxCbt: tempCbt.toFixed(2),
-                details: hourlyDate
+              hourlyData?.length > 0 ? {
+                maxCbtColor: maxCbtColor.toFixed(2),
+                details: hourlyData,
+                tooltip: tooltip,
               }
               :
               null
@@ -856,7 +870,7 @@ export const AnalyticsProvider = (
         }
         list.unshift(subList);
 
-        dayList.unshift(DAY_LIST[startD.day()]);
+        dayList.unshift(DAY_LIST[startD.day()] + `, ` + (startD.month() + 1) + `/` + startD.date());
         startD = endDByOneDay;
       }
 
@@ -1141,6 +1155,35 @@ export const AnalyticsProvider = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, page, sizePerPage, headers]);
 
+  const teamLabel = React.useMemo(() => {
+    if (selectedTeams?.length > 0) {
+      if (formattedTeams?.length > 1 && (selectedTeams?.length === formattedTeams?.length)) {
+        return t("all teams");
+      } else if (selectedTeams?.length > 1) {
+        return t("n teams selected", {n: selectedTeams?.length});
+      } else {
+        return formattedTeams?.find(it => it.value?.toString() === selectedTeams[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("select team");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTeams, formattedTeams]);
+  const userLabel = React.useMemo(() => {
+    if (selectedMembers?.length > 0) {
+      if (formattedMembers?.length > 1 && (selectedMembers?.length === formattedMembers?.length)) {
+        return t("all users");
+      } else if (selectedMembers?.length > 1) {
+        return t("n users selected", {n: selectedMembers?.length});
+      } else {
+        return formattedMembers?.find(it => it.value?.toString() === selectedMembers?.[0]?.value?.toString())?.label;
+      }
+    } else {
+      return t("select user");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMembers, formattedMembers, organization]);
+
   const handleExport = () => {
     if (visibleExport) {
       if ([`xlsx`, `csv`].includes(exportOption?.value)) {
@@ -1201,6 +1244,10 @@ export const AnalyticsProvider = (
     setDetailCbt,
     timeZone,
     maxCBTTileData,
+    teamLabel,
+    userLabel,
+    chartRef,
+    setLoading,
   };
 
   return (

@@ -646,5 +646,10 @@
   "wed": "水曜",
   "thurs": "木曜",
   "fri": "金曜",
-  "sat": "土曜"
+  "sat": "土曜",
+  "n user": "{{n}} ユーザー",
+  "n team": "{{n}} チーム",
+  "past 7 days of m in n": "過去7日間の{{m}}の{{n}}個",
+  "past 7 days of n": "過去 7 日間の {{n}}",
+  "for n": "Por {{n}}"
 }

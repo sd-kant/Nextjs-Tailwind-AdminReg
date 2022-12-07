@@ -9,16 +9,29 @@ import {
 } from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {
+  METRIC_USER_TABLE_VALUES,
   TIME_LIST
 } from "../../../../constant";
+import {get} from "lodash";
 
-const ChartHighestCBT = () => {
+const ChartHighestCBT = (
+    {
+      metric: unitMetric,
+    }) => {
   const {
     maxCBTTileData: chartData,
     setDetailCbt,
+    selectedTeams,
+    selectedMetric,
+    selectedMembers,
+    timeZone,
+    teamLabel,
+    userLabel,
+    chartRef
   } = useAnalyticsContext();
 
   const {t} = useTranslation();
+
   const onCheckEmptyData = () => {
     if (!chartData) return 0;
     let flag = 0;
@@ -29,10 +42,17 @@ const ChartHighestCBT = () => {
   };
 
   return (
-    <div className={clsx(style.chart_body)}>
+    <div ref={chartRef} className={clsx(style.chart_body)}>
       <div className={clsx(style.highest_cbt_body)}>
         <h1 className={clsx(style.txt_center)}>
           {t(`highest cbt by time of day and day of week`)}
+          {
+            selectedMetric?.value === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT && (
+                <div className={clsx(style.chart_label)}>
+                  {t('past 7 days of m in n', {m: selectedMembers?.length > 0 ? userLabel : t("n user", {n: 0}), n: selectedTeams?.length > 0 ? teamLabel : t("n user", {n: 0})})}
+                </div>
+            )
+          }
         </h1>
 
         <div className={clsx(style.flex_space)}>
@@ -52,6 +72,7 @@ const ChartHighestCBT = () => {
                     <div className={clsx(style.day_time_grid16)}>
                       {
                         TIME_LIST?.map((col, index) => {
+
                           return (
                             <div
                               key={key + '_' + index}
@@ -61,7 +82,7 @@ const ChartHighestCBT = () => {
                                   `rgb(
                                     255, 
                                     ${(chartData?.list?.length === 7 && chartData?.list[key][index] !== null) 
-                                    ? chartData?.list[key][index].maxCbt : 255}, 
+                                    ? chartData?.list[key][index].maxCbtColor : 255}, 
                                     ${(chartData?.list?.length === 7 && chartData?.list[key][index] !== null)
                                     ? 0 : 255}
                                   )`
@@ -73,6 +94,7 @@ const ChartHighestCBT = () => {
                                   :
                                   null
                               }
+                              title={chartData?.list[key][index]?.tooltip}
                             />
                           )
                         })
@@ -111,6 +133,14 @@ const ChartHighestCBT = () => {
         </div>
 
         <div className={clsx(style.txt_center)}>
+          <div className={clsx(style.txt_center, `mt-40`)}>
+            {selectedTeams?.length === 1 ?
+                timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``
+                :
+                `UTC`
+            }
+          </div>
+
           <h1 className={clsx(style.txt_18, `mt-40`)}>{t(`time of day`)}</h1>
           <div className={clsx(style.justify_center)}>
             <span className='mt-15'>{t(`cbt`)}</span>
@@ -120,9 +150,9 @@ const ChartHighestCBT = () => {
                 <div className={clsx(style.point99)}/>
                 <div className={clsx(style.point100)}/>
                 <div className={clsx(style.point101)}/>
-                <div className={clsx(style.txt_point99)}>99</div>
-                <div className={clsx(style.txt_point100)}>100</div>
-                <div className={clsx(style.txt_point101)}>101</div>
+                <div className={clsx(style.txt_point99)}>{unitMetric ? 37.22 : 99}</div>
+                <div className={clsx(style.txt_point100)}>{unitMetric ? 37.77 : 100}</div>
+                <div className={clsx(style.txt_point101)}>{unitMetric ? 38.33 : 101}</div>
               </div>
             </div>
           </div>
@@ -132,7 +162,9 @@ const ChartHighestCBT = () => {
   )
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  metric: get(state, 'ui.metric'),
+});
 
 export default connect(
   mapStateToProps,
