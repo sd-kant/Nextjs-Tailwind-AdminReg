@@ -21,6 +21,7 @@ import {
   checkMetric,
   getThisWeek
 } from "../../../utils/anlytics";
+import ReactToPrint from "react-to-print";
 
 const CustomInput = React.forwardRef(({value, onClick}, ref) => (
     <div className={clsx(style.CustomInputWrapper)} onClick={onClick}>
@@ -43,7 +44,8 @@ const FilterBoard = () => {
   const {
     formattedOrganizations: organizations,
     organization, setOrganization,
-    formattedTeams: teams, setPickedTeams
+    formattedTeams: teams,
+    setPickedTeams,
   } = useBasicContext();
   const [submitTried, setSubmitTried] = React.useState(false);
   const {
@@ -60,10 +62,14 @@ const FilterBoard = () => {
     selectedUsers,
     teamLabel,
     userLabel,
+    chartRef,
+    setLoading
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
   }, [organizations, organization]);
+
+  const onBeforeGetContentResolve = React.useRef(null);
 
   const submitActivated = React.useMemo(() => {
     return organization &&
@@ -106,6 +112,50 @@ const FilterBoard = () => {
     return errors;
   }, [startDate, endDate, metric, statsBy, t]);
 
+  const showChart = React.useCallback(() => {
+    if (!selectedMetric) return false;
+    else {
+      return (
+          [
+            METRIC_USER_TABLE_VALUES.SWR_ACCLIM,
+            METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
+            METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
+            METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE,
+            METRIC_USER_TABLE_VALUES.ALERTS,
+            METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK,
+            METRIC_USER_TABLE_VALUES.MAX_HEART_CBT,
+            METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK,
+            METRIC_USER_CHART_VALUES.CBT,
+            METRIC_USER_CHART_VALUES.HR,
+          ].includes(selectedMetric?.value)
+      )
+    }
+  }, [selectedMetric]);
+
+  const fileName = React.useMemo(() => {
+    if (
+        selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM ||
+        selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE ||
+        selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE ||
+        selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
+    ) // 5, 23, 24, 30
+      return "Heat-Sweat-Chart";
+    else if (
+        selectedMetric?.value === METRIC_USER_TABLE_VALUES.ALERTS ||
+        selectedMetric?.value === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
+    ) // 2, 31
+      return "Alert-Chart";
+    else if (
+        selectedMetric?.value === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT ||
+        selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK
+    ) // 3, 32
+      return "Max-Cbt-Chart";
+    else if (selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT) // 40
+      return "Cbt-Chart";
+    else if (selectedMetric?.value === METRIC_USER_CHART_VALUES.HR) // 41
+      return "Hr-Chart";
+  }, [selectedMetric]);
+
   React.useEffect(() => {
     if (!selectedMetric) return;
     if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) {
@@ -123,6 +173,50 @@ const FilterBoard = () => {
       setEndDate(week.endDate);
     }
   }, [selectedMetric, setStartDate, setEndDate]);
+
+  /**
+   * print chart
+   * onAfterPrint called
+   */
+  const handleAfterPrint = React.useCallback(() => {
+    setLoading(false);
+  }, [setLoading]);
+
+  /**
+   * onBeforePrint called
+   */
+  const handleBeforePrint = React.useCallback(() => {
+    setLoading(true);
+  }, [setLoading]);
+
+  /**
+   * onBeforeGetContent called
+   */
+  const handleOnBeforeGetContent = React.useCallback(() => {
+    if (showChart())
+      setLoading(true);
+    return new Promise((resolve) => {
+      onBeforeGetContentResolve.current = resolve;
+
+      setTimeout(() => {
+        resolve();
+        setLoading(false);
+      }, 2000);
+    });
+  }, [setLoading, showChart]);
+
+  const reactToPrintContent = React.useCallback(() => {
+    return chartRef.current;
+  }, [chartRef]);
+
+  const reactToPrintTrigger = React.useCallback(() => {
+    return (
+        <button className={`${showChart() ? 'active cursor-pointer' : 'inactive cursor-default'} button`}>
+          <span className='font-button-label text-white text-uppercase'>{t("print")}</span>
+        </button>
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMetric]);
 
   const startDateMax = new Date();
   const endDateMax = new Date();
@@ -234,13 +328,24 @@ const FilterBoard = () => {
               )
             }
           </div>
-          <div className="mt-40">
+          <span className="mt-40">
             <button
                 className={`${(submitActivated && !errors.metric && !errors.dateRange) ? 'active cursor-pointer' : 'inactive cursor-default'} button`}
                 onClick={submit}
             ><span className='font-button-label text-white text-uppercase'>{t("process")}</span>
             </button>
-          </div>
+          </span>
+          <span className="mt-40">
+            <ReactToPrint
+                content={reactToPrintContent}
+                documentTitle={fileName}
+                onAfterPrint={handleAfterPrint}
+                onBeforeGetContent={handleOnBeforeGetContent}
+                onBeforePrint={handleBeforePrint}
+                removeAfterPrint
+                trigger={reactToPrintTrigger}
+            />
+          </span>
         </div>
       </div>
   )

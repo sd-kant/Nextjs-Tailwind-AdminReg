@@ -37,7 +37,7 @@ const QueryResult = (
     exportOption,
     setExportOption,
     handleExport,
-    selectedMetric,
+    selectedMetric
   } = useAnalyticsContext();
   const {t} = useTranslation();
   const ableToExport = visibleExport && Boolean(exportOption);

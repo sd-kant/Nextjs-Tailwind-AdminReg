@@ -88,6 +88,7 @@ export const AnalyticsProvider = (
   const [sizePerPage, setSizePerPage] = React.useState(10);
   const [users, setUsers] = React.useState([]);
   const [detailCbt, setDetailCbt] = React.useState(null); // {dayIndex: 4, timeIndex: 5}
+  const chartRef = React.useRef(null); // for chart print
 
   const exportOptions = [
     {
@@ -1240,6 +1241,8 @@ export const AnalyticsProvider = (
     maxCBTTileData,
     teamLabel,
     userLabel,
+    chartRef,
+    setLoading,
   };
 
   return (

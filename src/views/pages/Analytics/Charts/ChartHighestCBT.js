@@ -23,6 +23,7 @@ const ChartHighestCBT = () => {
     timeZone,
     teamLabel,
     userLabel,
+    chartRef
   } = useAnalyticsContext();
 
   const {t} = useTranslation();
@@ -37,7 +38,7 @@ const ChartHighestCBT = () => {
   };
 
   return (
-    <div className={clsx(style.chart_body)}>
+    <div ref={chartRef} className={clsx(style.chart_body)}>
       <div className={clsx(style.highest_cbt_body)}>
         <h1 className={clsx(style.txt_center)}>
           {t(`highest cbt by time of day and day of week`)}

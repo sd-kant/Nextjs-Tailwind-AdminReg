@@ -33,6 +33,7 @@ import {
 import MultiSelectPopup from "../../../components/MultiSelectPopup";
 import spacetime from "spacetime";
 import {useUtilsContext} from "../../../../providers/UtilsProvider";
+import {formatHeartRate} from "../../../../utils/dashboard";
 
 ChartJS.register(
     CategoryScale,
@@ -52,7 +53,8 @@ const ChartUserAlert = () => {
     setUsers,
     users,
     chartData,
-    timeZone
+    timeZone,
+    chartRef,
   } = useAnalyticsContext();
   const {t} = useTranslation();
   const {formatHeartCbt} = useUtilsContext();
@@ -147,7 +149,7 @@ const ChartUserAlert = () => {
               tempData[findIndex] = selectedMetric.value === METRIC_USER_CHART_VALUES.CBT ?
                   (it?.heartCbtAvg ? formatHeartCbt(it?.heartCbtAvg) : 0)
                   :
-                  (it?.heartRateAvg ? formatHeartCbt(it?.heartRateAvg) : 0);
+                  (it?.heartRateAvg ? formatHeartRate(it?.heartRateAvg) : 0);
               emptyFlag = true;
             }
           }
@@ -170,7 +172,7 @@ const ChartUserAlert = () => {
   }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone, formatHeartCbt]);
 
   return (
-      <div className={clsx(style.chart_body)}>
+      <div ref={chartRef} className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
           <h1 className={clsx(style.txt_center)}>
             {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT ? 'cbt' : 'hr'}`)}
