@@ -53,7 +53,8 @@ const ChartUserAlert = () => {
     setUsers,
     users,
     chartData,
-    timeZone
+    timeZone,
+    chartRef,
   } = useAnalyticsContext();
   const {t} = useTranslation();
   const {formatHeartCbt} = useUtilsContext();
@@ -171,7 +172,7 @@ const ChartUserAlert = () => {
   }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone, formatHeartCbt]);
 
   return (
-      <div className={clsx(style.chart_body)}>
+      <div ref={chartRef} className={clsx(style.chart_body)}>
         <div className={clsx(style.line_body)}>
           <h1 className={clsx(style.txt_center)}>
             {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT ? 'cbt' : 'hr'}`)}

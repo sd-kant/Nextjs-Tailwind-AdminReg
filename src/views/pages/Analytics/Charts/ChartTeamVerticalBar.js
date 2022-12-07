@@ -33,12 +33,13 @@ const ChartTeamVerticalBar = () => {
     selectedMetric,
     timeZone,
     teamLabel,
+    chartRef
   } = useAnalyticsContext();
   const {t} = useTranslation();
 
   if (!chartData?.labels) return <div className={clsx(style.empty_height)}/>;
   return (
-      <div className={clsx(style.chart_body)}>
+      <div ref={chartRef} className={clsx(style.chart_body)}>
         <div className={clsx(style.bar_body)}>
           <h1 className={clsx(style.txt_center)}>
             {t(`number of alerts by week`)}
