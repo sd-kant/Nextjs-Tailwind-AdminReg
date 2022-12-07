@@ -25,12 +25,13 @@ const ChartTeamDoughnut = () => {
     selectedMetric,
     selectedTeams,
     teamLabel,
+    chartRef,
   } = useAnalyticsContext();
   const {t} = useTranslation();
 
   if (!chartData) return null;
   return (
-      <div className={clsx(style.chart_body)}>
+      <div ref={chartRef} className={clsx(style.chart_body)}>
         <div className={clsx(style.doughnut_grid2)}>
           <div>
             <h1 className={clsx(style.txt_center)}>
@@ -46,7 +47,7 @@ const ChartTeamDoughnut = () => {
 
             <Doughnut
                 data={chartData?.dataHeat}
-                plugins={chartPlugins(`doughnut`, t(`no data to display`))}
+                plugins={chartPlugins(`doughnut1`, t(`no data to display`))}
             />
 
             <div className={clsx(style.legend_box_body)}>
@@ -71,7 +72,7 @@ const ChartTeamDoughnut = () => {
             </h1>
             <Doughnut
                 data={chartData?.dataSweat}
-                plugins={chartPlugins(`doughnut`, t(`no data to display`))}
+                plugins={chartPlugins(`doughnut2`, t(`no data to display`))}
             />
 
             <div className={clsx(style.legend_box_body)}>

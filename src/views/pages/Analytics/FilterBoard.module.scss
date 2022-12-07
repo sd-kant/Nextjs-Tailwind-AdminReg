@@ -34,6 +34,20 @@
     margin-top: 15px !important;
   }
 
+  & > span {
+    min-width: 145px;
+
+    @media screen and (max-width: 480px) {
+      display: block;
+
+      input {
+        min-width: unset;
+        max-width: unset;
+        height: 46px;
+      }
+    }
+  }
+
   & > div {
     margin-right: 12px;
     min-width: 240px;
@@ -62,5 +76,26 @@
         }
       }
     }
+  }
+}
+
+@media print {
+  html, body {
+    height: initial !important;
+    width: 1450px !important;
+    -webkit-print-color-adjust: exact;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 20mm;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  div {
+    color: black;
   }
 }
