@@ -1,9 +1,17 @@
 import * as React from 'react';
-import {getTeamMemberEvents, getTeamMemberAlerts, subscribeDataEvents} from "../http";
+import {
+  getTeamMemberEvents,
+  getTeamMemberAlerts,
+  subscribeDataEvents,
+  queryOrganizationAlertMetrics
+} from "../http";
 import axios from "axios";
 import {useTranslation} from "react-i18next";
 import {useDashboardContext} from "./DashboardProvider";
 import {ALERT_STAGE_ID_LIST} from "../constant";
+import {dateFormat} from "../utils";
+import {useUtilsContext} from "./UtilsProvider";
+import {formatHeartRate} from "../utils/dashboard";
 
 const UserSubscriptionContext = React.createContext(null);
 
@@ -13,6 +21,7 @@ export const UserSubscriptionProvider = (
   }) => {
   const {t} = useTranslation();
   const {organization} = useDashboardContext();
+  const {formatHeartCbt} = useUtilsContext();
   const [duration] = React.useState(30); // 1, 7, or 30 days
   const activitiesFilters = [
     {
@@ -32,6 +41,7 @@ export const UserSubscriptionProvider = (
     },
   ];
   const [activitiesFilter, setActivitiesFilter] = React.useState(activitiesFilters[0]);
+  const [metricsFilter, setMetricsFilter] = React.useState(activitiesFilters[0]);
   const [user, setUser] = React.useState(null);
   const [horizon, _setHorizon] = React.useState(null);
   const horizonRef = React.useRef(horizon);
@@ -52,11 +62,17 @@ export const UserSubscriptionProvider = (
     activitiesRef.current = v;
     _setActivities(v);
   };
-
+  const [metricsLog, _setMetricsLog] = React.useState([]);
+  const metricsLogRef = React.useRef(metricsLog);
+  const setMetricsLog = v => {
+    metricsLogRef.current = v;
+    _setMetricsLog(v);
+  };
   React.useEffect(() => {
     return () => {
       setAlerts([]);
       setActivities([]);
+      setMetricsLog([]);
       setHorizon(null);
       setUser(null);
     }
@@ -64,6 +80,7 @@ export const UserSubscriptionProvider = (
   React.useEffect(() => {
     setAlerts([]);
     setActivities([]);
+    setMetricsLog([]);
     if (user?.userId && user?.teamId) {
       const promises = [];
       const d = new Date();
@@ -76,8 +93,15 @@ export const UserSubscriptionProvider = (
         endDate: getDateStr(new Date()),
         startDate: getDateStr(d),
       });
+
+      const c = queryOrganizationAlertMetrics(user?.orgId,{
+        teamIds: [user.teamId],
+        startDate: dateFormat(new Date(d)),
+        endDate: dateFormat(new Date()),
+      });
+
       const source = axios.CancelToken.source();
-      promises.push(a, b);
+      promises.push(a, b, c);
       if (promises?.length > 0) {
         setLoading(true);
         Promise.allSettled(promises)
@@ -108,6 +132,16 @@ export const UserSubscriptionProvider = (
                         utcTs: it.ts,
                       }));
                     setActivities(sortedActivities ?? []);
+                  }
+                } else if (index === 2) {
+                  // metric logs
+                  if (typeof result?.value?.data === "object") {
+                    const sortedMetrics = result?.value?.data?.sort((a, b) => new Date(b.ts) - new Date(a.ts))
+                        ?.map(it => ({
+                          ...it,
+                          utcTs: it.ts,
+                        }));
+                    setMetricsLog(sortedMetrics ?? []);
                   }
                 }
               }
@@ -189,17 +223,37 @@ export const UserSubscriptionProvider = (
     return unique;
   }, [alerts, activities, activitiesFilter?.value]);
 
+  const metricStats = React.useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - (metricsFilter?.value ?? 1));
+    let tempMetrics = metricsLog?.filter(it => new Date(it.utcTs).getTime() > d.getTime());
+    let tempAlerts = alerts?.filter(it => new Date(it.utcTs).getTime() > d.getTime());
+
+    return {
+      totalAlerts: tempAlerts.length || 0,
+      stopAlerts: tempAlerts?.filter(it => ["1", "2"].includes(it?.alertStageId?.toString())).length,
+      highestCbt: tempMetrics.length > 0 ?
+          formatHeartCbt(tempMetrics.sort((a, b) => (b?.heartCbtAvg ?? 0) - (a?.heartCbtAvg ?? 0))[0]?.heartCbtAvg) : 0,
+      highestHr: tempMetrics.length > 0 ?
+          formatHeartRate(tempMetrics.sort((a, b) => (b?.heartRateAvg ?? 0) - (a?.heartRateAvg ?? 0))[0]?.heartRateAvg) : 0
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [alerts, metricsLog, metricsFilter?.value]);
+
   const getDateStr = date => {
     const d = new Date(date);
     return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-  }
+  };
 
   const providerValue = {
     setUser,
     logs,
+    metricStats,
     activitiesFilter,
     setActivitiesFilter,
     activitiesFilters,
+    metricsFilter,
+    setMetricsFilter,
     loading,
   };
 
