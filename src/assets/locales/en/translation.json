@@ -651,5 +651,7 @@
   "n team": "{{n}} team",
   "past 7 days of m in n": "Past 7 days of {{m}} in {{n}}",
   "past 7 days of n": "Past 7 days of {{n}}",
-  "for n": "For {{n}}"
+  "for n": "For {{n}}",
+  "alert total": "Alert Total",
+  "highest": "Highest"
 }
