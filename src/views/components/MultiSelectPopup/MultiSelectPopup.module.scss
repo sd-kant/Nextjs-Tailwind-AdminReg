@@ -86,6 +86,23 @@
     min-height: 240px;
     max-height: calc(100vh - 150px);
     overflow-y: auto;
+
+    .SearchInputWrapper {
+      position: sticky;
+      top: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3px 0 20px;
+      background-color: #313131;
+      z-index: 1000;
+
+      .RefreshIcon {
+        width: 23px;
+        height: 23px;
+        cursor: pointer;
+      }
+    }
   }
 
   .Footer {

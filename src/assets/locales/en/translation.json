@@ -653,5 +653,6 @@
   "past 7 days of n": "Past 7 days of {{n}}",
   "for n": "For {{n}}",
   "alert total": "Alert Total",
-  "highest": "Highest"
+  "highest": "Highest",
+  "please input a keyword": "Please input a keyword"
 }

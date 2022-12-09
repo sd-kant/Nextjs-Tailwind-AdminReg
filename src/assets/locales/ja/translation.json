@@ -653,5 +653,6 @@
   "past 7 days of n": "過去 7 日間の {{n}}",
   "for n": "Por {{n}}",
   "alert total": "アラート合計",
-  "highest": "最高"
+  "highest": "最高",
+  "please input a keyword": "キーワードを入力してください"
 }
