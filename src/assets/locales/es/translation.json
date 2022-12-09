@@ -652,5 +652,6 @@
   "past 7 days of n": "Pasados 7 días de {{n}}",
   "for n": "Para {{n}}",
   "alert total": "Total de Alerta",
-  "highest": "Más alto"
+  "highest": "Más alto",
+  "please input a keyword": "Por favor, introduzca una palabra clave"
 }

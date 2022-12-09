@@ -7,6 +7,7 @@ import Checkbox from "../Checkbox";
 import Button from "../Button";
 import {isEqual} from "lodash";
 import closeIcon from "../../../assets/images/close.svg";
+import SearchInput from "../SearchInput";
 
 const MultiSelectPopup = (
   {
@@ -19,6 +20,8 @@ const MultiSelectPopup = (
   const {t} = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [checkedItems, setCheckedItems] = React.useState(value);
+  const [keyword, setKeyword] = React.useState("");
+
   React.useEffect(() => {
     setCheckedItems(value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,8 +77,18 @@ const MultiSelectPopup = (
             onClick={() => setOpen(false)}
           />
           <div className={clsx(style.Body)}>
+            <div className={clsx(style.SearchInputWrapper)}>
+              <SearchInput
+                  keyword={keyword}
+                  visibleClearIcon={keyword?.trim() !== ""}
+                  onChange={e => setKeyword(e.target.value)}
+                  onClear={() => setKeyword("")}
+                  placeholder={"please input a keyword"}
+              />
+            </div>
+
             {
-              options?.length > 0 &&
+              (options?.length > 0 && !keyword) &&
               <div>
                 <Checkbox
                   label={t("select all")}
@@ -91,15 +104,21 @@ const MultiSelectPopup = (
               </div>
             }
             {
-              options?.map((option, index) => (
-                <div key={`multi-selector-option-${index}`}>
-                  <Checkbox
-                    checked={checkedItems?.some(it => it.value?.toString() === option.value?.toString())}
-                    label={option.label}
-                    setChecked={(v) => handleChange(option.value, v)}
-                  />
-                </div>
-              ))
+              options?.map((option, index) => {
+                if (option.label.includes(keyword)) {
+                  return (
+                      <div key={`multi-selector-option-${index}`}>
+                        <Checkbox
+                            checked={checkedItems?.some(it => it.value?.toString() === option.value?.toString())}
+                            label={option.label}
+                            setChecked={(v) => handleChange(option.value, v)}
+                        />
+                      </div>
+                  )
+                } else {
+                  return null;
+                }
+              })
             }
           </div>
           {
