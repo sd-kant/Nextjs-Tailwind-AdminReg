@@ -3,13 +3,11 @@ import {
   getTeamMemberEvents,
   getTeamMemberAlerts,
   subscribeDataEvents,
-  queryOrganizationAlertMetrics
 } from "../http";
 import axios from "axios";
 import {useTranslation} from "react-i18next";
 import {useDashboardContext} from "./DashboardProvider";
 import {ALERT_STAGE_ID_LIST} from "../constant";
-import {dateFormat} from "../utils";
 import {useUtilsContext} from "./UtilsProvider";
 import {formatHeartRate} from "../utils/dashboard";
 
@@ -94,14 +92,8 @@ export const UserSubscriptionProvider = (
         startDate: getDateStr(d),
       });
 
-      const c = queryOrganizationAlertMetrics(user?.orgId,{
-        teamIds: [user.teamId],
-        startDate: dateFormat(new Date(d)),
-        endDate: dateFormat(new Date()),
-      });
-
       const source = axios.CancelToken.source();
-      promises.push(a, b, c);
+      promises.push(a, b);
       if (promises?.length > 0) {
         setLoading(true);
         Promise.allSettled(promises)
@@ -132,16 +124,6 @@ export const UserSubscriptionProvider = (
                         utcTs: it.ts,
                       }));
                     setActivities(sortedActivities ?? []);
-                  }
-                } else if (index === 2) {
-                  // metric logs
-                  if (typeof result?.value?.data === "object") {
-                    const sortedMetrics = result?.value?.data?.sort((a, b) => new Date(b.ts) - new Date(a.ts))
-                        ?.map(it => ({
-                          ...it,
-                          utcTs: it.ts,
-                        }));
-                    setMetricsLog(sortedMetrics ?? []);
                   }
                 }
               }
@@ -220,25 +202,33 @@ export const UserSubscriptionProvider = (
         unique.push(entry);
       }
     }
+
     return unique;
   }, [alerts, activities, activitiesFilter?.value]);
 
   const metricStats = React.useMemo(() => {
     const d = new Date();
     d.setDate(d.getDate() - (metricsFilter?.value ?? 1));
-    let tempMetrics = metricsLog?.filter(it => new Date(it.utcTs).getTime() > d.getTime());
-    let tempAlerts = alerts?.filter(it => new Date(it.utcTs).getTime() > d.getTime());
+    let tempAlerts = [...alerts]?.filter(it => new Date(it.utcTs).getTime() > d.getTime())
+        ?.sort((a, b) => new Date(b.utcTs).getTime() - new Date(a.utcTs).getTime());
+
+    const unique = [];
+    for (const entry of tempAlerts) {
+      if (!unique.some(x => (entry.utcTs === x.utcTs))) {
+        unique.push(entry);
+      }
+    }
 
     return {
-      totalAlerts: tempAlerts.length || 0,
-      stopAlerts: tempAlerts?.filter(it => ["1", "2"].includes(it?.alertStageId?.toString())).length,
-      highestCbt: tempMetrics.length > 0 ?
-          formatHeartCbt(tempMetrics.sort((a, b) => (b?.heartCbtAvg ?? 0) - (a?.heartCbtAvg ?? 0))[0]?.heartCbtAvg) : 0,
-      highestHr: tempMetrics.length > 0 ?
-          formatHeartRate(tempMetrics.sort((a, b) => (b?.heartRateAvg ?? 0) - (a?.heartRateAvg ?? 0))[0]?.heartRateAvg) : 0
+      totalAlerts: unique.length || 0,
+      stopAlerts: unique?.filter(it => ["1", "2"].includes(it?.alertStageId?.toString())).length,
+      highestCbt: unique.length > 0 ?
+          formatHeartCbt(unique.sort((a, b) => (b?.heartCbtAvg ?? 0) - (a?.heartCbtAvg ?? 0))[0]?.heartCbtAvg) : 0,
+      highestHr: unique.length > 0 ?
+          formatHeartRate(unique.sort((a, b) => (b?.heartRateAvg ?? 0) - (a?.heartRateAvg ?? 0))[0]?.heartRateAvg) : 0
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alerts, metricsLog, metricsFilter?.value]);
+  }, [alerts, metricsFilter?.value]);
 
   const getDateStr = date => {
     const d = new Date(date);
