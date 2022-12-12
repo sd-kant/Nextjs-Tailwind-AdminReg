@@ -653,5 +653,7 @@
   "for n": "Durante {{n}}",
   "alert total": "Total de Alertas",
   "highest": "Mais alto",
-  "please input a keyword": "Insira uma palavra-chave"
+  "please input a keyword": "Insira uma palavra-chave",
+  "start date": "Data de Início",
+  "end date": "Data de Término"
 }

@@ -654,5 +654,7 @@
   "for n": "Por {{n}}",
   "alert total": "アラート合計",
   "highest": "最高",
-  "please input a keyword": "キーワードを入力してください"
+  "please input a keyword": "キーワードを入力してください",
+  "start date": "開始日",
+  "end date": "終了日"
 }
