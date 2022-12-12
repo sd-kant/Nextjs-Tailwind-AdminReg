@@ -280,9 +280,8 @@ const FilterBoard = () => {
 
           <div className="d-flex flex-column">
             <label className='font-input-label'>
-              {t("date range")}
+              {t("start date")}
             </label>
-
             <div className={clsx(style.FlexLeft)}>
               <CustomDatePicker
                   date={startDate}
@@ -291,6 +290,19 @@ const FilterBoard = () => {
                   maxDate={startDateMax}
                   selectedMetric={selectedMetric}
               />
+            </div>
+            {
+              submitTried && errors?.dateRange && (
+                  <span className="font-helper-text text-error mt-10">{errors.dateRange}</span>
+              )
+            }
+          </div>
+
+          <div className="d-flex flex-column">
+            <label className='font-input-label'>
+              {t("end date")}
+            </label>
+            <div className={clsx(style.FlexLeft)}>
               <CustomDatePicker
                   date={endDate}
                   setDate={setEndDate}
@@ -299,12 +311,6 @@ const FilterBoard = () => {
                   selectedMetric={selectedMetric}
               />
             </div>
-
-            {
-              submitTried && errors?.dateRange && (
-                  <span className="font-helper-text text-error mt-10">{errors.dateRange}</span>
-              )
-            }
           </div>
 
           <div className="d-flex flex-column">
