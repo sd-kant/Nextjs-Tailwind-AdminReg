@@ -125,6 +125,7 @@ const QueryResult = (
                   maxMenuHeight={190}
                   menuPortalTarget={document.body}
                   menuPosition={'fixed'}
+                  placeholder={t('export')}
                   styles={customStyles()}
                   onChange={v => setExportOption(v)}
               />
