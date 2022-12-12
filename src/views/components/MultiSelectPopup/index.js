@@ -105,7 +105,7 @@ const MultiSelectPopup = (
             }
             {
               options?.map((option, index) => {
-                if (option.label.includes(keyword)) {
+                if (option.label.toLowerCase().includes(keyword.toLowerCase())) {
                   return (
                       <div key={`multi-selector-option-${index}`}>
                         <Checkbox
