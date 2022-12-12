@@ -63,7 +63,8 @@ const FilterBoard = () => {
     teamLabel,
     userLabel,
     chartRef,
-    setLoading
+    setLoading,
+    isEnablePrint,
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
@@ -127,10 +128,10 @@ const FilterBoard = () => {
             METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK,
             METRIC_USER_CHART_VALUES.CBT,
             METRIC_USER_CHART_VALUES.HR,
-          ].includes(selectedMetric?.value)
+          ].includes(selectedMetric?.value) && isEnablePrint
       )
     }
-  }, [selectedMetric]);
+  }, [selectedMetric, isEnablePrint]);
 
   const fileName = React.useMemo(() => {
     if (
@@ -216,7 +217,7 @@ const FilterBoard = () => {
         </button>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMetric]);
+  }, [selectedMetric, isEnablePrint]);
 
   const startDateMax = new Date();
   const endDateMax = new Date();

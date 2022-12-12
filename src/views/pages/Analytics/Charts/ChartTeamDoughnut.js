@@ -15,7 +15,9 @@ import {
   LABELS_DOUGHNUT,
   METRIC_USER_TABLE_VALUES
 } from "../../../../constant";
-import {chartPlugins} from "../../../../utils/anlytics";
+import {
+  chartPlugins, checkEmptyData,
+} from "../../../../utils/anlytics";
 
 ChartJS.register(ArcElement);
 
@@ -26,8 +28,13 @@ const ChartTeamDoughnut = () => {
     selectedTeams,
     teamLabel,
     chartRef,
+    setIsEnablePrint,
   } = useAnalyticsContext();
   const {t} = useTranslation();
+
+  React.useEffect(() => {
+    setIsEnablePrint(!checkEmptyData(chartData?.dataHeat?.datasets, 1) || !checkEmptyData(chartData?.dataHeat?.dataSweat, 1));
+  }, [chartData, setIsEnablePrint]);
 
   if (!chartData) return null;
   return (

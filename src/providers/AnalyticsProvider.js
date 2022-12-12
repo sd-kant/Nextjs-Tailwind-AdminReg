@@ -639,7 +639,12 @@ export const AnalyticsProvider = (
   }, [pickedMembers, formattedMembers, members, organization]);
 
   const selectedMetric = React.useMemo(() => {
-    return metrics?.find(it => it.value?.toString() === metric?.toString())
+    let _metric = metrics?.find(it => it.value?.toString() === metric?.toString());
+    if (checkMetric(METRIC_USER_CHART_VALUES, _metric?.value) && users?.length === 0) {
+      setUsers(selectedMembers.map(it => it.value));
+    }
+    return _metric
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metric, metrics]);
 
   const selectedUsers = React.useMemo(() => {
@@ -1148,9 +1153,11 @@ export const AnalyticsProvider = (
       ret = data.slice(start, start + sizePerPage);
     }
 
-    while (ret?.length < 10) {
-      ret.push(Array(headers.length).fill(``));
-    }
+    // if (ret?.length > 0) {
+      while (ret?.length < 10) {
+        ret.push(Array(headers.length).fill(``));
+      }
+    // }
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, page, sizePerPage, headers]);
@@ -1184,6 +1191,7 @@ export const AnalyticsProvider = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMembers, formattedMembers, organization]);
 
+  const [isEnablePrint, setIsEnablePrint] = React.useState(false);
   const handleExport = () => {
     if (visibleExport) {
       if ([`xlsx`, `csv`].includes(exportOption?.value)) {
@@ -1248,6 +1256,8 @@ export const AnalyticsProvider = (
     userLabel,
     chartRef,
     setLoading,
+    isEnablePrint,
+    setIsEnablePrint,
   };
 
   return (

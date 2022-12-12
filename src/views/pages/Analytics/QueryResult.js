@@ -37,7 +37,8 @@ const QueryResult = (
     exportOption,
     setExportOption,
     handleExport,
-    selectedMetric
+    selectedMetric,
+    pageData,
   } = useAnalyticsContext();
   const {t} = useTranslation();
   const ableToExport = visibleExport && Boolean(exportOption);
@@ -87,19 +88,20 @@ const QueryResult = (
       <div className={clsx(style.Wrapper)}>
         <div className={clsx(checkTableChartTogether() ? style.WrapperTableChart : style.WrapperTbl)}>
           {
-            !checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) && (
-                <div className={clsx(checkTableChartTogether() ? style.InnerWrapper : style.CenterWrapper)}>
-                  <Toolbar/>
-                  <div className={clsx(style.TableWrapper)}>
-                    <table className={clsx(style.Table)}>
-                      <ResultTableHeader metric={metric}/>
-                      <ResultTableBody metric={metric}/>
-                    </table>
-                  </div>
-                </div>
+            pageData?.length > 0 && (
+                !checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) && (
+                    <div className={clsx(checkTableChartTogether() ? style.InnerWrapper : style.CenterWrapper)}>
+                      <Toolbar/>
+                      <div className={clsx(style.TableWrapper)}>
+                        <table className={clsx(style.Table)}>
+                          <ResultTableHeader metric={metric}/>
+                          <ResultTableBody metric={metric}/>
+                        </table>
+                      </div>
+                    </div>
+                )
             )
           }
-
           {ChartComponent}
         </div>
 

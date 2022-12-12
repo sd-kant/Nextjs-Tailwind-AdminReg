@@ -179,6 +179,28 @@ export const onFilterDataByOrganization = (data, orgId) => {
       {};
 };
 
+/**
+ * type: 1 => cbt/hr chart, 2 => highest CBT
+ * @param data
+ * @param type
+ * @returns {boolean}
+ */
+export const checkEmptyData = (data, type) => {
+  let flag = 0;
+  if (type === 1) {
+    data?.forEach(it => {
+      flag += it.data.filter(it => !!it)?.length;
+    });
+  } else if (type === 2) {
+    if (!data) return true;
+    data?.list?.forEach(it => {
+      flag += it.filter(a => !!a).length;
+    });
+  }
+
+  return !flag;
+};
+
 export const chartPlugins = (idStr, noDataStr) => {
   return [{
     id: idStr,
@@ -215,12 +237,7 @@ export const chartPlugins = (idStr, noDataStr) => {
         });
       }
 
-      let flag = 0;
-      chart.data.datasets?.forEach(it => {
-        flag += it.data.filter(it => !!it)?.length;
-      });
-
-      if (flag === 0) {
+      if (checkEmptyData(chart?.data?.datasets, 1)) {
         let width = chart.width;
         let height = chart.height;
         ctx.textAlign = `center`;

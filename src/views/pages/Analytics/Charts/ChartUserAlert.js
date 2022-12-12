@@ -27,6 +27,7 @@ import {customStyles} from "../../DashboardV2";
 import ResponsiveSelect from "../../../components/ResponsiveSelect";
 import {
   chartPlugins,
+  checkEmptyData,
   getWeeksInMonth,
   randomHexColorCode
 } from "../../../../utils/anlytics";
@@ -55,6 +56,7 @@ const ChartUserAlert = () => {
     chartData,
     timeZone,
     chartRef,
+    setIsEnablePrint,
   } = useAnalyticsContext();
   const {t} = useTranslation();
   const {formatHeartCbt} = useUtilsContext();
@@ -170,6 +172,10 @@ const ChartUserAlert = () => {
       setData(labels?.length > 0 ? { labels, datasets } : INIT_USER_CHART_ALERT_DATA);
     }
   }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone, formatHeartCbt]);
+
+  React.useEffect(() => {
+    setIsEnablePrint(!checkEmptyData(data?.datasets, 1));
+  }, [data, setIsEnablePrint]);
 
   return (
       <div ref={chartRef} className={clsx(style.chart_body)}>
