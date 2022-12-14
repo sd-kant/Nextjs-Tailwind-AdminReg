@@ -1,21 +1,8 @@
 import * as React from 'react';
 import * as XLSX from 'xlsx/xlsx.mjs';
 import {
-  queryOrganizationWearTime,
   queryTeamMembers,
-  queryOrganizationAlertMetrics,
   getRiskLevels,
-  queryOrganizationMaxCbt,
-  queryOrganizationActiveUsers,
-  queryOrganizationSWRFluid,
-  queryAmbientTempHumidity,
-  queryOrganizationUsersInCBTZones,
-  queryOrganizationAlertedUserCount,
-  queryOrganizationFluidMetricsByTeam,
-  queryOrganizationDeviceData,
-  queryOrganizationTempCateData,
-  queryOrganizationCategoriesUsersInCBTZones,
-  getTeamMemberAlerts,
 } from "../http";
 import {
   celsiusToFahrenheit,
@@ -34,6 +21,7 @@ import {
   onFilterDataByOrganization,
   getThisWeekByTeam,
   checkMetric,
+  getKeyApiCall,
 } from "../utils/anlytics";
 import {
   COLOR_WHITE,
@@ -484,71 +472,9 @@ export const AnalyticsProvider = (
   const processQuery = () => {
     if (pickedTeams?.length > 0) {
       if (startDate && endDate && metric) {
-        let key = null;
-        let apiCall = null;
-
-        switch (metric) {
-          case METRIC_USER_TABLE_VALUES.WEAR_TIME: // 1, wear time
-            apiCall = queryOrganizationWearTime;
-            key = ANALYTICS_API_KEYS.WEAR_TIME;
-            break;
-          case METRIC_USER_TABLE_VALUES.ALERTS: // 2, alerts
-          case METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK: // 31
-            apiCall = queryOrganizationAlertMetrics;
-            key = ANALYTICS_API_KEYS.ALERT_METRICS;
-            break;
-          case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
-          case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
-            apiCall = queryOrganizationMaxCbt;
-            key = ANALYTICS_API_KEYS.MAX_CBT;
-            break;
-          case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
-            apiCall = queryOrganizationTempCateData;
-            key = ANALYTICS_API_KEYS.TEMP_CATE_DATA;
-            break;
-          case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
-            apiCall = queryOrganizationDeviceData;
-            key = ANALYTICS_API_KEYS.DEVICE_DATA;
-            break;
-          case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
-            apiCall = queryOrganizationUsersInCBTZones;
-            key = ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES;
-            break;
-          case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
-            apiCall = queryAmbientTempHumidity;
-            key = ANALYTICS_API_KEYS.TEMP_HUMIDITY;
-            break;
-          case METRIC_USER_TABLE_VALUES.SWR_ACCLIM: // 5
-          case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
-          case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
-          case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
-            apiCall = queryOrganizationSWRFluid;
-            key = ANALYTICS_API_KEYS.SWR_FLUID;
-            break;
-          case METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS: // 21
-            apiCall = queryOrganizationAlertedUserCount;
-            key = ANALYTICS_API_KEYS.ALERT_USER_COUNT;
-            break;
-          case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
-            apiCall = queryOrganizationActiveUsers;
-            key = ANALYTICS_API_KEYS.ACTIVE_USERS;
-            break;
-          case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
-            apiCall = queryOrganizationCategoriesUsersInCBTZones;
-            key = ANALYTICS_API_KEYS.TEMP_CATE_IN_CBT_ZONES;
-            break;
-          case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
-            apiCall = queryOrganizationFluidMetricsByTeam;
-            key = ANALYTICS_API_KEYS.FLUID_METRICS_BY_TEAM;
-            break;
-          case METRIC_USER_CHART_VALUES.CBT: // 40
-          case METRIC_USER_CHART_VALUES.HR: // 41
-            apiCall = getTeamMemberAlerts;
-            key = ANALYTICS_API_KEYS.TEAM_MEMBER_ALERTS;
-            break;
-          default:
-            console.log("metric is not available");
-        }
+        let keyApiCall = getKeyApiCall(metric);
+        let key = keyApiCall.key;
+        let apiCall = keyApiCall.apiCall;
 
         if (apiCall && key) {
           if (checkMetric(METRIC_USER_CHART_VALUES, metric)) {
@@ -640,12 +566,19 @@ export const AnalyticsProvider = (
 
   const selectedMetric = React.useMemo(() => {
     let _metric = metrics?.find(it => it.value?.toString() === metric?.toString());
-    if (checkMetric(METRIC_USER_CHART_VALUES, _metric?.value) && users?.length === 0) {
+    if (checkMetric(METRIC_USER_CHART_VALUES, _metric?.value) && selectedMembers.filter(it => users.includes(it.value))?.length === 0) {
       setUsers(selectedMembers.map(it => it.value));
     }
     return _metric
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metric, metrics]);
+
+  React.useEffect(() => {
+    if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) && selectedMembers.filter(it => users.includes(it.value))?.length === 0) {
+      setUsers(selectedMembers.map(it => it.value));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMetric, selectedMembers]);
 
   const selectedUsers = React.useMemo(() => {
     return selectedMembers?.filter(it => users.some(ele => ele?.toString() === it.value?.toString()))
@@ -1153,11 +1086,9 @@ export const AnalyticsProvider = (
       ret = data.slice(start, start + sizePerPage);
     }
 
-    // if (ret?.length > 0) {
-      while (ret?.length < 10) {
-        ret.push(Array(headers.length).fill(``));
-      }
-    // }
+    while (ret?.length < 10) {
+      ret.push(Array(headers.length).fill(``));
+    }
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, page, sizePerPage, headers]);
@@ -1227,6 +1158,7 @@ export const AnalyticsProvider = (
     selectedTeams,
     selectedMembers,
     analytics,
+    organizationAnalytics,
     processQuery,
     formatRiskLevel,
     statsBy,

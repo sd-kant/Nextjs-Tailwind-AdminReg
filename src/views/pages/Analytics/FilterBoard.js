@@ -19,6 +19,7 @@ import {
 } from "../../../constant";
 import {
   checkMetric,
+  getKeyApiCall,
   getThisWeek
 } from "../../../utils/anlytics";
 import ReactToPrint from "react-to-print";
@@ -65,6 +66,7 @@ const FilterBoard = () => {
     chartRef,
     setLoading,
     isEnablePrint,
+    organizationAnalytics,
   } = useAnalyticsContext();
   const selectedOrganization = React.useMemo(() => {
     return organizations?.find(it => it.value?.toString() === organization?.toString())
@@ -212,12 +214,18 @@ const FilterBoard = () => {
 
   const reactToPrintTrigger = React.useCallback(() => {
     return (
-        <button className={`${showChart() ? 'active cursor-pointer' : 'inactive cursor-default'} button`}>
+        <button
+            className={
+              `${showChart() && Object.keys(organizationAnalytics).includes(getKeyApiCall(selectedMetric?.value).key) ? 
+                'active cursor-pointer' 
+                : 
+                'inactive cursor-default'} button`
+            }>
           <span className='font-button-label text-white text-uppercase'>{t("print")}</span>
         </button>
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMetric, isEnablePrint]);
+  }, [selectedMetric, isEnablePrint, organizationAnalytics]);
 
   const startDateMax = new Date();
   const endDateMax = new Date();

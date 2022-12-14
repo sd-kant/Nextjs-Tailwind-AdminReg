@@ -23,7 +23,7 @@ import {
   METRIC_USER_CHART_VALUES,
   METRIC_USER_TABLE_VALUES
 } from "../../../constant";
-import {checkMetric} from "../../../utils/anlytics";
+import {checkMetric, getKeyApiCall} from "../../../utils/anlytics";
 
 const QueryResult = (
     {
@@ -38,7 +38,7 @@ const QueryResult = (
     setExportOption,
     handleExport,
     selectedMetric,
-    pageData,
+    organizationAnalytics,
   } = useAnalyticsContext();
   const {t} = useTranslation();
   const ableToExport = visibleExport && Boolean(exportOption);
@@ -88,21 +88,25 @@ const QueryResult = (
       <div className={clsx(style.Wrapper)}>
         <div className={clsx(checkTableChartTogether() ? style.WrapperTableChart : style.WrapperTbl)}>
           {
-            pageData?.length > 0 && (
-                !checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) && (
-                    <div className={clsx(checkTableChartTogether() ? style.InnerWrapper : style.CenterWrapper)}>
-                      <Toolbar/>
-                      <div className={clsx(style.TableWrapper)}>
-                        <table className={clsx(style.Table)}>
-                          <ResultTableHeader metric={metric}/>
-                          <ResultTableBody metric={metric}/>
-                        </table>
-                      </div>
-                    </div>
-                )
+            Object.keys(organizationAnalytics).includes(getKeyApiCall(selectedMetric?.value).key) && (
+                <>
+                  {
+                    !checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) && (
+                        <div className={clsx(checkTableChartTogether() ? style.InnerWrapper : style.CenterWrapper)}>
+                          <Toolbar/>
+                          <div className={clsx(style.TableWrapper)}>
+                            <table className={clsx(style.Table)}>
+                              <ResultTableHeader metric={metric}/>
+                              <ResultTableBody metric={metric}/>
+                            </table>
+                          </div>
+                        </div>
+                    )
+                  }
+                  {ChartComponent}
+                </>
             )
           }
-          {ChartComponent}
         </div>
 
         <div className={clsx(style.StatsSelectWrapper)}>

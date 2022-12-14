@@ -1,5 +1,27 @@
-import {COLOR_WHITE} from "../constant";
+import {
+  ANALYTICS_API_KEYS,
+  COLOR_WHITE,
+  METRIC_TEAM_CHART_VALUES,
+  METRIC_TEAM_TABLE_VALUES,
+  METRIC_USER_CHART_VALUES,
+  METRIC_USER_TABLE_VALUES
+} from "../constant";
 import spacetime from "spacetime";
+import {
+  getTeamMemberAlerts,
+  queryAmbientTempHumidity,
+  queryOrganizationActiveUsers,
+  queryOrganizationAlertedUserCount,
+  queryOrganizationAlertMetrics,
+  queryOrganizationCategoriesUsersInCBTZones,
+  queryOrganizationDeviceData,
+  queryOrganizationFluidMetricsByTeam,
+  queryOrganizationMaxCbt,
+  queryOrganizationSWRFluid,
+  queryOrganizationTempCateData,
+  queryOrganizationUsersInCBTZones,
+  queryOrganizationWearTime
+} from "../http";
 
 export const getUserNameFromUserId = (members, id) => {
   const user = members?.find(it => it.userId?.toString() === id?.toString());
@@ -308,4 +330,80 @@ export const checkMetric = (data, metric) => {
     flag += (Number(data[[it]]) === metric ? 1 : 0);
   });
   return flag > 0;
+};
+
+/**
+ * getting key and apiCall when metric status id changed
+ * @param value
+ * @returns {{apiCall: null, key: null}}
+ */
+export const getKeyApiCall = (value) => {
+  let key = null;
+  let apiCall = null;
+  switch (value) {
+    case METRIC_USER_TABLE_VALUES.WEAR_TIME: // 1, wear time
+      apiCall = queryOrganizationWearTime;
+      key = ANALYTICS_API_KEYS.WEAR_TIME;
+      break;
+    case METRIC_USER_TABLE_VALUES.ALERTS: // 2, alerts
+    case METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK: // 31
+      apiCall = queryOrganizationAlertMetrics;
+      key = ANALYTICS_API_KEYS.ALERT_METRICS;
+      break;
+    case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
+    case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
+      apiCall = queryOrganizationMaxCbt;
+      key = ANALYTICS_API_KEYS.MAX_CBT;
+      break;
+    case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
+      apiCall = queryOrganizationTempCateData;
+      key = ANALYTICS_API_KEYS.TEMP_CATE_DATA;
+      break;
+    case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
+      apiCall = queryOrganizationDeviceData;
+      key = ANALYTICS_API_KEYS.DEVICE_DATA;
+      break;
+    case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
+      apiCall = queryOrganizationUsersInCBTZones;
+      key = ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES;
+      break;
+    case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
+      apiCall = queryAmbientTempHumidity;
+      key = ANALYTICS_API_KEYS.TEMP_HUMIDITY;
+      break;
+    case METRIC_USER_TABLE_VALUES.SWR_ACCLIM: // 5
+    case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
+    case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
+    case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
+      apiCall = queryOrganizationSWRFluid;
+      key = ANALYTICS_API_KEYS.SWR_FLUID;
+      break;
+    case METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS: // 21
+      apiCall = queryOrganizationAlertedUserCount;
+      key = ANALYTICS_API_KEYS.ALERT_USER_COUNT;
+      break;
+    case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
+      apiCall = queryOrganizationActiveUsers;
+      key = ANALYTICS_API_KEYS.ACTIVE_USERS;
+      break;
+    case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
+      apiCall = queryOrganizationCategoriesUsersInCBTZones;
+      key = ANALYTICS_API_KEYS.TEMP_CATE_IN_CBT_ZONES;
+      break;
+    case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
+      apiCall = queryOrganizationFluidMetricsByTeam;
+      key = ANALYTICS_API_KEYS.FLUID_METRICS_BY_TEAM;
+      break;
+    case METRIC_USER_CHART_VALUES.CBT: // 40
+    case METRIC_USER_CHART_VALUES.HR: // 41
+      apiCall = getTeamMemberAlerts;
+      key = ANALYTICS_API_KEYS.TEAM_MEMBER_ALERTS;
+      break;
+    default:
+      console.log("metric is not available");
+  }
+  return {
+    key: key,
+    apiCall: apiCall,
+  }
 };
