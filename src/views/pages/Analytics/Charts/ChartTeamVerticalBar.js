@@ -16,7 +16,10 @@ import {
   withTranslation
 } from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
-import {chartPlugins} from "../../../../utils/anlytics";
+import {
+  chartPlugins,
+  checkEmptyData
+} from "../../../../utils/anlytics";
 import {METRIC_USER_TABLE_VALUES} from "../../../../constant";
 
 ChartJS.register(
@@ -33,9 +36,14 @@ const ChartTeamVerticalBar = () => {
     selectedMetric,
     timeZone,
     teamLabel,
-    chartRef
+    chartRef,
+    setIsEnablePrint,
   } = useAnalyticsContext();
   const {t} = useTranslation();
+
+  React.useEffect(() => {
+    setIsEnablePrint(!checkEmptyData(chartData?.datasets, 1));
+  }, [chartData, setIsEnablePrint]);
 
   if (!chartData?.labels) return <div className={clsx(style.empty_height)}/>;
   return (

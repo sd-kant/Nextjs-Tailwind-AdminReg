@@ -13,6 +13,7 @@ import {
   TIME_LIST
 } from "../../../../constant";
 import {get} from "lodash";
+import {checkEmptyData} from "../../../../utils/anlytics";
 
 const ChartHighestCBT = (
     {
@@ -27,19 +28,15 @@ const ChartHighestCBT = (
     timeZone,
     teamLabel,
     userLabel,
-    chartRef
+    chartRef,
+    setIsEnablePrint
   } = useAnalyticsContext();
 
   const {t} = useTranslation();
 
-  const onCheckEmptyData = () => {
-    if (!chartData) return 0;
-    let flag = 0;
-    chartData?.list?.forEach(it => {
-      flag += it.filter(a => !!a).length;
-    });
-    return flag;
-  };
+  React.useEffect(() => {
+    setIsEnablePrint(!checkEmptyData(chartData, 2));
+  }, [chartData, setIsEnablePrint]);
 
   return (
     <div ref={chartRef} className={clsx(style.chart_body)}>
@@ -125,7 +122,7 @@ const ChartHighestCBT = (
             </div>
 
             {
-              !onCheckEmptyData() && (
+              checkEmptyData(chartData, 2) && (
                 <div className={clsx(style.cbt_empty_data)}>{t(`no data to display`)}</div>
               )
             }
