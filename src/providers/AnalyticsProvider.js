@@ -339,9 +339,10 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'string']]], [sortTitles[3], [[2, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[0], [[3, 'asc', 'string']]], [sortTitles[1], [[3, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'string']]], [sortTitles[3], [[3, 'desc', 'string']]]]),
           makeSort('Sort', [[sortTitles[0], [[4, 'asc', 'string']]], [sortTitles[1], [[4, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[4], [[5, 'asc', 'date']]], [sortTitles[5], [[5, 'desc', 'date']]]]),
+          makeSort('Sort', [[sortTitles[0], [[5, 'asc', 'string']]], [sortTitles[1], [[5, 'desc', 'string']]]]),
+          makeSort('Sort', [[sortTitles[4], [[6, 'asc', 'date']]], [sortTitles[5], [[6, 'desc', 'date']]]]),
         ];
         break;
       case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
@@ -417,7 +418,7 @@ export const AnalyticsProvider = (
         ret = [t('name'), t('team'), t('time spent in safe to work'), t('time spent in mild heat exhaustion'), t('time spent in moderate hyperthermia')];
         break;
       case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
-        ret = [t('name'), t('team'), t('firmware version'), t('app version'), t('platform'), t('date')];
+        ret = [t('name'), t('team'), t('firmware version'), t('os version'), t('app version'), t('platform'), t('date')];
         break;
       case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
         ret = [t('temperature categories'), t('user %')];
@@ -878,8 +879,9 @@ export const AnalyticsProvider = (
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.DEVICE_DATA, pickedMembers, members)?.map(it => ([
         it.fullname ?? ``,
         getTeamNameFromTeamId(formattedTeams, it.teamId),
-        it.osVersion ?? ``,
-        it.version ?? ``,
+        it.type === `kenzen` ? (it?.version || ``) : ``,
+        it.type === `kenzen` ? `` : (it.osVersion ?? ``),
+        it.type === `kenzen` ? `` : (it.version ?? ``),
         it.type ?? ``,
         it.ts ?? ``,
       ]));

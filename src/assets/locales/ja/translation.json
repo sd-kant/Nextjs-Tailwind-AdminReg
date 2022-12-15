@@ -577,6 +577,7 @@
   "worker name": "作業者名",
   "firmware version": "ファームウェアのバージョン",
   "app version": "アプリのバージョン",
+  "os version": "OSのバージョン",
   "platform": "プラットフォーム",
   "date": "日付",
   "temperature categories": "温度カテゴリ",
