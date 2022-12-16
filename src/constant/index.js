@@ -326,20 +326,7 @@ export const DAY_LIST = [
   i18n.t('fri'),
   i18n.t('sat'),
 ];
-export const MONTH_LIST = [
-  i18n.t("jan"),
-  i18n.t("feb"),
-  i18n.t("mar"),
-  i18n.t("apr"),
-  i18n.t("may"),
-  i18n.t("june"),
-  i18n.t("july"),
-  i18n.t("aug"),
-  i18n.t("sep"),
-  i18n.t("oct"),
-  i18n.t("nov"),
-  i18n.t("dec")
-];
+
 export const TIME_LIST = [
   '00:00:00',
   '01:00:00',

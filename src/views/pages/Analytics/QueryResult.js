@@ -121,7 +121,7 @@ const QueryResult = (
             />
           </div>
           {
-            (visibleExport) &&
+            visibleExport &&
             <div className={clsx(style.ExportWrapper)}>
               <ResponsiveSelect
                   className='font-heading-small text-black'
