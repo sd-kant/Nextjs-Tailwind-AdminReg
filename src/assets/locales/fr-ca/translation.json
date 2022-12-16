@@ -576,6 +576,7 @@
   "worker name": "Nom du Travailleur",
   "firmware version": "Firmware Version",
   "app version": "Version de l’application",
+  "os version": "Version de l’OS",
   "platform": "Plate-forme",
   "date": "Date",
   "temperature categories": "Catégories de Température",
