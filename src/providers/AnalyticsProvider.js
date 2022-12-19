@@ -78,15 +78,6 @@ export const AnalyticsProvider = (
   const [detailCbt, setDetailCbt] = React.useState(null); // {dayIndex: 4, timeIndex: 5}
   const chartRef = React.useRef(null); // for chart print
 
-  const exportOptions = [
-    {
-      label: 'CSV',
-      value: 'csv',
-    },
-    {
-      label: 'XLSX',
-      value: 'xlsx',
-    }];
   React.useEffect(() => {
     let mounted = true;
     getRiskLevels().then(response => {
@@ -107,6 +98,8 @@ export const AnalyticsProvider = (
   const selectedTeams = React.useMemo(() => {
     return formattedTeams?.filter(it => pickedTeams.some(ele => ele.toString() === it.value?.toString()))
   }, [pickedTeams, formattedTeams]);
+
+  const [isEnablePrint, setIsEnablePrint] = React.useState(false);
 
   React.useEffect(() => {
     const membersPromises = [];
@@ -1124,7 +1117,6 @@ export const AnalyticsProvider = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMembers, formattedMembers, organization]);
 
-  const [isEnablePrint, setIsEnablePrint] = React.useState(false);
   const handleExport = () => {
     if (visibleExport) {
       if ([`xlsx`, `csv`].includes(exportOption?.value)) {
@@ -1169,7 +1161,6 @@ export const AnalyticsProvider = (
     sortOptions,
     data,
     visibleExport,
-    exportOptions,
     exportOption,
     setExportOption,
     handleExport,

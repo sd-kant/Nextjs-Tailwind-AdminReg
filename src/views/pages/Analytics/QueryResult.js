@@ -18,12 +18,16 @@ import ChartTeamVerticalBar from "./Charts/ChartTeamVerticalBar";
 import ChartHighestCBT from "./Charts/ChartHighestCBT";
 import ChartUserAlert from "./Charts/ChartUserAlert";
 import {
+  EXPORT_OPTIONS,
   METRIC_TEAM_CHART_VALUES,
   METRIC_TEAM_TABLE_VALUES,
   METRIC_USER_CHART_VALUES,
   METRIC_USER_TABLE_VALUES
 } from "../../../constant";
-import {checkMetric, getKeyApiCall} from "../../../utils/anlytics";
+import {
+  checkMetric,
+  getKeyApiCall
+} from "../../../utils/anlytics";
 
 const QueryResult = (
     {
@@ -33,7 +37,6 @@ const QueryResult = (
     statsBy,
     setStatsBy,
     visibleExport,
-    exportOptions,
     exportOption,
     setExportOption,
     handleExport,
@@ -126,7 +129,7 @@ const QueryResult = (
               <ResponsiveSelect
                   className='font-heading-small text-black'
                   isClearable
-                  options={exportOptions}
+                  options={EXPORT_OPTIONS}
                   value={exportOption}
                   maxMenuHeight={190}
                   menuPortalTarget={document.body}
@@ -147,7 +150,7 @@ const QueryResult = (
         </div>
       </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   metric: get(state, 'ui.metric'),

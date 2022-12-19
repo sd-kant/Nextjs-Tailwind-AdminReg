@@ -8,13 +8,13 @@ import {
   Tooltip
 } from 'chart.js';
 import {Bar} from 'react-chartjs-2';
-
 import clsx from 'clsx';
-import style from './Chart.module.scss';
 import {
   useTranslation,
   withTranslation
 } from "react-i18next";
+
+import style from './Chart.module.scss';
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {
   chartPlugins,
@@ -45,25 +45,25 @@ const ChartTeamVerticalBar = () => {
     setIsEnablePrint(!checkEmptyData(chartData?.datasets, 1));
   }, [chartData, setIsEnablePrint]);
 
-  if (!chartData?.labels) return <div className={clsx(style.empty_height)}/>;
+  if (!chartData?.labels) return <div className={clsx(style.EmptyHeight)}/>;
   return (
-      <div ref={chartRef} className={clsx(style.chart_body)}>
-        <div className={clsx(style.bar_body)}>
-          <h1 className={clsx(style.txt_center)}>
+      <div ref={chartRef} className={clsx(style.ChartBody)}>
+        <div className={clsx(style.BarBody)}>
+          <h1 className={clsx(style.TxtCenter)}>
             {t(`number of alerts by week`)}
             {
               selectedMetric?.value === METRIC_USER_TABLE_VALUES.ALERTS && (
-                  <div className={clsx(style.chart_label)}>
+                  <div className={clsx(style.ChartLabel)}>
                     {t(`past 7 days of n`, {n: selectedTeams?.length > 0 ? teamLabel : t("n team", {n: 0})})}
                   </div>
               )
             }
           </h1>
-          <div className={clsx(style.flex_space)}>
-            <div className={clsx(style.flex_space, style.txt_label)}>
+          <div className={clsx(style.FlexSpace)}>
+            <div className={clsx(style.FlexSpace, style.TxtLabel)}>
               {t(`number of alerts`)}
             </div>
-            <div className={clsx(style.bar_canvas)}>
+            <div className={clsx(style.BarCanvas)}>
               <Bar
                   data={chartData}
                   plugins={chartPlugins(`bar`, t(`no data to display`))}
@@ -71,7 +71,7 @@ const ChartTeamVerticalBar = () => {
             </div>
           </div>
 
-          <div className={clsx(style.txt_center)}>
+          <div className={clsx(style.TxtCenter)}>
             {selectedTeams?.length === 1 ?
                 timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``
                 :
@@ -79,7 +79,7 @@ const ChartTeamVerticalBar = () => {
             }
           </div>
 
-          <div className={clsx(style.txt_center, style.txt_week)}>
+          <div className={clsx(style.TxtCenter, style.TxtWeek)}>
             {t(`week`)}
           </div>
         </div>

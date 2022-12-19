@@ -1,11 +1,12 @@
 import * as React from "react";
 import clsx from "clsx";
-import style from "./FilterBoard.module.scss";
+import ReactToPrint from "react-to-print";
+import {useTranslation} from "react-i18next";
 
+import style from "./FilterBoard.module.scss";
 import {customStyles} from "../DashboardV2";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import MultiSelectPopup from "../../components/MultiSelectPopup";
-import {useTranslation} from "react-i18next";
 import {useBasicContext} from "../../../providers/BasicProvider";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 import CustomDatePicker from "../../components/CustomDatePicker";
@@ -22,7 +23,6 @@ import {
   getKeyApiCall,
   getThisWeek
 } from "../../../utils/anlytics";
-import ReactToPrint from "react-to-print";
 
 const CustomInput = React.forwardRef(({value, onClick}, ref) => (
     <div className={clsx(style.CustomInputWrapper)} onClick={onClick}>

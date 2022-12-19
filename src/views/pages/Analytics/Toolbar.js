@@ -52,10 +52,10 @@ const Toolbar = () => {
             {
               detailCbt && (
                   <button
-                      className={clsx(style.btn_back)}
+                      className={clsx(style.BtnBack)}
                       onClick={() => setDetailCbt(null)}
                   >
-                    <span className={clsx(style.txt_ellipse1)}>{t('back')}</span>
+                    <span className={clsx(style.TxtEllipse1)}>{t('back')}</span>
                   </button>
               )
             }
