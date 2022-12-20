@@ -1,5 +1,7 @@
 import * as React from 'react';
 import {connect} from "react-redux";
+import {Line} from 'react-chartjs-2';
+import spacetime from "spacetime";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,7 +11,6 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import {Line} from 'react-chartjs-2';
 import {
   METRIC_USER_CHART_VALUES,
   TYPES,
@@ -32,7 +33,6 @@ import {
   randomHexColorCode
 } from "../../../../utils/anlytics";
 import MultiSelectPopup from "../../../components/MultiSelectPopup";
-import spacetime from "spacetime";
 import {useUtilsContext} from "../../../../providers/UtilsProvider";
 import {formatHeartRate} from "../../../../utils/dashboard";
 
@@ -100,10 +100,11 @@ const ChartUserAlert = () => {
 
   const usersLabel = React.useMemo(() => {
     if (selectedUsers?.length > 0) {
-      if (selectedUsers?.length > 1 && (selectedMembers?.length === selectedUsers?.length)) {
-        return t(`all users`);
-      } else if (selectedUsers?.length > 1) {
-        return t(`n users selected`, {n: selectedUsers.length});
+      if (selectedUsers?.length > 1) {
+        return selectedMembers?.length === selectedUsers?.length ?
+            t(`all users`)
+            :
+            t(`n users selected`, {n: selectedUsers.length});
       } else {
         return selectedMembers?.find(it => it.value?.toString() === selectedUsers?.[0]?.value?.toString())?.label;
       }
@@ -178,19 +179,19 @@ const ChartUserAlert = () => {
   }, [data, setIsEnablePrint]);
 
   return (
-      <div ref={chartRef} className={clsx(style.chart_body)}>
-        <div className={clsx(style.line_body)}>
-          <h1 className={clsx(style.txt_center)}>
+      <div ref={chartRef} className={clsx(style.ChartBody)}>
+        <div className={clsx(style.LineBody)}>
+          <h1 className={clsx(style.TxtCenter)}>
             {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT ? 'cbt' : 'hr'}`)}
           </h1>
-          <div className={clsx(style.line_flex, `mb-15`)}>
+          <div className={clsx(style.LineFlex, `mb-15`)}>
             {
               selectedMembers?.length > 0 ?
                   <div className={"d-flex flex-row"}>
                     <span className='font-input-label d-flex align-center'>
                       {t(`users`)}
                     </span>
-                    <div className={clsx(style.select_mw, `ml-15 font-heading-small text-black`)}>
+                    <div className={clsx(style.SelectMw, `ml-15 font-heading-small text-black`)}>
                       <MultiSelectPopup
                           label={usersLabel}
                           options={selectedMembers}
@@ -208,7 +209,7 @@ const ChartUserAlert = () => {
               </span>
 
               <ResponsiveSelect
-                  className={clsx(style.select_mw, `ml-15 font-heading-small text-black`)}
+                  className={clsx(style.SelectMw, `ml-15 font-heading-small text-black`)}
                   isClearable
                   options={TYPES}
                   value={selectedType}
@@ -224,7 +225,7 @@ const ChartUserAlert = () => {
               </span>
 
               <ResponsiveSelect
-                  className={clsx(style.select_mw, `ml-15 font-heading-small text-black`)}
+                  className={clsx(style.SelectMw, `ml-15 font-heading-small text-black`)}
                   isClearable
                   options={dates}
                   value={selectedDate}
@@ -235,7 +236,7 @@ const ChartUserAlert = () => {
             </div>
           </div>
 
-          <div className={clsx(style.flex_space)}>
+          <div className={clsx(style.FlexSpace)}>
             <Line
                 options={{radius: 0}}
                 data={data}
@@ -243,7 +244,7 @@ const ChartUserAlert = () => {
             />
           </div>
 
-          <div className={clsx(style.txt_center, `mt-40`)}>
+          <div className={clsx(style.TxtCenter, `mt-40`)}>
             {selectedTeams?.length === 1 ?
                 timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``
                 :

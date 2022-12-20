@@ -169,9 +169,7 @@ export const getWeeksInMonth = (timezone) => {
 
 export const onFilterData = (data, key, userIds, members) => {
   if (!key) return [];
-
   if (!Object.keys(data).includes(key)) return [];
-
   if (userIds === null && members === null) return data[[key]] || [];
 
   let ids = members?.map(it => it.userId.toString());

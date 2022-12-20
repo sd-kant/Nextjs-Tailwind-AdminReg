@@ -1,40 +1,40 @@
 @import "../../../../assets/scss/colors";
 
-.chart_body {
+.ChartBody {
   overflow-x: auto;
   min-height: 580px;
 
-  .flex_space {
+  .FlexSpace {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .txt_label {
+  .TxtLabel {
     padding-left: 10px;
     transform: rotate(180deg);
     writing-mode: tb-rl;
   }
 
-  .txt_label,
-  .txt_18 {
+  .TxtLabel,
+  .Txt18 {
     font-size: 18px;
   }
 
-  .chart_label {
+  .ChartLabel {
     padding-top: 10px;
     font-size: 22px;
     font-weight: 500;
   }
 
-  .doughnut_grid2 {
+  .DoughnutGrid2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 0;
     margin: 35px auto 0;
     width: 1100px;
 
-    .txt_center {
+    .TxtCenter {
       text-align: center;
     }
 
@@ -43,25 +43,25 @@
       width: 100%;
       max-width: 80%;
 
-      .legend_box_body {
+      .LegendBoxBody {
         display: flex;
         justify-content: center;
         align-content: center;
         margin-top: 50px;
 
-        .legend_flex {
+        .LegendFlex {
           display: flex;
           justify-content: left;
           align-content: center;
 
-          .legend_box_item {
+          .LegendBoxItem {
             margin-left: 10px;
             border: 1px solid #fff;
             width: 20px;
             height: 20px;
           }
 
-          .legend_box_txt {
+          .LegendBoxTxt {
             padding-left: 10px;
             font-size: 16px;
           }
@@ -87,69 +87,69 @@
     }
   }
 
-  .bar_body {
+  .BarBody {
     overflow: auto;
     overflow-y: hidden;
     margin: 0 auto;
     width: 900px;
     font-family: Ubuntu-Medium, sans-serif;
 
-    .txt_center {
+    .TxtCenter {
       text-align: center;
     }
 
-    .txt_week {
+    .TxtWeek {
       font-size: 18px;
     }
 
-    .txt_center {
+    .TxtCenter {
       padding-top: 20px;
       padding-bottom: 20px;
     }
 
-    .bar_canvas {
+    .BarCanvas {
       width: calc(100% - 30px);
     }
   }
 
-  .line_body {
+  .LineBody {
     margin: 0 auto;
     width: 1000px;
 
-    .txt_center {
+    .TxtCenter {
       text-align: center;
     }
 
-    .line_flex {
+    .LineFlex {
       display: flex;
       justify-content: left;
       align-items: center;
 
-      .select_mw {
+      .SelectMw {
         width: 300px;
       }
     }
   }
 
-  .highest_cbt_body {
+  .HighestCbtBody {
     margin: 0 auto;
     width: 1200px;
     font-family: Ubuntu-Medium, sans-serif;
 
-    .txt_center {
+    .TxtCenter {
       text-align: center;
     }
 
-    .cbt_chart_w_30 {
+    .CbtChartW30 {
       width: 30px;
     }
 
-    .cbt_chart_w_remain {
+    .CbtChartWRemain {
       position: relative;
       width: 100%;
       max-width: calc(100% - 30px);
 
-      .cbt_empty_data {
+      .CbtEmptyData {
         position: absolute;
         top: 45%;
         left: 50%;
@@ -163,35 +163,35 @@
       }
     }
 
-    .day_item_body {
+    .DayItemBody {
       height: 50px;
 
-      .day_txt {
+      .DayTxt {
         padding-right: 8px;
         width: 60px;
         text-align: right;
       }
 
-      .day_time_grid16 {
+      .DayTimeGrid16 {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
         width: 100%;
         max-width: calc(100% - 60px);
 
-        .div_rect {
+        .DivRect {
           border-right: 1px solid $app-white;
           border-bottom: 1px solid $app-white;
           width: 49px;
           height: 49px;
 
-          &.rect_hover:hover {
+          &.RectHover:hover {
             opacity: 0.7;
             cursor: pointer;
           }
         }
       }
 
-      .time_label {
+      .TimeLabel {
         display: flex;
         align-items: center;
         width: 50px;
@@ -202,74 +202,74 @@
       }
     }
 
-    .justify_center {
+    .JustifyCenter {
       display: flex;
       justify-content: center;
       align-items: center;
       margin: 31px auto 32px;
     }
 
-    .progress_bar_container {
+    .ProgressBarContainer {
       width: 500px;
       height: 20px;
       position: relative;
 
-      .point99,
-      .point100,
-      .point101,
-      .txt_point99,
-      .txt_point100,
-      .txt_point101 {
+      .Point99,
+      .Point100,
+      .Point101,
+      .TxtPoint99,
+      .TxtPoint100,
+      .TxtPoint101 {
         position: absolute;
       }
 
-      .point99,
-      .point100,
-      .point101 {
+      .Point99,
+      .Point100,
+      .Point101 {
         top: 0;
         width: 1px;
         height: 20px;
         background-color: $app-white;
       }
 
-      .txt_point99,
-      .txt_point100,
-      .txt_point101 {
+      .TxtPoint99,
+      .TxtPoint100,
+      .TxtPoint101 {
         top: 28px;
         font-size: 13px;
       }
 
-      .point99 {
+      .Point99 {
         left: calc(500px/6.6);
       }
 
-      .txt_point99 {
+      .TxtPoint99 {
         left: calc(500px/6.6 - 8px);
       }
 
-      .point100 {
+      .Point100 {
         left: calc(500px/6.6 * 3);
       }
 
-      .txt_point100 {
+      .TxtPoint100 {
         left: calc(500px/6.6 * 3 - 12px);
       }
 
-      .point101 {
+      .Point101 {
         left: calc(500px/6.6 * 5);
       }
 
-      .txt_point101 {
+      .TxtPoint101 {
         left: calc(500px/6.6 * 5 - 12px);
       }
     }
 
-    .progress_bar_child {
+    .ProgressBarChild {
       width: 100%;
       height: 100%;
     }
 
-    .progress {
+    .Progress {
       text-align: center;
       animation-direction: reverse;
       background: $app-chart-yellow;
@@ -285,11 +285,11 @@
   }
 
   100% {
-    width: 0%;
+    width: 0;
   }
 }
 
-.empty_height {
+.EmptyHeight {
   height: 581px;
 
   @media screen and (max-width: 768px) {

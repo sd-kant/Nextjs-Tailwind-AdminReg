@@ -5,51 +5,60 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.9.4";
+export const CURRENT_VERSION = "3.9.5";
+export const EXPORT_OPTIONS = [
+  {
+    label: 'CSV',
+    value: 'csv',
+  },
+  {
+    label: 'XLSX',
+    value: 'xlsx',
+  }];
 export const AVAILABLE_COUNTRIES = [
   {
-    "value": "AU",
-    "label": i18n.t("australia"),
+    value: "AU",
+    label: i18n.t("australia"),
   },
   {
-    "value": "CA",
-    "label": i18n.t("canada"),
+    value: "CA",
+    label: i18n.t("canada"),
   },
   {
-    "value": "FR",
-    "label": i18n.t("france"),
+    value: "FR",
+    label: i18n.t("france"),
   },
   {
-    "value": "IN",
-    "label": i18n.t("india"),
+    value: "IN",
+    label: i18n.t("india"),
   },
   {
-    "value": "JP",
-    "label": i18n.t("japan"),
+    value: "JP",
+    label: i18n.t("japan"),
   },
   {
-    "value": "QA",
-    "label": i18n.t("qatar"),
+    value: "QA",
+    label: i18n.t("qatar"),
   },
   {
-    "value": "SA",
-    "label": i18n.t("saudi arabia"),
+    value: "SA",
+    label: i18n.t("saudi arabia"),
   },
   {
-    "value": "ZA",
-    "label": i18n.t("south africa"),
+    value: "ZA",
+    label: i18n.t("south africa"),
   },
   {
-    "value": "CH",
-    "label": i18n.t("switzerland"),
+    value: "CH",
+    label: i18n.t("switzerland"),
   },
   {
-    "value": "GB",
-    "label": i18n.t("united kingdom"),
+    value: "GB",
+    label: i18n.t("united kingdom"),
   },
   {
-    "value": "US",
-    "label": i18n.t("usa"),
+    value: "US",
+    label: i18n.t("usa"),
   },
 ];
 export const AVAILABLE_JOBS = [

@@ -39,41 +39,41 @@ const ChartHighestCBT = (
   }, [chartData, setIsEnablePrint]);
 
   return (
-    <div ref={chartRef} className={clsx(style.chart_body)}>
-      <div className={clsx(style.highest_cbt_body)}>
-        <h1 className={clsx(style.txt_center)}>
+    <div ref={chartRef} className={clsx(style.ChartBody)}>
+      <div className={clsx(style.HighestCbtBody)}>
+        <h1 className={clsx(style.TxtCenter)}>
           {t(`highest cbt by time of day and day of week`)}
           {
             selectedMetric?.value === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT && (
-                <div className={clsx(style.chart_label)}>
+                <div className={clsx(style.ChartLabel)}>
                   {t('past 7 days of m in n', {m: selectedMembers?.length > 0 ? userLabel : t("n user", {n: 0}), n: selectedTeams?.length > 0 ? teamLabel : t("n user", {n: 0})})}
                 </div>
             )
           }
         </h1>
 
-        <div className={clsx(style.flex_space)}>
-          <h1 className={clsx(style.txt_label, style.flex_space, style.cbt_chart_w_30)}>
+        <div className={clsx(style.FlexSpace)}>
+          <h1 className={clsx(style.TxtLabel, style.FlexSpace, style.CbtChartW30)}>
             {t(`day of week`)}
           </h1>
-          <div className={clsx(style.cbt_chart_w_remain)}>
+          <div className={clsx(style.CbtChartWRemain)}>
             {
               chartData?.dayList?.map((item, key) => {
                 return (
                   <div
                     key={key}
-                    className={clsx(style.flex_space, style.day_item_body)}
+                    className={clsx(style.FlexSpace, style.DayItemBody)}
                   >
-                    <div className={clsx(style.day_txt)}>{item}</div>
+                    <div className={clsx(style.DayTxt)}>{item}</div>
 
-                    <div className={clsx(style.day_time_grid16)}>
+                    <div className={clsx(style.DayTimeGrid16)}>
                       {
                         TIME_LIST?.map((col, index) => {
 
                           return (
                             <div
                               key={key + '_' + index}
-                              className={clsx(style.div_rect, (chartData?.list?.length === 7 && chartData?.list[key][index] !== null) ? style.rect_hover : ``)}
+                              className={clsx(style.DivRect, (chartData?.list?.length === 7 && chartData?.list[key][index] !== null) ? style.RectHover : ``)}
                               style={{
                                 backgroundColor:
                                   `rgb(
@@ -101,16 +101,16 @@ const ChartHighestCBT = (
                 )
               })
             }
-            <div className={clsx(style.flex_space, style.day_item_body)}>
-              <div className={clsx(style.cbt_chart_w_remain, style.flex_space)}>
-                <div className={clsx(style.day_txt)}/>
-                <div className={clsx(style.day_time_grid16)}>
+            <div className={clsx(style.FlexSpace, style.DayItemBody)}>
+              <div className={clsx(style.CbtChartWRemain, style.FlexSpace)}>
+                <div className={clsx(style.DayTxt)}/>
+                <div className={clsx(style.DayTimeGrid16)}>
                   {
                     TIME_LIST?.map((time, index) => {
                       return (
                         <div
                           key={index}
-                          className={clsx(style.time_label, `mt-10`)}
+                          className={clsx(style.TimeLabel, `mt-10`)}
                         >
                           {time}
                         </div>
@@ -123,14 +123,14 @@ const ChartHighestCBT = (
 
             {
               checkEmptyData(chartData, 2) && (
-                <div className={clsx(style.cbt_empty_data)}>{t(`no data to display`)}</div>
+                <div className={clsx(style.CbtEmptyData)}>{t(`no data to display`)}</div>
               )
             }
           </div>
         </div>
 
-        <div className={clsx(style.txt_center)}>
-          <div className={clsx(style.txt_center, `mt-40`)}>
+        <div className={clsx(style.TxtCenter)}>
+          <div className={clsx(style.TxtCenter, `mt-40`)}>
             {selectedTeams?.length === 1 ?
                 timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``
                 :
@@ -138,18 +138,18 @@ const ChartHighestCBT = (
             }
           </div>
 
-          <h1 className={clsx(style.txt_18, `mt-40`)}>{t(`time of day`)}</h1>
-          <div className={clsx(style.justify_center)}>
+          <h1 className={clsx(style.Txt18, `mt-40`)}>{t(`time of day`)}</h1>
+          <div className={clsx(style.JustifyCenter)}>
             <span className='mt-15'>{t(`cbt`)}</span>
             <div>
-              <div className={clsx(style.progress_bar_container, `ml-15`)}>
-                <div className={clsx(style.progress_bar_child, style.progress)}/>
-                <div className={clsx(style.point99)}/>
-                <div className={clsx(style.point100)}/>
-                <div className={clsx(style.point101)}/>
-                <div className={clsx(style.txt_point99)}>{unitMetric ? 37.22 : 99}</div>
-                <div className={clsx(style.txt_point100)}>{unitMetric ? 37.77 : 100}</div>
-                <div className={clsx(style.txt_point101)}>{unitMetric ? 38.33 : 101}</div>
+              <div className={clsx(style.ProgressBarContainer, `ml-15`)}>
+                <div className={clsx(style.ProgressBarChild, style.Progress)}/>
+                <div className={clsx(style.Point99)}/>
+                <div className={clsx(style.Point100)}/>
+                <div className={clsx(style.Point101)}/>
+                <div className={clsx(style.TxtPoint99)}>{unitMetric ? 37.22 : 99}</div>
+                <div className={clsx(style.TxtPoint100)}>{unitMetric ? 37.77 : 100}</div>
+                <div className={clsx(style.TxtPoint101)}>{unitMetric ? 38.33 : 101}</div>
               </div>
             </div>
           </div>
