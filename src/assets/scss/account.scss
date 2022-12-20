@@ -8,7 +8,6 @@
 }
 
 .content-wrapper {
-  //position: relative;
   display: flex;
   flex-direction: column;
 }
@@ -31,10 +30,10 @@
 }
 
 .form-main {
-  margin-top: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 40px;
 }
 
 .form {
@@ -55,16 +54,16 @@
 
 .rest-bar {
   margin: 25px 20px 0;
+  border-radius: 50px;
   width: calc(100% - 40px);
   height: 38px;
-  border-radius: 50px;
   background: $app-tf;
 }
 
 .progress {
+  border-radius: 50px;
   height: 100%;
   background: linear-gradient(195.6deg, #FFD600 18.7%, #DE7D2C 106.02%);
-  border-radius: 50px;
 }
 
 .progress.medical {
@@ -128,23 +127,21 @@
 
   .custom-radio {
     position: absolute;
-    right: 8px;
     top: 8px;
+    right: 8px;
   }
 }
 
 .upload-photo-label {
-  //height: 18px;
   display: inline-flex;
   padding: 15px 30px;
   border: 1px solid #DE7D2C;
-  filter: drop-shadow(0px 15px 25px rgba(0, 0, 0, 0.1));
   border-radius: 10px;
+  filter: drop-shadow(0px 15px 25px rgba(0, 0, 0, 0.1));
 }
 
 .phone-stripes {
   display: none;
-  //display: block;
   position: fixed;
   bottom: 0;
 
@@ -169,10 +166,10 @@
 }
 
 .grouped-form {
+  overflow-x: auto;
   display: flex;
   flex-direction: column;
   max-width: 100%;
-  overflow-x: auto;
 }
 
 @media only screen and (min-width: 768px) {
@@ -203,9 +200,9 @@
   }
 
   .form-main {
+    display: block;
     margin-top: 73.45px;
     margin-left: 65px;
-    display: block;
   }
 
   .form-group {
@@ -218,16 +215,16 @@
 
   .rest-bar {
     margin: 25px 40px 0;
+    border-radius: 50px;
     width: calc(100% - 80px);
     height: 45px;
-    border-radius: 50px;
     background: $app-tf;
   }
 
   .progress {
+    border-radius: 50px;
     height: 100%;
     background: linear-gradient(272.83deg, #FFD600 2.3%, #DE7D2C 97.59%);
-    border-radius: 50px;
   }
 
   .progress.progress-0 {
@@ -235,10 +232,10 @@
   }
 
   .medium-pad-stripes {
-    display: block;
     position: absolute;
-    right: 0;
     top: 215px;
+    right: 0;
+    display: block;
     max-height: calc(100vh - 215px);
     overflow: hidden;
   }
@@ -271,9 +268,9 @@
   }
 
   .progress {
+    border-radius: 50px;
     height: 100%;
     background: linear-gradient(272.83deg, #FFD600 2.3%, #DE7D2C 97.59%);
-    border-radius: 50px;
   }
 
   .progress.progress-0 {
@@ -282,10 +279,10 @@
 
   .pad-stripes {
     position: absolute;
-    display: flex;
-    flex-direction: column;
     top: 175px;
     right: 0;
+    display: flex;
+    flex-direction: column;
     max-height: calc(100vh - 175px);
     overflow: hidden;
   }
@@ -312,17 +309,17 @@
   }
 
   .form-main {
-    margin-left: 110px;
     margin-top: 138px;
+    margin-left: 110px;
   }
 
   .form-group {
     position: relative;
-    width: 500px;
-    min-height: calc(100vh - 386px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    width: 500px;
+    min-height: calc(100vh - 386px);
   }
 
   /*.form-group > div:last-child {
@@ -332,10 +329,10 @@
   // this is same with form, but I renamed it on inviting pages
   .form {
     position: relative;
-    min-height: calc(100vh - 386px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-height: calc(100vh - 386px);
   }
 
   /*.form > div:last-child {
@@ -348,20 +345,20 @@
   }
 
   .rest-bar {
-    margin: 106px 0;
     position: absolute;
+    margin: 106px 0;
+    border-radius: 50px;
     width: 45px;
     height: calc(100vh - 212px);
-    border-radius: 50px;
     background: $app-tf;
   }
 
   .progress {
     position: absolute;
     bottom: 0;
+    border-radius: 50px;
     width: 45px !important;
     background: linear-gradient(195.6deg, #FFD600 18.7%, #DE7D2C 106.02%);
-    border-radius: 50px;
   }
 
   .progress.progress-0 {
@@ -417,10 +414,10 @@
   }
 
   .desktop-stripes {
-    display: block;
     position: absolute;
-    right: 0;
     top: 160px;
+    right: 0;
+    display: block;
     max-height: calc(100vh - 160px);
     overflow: hidden;
   }
