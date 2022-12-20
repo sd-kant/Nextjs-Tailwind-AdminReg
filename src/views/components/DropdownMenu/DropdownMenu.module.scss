@@ -8,28 +8,28 @@
     align-items: center;
 
     .Avatar {
+      margin-right: 15px;
       width: 59px;
       height: 59px;
-      margin-right: 15px;
     }
   }
 }
 
 .Divider {
+  margin-top: 8px;
   height: 1px;
   background: $app-divider;
-  margin-top: 8px;
 }
 
 .MenuItemWrapper {
   .MenuItem {
-    margin-top: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: $app-black;
+    margin-top: 8px;
     padding: 0 10px;
     border-radius: 5px;
+    color: $app-black;
 
     &.HighLight {
       background-color: $app-orange;
@@ -41,8 +41,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: $app-gray;
   padding: 0 15px;
+  color: $app-gray;
 }
 
 .PopupContent {

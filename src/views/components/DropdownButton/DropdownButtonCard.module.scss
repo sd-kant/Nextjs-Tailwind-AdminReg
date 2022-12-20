@@ -2,19 +2,19 @@
 
 .CardWrapper {
   position: absolute;
-  z-index: 2;
+  width: 100%;
   background-color: $app-white;
   color: black;
-  width: 100%;
+  z-index: 2;
 
   .List {
-    padding: 0;
     margin: 0;
+    padding: 0;
 
     .Item {
+      padding: 10px;
       cursor: pointer;
       list-style: none;
-      padding: 10px;
 
       &:hover {
         background-color: $app-active-blue;

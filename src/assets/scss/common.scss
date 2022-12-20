@@ -1,21 +1,21 @@
 @import "colors";
 
 .input {
-  background-color: $app-ts;
+  padding: 0 22px;
+  border: none;
   border-radius: 10px;
   height: 54px;
-  border: none;
   outline: none !important;
-  padding: 0 22px;
+  background-color: $app-ts;
   z-index: 1;
 }
 
 .button {
   position: relative;
+  border: none;
+  border-radius: 10px;
   width: 325px;
   height: 48px;
-  border-radius: 10px;
-  border: none;
   outline: none !important;
   cursor: pointer;
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
@@ -35,15 +35,15 @@
 }
 
 .tap {
-  width: 105px;
-  height: 114px;
-  border-radius: 20px;
-  background: $app-tf;
-  border: none;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border: none;
+  border-radius: 20px;
+  width: 105px;
+  height: 114px;
+  background: $app-tf;
 }
 
 .tap.active {
@@ -63,8 +63,8 @@
 }
 
 .footer {
-  display: none;
   position: relative;
+  display: none;
 }
 
 .no-underline {
@@ -82,9 +82,9 @@
 }
 
 ::-webkit-scrollbar-thumb {
+  border-radius: 4px;
   width: 6px;
   height: 6px;
-  border-radius: 4px;
   background-color: #3b3a3a;
 }
 
@@ -114,8 +114,8 @@
 
 @media only screen and (min-width: 768px) {
   .button {
-    width: auto;
     padding: 15px 30px;
+    width: auto;
   }
 
   .footer {

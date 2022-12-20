@@ -4,30 +4,30 @@
 .dash-logout {
   position: absolute;
   top: 15px;
-  bottom: auto;
   right: 20px;
+  bottom: auto;
   z-index: 1;
 
   .dash-logout-label {
-    height: 19px;
     padding: 10px 13px;
     border: 1px solid white;
-    filter: drop-shadow(0px 15px 25px rgba(0, 0, 0, 0.1));
     border-radius: 10px;
+    height: 19px;
     font-size: 14px !important;
+    filter: drop-shadow(0px 15px 25px rgba(0, 0, 0, 0.1));
   }
 }
 
 // unit picker
 .unit-picker {
   select {
-    width: 60px;
-    height: 25px;
+    padding-left: 5px;
     border: 1px solid #FFFFFF;
     border-radius: 3px;
+    width: 60px;
+    height: 25px;
     outline: none;
     background: transparent;
-    padding-left: 5px;
 
     option {
       color: $app-white;
@@ -47,18 +47,18 @@
 }
 
 .custom-radio {
-  background: #FFFFFF;
   border-radius: 38px;
   width: 115px;
   height: 38px;
+  background: #FFFFFF;
 }
 
 .custom-radio-option {
+  border-radius: 38px;
   width: 55px;
   height: 32px;
   background: transparent;
   box-shadow: none;
-  border-radius: 38px;
 }
 
 .custom-radio-option span {
@@ -78,10 +78,10 @@
 
 /* The radio container */
 .radio-container {
-  display: block;
   position: relative;
-  padding-left: 35px;
+  display: block;
   margin-bottom: 12px;
+  padding-left: 35px;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -101,11 +101,11 @@
   position: absolute;
   top: 2px;
   left: 0;
-  height: 15px;
-  width: 15px;
-  background-color: $app-tf;
-  border-radius: 50%;
   border: 2px $app-white solid;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  background-color: $app-tf;
 }
 
 .checkmark.disabled {
@@ -135,35 +135,27 @@
   position: fixed;
   top: 50%;
   left: 50%;
+  border-radius: 40px;
   transform: translate(-50%, -50%);
   background: $app-tf;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-  border-radius: 40px;
   z-index: 10;
 
   .close-icon {
-    z-index: 20;
     position: absolute;
     top: 25px;
     right: 25px;
+    width: 45px;
+    height: 45px;
     background: url("../images/close.svg");
     background-size: cover;
     cursor: pointer;
-    width: 45px;
-    height: 45px;
+    z-index: 20;
   }
 
   .close-icon-sm {
     width: 32px;
     height: 32px;
-  }
-
-  .modal-header {
-
-  }
-
-  .modal-subheader {
-
   }
 
   .modal-body {
@@ -182,10 +174,6 @@
       }
     }
   }
-
-  .modal-footer {
-
-  }
 }
 
 .backdrop {
@@ -202,10 +190,10 @@
 //checkbox
 /* The container */
 .checkbox-container {
-  display: block;
   position: relative;
-  padding-left: 35px;
+  display: block;
   margin-bottom: 12px;
+  padding-left: 35px;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -216,10 +204,10 @@
 /* Hide the browser's default checkbox */
 .checkbox-container input {
   position: absolute;
+  width: 0;
+  height: 0;
   opacity: 0;
   cursor: pointer;
-  height: 0;
-  width: 0;
 }
 
 /* Create a custom checkbox */
@@ -227,8 +215,8 @@
   position: absolute;
   top: 2px;
   left: 0;
-  height: 20px;
   width: 20px;
+  height: 20px;
   background-color: white;
 }
 
@@ -256,12 +244,12 @@
 
 /* Style the checkmark/indicator */
 .checkbox-container .checkbox-checkmark:after {
-  left: 6px;
   top: 2px;
-  width: 5px;
-  height: 10px;
+  left: 6px;
   border: solid white;
   border-width: 0 3px 3px 0;
+  width: 5px;
+  height: 10px;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
@@ -274,12 +262,12 @@
 
 //timezone picker
 .timezone-picker-textfield {
+  border-radius: 10px;
+  border: none;
   font-family: Ubuntu-Regular, sans-serif;
   font-size: 21px;
   line-height: 24.13px;
   background-color: $app-ts;
-  border-radius: 10px;
-  border: none;
   outline: none !important;
   z-index: 1;
 }
@@ -293,14 +281,14 @@
   .dash-logout {
     position: absolute;
     top: auto;
-    bottom: 40px;
     right: 20px;
+    bottom: 40px;
     z-index: 1;
 
     .dash-logout-label {
-      height: 19px;
       padding: 17px 20px;
       border: 1px solid white;
+      height: 19px;
       filter: drop-shadow(0px 15px 25px rgba(0, 0, 0, 0.1));
       border-radius: 10px;
       font-size: 16px;

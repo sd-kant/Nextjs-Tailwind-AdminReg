@@ -5,9 +5,9 @@
     position: fixed;
     top: 0;
     left: 0;
+    padding: 22px;
     width: calc(100% - 46px);
     background: $app-ts;
-    padding: 22px;
     z-index: 7;
 
     .NavbarMain {
@@ -31,12 +31,6 @@
 
 @media only screen and (min-width: 768px) {
   .Wrapper {
-    .Navbar {
-      .NavbarMain {
-
-      }
-    }
-
     .Content {
       margin-top: 89px;
     }

@@ -82,14 +82,14 @@
 
 @media print {
   html, body {
-    height: initial !important;
     width: 1450px !important;
+    height: initial !important;
     -webkit-print-color-adjust: exact;
   }
 
   @page {
-    size: A4 landscape;
     margin: 20mm;
+    size: A4 landscape;
   }
 
   .page-break {
