@@ -19,10 +19,10 @@
     }
 
     .Table {
-      height: 100%;
       overflow-x: auto;
       display: inline-block;
       max-width: 100%;
+      height: 100%;
     }
   }
 }
@@ -43,15 +43,15 @@
     padding: 30px 40px;
 
     .StripeWrapper {
-      display: block;
       position: fixed;
       right: 0;
       top: 160px;
+      display: block;
+      height: calc(100vh - 160px);
       background-image: url("../../assets/images/stripes.svg");
       background-size: contain;
       background-repeat: repeat-y;
       background-position: right top;
-      height: calc(100vh - 160px);
     }
   }
 }

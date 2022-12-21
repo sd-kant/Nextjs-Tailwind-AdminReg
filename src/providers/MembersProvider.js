@@ -19,45 +19,28 @@ import {
   getUsersUnderOrganization,
   deleteUser,
   reInviteOrganizationUser,
-  reInviteTeamUser, unlockUser, inviteTeamMemberV2,
+  reInviteTeamUser,
+  unlockUser,
+  inviteTeamMemberV2,
 } from "../http";
 import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../views/components/ConfirmModalV2";
 import {withTranslation} from "react-i18next";
-import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAction} from "../redux/action/ui";
+import {
+  setLoadingAction,
+  showErrorNotificationAction,
+  showSuccessNotificationAction
+} from "../redux/action/ui";
 import {updateUrlParam} from "../utils";
 import ConfirmModal from "../views/components/ConfirmModal";
 import {useParams} from "react-router-dom";
+import {
+  checkIfHigherThanMe,
+  getPermissionLevelFromUserTypes
+} from "../utils/members";
 
 const MembersContext = React.createContext(null);
 let searchTimeout = null;
-
-export const getPermissionLevelFromUserTypes = (userTypes) => {
-  let permissionLevel;
-  if (userTypes?.includes(USER_TYPE_ADMIN)) {
-    permissionLevel = permissionLevels?.find(it => it.value?.toString() === "3");
-  } else if (userTypes?.includes(USER_TYPE_ORG_ADMIN)) {
-    permissionLevel = permissionLevels?.find(it => it.value?.toString() === "4");
-  } else if (userTypes?.includes(USER_TYPE_TEAM_ADMIN)) {
-    permissionLevel = permissionLevels?.find(it => it.value?.toString() === "1");
-  } else if (userTypes?.includes(USER_TYPE_OPERATOR)) {
-    permissionLevel = permissionLevels?.find(it => it.value?.toString() === "2");
-  }
-
-  return permissionLevel;
-};
-
-export const checkIfHigherThanMe = (myUserType, opponentPermissionLevel) => {
-  if (myUserType.includes(USER_TYPE_ADMIN)) {
-    return false;
-  } else if (myUserType.includes(USER_TYPE_ORG_ADMIN)) {
-    return ["3"].includes(opponentPermissionLevel?.value?.toString());
-  } else if (myUserType.includes(USER_TYPE_TEAM_ADMIN)) {
-    return ["3", "4"].includes(opponentPermissionLevel?.value?.toString());
-  }
-
-  return true;
-}
 
 const MembersProvider = (
   {

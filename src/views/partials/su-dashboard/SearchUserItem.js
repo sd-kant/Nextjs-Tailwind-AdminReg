@@ -4,7 +4,6 @@ import {customStyles} from "./FormInvite";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import DropdownButton from "../../components/DropdownButton";
 import {withTranslation} from "react-i18next";
-import {checkIfHigherThanMe, getPermissionLevelFromUserTypes} from "../../../providers/MembersProvider";
 import {
   permissionLevels,
   USER_TYPE_OPERATOR,
@@ -16,6 +15,10 @@ import removeIcon from "../../../assets/images/remove.svg";
 import lockIcon from "../../../assets/images/lock.svg";
 import {get} from "lodash";
 import {useMembersContext} from "../../../providers/MembersProvider";
+import {
+  checkIfHigherThanMe,
+  getPermissionLevelFromUserTypes
+} from "../../../utils/members";
 
 const SearchUserItem = (
   {

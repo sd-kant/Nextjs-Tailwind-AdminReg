@@ -1,5 +1,12 @@
-import {minutesToDaysHoursMinutes, numMinutesBetween, numMinutesBetweenWithNow} from "./index";
-import {HEAT_SUSCEPTIBILITY_HIGH, HEAT_SUSCEPTIBILITY_LOW, HEAT_SUSCEPTIBILITY_MEDIUM} from "../constant";
+import {
+  minutesToDaysHoursMinutes,
+  numMinutesBetween,
+  numMinutesBetweenWithNow
+} from "./index";
+import {
+  HEAT_SUSCEPTIBILITY_PRIORITIES,
+  PRIORITIES
+} from "../constant";
 import {get} from "lodash";
 
 export const formatDevice4Digits = str => {
@@ -40,23 +47,6 @@ export const literToQuart = v => {
   }
 
   return (v * 1.05669).toFixed(2);
-}
-
-export const shortenDate = ({aDateStr, bDateStr}) => {
-  const bDate = new Date(bDateStr);
-  bDate.setSeconds(0);
-  bDate.setMilliseconds(0);
-  const aDate = new Date(aDateStr);
-  aDate.setSeconds(0);
-  aDate.setMilliseconds(0);
-
-  return {aDate, bDate};
-}
-
-export const heatSusceptibilityPriorities = {
-  [HEAT_SUSCEPTIBILITY_HIGH.toLowerCase()]: 1,
-  [HEAT_SUSCEPTIBILITY_MEDIUM.toLowerCase()]: 2,
-  [HEAT_SUSCEPTIBILITY_LOW.toLowerCase()]: 3,
 };
 
 export const sortMembers = ({arrOrigin, filter}) => {
@@ -95,17 +85,9 @@ export const sortMembers = ({arrOrigin, filter}) => {
       }
       return v;
     });
-  }
+  };
 
   let arr = arrOrigin;
-  const priorities = {
-    "1": 6,
-    "2": 5,
-    "3": 1,
-    "4": 2,
-    "7": 3,
-    "8": 4,
-  };
 
   const heatRiskPriorities = (filterDirection) => ({
     "1": filterDirection === 1 ? 2 : 1,
@@ -116,8 +98,8 @@ export const sortMembers = ({arrOrigin, filter}) => {
   });
 
   const getHeatSusceptibilityPriority = ({key, direction}) => {
-    return heatSusceptibilityPriorities[key] ?? (direction === 1 ? 4 : 0);
-  }
+    return HEAT_SUSCEPTIBILITY_PRIORITIES[key] ?? (direction === 1 ? 4 : 0);
+  };
 
   if ([1, 2].includes(filter?.lastSync)) { // sort by last sync
     arr = arr?.sort((a, b) => {
@@ -147,7 +129,7 @@ export const sortMembers = ({arrOrigin, filter}) => {
       arr,
       invisibleKey: 'invisibleHeatRisk',
       columnPriorities: heatRiskPriorities(filter?.heatRisk),
-      connectionPriorities: priorities,
+      connectionPriorities: PRIORITIES,
       path: 'alertObj.value',
       filterDirection: filter?.heatRisk,
     });
@@ -174,7 +156,10 @@ export const sortMembers = ({arrOrigin, filter}) => {
   }
   if ([1, 2].includes(filter?.connection)) {
     arr = arr?.sort((a, b) => {
-      let v = filter?.connection === 1 ? priorities[a.connectionObj?.value] - priorities[b.connectionObj?.value] : priorities[b.connectionObj?.value] - priorities[a.connectionObj?.value];
+      let v = filter?.connection === 1 ?
+          PRIORITIES[a.connectionObj?.value] - PRIORITIES[b.connectionObj?.value]
+          :
+          PRIORITIES[b.connectionObj?.value] - PRIORITIES[a.connectionObj?.value];
       if (v === 0) {
         if (a.invisibleLastSync) {
           v = 1;
@@ -192,4 +177,4 @@ export const sortMembers = ({arrOrigin, filter}) => {
   }
 
   return arr;
-}
+};
