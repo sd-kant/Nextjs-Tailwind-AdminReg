@@ -36,11 +36,15 @@ import {
   HIGHEST_CHART_CELSIUS_MIN,
   HIGHEST_CHART_CELSIUS_MAX,
   ANALYTICS_API_KEYS,
+  RISK_PRIORITIES,
+  HEAT_SUSCEPTIBILITY_PRIORITIES,
+  USER_STATUS_METRICS,
+  TEAM_STATUS_METRICS,
+  SORT_TITLES,
 } from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {
   formatHeartRate,
-  heatSusceptibilityPriorities,
   literToQuart
 } from "../utils/dashboard";
 import {useUtilsContext} from "./UtilsProvider";
@@ -89,12 +93,6 @@ export const AnalyticsProvider = (
     }
   }, []);
 
-  const riskPriorities = {
-    "low": 1,
-    "medium": 2,
-    "high": 3,
-    "extreme": 4,
-  };
   const selectedTeams = React.useMemo(() => {
     return formattedTeams?.filter(it => pickedTeams.some(ele => ele.toString() === it.value?.toString()))
   }, [pickedTeams, formattedTeams]);
@@ -125,108 +123,16 @@ export const AnalyticsProvider = (
       Promise.allSettled([a()]).then();
     }
   }, [pickedTeams]);
+
   const metrics = React.useMemo(() => {
-    const userStatsMetrics = [
-      {
-        label: `${t('table')} - ${t('wear time')}`,
-        value: METRIC_USER_TABLE_VALUES.WEAR_TIME, // 1
-      },
-      {
-        label: `${t('table')} - ${t('alerts')}`,
-        value: METRIC_USER_TABLE_VALUES.ALERTS, // 2
-      },
-      {
-        label: `${t('table')} - ${t('max heart cbt')}`,
-        value: METRIC_USER_TABLE_VALUES.MAX_HEART_CBT, // 3
-      },
-      {
-        label: `${t('table')} - ${t('swr & acclim')}`,
-        value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM, // 5
-      },
-      {
-        label: `${t('table')} - ${t('time spent in cbt zones')}`,
-        value: METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES, // 6
-      },
-      {
-        label: `${t('table')} - ${t('device data')}`,
-        value: METRIC_USER_TABLE_VALUES.DEVICE_DATA, // 7
-      },
-      {
-        label: `${t('table')} - ${t('users in various cbt zones')}`,
-        value: METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES, // 8
-      },
-      {
-        label: `${t('chart')} - ${t('cbt')}`,
-        value: METRIC_USER_CHART_VALUES.CBT, // 40
-      },
-      {
-        label: `${t('chart')} - ${t('hr')}`,
-        value: METRIC_USER_CHART_VALUES.HR, // 41
-      },
-    ];
-    const teamStatsMetrics = [
-      {
-        label: `${t('table')} - ${t('ambient temp/humidity')}`,
-        value: METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY, // 20
-      },
-      {
-        label: `${t('table')} - ${t('% of workers with alerts')}`,
-        value: METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS, // 21
-      },
-      {
-        label: `${t('table')} - ${t('active users')}`,
-        value: METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS, // 22
-      },
-      {
-        label: `${t('table')} - ${t('no. of users in swr categories')}`,
-        value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE, // 23
-      },
-      {
-        label: `${t('table')} - ${t('no. of users in heat susceptibility categories')}`,
-        value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE, // 24
-      },
-      {
-        label: `${t('table')} - ${t('no. of users in cbt zones')}`,
-        value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES, // 25
-      },
-      {
-        label: `${t('table')} - ${t('no. of users unacclimated, acclimated and persis previous illness')}`,
-        value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED, // 26
-      },
-      {
-        label: `${t('chart')} - ${t('heat susceptibility and sweat rate')}`,
-        value: METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE, // 30
-      },
-      {
-        label: `${t('chart')} - ${t('number of alerts by week')}`,
-        value: METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK, // 31
-      },
-      {
-        label: `${t('chart')} - ${t('highest cbt by time of day and day of week')}`,
-        value: METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK, // 32
-      },
-    ];
-    return statsBy === 'user' ? userStatsMetrics : teamStatsMetrics;
-  }, [statsBy, t]);
+    return statsBy === 'user' ? USER_STATUS_METRICS : TEAM_STATUS_METRICS;
+  }, [statsBy]);
+
   const [metric, setMetric] = React.useState(null);
   const [sort, setSort] = React.useState([]);
   React.useEffect(() => {
     setSort(null);
   }, [metric]);
-  const sortTitles = [
-    t('a - z'),
-    t('z - a'),
-    t('min to max'),
-    t('max to min'),
-    t('most recent'),
-    t('oldest'),
-    t('risk to safe'),
-    t('safe to risk'),
-    t('extreme to low'),
-    t('low to extreme'),
-    t('high to low'),
-    t('low to high'),
-  ];
 
   const makeOption = (title, actionSorts) => {
     return {
@@ -242,7 +148,7 @@ export const AnalyticsProvider = (
       highlight: sort?.[0]?.index === actionSorts?.[0]?.[0] &&
         sort?.[0]?.direction === actionSorts?.[0]?.[1],
     }
-  }
+  };
   /**
    *
    * @param title
@@ -277,109 +183,109 @@ export const AnalyticsProvider = (
     switch (metric) {
       case METRIC_USER_TABLE_VALUES.WEAR_TIME: // 1
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_USER_TABLE_VALUES.ALERTS: // 2
       case METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK: // 31
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[4], [[2, 'desc', 'date']]], [sortTitles[5], [[2, 'asc', 'date']]]]),
-          makeSort('Sort', [[sortTitles[6], [[3, 'desc', 'alert']]], [sortTitles[7], [[3, 'asc', 'alert']]]]),
-          makeSort('Sort', [[sortTitles[8], [[4, 'desc', 'risk']]], [sortTitles[9], [[4, 'asc', 'risk']]]]),
-          makeSort('Sort', [[sortTitles[2], [[5, 'asc', 'number']]], [sortTitles[3], [[5, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[6, 'asc', 'number']]], [sortTitles[3], [[6, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[7, 'asc', 'number']]], [sortTitles[3], [[7, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[8, 'asc', 'number']]], [sortTitles[3], [[8, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[4], [[2, 'desc', 'date']]], [SORT_TITLES[5], [[2, 'asc', 'date']]]]),
+          makeSort('Sort', [[SORT_TITLES[6], [[3, 'desc', 'alert']]], [SORT_TITLES[7], [[3, 'asc', 'alert']]]]),
+          makeSort('Sort', [[SORT_TITLES[8], [[4, 'desc', 'risk']]], [SORT_TITLES[9], [[4, 'asc', 'risk']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[5, 'asc', 'number']]], [SORT_TITLES[3], [[5, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[6, 'asc', 'number']]], [SORT_TITLES[3], [[6, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[7, 'asc', 'number']]], [SORT_TITLES[3], [[7, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[8, 'asc', 'number']]], [SORT_TITLES[3], [[8, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
       case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[4], [[2, 'asc', 'date']]], [sortTitles[5], [[2, 'desc', 'date']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[4], [[2, 'asc', 'date']]], [SORT_TITLES[5], [[2, 'desc', 'date']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_USER_TABLE_VALUES.SWR_ACCLIM: // 5
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
           null,
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
           null,
           null,
-          makeSort('Sort', [[sortTitles[10], [[7, 'asc', 'susceptibility']]], [sortTitles[11], [[7, 'desc', 'susceptibility']]]]),
+          makeSort('Sort', [[SORT_TITLES[10], [[7, 'asc', 'susceptibility']]], [SORT_TITLES[11], [[7, 'desc', 'susceptibility']]]]),
         ];
         break;
       case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'number']]], [sortTitles[1], [[0, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'number']]], [SORT_TITLES[1], [[0, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[0], [[1, 'asc', 'string']]], [sortTitles[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'string']]], [sortTitles[3], [[2, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'string']]], [sortTitles[3], [[3, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[0], [[4, 'asc', 'string']]], [sortTitles[1], [[4, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[0], [[5, 'asc', 'string']]], [sortTitles[1], [[5, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[4], [[6, 'asc', 'date']]], [sortTitles[5], [[6, 'desc', 'date']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'string']]], [SORT_TITLES[3], [[2, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'string']]], [SORT_TITLES[3], [[3, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[4, 'asc', 'string']]], [SORT_TITLES[1], [[4, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[5, 'asc', 'string']]], [SORT_TITLES[1], [[5, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[4], [[6, 'asc', 'date']]], [SORT_TITLES[5], [[6, 'desc', 'date']]]]),
         ];
         break;
       case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
         ret = [
           null,
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
       case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[5, 'asc', 'number']]], [sortTitles[3], [[5, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[6, 'asc', 'number']]], [sortTitles[3], [[6, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[5, 'asc', 'number']]], [SORT_TITLES[3], [[5, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[6, 'asc', 'number']]], [SORT_TITLES[3], [[6, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS: // 21
       case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[4, 'asc', 'number']]], [sortTitles[3], [[4, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
       case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
       case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
         ret = [
-          makeSort('Sort', [[sortTitles[0], [[0, 'asc', 'string']]], [sortTitles[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[sortTitles[2], [[1, 'asc', 'number']]], [sortTitles[3], [[1, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[2, 'asc', 'number']]], [sortTitles[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[sortTitles[2], [[3, 'asc', 'number']]], [sortTitles[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
         ];
         break;
     }
@@ -1038,7 +944,7 @@ export const AnalyticsProvider = (
             return v;
           }
         } else if (sort[0].type === `risk`) {
-          const v = riskPriorities[a?.[sort[0].index]?.toLowerCase()] - riskPriorities[b?.[sort[0].index]?.toLowerCase()];
+          const v = RISK_PRIORITIES[a?.[sort[0].index]?.toLowerCase()] - RISK_PRIORITIES[b?.[sort[0].index]?.toLowerCase()];
           if (sort[0].direction === `asc`) {
             return v;
           } else if (sort[0].direction === `desc`) {
@@ -1053,8 +959,8 @@ export const AnalyticsProvider = (
             return v;
           }
         } else if (sort[0].type === `susceptibility`) {
-          const v = heatSusceptibilityPriorities[a?.[sort[0].index]?.toLowerCase()] -
-            heatSusceptibilityPriorities[b?.[sort[0].index]?.toLowerCase()];
+          const v = HEAT_SUSCEPTIBILITY_PRIORITIES[a?.[sort[0].index]?.toLowerCase()] -
+              HEAT_SUSCEPTIBILITY_PRIORITIES[b?.[sort[0].index]?.toLowerCase()];
           if (sort[0].direction === `asc`) {
             return v;
           } else if (sort[0].direction === `desc`) {
