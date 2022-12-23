@@ -4,7 +4,6 @@ import {useTranslation} from "react-i18next";
 import FormMobilePhoneVerification from "../partials/su-login/FormMobilePhoneVerification";
 import {useParams} from "react-router-dom";
 
-
 const MobilePhoneVerification = () => {
   const {t} = useTranslation();
   const {mode} = useParams();

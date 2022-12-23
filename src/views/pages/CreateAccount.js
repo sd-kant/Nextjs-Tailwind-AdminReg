@@ -1,17 +1,26 @@
 import React, {useEffect, Suspense, lazy} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {Navigate, Route, Routes, useLocation} from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation
+} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {get} from "lodash";
 import {useNavigate} from "react-router-dom";
 import {
-  getMedicalQuestionsAction, getMedicalResponsesAction,
+  getMedicalQuestionsAction,
+  getMedicalResponsesAction,
   getMyProfileAction,
   updateMyProfileAction,
   setMedicalQuestionsAction,
 } from "../../redux/action/profile";
-import {setRestBarClassAction, showErrorNotificationAction} from "../../redux/action/ui";
+import {
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../redux/action/ui";
 import logo from "../../assets/images/logo_light.svg";
 
 const FormPassword = lazy(() => import("../partials/create-account/FormPassword"));

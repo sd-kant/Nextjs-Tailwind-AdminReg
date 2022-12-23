@@ -61,7 +61,7 @@ export const UtilsProviderDraft = (
           value: 8,
         };
       }
-    }
+    };
 
     if (!deviceId || deviceId?.toString().includes("none")) { // if no device
       return {

@@ -8,7 +8,7 @@ const Children = () => (
   <div className="d-flex justify-center">
     <img src={CheckCircle} alt="flower" width={105} height={105}/>
   </div>
-)
+);
 
 const ConfirmModal = (
   {
@@ -39,9 +39,7 @@ const ConfirmModal = (
         </div>
 
         <div className={clsx(style.ModalBody, "mt-25")}>
-          {
-            content
-          }
+          {content}
         </div>
 
         <div className={clsx(style.ModalFooter, "mt-65")}>
@@ -77,6 +75,6 @@ const ConfirmModal = (
       </div>
     </div>
   )
-}
+};
 
 export default ConfirmModal;

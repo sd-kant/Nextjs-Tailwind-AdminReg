@@ -44,13 +44,9 @@ const SignInLayout = (props) => {
         </div>
 
         <div className='rest-bar'>
-          <div className={`progress ${props.restBarClass}`}>
-
-          </div>
+          <div className={`progress ${props.restBarClass}`} />
         </div>
-        {
-          props.children
-        }
+        {props.children}
       </div>
 
       <Footer

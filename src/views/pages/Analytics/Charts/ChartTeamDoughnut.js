@@ -33,7 +33,10 @@ const ChartTeamDoughnut = () => {
   const {t} = useTranslation();
 
   React.useEffect(() => {
-    setIsEnablePrint(!checkEmptyData(chartData?.dataHeat?.datasets, 1) || !checkEmptyData(chartData?.dataHeat?.dataSweat, 1));
+    setIsEnablePrint(
+        !checkEmptyData(chartData?.dataHeat?.datasets, 1) ||
+        !checkEmptyData(chartData?.dataHeat?.dataSweat, 1)
+    );
   }, [chartData, setIsEnablePrint]);
 
   if (!chartData) return null;

@@ -6,7 +6,12 @@ import {
 } from 'redux-saga/effects';
 import {actionTypes} from '../type';
 import i18n from '../../i18nextInit';
-import {getMedicalQuestionsV2, getMedicalResponsesV2, getProfileV2, updateProfileV2} from "../../http";
+import {
+  getMedicalQuestionsV2,
+  getMedicalResponsesV2,
+  getProfileV2,
+  updateProfileV2
+} from "../../http";
 import {get} from "lodash";
 
 function* actionWatcher() {
