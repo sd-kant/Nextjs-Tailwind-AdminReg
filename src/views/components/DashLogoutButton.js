@@ -19,6 +19,6 @@ const DashLogoutButton = ({t}) => {
       </label>
     </div>
   )
-}
+};
 
 export default withTranslation()(DashLogoutButton);

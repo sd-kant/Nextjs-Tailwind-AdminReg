@@ -4,7 +4,6 @@ import {useTranslation} from "react-i18next";
 import FormMobilePhoneRegister from "../partials/su-login/FormMobilePhoneRegister";
 import {useNavigate} from "react-router-dom";
 
-
 const MobilePhoneRegister = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();

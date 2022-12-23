@@ -9,9 +9,7 @@ const AddWayModal = (props) => {
 
   return (
     <div className={`modal ${show ? "d-block" : "d-none"}`} style={{padding: "65px"}}>
-      <div className="close-icon close-icon-sm">
-
-      </div>
+      <div className="close-icon close-icon-sm" />
 
       <div className="modal-header">
         <span className="add-way-modal-header text-white">
@@ -53,6 +51,6 @@ const AddWayModal = (props) => {
       </div>
     </div>
   )
-}
+};
 
 export default AddWayModal;

@@ -9,13 +9,11 @@ const CreateTeamModal = (props) => {
 
   const isValid = () => {
     return name && notes;
-  }
+  };
 
   return (
     <div className={`modal ${show ? "d-block" : "d-none"}`} style={{padding: "65px"}}>
-      <div className="close-icon">
-
-      </div>
+      <div className="close-icon" />
 
       <div className="modal-header">
         <span className="font-modal-header text-white">
@@ -68,6 +66,6 @@ const CreateTeamModal = (props) => {
       </div>
     </div>
   )
-}
+};
 
 export default CreateTeamModal;

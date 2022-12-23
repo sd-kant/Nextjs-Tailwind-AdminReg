@@ -4,7 +4,6 @@ import {useTranslation} from "react-i18next";
 import FormLoginEntry from "../partials/su-login/FormLoginEntry";
 import {useNavigate} from "react-router-dom";
 
-
 const LoginEntry = (
   {
     mobile,

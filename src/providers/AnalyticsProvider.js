@@ -22,6 +22,7 @@ import {
   getThisWeekByTeam,
   checkMetric,
   getKeyApiCall,
+  getHeaderMetrics,
 } from "../utils/anlytics";
 import {
   COLOR_WHITE,
@@ -293,64 +294,11 @@ export const AnalyticsProvider = (
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metric, sort]);
+
   const headers = React.useMemo(() => {
-    let ret = [t('name'), t('team')];
-    switch (metric) {
-      case METRIC_USER_TABLE_VALUES.WEAR_TIME: // 1
-        ret = [t('name'), t('team'), t('avg wear time'), t('total wear time')];
-        break;
-      case METRIC_USER_TABLE_VALUES.ALERTS: // 2
-      case METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK: // 31
-        ret = [t('name'), t('team'), t('alert time'), t('alert'), t('heat risk'), t('cbt'), t('temp'), t('humidity'), t('heart rate avg')];
-        break;
-      case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
-      case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
-        ret = [t('name'), t('team'), t('date'), t('max cbt')];
-        break;
-      case 4:
-        // ret = [t('name'), t('team')];
-        break;
-      case METRIC_USER_TABLE_VALUES.SWR_ACCLIM: // 5
-        ret = [t('name'), t('team'), t('swr category'), unitMetric ? 'SWR (l/h)' : 'SWR (qt/h)', unitMetric ? t("fluid recmdt n", {n: t('(l/h)')}) : t("fluid recmdt n", {n: t('(qt/h)')}), t('previous illness'), t('acclim status'), t('heat sus')]; // fixme
-        break;
-      case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
-        ret = [t('name'), t('team'), t('time spent in safe to work'), t('time spent in mild heat exhaustion'), t('time spent in moderate hyperthermia')];
-        break;
-      case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
-        ret = [t('name'), t('team'), t('firmware version'), t('os version'), t('app version'), t('platform'), t('date')];
-        break;
-      case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
-        ret = [t('temperature categories'), t('user %')];
-        break;
-      case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
-        ret = [t('team'), t('max temp'), t('min temp'), t('avg temp'), t('max rh'), t('min rh'), t('avg rh')];
-        break;
-      case METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS: // 21
-        ret = [t('team'), t('% of team with alerts'), t('% of team without alerts'), t('no. of people with alerts'), t('no. of people without alerts')];
-        break;
-      case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
-        ret = [t('team'), t('active users')];
-        break;
-      case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
-      case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
-        ret = [t('team'), t("n swr", {n: t('upper low')}), t("n swr", {n: t('moderate')}), t("n swr", {n: t('high')})];
-        break;
-      case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
-        ret = [t('team'), t("n risk", {n: t('upper low')}), t("n risk", {n: t('medium')}), t("n risk", {n: t('high')})];
-        break;
-      case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
-        ret = [t('team'), unitMetric ? '<38' : '<100.4', unitMetric ? '38-38.5' : '100.4-101.3', unitMetric ? '>38.5' : '>101.3', t('total alerts'), t('% of team with alerts'), t('% of team without alerts')];
-        break;
-      case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
-        ret = [t('team'), t('heat acclimatized users'), t('heat unacclimatized users'), t('previous illness'), t('no previous illness')];
-        break;
+    return getHeaderMetrics(metric, unitMetric);
+  }, [metric, unitMetric]);
 
-      default:
-        console.log('metric not registered');
-    }
-
-    return ret;
-  }, [metric, unitMetric, t]);
   const [riskLevels, setRiskLevels] = React.useState(null);
   const formattedMembers = React.useMemo(() => {
     const ret = [];

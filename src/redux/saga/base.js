@@ -8,7 +8,10 @@ import {get} from 'lodash';
 import {actionTypes} from '../type';
 import {
   deleteUser,
-  queryAllOrganizations, queryTeamMembers, queryTeams, removeTeamMember,
+  queryAllOrganizations,
+  queryTeamMembers,
+  queryTeams,
+  removeTeamMember,
 } from "../../http";
 import i18n from '../../i18nextInit';
 

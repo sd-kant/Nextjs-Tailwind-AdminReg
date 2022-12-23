@@ -18,9 +18,7 @@ const MenuContent = () => {
     }
   }, [location.pathname]);
   return (
-    <>
       <Settings mode={mode}/>
-    </>
   )
 };
 

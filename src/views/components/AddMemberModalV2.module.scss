@@ -153,9 +153,6 @@
             .Select {
               width: 100%;
             }
-
-            .PermissionSelect {
-            }
           }
         }
 
@@ -181,9 +178,6 @@
 
       .User {
         .UserRow {
-          //display: grid;
-          //grid-template-columns: 1fr 1fr;
-          //grid-column-gap: 20px;
           flex-direction: row;
 
           .Input {
@@ -237,9 +231,6 @@
 
       .User {
         .UserRow {
-          //display: grid;
-          //grid-template-columns: 1fr 1fr;
-          //grid-column-gap: 20px;
           flex-direction: row;
 
           .Input {

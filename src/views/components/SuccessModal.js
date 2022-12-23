@@ -12,15 +12,15 @@ const SuccessModal = (props) => {
     <div className={clsx(style.Overlay, show ? "d-block" : "d-none")}>
       <div className={`modal z-index-2 ${show ? "d-block" : "d-none"}`} style={{padding: "65px 65px 25px 65px"}}>
         <div className="modal-header text-center">
-        <span className="font-modal-header text-white">
-          {t("team create success")}
-        </span>
+          <span className="font-modal-header text-white">
+            {t("team create success")}
+          </span>
         </div>
 
         <div className="modal-subheader mt-10 text-center">
-        <span className="font-binary text-white">
-          {t("team create success description")}
-        </span>
+          <span className="font-binary text-white">
+            {t("team create success description")}
+          </span>
         </div>
 
         <div className="modal-body mt-60">

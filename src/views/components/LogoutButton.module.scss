@@ -2,8 +2,8 @@
 .Logout {
   position: absolute;
   top: 90px;
-  bottom: auto;
   right: 40px;
+  bottom: auto;
   height: 55px;
   z-index: 99;
 
@@ -28,11 +28,11 @@
 
 @media only screen and (min-width: 1024px) {
   .Logout {
-    display: flex;
-    justify-content: center;
     position: absolute;
     top: 80px;
     right: 225px;
+    display: flex;
+    justify-content: center;
     min-width: 160px;
     z-index: 99;
 

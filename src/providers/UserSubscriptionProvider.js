@@ -5,9 +5,11 @@ import {
   subscribeDataEvents,
 } from "../http";
 import axios from "axios";
-import {useTranslation} from "react-i18next";
 import {useDashboardContext} from "./DashboardProvider";
-import {ALERT_STAGE_ID_LIST} from "../constant";
+import {
+  ACTIVITIES_FILTERS,
+  ALERT_STAGE_ID_LIST
+} from "../constant";
 import {useUtilsContext} from "./UtilsProvider";
 import {formatHeartRate} from "../utils/dashboard";
 
@@ -17,27 +19,10 @@ export const UserSubscriptionProvider = (
   {
     children,
   }) => {
-  const {t} = useTranslation();
   const {organization} = useDashboardContext();
   const {formatHeartCbt} = useUtilsContext();
   const [duration] = React.useState(30); // 1, 7, or 30 days
-  const activitiesFilters = [
-    {
-      value: 1,
-      label: t("24 hours"),
-      noText: t("no activity logs in 24 hours"),
-    },
-    {
-      value: 7,
-      label: t("week"),
-      noText: t("no activity logs in week"),
-    },
-    {
-      value: 30,
-      label: t("month"),
-      noText: t("no activity logs in month"),
-    },
-  ];
+  const activitiesFilters = ACTIVITIES_FILTERS;
   const [activitiesFilter, setActivitiesFilter] = React.useState(activitiesFilters[0]);
   const [metricsFilter, setMetricsFilter] = React.useState(activitiesFilters[0]);
   const [user, setUser] = React.useState(null);

@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.9.7";
+export const CURRENT_VERSION = "3.9.8";
 export const EXPORT_OPTIONS = [
   {
     label: 'CSV',
@@ -424,6 +424,7 @@ export const USER_STATUS_METRICS = [
     value: METRIC_USER_CHART_VALUES.HR, // 41
   },
 ];
+
 export const TEAM_STATUS_METRICS = [
   {
     label: `${i18n.t('table')} - ${i18n.t('ambient temp/humidity')}`,
@@ -466,6 +467,7 @@ export const TEAM_STATUS_METRICS = [
     value: METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK, // 32
   },
 ];
+
 export const SORT_TITLES = [
   i18n.t('a - z'),
   i18n.t('z - a'),
@@ -479,4 +481,22 @@ export const SORT_TITLES = [
   i18n.t('low to extreme'),
   i18n.t('high to low'),
   i18n.t('low to high'),
+];
+
+export const ACTIVITIES_FILTERS = [
+  {
+    value: 1,
+    label: i18n.t("24 hours"),
+    noText: i18n.t("no activity logs in 24 hours"),
+  },
+  {
+    value: 7,
+    label: i18n.t("week"),
+    noText: i18n.t("no activity logs in week"),
+  },
+  {
+    value: 30,
+    label: i18n.t("month"),
+    noText: i18n.t("no activity logs in month"),
+  },
 ];

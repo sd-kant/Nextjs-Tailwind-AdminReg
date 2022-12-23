@@ -3,8 +3,14 @@ import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {get} from "lodash";
 import {withTranslation} from "react-i18next";
-import {setLoadingAction, showErrorNotificationAction} from "../redux/action/ui";
-import {getCompanyById, getUsersUnderOrganization} from "../http";
+import {
+  setLoadingAction,
+  showErrorNotificationAction
+} from "../redux/action/ui";
+import {
+  getCompanyById,
+  getUsersUnderOrganization
+} from "../http";
 import countryRegions from 'country-region-data/data.json';
 import {useParams} from "react-router-dom";
 
@@ -36,7 +42,7 @@ const OrganizationProvider = (
           setOrganization(response.data);
         });
     }
-  }
+  };
 
   const fetchOrgAdmins = () => {
     setLoading(true);
@@ -55,7 +61,7 @@ const OrganizationProvider = (
           setLoading(false);
         });
     }
-  }
+  };
 
   const regions = React.useMemo(() => {
     let ret = [];
