@@ -5,6 +5,7 @@ import {
 } from "./index";
 import {
   HEAT_SUSCEPTIBILITY_PRIORITIES,
+  INVALID_VALUES2,
   PRIORITIES
 } from "../constant";
 import {get} from "lodash";
@@ -35,14 +36,14 @@ export const formatLastSync = lastTimestamp => {
 };
 
 export const formatHeartRate = rate => {
-  if ([null, undefined, "0", ""].includes(rate?.toString())) {
+  if (INVALID_VALUES2.includes(rate?.toString())) {
     return "--";
   }
   return Math.round(parseFloat(rate));
 };
 
 export const literToQuart = v => {
-  if ([null, undefined, "0", ""].includes(v?.toString())) {
+  if (INVALID_VALUES2.includes(v?.toString())) {
     return "";
   }
 

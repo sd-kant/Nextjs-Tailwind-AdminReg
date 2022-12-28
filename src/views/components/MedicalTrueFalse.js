@@ -3,7 +3,12 @@ import {withTranslation} from "react-i18next";
 import TrueFalse from "./TrueFalse";
 
 const MedicalTrueFalse = (props) => {
-  const {disabled, answer, options, onChange} = props;
+  const {
+    disabled,
+    answer,
+    options,
+    onChange
+  } = props;
 
   return (
     <TrueFalse
@@ -13,6 +18,6 @@ const MedicalTrueFalse = (props) => {
       onChange={onChange}
     />
   )
-}
+};
 
 export default withTranslation()(MedicalTrueFalse);

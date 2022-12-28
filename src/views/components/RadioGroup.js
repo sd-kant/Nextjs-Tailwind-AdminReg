@@ -20,7 +20,7 @@ const Radio = (props) => {
       </label>
     </div>
   )
-}
+};
 
 const RadioGroup = (props) => {
   const {options, disabled, onChange, answer} = props;
@@ -40,6 +40,6 @@ const RadioGroup = (props) => {
       }
     </div>
   )
-}
+};
 
 export default RadioGroup;

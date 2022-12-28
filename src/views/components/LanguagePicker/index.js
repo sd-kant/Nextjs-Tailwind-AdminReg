@@ -44,6 +44,6 @@ const LanguagePicker = () => {
       </select>
     </div>
   )
-}
+};
 
 export default LanguagePicker;

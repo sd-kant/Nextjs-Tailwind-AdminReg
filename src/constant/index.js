@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.9.8";
+export const CURRENT_VERSION = "3.9.10";
 export const EXPORT_OPTIONS = [
   {
     label: 'CSV',
@@ -500,3 +500,56 @@ export const ACTIVITIES_FILTERS = [
     noText: i18n.t("no activity logs in month"),
   },
 ];
+
+export const INVALID_VALUES1 = ["-1", "", null, undefined];
+export const INVALID_VALUES2 = [null, undefined, "0", ""];
+export const MINUTE_OPTIONS = ["00", "15", "30", "45"];
+export const STAGE_VALUES = [
+  {
+    label: "N/A",
+    value: null,
+  },
+  {
+    label: "At Risk",
+    value: 1,
+  },
+  {
+    label: "Elevated Risk",
+    value: 2,
+  },
+  {
+    label: "Safe",
+    value: 3,
+  },
+  {
+    label: "Safe",
+    value: 4,
+  },
+  {
+    label: "Safe",
+    value: 5,
+  },
+];
+export const HEART_RATE_VALUES = [
+  {
+    label: null,
+    value: null,
+  },
+  {
+    label: i18n.t("very light"),
+    value: 1,
+  },
+  {
+    label: i18n.t('light'),
+    value: 2,
+  },
+  {
+    label: i18n.t("moderate"),
+    value: 3,
+  },
+  {
+    label: i18n.t('high'),
+    value: 4,
+  }
+];
+export const PREFERRED_COUNTRIES = ['us', 'ca', 'fr', 'de', 'jp', 'cn', 'au', 'za', 'in', 'qa', 'gb', 'sa', 'es'];

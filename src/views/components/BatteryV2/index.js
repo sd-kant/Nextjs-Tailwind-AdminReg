@@ -52,6 +52,6 @@ const BatteryV2 = (
       </div>
     </div>
   )
-}
+};
 
 export default withTranslation()(BatteryV2);

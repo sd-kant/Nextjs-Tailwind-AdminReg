@@ -62,7 +62,11 @@ export const AnalyticsProvider = (
     metric: unitMetric,
   }) => {
   const {t} = useTranslation();
-  const {formatAlert, formatHeartCbt, alertPriorities} = useUtilsContext();
+  const {
+    formatAlert,
+    formatHeartCbt,
+    alertPriorities
+  } = useUtilsContext();
   const [pickedMembers, setPickedMembers] = React.useState([]);
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
@@ -111,7 +115,7 @@ export const AnalyticsProvider = (
         Promise.allSettled(membersPromises)
           .then(results => {
             results?.forEach((result, index) => {
-              if (result.status === "fulfilled") {
+              if (result.status === `fulfilled`) {
                 if (result.value?.data?.members?.length > 0) {
                   const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString()) ?? [];
                   setMembers([...membersRef.current, ...operators]);
@@ -126,7 +130,7 @@ export const AnalyticsProvider = (
   }, [pickedTeams]);
 
   const metrics = React.useMemo(() => {
-    return statsBy === 'user' ? USER_STATUS_METRICS : TEAM_STATUS_METRICS;
+    return statsBy === `user` ? USER_STATUS_METRICS : TEAM_STATUS_METRICS;
   }, [statsBy]);
 
   const [metric, setMetric] = React.useState(null);
@@ -346,7 +350,7 @@ export const AnalyticsProvider = (
                 Promise.allSettled(userPromises)
                   .then(response => {
                     response?.forEach((result) => {
-                      if (result.status === "fulfilled") {
+                      if (result.status === `fulfilled`) {
                         if (result.value?.data?.length > 0) {
                           list = list.concat(result.value.data);
                         }
@@ -548,9 +552,27 @@ export const AnalyticsProvider = (
       let thisData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ALERT_METRICS, null, null)?.filter(it => spacetime(it.ts).isBefore(endD) && spacetime(it.ts).isAfter(startD));
 
       let arrayPerDate = [
-        getListPerLabel({list: thisData, timezone: timeZone, stageIds: [1], startD, endD}), // At Risk id
-        getListPerLabel({list: thisData, timezone: timeZone, stageIds: [2], startD, endD}), // Elevated Risk id
-        getListPerLabel({list: thisData, timezone: timeZone, stageIds: [3, 4], startD, endD}), // Safe ids
+        getListPerLabel({
+          list: thisData,
+          timezone: timeZone,
+          stageIds: [1],
+          startD,
+          endD
+        }), // At Risk id
+        getListPerLabel({
+          list: thisData,
+          timezone: timeZone,
+          stageIds: [2],
+          startD,
+          endD
+        }), // Elevated Risk id
+        getListPerLabel({
+          list: thisData,
+          timezone: timeZone,
+          stageIds: [3, 4],
+          startD,
+          endD
+        }), // Safe ids
       ];
       const xLabel = getDateList(startD, endD);
       const dataSet = [
@@ -603,7 +625,7 @@ export const AnalyticsProvider = (
     ) { // 3, 32
       while (startD.isBefore(endD)) {
         const subList = [];
-        const endDByOneDay = startD.add(1, 'day');
+        const endDByOneDay = startD.add(1, `day`);
 
         const dailyData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, null, null)?.filter(it =>
           selectedMembers?.findIndex(a => a?.value === it?.userId) > -1 &&
@@ -614,7 +636,7 @@ export const AnalyticsProvider = (
         let startHour = startD;
 
         while (startHour.isBefore(endDByOneDay)) {
-          let endHour = startHour.add(1, 'hour');
+          let endHour = startHour.add(1, `hour`);
           const hourlyData = [];
           const tempData = [];
           dailyData?.filter(it => {

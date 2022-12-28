@@ -25,15 +25,15 @@ const ConfirmModalV2 = (
       <div className={clsx(style.Modal, `z-index-2 ${show ? "d-block" : "d-none"}`)}>
         <img src={closeIcon} className={clsx(style.CloseIcon)} alt="close icon" onClick={onCancel}/>
         <div className={clsx(style.ModalHeader, "text-center")}>
-        <span className={"font-modal-header text-white"}>
-          {header}
-        </span>
+          <span className={"font-modal-header text-white"}>
+            {header}
+          </span>
         </div>
 
         <div className={clsx(style.ModalSubheader, "mt-10 text-center")}>
-        <span className="font-binary text-white">
-          {subheader}
-        </span>
+          <span className="font-binary text-white">
+            {subheader}
+          </span>
         </div>
 
         <div className={clsx(style.ModalBody, "mt-60")}>
@@ -47,8 +47,8 @@ const ConfirmModalV2 = (
                 <img src={yesIcon} alt="male icon"/>
 
                 <span className='font-binary mt-8 text-uppercase'>
-                {okText ?? t("yes")}
-              </span>
+                  {okText ?? t("yes")}
+                </span>
               </div>
             }
             {
@@ -61,7 +61,7 @@ const ConfirmModalV2 = (
 
                 <span className='font-binary mt-8 capitalize text-uppercase'>
                   {cancelText ?? t("no")}
-              </span>
+                </span>
               </div>
             }
           </div>
@@ -70,6 +70,6 @@ const ConfirmModalV2 = (
       </div>
     </div>
   )
-}
+};
 
 export default ConfirmModalV2;

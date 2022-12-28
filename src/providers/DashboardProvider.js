@@ -30,7 +30,10 @@ import {
 } from "../constant";
 import useForceUpdate from "../hooks/useForceUpdate";
 import {useNotificationContext} from "./NotificationProvider";
-import {formatLastSync, sortMembers} from "../utils/dashboard";
+import {
+  formatLastSync,
+  sortMembers
+} from "../utils/dashboard";
 import {setLoadingAction} from "../redux/action/ui";
 import {useUtilsContext} from "./UtilsProvider";
 

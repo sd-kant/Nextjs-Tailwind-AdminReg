@@ -9,6 +9,7 @@ import {
   USER_TYPE_TEAM_ADMIN,
   USER_TYPE_OPERATOR,
   permissionLevels,
+  INVALID_VALUES1,
 } from "../constant";
 import {queryAllTeamsAction} from "../redux/action/base";
 import {
@@ -95,9 +96,8 @@ const MembersProvider = (
   const trimmedKeyword = React.useMemo(() => keyword.trim().toLowerCase(), [keyword]);
   React.useEffect(() => {
     if (page === "search") {
-      if (searchTimeout) {
+      if (searchTimeout)
         clearTimeout(searchTimeout);
-      }
       updateUrlParam({param: {key: 'keyword', value: trimmedKeyword}});
       searchTimeout = setTimeout(() => {
         initializeMembers().then();
@@ -168,7 +168,6 @@ const MembersProvider = (
       } else if (page === "search") {
         users.push(memberItem);
       }
-
     });
     setUsers(users);
     setAdmins(admins);
@@ -543,7 +542,7 @@ const MembersProvider = (
   const handleDeleteUser = React.useCallback(() => {
     // only super or org admin can do this
     if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) {
-      if (!(["-1", "", null, undefined].includes(organizationId?.toString())) && selectedUser?.userId) {
+      if (!(INVALID_VALUES1.includes(organizationId?.toString())) && selectedUser?.userId) {
         setLoading(true);
         deleteUser({
           organizationId,
@@ -571,10 +570,10 @@ const MembersProvider = (
   const _handleUnlockUser = React.useCallback(() => {
     setLoading(true);
     let fTeamId = teamId;
-    if (["-1", "", null, undefined].includes(teamId?.toString())) {
+    if (INVALID_VALUES1.includes(teamId?.toString())) {
       fTeamId = teams?.[0].value;
     }
-    if (["-1", "", null, undefined].includes(fTeamId?.toString())) return;
+    if (INVALID_VALUES1.includes(fTeamId?.toString())) return;
 
     unlockUser({
       teamId: fTeamId,
@@ -608,7 +607,7 @@ const MembersProvider = (
     let requestHttp = null;
     let payload = null;
     if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) { // super or org admin
-      if (!["-1", "", null, undefined].includes(organizationId?.toString()) && user?.userId) {
+      if (!INVALID_VALUES1.includes(organizationId?.toString()) && user?.userId) {
         requestHttp = reInviteOrganizationUser;
         payload = {
           organizationId: organizationId,

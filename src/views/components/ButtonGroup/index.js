@@ -42,6 +42,6 @@ const ButtonGroup = (
       }
     </div>
   )
-}
+};
 
 export default ButtonGroup;

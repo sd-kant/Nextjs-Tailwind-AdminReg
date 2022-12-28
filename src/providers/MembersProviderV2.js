@@ -38,11 +38,9 @@ export const MembersProviderV2Draft = (
       setWarningModal({
         visible: true,
         title: t(
-          selectedMembers?.length > 1 ?
-            'move n users to team warning title' :
-            'move n user to team warning title',
-          {n: selectedMembers?.length, team: teamName}),
-        mode: 'move',
+            `move n ${selectedMembers?.length > 1 ? 'users' : 'user'} to team warning title`,
+            {n: selectedMembers?.length, team: teamName}),
+        mode: `move`,
       });
     }
   };
@@ -53,10 +51,8 @@ export const MembersProviderV2Draft = (
       setWarningModal({
         visible: true,
         title: t(
-          selectedMembers?.length > 1 ?
-            'remove n users warning title' :
-            'remove n user warning title',
-          {n: selectedMembers?.length, team: teamNamePlaceholder}),
+            `remove n ${selectedMembers?.length > 1 ? 'users' : 'user'} warning title`,
+            {n: selectedMembers?.length, team: teamNamePlaceholder}),
         mode: 'remove',
       });
       setSelectedUsersTeams([...new Set(selectedMembersTeamIds)]);
@@ -65,7 +61,7 @@ export const MembersProviderV2Draft = (
 
   const hideWarningModal = () => {
     setWarningModal({visible: false, title: '', mode: null});
-  }
+  };
 
   const handleWarningOk = React.useCallback(() => {
     const handleMove = async () => {
@@ -74,10 +70,8 @@ export const MembersProviderV2Draft = (
           hideWarningModal();
           setConfirmModal({
             visible: true, title: t(
-              selectedMembers?.length > 1 ?
-                'move n users to team confirmation title' :
-                'move n user to team confirmation title',
-              {n: selectedMembers?.length, team: teamName}
+                `move n ${selectedMembers?.length > 1 ? 'users' : 'user'} to team confirmation title`,
+                {n: selectedMembers?.length, team: teamName}
             )
           });
           setSelectedMembers([]);
@@ -93,10 +87,8 @@ export const MembersProviderV2Draft = (
         hideWarningModal();
         setConfirmModal({
           visible: true, title: t(
-            cnt > 1 ?
-              'remove n users confirmation title' :
-              'remove n user confirmation title',
-            {n: cnt, team: teamNamePlaceholder}
+              `remove n ${cnt > 1 ? 'users' : 'user'} confirmation title`,
+              {n: cnt, team: teamNamePlaceholder}
           )
         });
         setSelectedMembers([]);

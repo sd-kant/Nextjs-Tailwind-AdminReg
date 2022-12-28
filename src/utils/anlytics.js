@@ -411,52 +411,137 @@ export const getHeaderMetrics = (metric, unitMetric) => {
   let ret = [i18n.t('name'), i18n.t('team')];
   switch (metric) {
     case METRIC_USER_TABLE_VALUES.WEAR_TIME: // 1
-      ret = [i18n.t('name'), i18n.t('team'), i18n.t('avg wear time'), i18n.t('total wear time')];
+      ret = [
+        i18n.t('name'),
+        i18n.t('team'),
+        i18n.t('avg wear time'),
+        i18n.t('total wear time')
+      ];
       break;
     case METRIC_USER_TABLE_VALUES.ALERTS: // 2
     case METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK: // 31
-      ret = [i18n.t('name'), i18n.t('team'), i18n.t('alert time'), i18n.t('alert'), i18n.t('heat risk'), i18n.t('cbt'), i18n.t('temp'), i18n.t('humidity'), i18n.t('heart rate avg')];
+      ret = [
+        i18n.t('name'),
+        i18n.t('team'),
+        i18n.t('alert time'),
+        i18n.t('alert'),
+        i18n.t('heat risk'),
+        i18n.t('cbt'),
+        i18n.t('temp'),
+        i18n.t('humidity'),
+        i18n.t('heart rate avg')];
       break;
     case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
     case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
-      ret = [i18n.t('name'), i18n.t('team'), i18n.t('date'), i18n.t('max cbt')];
+      ret = [
+        i18n.t('name'),
+        i18n.t('team'),
+        i18n.t('date'),
+        i18n.t('max cbt')
+      ];
       break;
     case 4:
       // ret = [i18n.t('name'), i18n.t('team')];
       break;
     case METRIC_USER_TABLE_VALUES.SWR_ACCLIM: // 5
-      ret = [i18n.t('name'), i18n.t('team'), i18n.t('swr category'), unitMetric ? 'SWR (l/h)' : 'SWR (qt/h)', unitMetric ? i18n.t("fluid recmdt n", {n: i18n.t('(l/h)')}) : i18n.t("fluid recmdt n", {n: i18n.t('(qt/h)')}), i18n.t('previous illness'), i18n.t('acclim status'), i18n.t('heat sus')]; // fixme
+      ret = [
+        i18n.t('name'),
+        i18n.t('team'),
+        i18n.t('swr category'),
+        unitMetric ? 'SWR (l/h)' : 'SWR (qt/h)',
+        unitMetric ? i18n.t("fluid recmdt n", {n: i18n.t('(l/h)')}) : i18n.t("fluid recmdt n", {n: i18n.t('(qt/h)')}),
+        i18n.t('previous illness'),
+        i18n.t('acclim status'),
+        i18n.t('heat sus')
+      ]; // fixme
       break;
     case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
-      ret = [i18n.t('name'), i18n.t('team'), i18n.t('time spent in safe to work'), i18n.t('time spent in mild heat exhaustion'), i18n.t('time spent in moderate hyperthermia')];
+      ret = [
+        i18n.t('name'),
+        i18n.t('team'),
+        i18n.t('time spent in safe to work'),
+        i18n.t('time spent in mild heat exhaustion'),
+        i18n.t('time spent in moderate hyperthermia')
+      ];
       break;
     case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
-      ret = [i18n.t('name'), i18n.t('team'), i18n.t('firmware version'), i18n.t('os version'), i18n.t('app version'), i18n.t('platform'), i18n.t('date')];
+      ret = [
+        i18n.t('name'),
+        i18n.t('team'),
+        i18n.t('firmware version'),
+        i18n.t('os version'),
+        i18n.t('app version'),
+        i18n.t('platform'),
+        i18n.t('date')
+      ];
       break;
     case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
-      ret = [i18n.t('temperature categories'), i18n.t('user %')];
+      ret = [
+        i18n.t('temperature categories'),
+        i18n.t('user %')
+      ];
       break;
     case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
-      ret = [i18n.t('team'), i18n.t('max temp'), i18n.t('min temp'), i18n.t('avg temp'), i18n.t('max rh'), i18n.t('min rh'), i18n.t('avg rh')];
+      ret = [
+        i18n.t('team'),
+        i18n.t('max temp'),
+        i18n.t('min temp'),
+        i18n.t('avg temp'),
+        i18n.t('max rh'),
+        i18n.t('min rh'),
+        i18n.t('avg rh')
+      ];
       break;
     case METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS: // 21
-      ret = [i18n.t('team'), i18n.t('% of team with alerts'), i18n.t('% of team without alerts'), i18n.t('no. of people with alerts'), i18n.t('no. of people without alerts')];
+      ret = [
+        i18n.t('team'),
+        i18n.t('% of team with alerts'),
+        i18n.t('% of team without alerts'),
+        i18n.t('no. of people with alerts'),
+        i18n.t('no. of people without alerts')
+      ];
       break;
     case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
-      ret = [i18n.t('team'), i18n.t('active users')];
+      ret = [
+        i18n.t('team'),
+        i18n.t('active users')
+      ];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
     case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
-      ret = [i18n.t('team'), i18n.t("n swr", {n: i18n.t('upper low')}), i18n.t("n swr", {n: i18n.t('moderate')}), i18n.t("n swr", {n: i18n.t('high')})];
+      ret = [
+        i18n.t('team'),
+        i18n.t("n swr", {n: i18n.t('upper low')}),
+        i18n.t("n swr", {n: i18n.t('moderate')}),
+        i18n.t("n swr", {n: i18n.t('high')})
+      ];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
-      ret = [i18n.t('team'), i18n.t("n risk", {n: i18n.t('upper low')}), i18n.t("n risk", {n: i18n.t('medium')}), i18n.t("n risk", {n: i18n.t('high')})];
+      ret = [
+        i18n.t('team'),
+        i18n.t("n risk", {n: i18n.t('upper low')}),
+        i18n.t("n risk", {n: i18n.t('medium')}),
+        i18n.t("n risk", {n: i18n.t('high')})];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
-      ret = [i18n.t('team'), unitMetric ? '<38' : '<100.4', unitMetric ? '38-38.5' : '100.4-101.3', unitMetric ? '>38.5' : '>101.3', i18n.t('total alerts'), i18n.t('% of team with alerts'), i18n.t('% of team without alerts')];
+      ret = [
+        i18n.t('team'),
+        unitMetric ? '<38' : '<100.4',
+        unitMetric ? '38-38.5' : '100.4-101.3',
+        unitMetric ? '>38.5' : '>101.3',
+        i18n.t('total alerts'),
+        i18n.t('% of team with alerts'),
+        i18n.t('% of team without alerts')
+      ];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
-      ret = [i18n.t('team'), i18n.t('heat acclimatized users'), i18n.t('heat unacclimatized users'), i18n.t('previous illness'), i18n.t('no previous illness')];
+      ret = [
+        i18n.t('team'),
+        i18n.t('heat acclimatized users'),
+        i18n.t('heat unacclimatized users'),
+        i18n.t('previous illness'),
+        i18n.t('no previous illness')
+      ];
       break;
 
     default:

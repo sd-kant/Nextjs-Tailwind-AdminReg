@@ -21,6 +21,6 @@ const Tap = (props) => {
       }
     </div>
   )
-}
+};
 
 export default Tap;

@@ -41,6 +41,6 @@ const TrueFalse = (
       }
     </React.Fragment>
   )
-}
+};
 
 export default TrueFalse;

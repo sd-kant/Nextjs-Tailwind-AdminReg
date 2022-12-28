@@ -16,8 +16,7 @@ const MetricLogs = (
         {
           logsLoading ? (
               <div className={clsx(style.DataRow, style.Header, 'font-binary text-white')}>
-                  <span
-                      className={clsx('text-capitalize', style.Padding)}>{t("loading")}</span>
+                <span className={clsx('text-capitalize', style.Padding)}>{t("loading")}</span>
               </div>
           ) : (
               <React.Fragment>
