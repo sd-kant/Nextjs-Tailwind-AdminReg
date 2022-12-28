@@ -3,41 +3,35 @@
 .Header {
   position: sticky;
   top: 74px;
+  padding: 10px 0;
   background: $app-bg;
   opacity: 1;
   z-index: 5;
-  padding: 10px 0;
 
   .First {
     display: flex;
     flex-direction: column;
 
     .DropdownWrapper {
-      //display: flex;
-      //flex-direction: column;
-      width: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-column-gap: 5px;
+      width: 100%;
 
       .OrganizationLabel {
         display: flex;
         align-items: center;
-        background-color: $app-ts;
-        height: 45px;
-        z-index: 5;
         border-radius: 4px;
         padding: 0 10px;
+        height: 45px;
+        background-color: $app-ts;
+        z-index: 5;
 
         // fixme ellipsis not working
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
       }
-
-      //& > div:nth-child(2) {
-      //  margin-top: 10px;
-      //}
     }
 
     .ModifyButton {
@@ -55,26 +49,27 @@
   }
 
   .Second {
-    margin-top: 10px;
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
 
     .PaginationWrapper {
-      margin-top: 5px;
       display: flex;
       flex-direction: row;
       align-items: center;
+      margin-top: 5px;
 
       .SelectorWrapper {
         margin-left: 10px;
+
         .Selector {
-          background: transparent;
           border: 1px solid #FFFFFF;
           border-radius: 10px;
-          outline: none;
           padding: 5px 20px;
-          color: white;
+          outline: none;
           text-align: center;
+          background: transparent;
+          color: white;
 
           /* for Firefox */
           -moz-appearance: none;
@@ -113,10 +108,10 @@
 
     .First {
       .DropdownWrapper {
-        width: 600px;
         display: grid;
         grid-template-columns: 1fr 1fr;
         grid-column-gap: 20px;
+        width: 600px;
 
         & > div:nth-child(2) {
           margin-top: 0;
@@ -161,10 +156,6 @@
       .Additional {
         margin-top: 0;
       }
-    }
-
-    .Second {
-
     }
   }
 }

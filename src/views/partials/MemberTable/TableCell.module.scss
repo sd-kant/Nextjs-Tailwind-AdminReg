@@ -5,12 +5,12 @@
 }
 
 .TableCell {
-  background: $app-list-bg;
-  text-align: center;
   border: 1px solid $app-bg;
   height: 95px;
+  text-align: center;
   font-size: 14px;
   line-height: 21px;
+  background: $app-list-bg;
 
   .Device {
     display: inline-flex;

@@ -17,7 +17,13 @@ import {get} from 'lodash';
 import {useNavigate} from "react-router-dom";
 
 const FormTeamMode = (props) => {
-  const {t, setRestBarClass, organizationId, myOrganizationId, isAdmin} = props;
+  const {
+    t,
+    setRestBarClass,
+    organizationId,
+    myOrganizationId,
+    isAdmin
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -117,7 +123,7 @@ const FormTeamMode = (props) => {
       </div>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   isAdmin: get(state, 'auth.isAdmin'),

@@ -2,7 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {withTranslation, Trans} from "react-i18next";
 import {bindActionCreators} from "redux";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import {setMobileTokenAction} from "../../../redux/action/auth";
 import CodeInput from "../../components/CodeInput";
 import {get} from 'lodash';
@@ -65,7 +69,7 @@ const FormMobilePhoneVerification = (props) => {
         }
       }
     }
-  }
+  };
 
   const submitCode = async () => {
     try {
@@ -106,11 +110,11 @@ const FormMobilePhoneVerification = (props) => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const setClassName = () => {
     setRestBarClass(`progress-50`);
-  }
+  };
 
   const resendCode = async () => {
     if (phoneNumber) {
@@ -207,7 +211,7 @@ const FormMobilePhoneVerification = (props) => {
       </div>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   token: get(state, 'auth.mobileToken'),

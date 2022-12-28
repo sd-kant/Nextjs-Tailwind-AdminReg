@@ -7,7 +7,12 @@ import {showErrorNotificationAction} from "../../../redux/action/ui";
 import {useNavigate} from "react-router-dom";
 
 const FormInitial = (props) => {
-  const {t, medicalQuestions, showErrorNotification, setRestBarClass} = props;
+  const {
+    t,
+    medicalQuestions,
+    showErrorNotification,
+    setRestBarClass
+  } = props;
   const [understandTerms, setUnderstandTerms] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const navigate = useNavigate();

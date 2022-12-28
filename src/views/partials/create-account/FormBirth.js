@@ -1,7 +1,10 @@
 import React, {useEffect} from 'react';
 import {withTranslation} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
-import {Form, withFormik} from "formik";
+import {
+  Form,
+  withFormik
+} from "formik";
 import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
 
@@ -66,7 +69,15 @@ const getAge = (dateString) => {
 }
 
 const FormBirth = (props) => {
-  const {t, values, setFieldValue, setRestBarClass, errors, touched, profile} = props;
+  const {
+    t,
+    values,
+    setFieldValue,
+    setRestBarClass,
+    errors,
+    touched,
+    profile
+  } = props;
   const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass('progress-36');

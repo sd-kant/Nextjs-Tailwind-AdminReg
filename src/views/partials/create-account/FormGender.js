@@ -4,7 +4,10 @@ import {withTranslation} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import maleIcon from "../../../assets/images/male.svg";
 import femaleIcon from "../../../assets/images/female.svg";
-import {Form, withFormik} from "formik";
+import {
+  Form,
+  withFormik
+} from "formik";
 import * as Yup from "yup";
 import {bindActionCreators} from "redux";
 import {useNavigate} from "react-router-dom";

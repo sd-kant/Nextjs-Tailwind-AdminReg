@@ -4,13 +4,21 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import {queryAllTeamsAction} from "../../../redux/action/base";
 import {get} from "lodash";
 import {customStyles} from "./FormCompany";
 import backIcon from "../../../assets/images/back.svg";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
-import {getUsersUnderOrganization, queryTeamMembers, updateTeam} from "../../../http";
+import {
+  getUsersUnderOrganization,
+  queryTeamMembers,
+  updateTeam
+} from "../../../http";
 import {useOrganizationContext} from "../../../providers/OrganizationProvider";
 import CreatableSelect from "react-select/creatable";
 import {useNavigate} from "react-router-dom";
@@ -36,7 +44,19 @@ const formSchema = (t) => {
 };
 
 const FormTeamModify = (props) => {
-  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams, organizationId, isAdmin, showErrorNotification,} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    allTeams,
+    setRestBarClass,
+    setFieldValue,
+    queryAllTeams,
+    organizationId,
+    isAdmin,
+    showErrorNotification
+    ,} = props;
   const [hasUnassignedMember, setHasUnassignedMember] = React.useState(false);
   const {regions, locations} = useOrganizationContext();
   const navigate = useNavigate();
@@ -54,7 +74,7 @@ const FormTeamModify = (props) => {
 
   const changeHandler = (key, value) => {
     setFieldValue(key, value);
-  }
+  };
 
   React.useEffect(() => {
     if (values.name?.value) {
@@ -77,7 +97,7 @@ const FormTeamModify = (props) => {
       .finally(() => {
 
       });
-  }
+  };
 
   const filteredTeams = React.useMemo(() => {
     let teams = [];
@@ -108,7 +128,7 @@ const FormTeamModify = (props) => {
       ...(values.name),
       label: e.target.value,
     })
-  }
+  };
 
   const handleCancel = () => {
     setFieldValue("editing", false);
@@ -278,7 +298,7 @@ const FormTeamModify = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

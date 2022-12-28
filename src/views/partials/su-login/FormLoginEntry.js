@@ -4,11 +4,18 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import {
   ableToLogin,
   checkUsernameValidation1,
-  checkUsernameValidation2, getDeviceId, getParamFromUrl, setStorageAfterLogin, setStorageAfterRegisterLogin
+  checkUsernameValidation2,
+  getDeviceId,
+  getParamFromUrl,
+  setStorageAfterLogin,
+  setStorageAfterRegisterLogin
 } from "../../../utils";
 import {apiBaseUrl} from "../../../config";
 import {Buffer} from "buffer";
@@ -139,13 +146,13 @@ const FormLoginEntry = (props) => {
     setFieldValue(name, value);
 
     setClassName();
-  }
+  };
 
   const setClassName = () => {
     let sum = 0;
     sum += values["username"] ? 1 : 0;
     setRestBarClass(`progress-${sum * 100}`);
-  }
+  };
 
   const source = getParamFromUrl('source');
   const fromMobile =  mobile || source === "mobile";
@@ -192,7 +199,7 @@ const FormLoginEntry = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

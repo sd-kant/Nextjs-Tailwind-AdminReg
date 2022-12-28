@@ -2,10 +2,20 @@ import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
-import {Form, withFormik} from "formik";
+import {
+  Form,
+  withFormik
+} from "formik";
 import {bindActionCreators} from "redux";
-import {createTeam, getCompanyById} from "../../../http";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  createTeam,
+  getCompanyById
+} from "../../../http";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import backIcon from "../../../assets/images/back.svg";
 import {get} from "lodash";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
@@ -49,7 +59,7 @@ const FormTeamCreate = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   const regions = React.useMemo(() => {
     let ret = [];
@@ -194,7 +204,7 @@ const FormTeamCreate = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

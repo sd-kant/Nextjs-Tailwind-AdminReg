@@ -9,12 +9,18 @@ import {
   setLoadingAction,
   setRestBarClassAction,
   setVisibleSuccessModalAction,
-  showErrorNotificationAction, showSuccessNotificationAction
+  showErrorNotificationAction,
+  showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import {useNavigate} from "react-router-dom";
 
 const FormUploadSelect = (props) => {
-  const {t, setRestBarClass, id, organizationId} = props;
+  const {
+    t,
+    setRestBarClass,
+    id,
+    organizationId
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,7 +81,7 @@ const FormUploadSelect = (props) => {
       </div>
     </div>
   )
-}
+};
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(

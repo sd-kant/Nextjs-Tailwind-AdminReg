@@ -4,10 +4,18 @@ import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
-import {checkPasswordValidation, getTokenFromUrl} from "../../../utils";
-import {instance, lookupByToken, resetPasswordV2} from "../../../http";
 import {
-  setLoadingAction, setRestBarClassAction,
+  checkPasswordValidation,
+  getTokenFromUrl
+} from "../../../utils";
+import {
+  instance,
+  lookupByToken,
+  resetPasswordV2
+} from "../../../http";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
@@ -71,7 +79,7 @@ const FormResetPassword = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -145,7 +153,7 @@ const FormResetPassword = (props) => {
       }
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

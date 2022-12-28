@@ -2,7 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
-import {Form, useFormikContext, withFormik} from "formik";
+import {
+  Form,
+  useFormikContext,
+  withFormik
+} from "formik";
 import {withTranslation} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import searchIcon from "../../../assets/images/search.svg";

@@ -3,7 +3,10 @@ import {connect} from "react-redux";
 import {get} from "lodash";
 import {bindActionCreators} from "redux";
 import {getMedicalQuestionsAction} from "../../../redux/action/profile";
-import {QUESTION_TYPE_BOOLEAN, QUESTION_TYPE_RADIO} from "../../../constant";
+import {
+  QUESTION_TYPE_BOOLEAN,
+  QUESTION_TYPE_RADIO
+} from "../../../constant";
 import RadioGroup from "../../components/RadioGroup";
 import {formatAnswersToOptions} from "../medical-prompt/FormMedical";
 import MedicalTrueFalse from "../../components/MedicalTrueFalse";

@@ -2,11 +2,21 @@ import React, {useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {withTranslation, Trans} from "react-i18next";
 import {bindActionCreators} from "redux";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
-import {loginWithCodeAction, setTokenAction} from "../../../redux/action/auth";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
+import {
+  loginWithCodeAction,
+  setTokenAction
+} from "../../../redux/action/auth";
 import CodeInput from "../../components/CodeInput";
 import {get} from 'lodash';
-import {getMyProfileWithToken, requestSmsCode} from "../../../http";
+import {
+  getMyProfileWithToken,
+  requestSmsCode
+} from "../../../http";
 import {getParamFromUrl} from "../../../utils";
 import backIcon from "../../../assets/images/back.svg";
 import {useNavigate} from "react-router-dom";
@@ -71,11 +81,11 @@ const FormPhoneVerification = (props) => {
         }
       }
     }
-  }
+  };
 
   const setClassName = () => {
     setRestBarClass(`progress-50`);
-  }
+  };
 
   const resendCode = async () => {
     if (phoneNumber) {
@@ -172,7 +182,7 @@ const FormPhoneVerification = (props) => {
       </div>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   token: get(state, 'auth.token'),

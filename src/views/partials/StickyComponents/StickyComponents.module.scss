@@ -1,7 +1,7 @@
 .Wrapper {
-  width: calc(100% - 40px);
   position: fixed;
   top: 200px;
+  width: calc(100% - 40px);
 }
 
 .StatisticsWrapper {
@@ -18,8 +18,8 @@
 
 @media only screen and (min-width: 1024px) {
   .Wrapper {
-    width: calc(100% - 50px);
     top: 170px;
+    width: calc(100% - 50px);
   }
 }
 

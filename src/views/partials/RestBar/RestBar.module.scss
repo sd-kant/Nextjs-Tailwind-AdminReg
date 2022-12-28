@@ -2,9 +2,9 @@
 
 .Wrapper {
   padding: 24px 12px;
-  background: $app-ts;
   border-radius: 20px;
   max-width: 100%;
+  background: $app-ts;
 
   .LeftWrapper {
     display: flex;
@@ -70,16 +70,16 @@
 
 @media only screen and (min-width: 1024px) {
   .Wrapper {
-    padding: 15px 25px;
     display: flex;
     justify-content: space-between;
+    padding: 15px 25px;
 
     .RightWrapper {
       .TopWrapper {
-        margin-top: 0;
         display: flex;
         flex-direction: row-reverse;
         align-items: center;
+        margin-top: 0;
 
         .SettingWrapper {
           margin-left: 25px;

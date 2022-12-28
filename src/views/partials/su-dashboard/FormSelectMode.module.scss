@@ -6,13 +6,13 @@
   align-items: center;
 
   .OptionWrapper {
-    width: calc(200px - 56px);
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    background: $app-tf;
-    padding: 12px 28px;
     border-radius: 20px;
+    padding: 12px 28px;
+    width: calc(200px - 56px);
+    background: $app-tf;
     cursor: pointer;
 
     .ImageWrapper {
@@ -27,34 +27,36 @@
 
       .SettingsImage {
         position: absolute;
-        width: 26px;
         right: -15px;
         margin-top: 10px;
+        width: 26px;
       }
     }
 
     .ImageWrapper2 {
+      position: relative;
       display: flex;
       justify-content: center;
-      position: relative;
-      width: 100%;
       padding: 15px 0;
+      width: 100%;
 
       .WorkerOrangeImage {
         width: 78px;
         z-index: 2;
       }
+
       .WorkerWhiteImage1 {
         position: absolute;
-        left: 0;
         top: 13px;
+        left: 0;
         width: 54px;
       }
+
       .WorkerWhiteImage2 {
         position: absolute;
-        width: 54px;
-        right: 0;
         top: 13px;
+        right: 0;
+        width: 54px;
       }
     }
 

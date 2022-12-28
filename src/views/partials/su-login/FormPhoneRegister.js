@@ -2,9 +2,15 @@ import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
-import {Form, withFormik} from "formik";
+import {
+  Form,
+  withFormik
+} from "formik";
 import {bindActionCreators} from "redux";
-import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import {checkPhoneNumberValidation} from "../../../utils";
 import CustomPhoneInput from "../../components/PhoneInput";
 import style from "./FormPhoneRegister.module.scss";
@@ -30,7 +36,15 @@ const formSchema = (t) => {
 };
 
 const FormPhoneRegister = (props) => {
-  const {values, errors, touched, t, setFieldValue, setRestBarClass, setToken} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    setRestBarClass,
+    setToken
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +54,7 @@ const FormPhoneRegister = (props) => {
 
   const setClassName = () => {
     setRestBarClass(`progress-50`);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -104,7 +118,7 @@ const FormPhoneRegister = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

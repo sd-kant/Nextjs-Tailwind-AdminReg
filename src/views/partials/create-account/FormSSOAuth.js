@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {
-  getTokenFromUrl, getDeviceId
+  getTokenFromUrl,
+  getDeviceId
 } from "../../../utils";
 import {useNavigate} from "react-router-dom";
 import {apiBaseUrl} from "../../../config";

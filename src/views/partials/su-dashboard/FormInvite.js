@@ -2,7 +2,11 @@ import React, {useMemo, useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
-import {Form, useFormikContext, withFormik} from "formik";
+import {
+  Form,
+  useFormikContext,
+  withFormik
+} from "formik";
 import {withTranslation, Trans} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
@@ -15,7 +19,10 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import {AVAILABLE_JOBS, permissionLevels} from "../../../constant";
+import {
+  AVAILABLE_JOBS,
+  permissionLevels
+} from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
 import CustomPhoneInput from "../../components/PhoneInput";
 import {checkPhoneNumberValidation} from "../../../utils";

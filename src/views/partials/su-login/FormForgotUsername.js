@@ -4,9 +4,19 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import ConfirmModal from "../../components/ConfirmModal";
-import {instance, lookupByEmail, lookupByPhone, recoverUsername, recoverUsernameByPhoneNumber} from "../../../http";
+import {
+  instance,
+  lookupByEmail,
+  lookupByPhone,
+  recoverUsername,
+  recoverUsernameByPhoneNumber
+} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
 import {useNavigate} from "react-router-dom";
 import {apiBaseUrl} from "../../../config";
@@ -54,7 +64,7 @@ const FormForgotUsername = (props) => {
   const changeFormField = (e) => {
     const {value, name} = e.target;
     setFieldValue(name, value);
-  }
+  };
 
   const handlePrevious = () => {
     const from = getParamFromUrl("from");
@@ -63,7 +73,7 @@ const FormForgotUsername = (props) => {
     } else {
       navigate('/login');
     }
-  }
+  };
   const emailMode = React.useMemo(() => {
     return values.mode === "email";
   }, [values.mode]);
@@ -180,7 +190,7 @@ const FormForgotUsername = (props) => {
       }
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

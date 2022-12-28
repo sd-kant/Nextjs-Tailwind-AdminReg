@@ -47,7 +47,15 @@ export const defaultMember = {
 
 const FormRepresentative = (props) => {
   const {orgAdmins} = useOrganizationContext();
-  const {values, errors, touched, t, setFieldValue, setRestBarClass, organizationId} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    setRestBarClass,
+    organizationId
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {

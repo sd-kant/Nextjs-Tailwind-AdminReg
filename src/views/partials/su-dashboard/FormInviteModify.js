@@ -2,7 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
-import {Form, withFormik, useFormikContext} from "formik";
+import {
+  Form,
+  withFormik,
+  useFormikContext
+} from "formik";
 import {withTranslation} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
