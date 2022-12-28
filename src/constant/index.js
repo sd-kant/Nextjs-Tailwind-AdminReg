@@ -536,19 +536,19 @@ export const HEART_RATE_VALUES = [
     value: null,
   },
   {
-    label: t("very light"),
+    label: i18n.t("very light"),
     value: 1,
   },
   {
-    label: t('light'),
+    label: i18n.t('light'),
     value: 2,
   },
   {
-    label: t("moderate"),
+    label: i18n.t("moderate"),
     value: 3,
   },
   {
-    label: t('high'),
+    label: i18n.t('high'),
     value: 4,
   }
 ];
