@@ -9,11 +9,11 @@
   }
 
   .DropZoneArea {
-    background-color: $app-tf;
-    padding: 40px 10px;
     display: flex;
     justify-content: center;
     border-radius: 10px;
+    padding: 40px 10px;
+    background-color: $app-tf;
     cursor: pointer;
 
     .DropZoneLabel {

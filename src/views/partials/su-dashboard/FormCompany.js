@@ -5,7 +5,12 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import CreatableSelect from 'react-select/creatable';
-import {createCompany, createUserByAdmin, getUsersUnderOrganization, updateCompany} from "../../../http";
+import {
+  createCompany,
+  createUserByAdmin,
+  getUsersUnderOrganization,
+  updateCompany
+} from "../../../http";
 import {
   setLoadingAction,
   setRestBarClassAction,
@@ -27,7 +32,11 @@ import MultiSelectPopup from "../../components/MultiSelectPopup";
 import countryRegions from 'country-region-data/data.json';
 import removeIcon from "../../../assets/images/remove.svg";
 import plusCircleFire from "../../../assets/images/plus-circle-fire.svg";
-import {defaultMember, lowercaseEmail, setUserTypeToUsers} from "./FormRepresentative";
+import {
+  defaultMember,
+  lowercaseEmail,
+  setUserTypeToUsers
+} from "./FormRepresentative";
 import {useNavigate} from "react-router-dom";
 import ConfirmModal from "../../components/ConfirmModal";
 

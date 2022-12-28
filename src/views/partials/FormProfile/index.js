@@ -6,7 +6,10 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import InputMask from 'react-input-mask';
 import {bindActionCreators} from "redux";
-import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import maleIcon from "../../../assets/images/male.svg";
 import maleGrayIcon from "../../../assets/images/male-gray.svg";
 import femaleIcon from "../../../assets/images/female.svg";
@@ -20,7 +23,12 @@ import {formShape as nameFormShape} from "../create-account/FormName";
 import {formShape as genderFormShape} from "../create-account/FormGender";
 import {formShape as dobFormShape} from "../create-account/FormBirth";
 import {formShape as unitFormShape} from "../create-account/FormUnit";
-import {ftOptions, inOptions, formShape as heightFormShape, getHeightAsMetric} from "../create-account/FormHeight";
+import {
+  ftOptions,
+  inOptions,
+  formShape as heightFormShape,
+  getHeightAsMetric
+} from "../create-account/FormHeight";
 import {formShape as weightFormShape} from "../create-account/FormWeight";
 import {formShape as timezoneFormShape} from "../create-account/FormTimezone";
 import {formShape as workLengthFormShape} from "../create-account/FormWorkLength";
@@ -34,10 +42,14 @@ import {
   convertCmToImperial,
   convertCmToMetric,
   convertImperialToMetric,
-  convertKilosToLbs, convertLbsToKilos,
+  convertKilosToLbs,
+  convertLbsToKilos,
   format2Digits
 } from "../../../utils";
-import {getMedicalResponsesAction, updateMyProfileAction} from "../../../redux/action/profile";
+import {
+  getMedicalResponsesAction,
+  updateMyProfileAction
+} from "../../../redux/action/profile";
 import MedicalQuestions from "../MedicalQuestions";
 import clsx from "clsx";
 import style from "./FormProfile.module.scss";

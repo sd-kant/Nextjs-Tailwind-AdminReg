@@ -4,7 +4,10 @@ import backIcon from "../../../assets/images/back.svg";
 import * as Yup from "yup";
 import {Form, withFormik} from "formik";
 import {IMPERIAL, METRIC} from "../../../constant";
-import {convertKilosToLbs, convertLbsToKilos} from "../../../utils";
+import {
+  convertKilosToLbs,
+  convertLbsToKilos
+} from "../../../utils";
 import {useNavigate} from "react-router-dom";
 
 export const formShape = t => ({

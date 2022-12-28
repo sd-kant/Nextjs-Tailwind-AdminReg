@@ -351,7 +351,7 @@ const SearchUserItem = (
       </div>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   isAdmin: get(state, 'auth.isAdmin'),

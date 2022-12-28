@@ -40,9 +40,16 @@ export const formatAnswersToOptions = (answers) => {
 
 const FormMedical = (props) => {
   const {
-    t, medicalQuestions, order, setLoading,
-    showErrorNotification, showSuccessNotification, setRestBarClass,
-    token, profile, medicalResponses,
+    t,
+    medicalQuestions,
+    order,
+    setLoading,
+    showErrorNotification,
+    showSuccessNotification,
+    setRestBarClass,
+    token,
+    profile,
+    medicalResponses,
   } = props;
   const [questionOrder, setQuestionOrder] = useState(null);
   const [questionContent, setQuestionContent] = useState(null);

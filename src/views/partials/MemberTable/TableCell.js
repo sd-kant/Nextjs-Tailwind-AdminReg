@@ -4,7 +4,10 @@ import {get} from "lodash";
 import {useUtilsContext} from "../../../providers/UtilsProvider";
 import clsx from "clsx";
 import style from "./TableCell.module.scss";
-import {formatDevice4Digits, formatHeartRate} from "../../../utils/dashboard";
+import {
+  formatDevice4Digits,
+  formatHeartRate
+} from "../../../utils/dashboard";
 import BatteryV3 from "../../components/BatteryV3";
 import {useTranslation} from "react-i18next";
 

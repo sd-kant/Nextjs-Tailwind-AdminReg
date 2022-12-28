@@ -52,7 +52,15 @@ export const options = [
 ];
 
 const FormStartWork = (props) => {
-  const {t, values, profile, setFieldValue, setRestBarClass, errors, touched} = props;
+  const {
+    t,
+    values,
+    profile,
+    setFieldValue,
+    setRestBarClass,
+    errors,
+    touched
+  } = props;
   const [hourOptions, minuteOptions] = useTimeOptions();
   const navigate = useNavigate();
 

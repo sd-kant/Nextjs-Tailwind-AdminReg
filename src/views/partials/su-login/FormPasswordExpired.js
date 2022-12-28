@@ -2,7 +2,10 @@ import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
-import {Form, withFormik} from "formik";
+import {
+  Form,
+  withFormik
+} from "formik";
 import {bindActionCreators} from "redux";
 import {
   setLoadingAction,
@@ -10,7 +13,10 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
-import {setPasswordExpiredAction, setTokenAction} from "../../../redux/action/auth";
+import {
+  setPasswordExpiredAction,
+  setTokenAction
+} from "../../../redux/action/auth";
 import {
   checkPasswordValidation,
 } from "../../../utils";
@@ -55,7 +61,14 @@ export const formSchema = (t) => {
 };
 
 const FormPasswordExpired = (props) => {
-  const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    setRestBarClass
+  } = props;
 
   useEffect(() => {
     setClassName();
@@ -67,7 +80,7 @@ const FormPasswordExpired = (props) => {
     setFieldValue(name, value);
 
     setClassName();
-  }
+  };
 
   const setClassName = () => {
     let sum = 0;
@@ -75,7 +88,7 @@ const FormPasswordExpired = (props) => {
     sum += values["newPassword"] ? 1 : 0;
     sum += values["confirmPassword"] ? 1 : 0;
     setRestBarClass(`progress-${sum * 27}`);
-  }
+  };
 
   const active = React.useMemo(() => {
     return values['password'] && values['newPassword'] && values['confirmPassword'];
@@ -158,7 +171,7 @@ const FormPasswordExpired = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

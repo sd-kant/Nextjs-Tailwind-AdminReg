@@ -1,7 +1,10 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
-import {withTranslation, Trans} from "react-i18next";
+import {
+  withTranslation,
+  Trans
+} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import uploadIcon from "../../../assets/images/upload-fire.svg";
 import readXlsxFile from 'read-excel-file'
@@ -9,14 +12,21 @@ import {
   setLoadingAction,
   setRestBarClassAction,
   setVisibleSuccessModalAction,
-  showErrorNotificationAction, showSuccessNotificationAction
+  showErrorNotificationAction,
+  showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import clsx from "clsx";
 import style from "./FormUpload.module.scss";
 import {useNavigate} from "react-router-dom";
 
 const FormUpload = (props) => {
-  const {t, setRestBarClass, showErrorNotification, id, organizationId} = props;
+  const {
+    t,
+    setRestBarClass,
+    showErrorNotification,
+    id,
+    organizationId
+  } = props;
   const [hover, setHover] = useState(false);
   const [csvLoaded, setCsvLoaded] = useState(false);
   const navigate = useNavigate();
@@ -81,7 +91,7 @@ const FormUpload = (props) => {
             } else if (str.includes("phone")) {
               columnMap["phoneNumber"] = index;
             }
-          })
+          });
 
           const xlsxData = rows.map(it => {
             const ret = {};
@@ -98,16 +108,16 @@ const FormUpload = (props) => {
         console.log("file content error");
       }
     }
-  }
+  };
 
   const fileInputClicked = () => {
     fileInputRef.current.click();
-  }
+  };
 
   const validateFile = (file) => {
-    const validTypes = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+    const validTypes = ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"];
     return validTypes.indexOf(file.type) !== -1
-  }
+  };
 
   return (
     <div className='form-group mt-57'>
@@ -165,7 +175,7 @@ const FormUpload = (props) => {
       </div>
     </div>
   )
-}
+};
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(

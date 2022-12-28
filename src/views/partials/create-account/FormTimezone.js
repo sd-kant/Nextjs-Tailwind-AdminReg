@@ -23,7 +23,13 @@ const formSchema = (t) => {
 
 const FormTimezone = (props) => {
   const [timezones] = useTimezone();
-  const {t, values, setFieldValue, setRestBarClass, profile} = props;
+  const {
+    t,
+    values,
+    setFieldValue,
+    setRestBarClass,
+    profile
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {

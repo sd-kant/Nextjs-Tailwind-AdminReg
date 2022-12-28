@@ -27,7 +27,13 @@ const formSchema = (t) => {
 };
 
 const FormCountry = (props) => {
-  const {t, values, setFieldValue, setRestBarClass, profile} = props;
+  const {
+    t,
+    values,
+    setFieldValue,
+    setRestBarClass,
+    profile
+  } = props;
   const options = useMemo(() => AVAILABLE_COUNTRIES, []);
   const navigate = useNavigate();
   useEffect(() => {

@@ -22,7 +22,15 @@ const formSchema = (t) => {
 };
 
 const FormWorkLength = (props) => {
-  const {t, values, errors, touched, setFieldValue, setRestBarClass, profile} = props;
+  const {
+    t,
+    values,
+    errors,
+    touched,
+    setFieldValue,
+    setRestBarClass,
+    profile
+  } = props;
   const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass('progress-90');

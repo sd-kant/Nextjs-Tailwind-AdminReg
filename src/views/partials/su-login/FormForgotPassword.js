@@ -4,11 +4,23 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import ConfirmModal from "../../components/ConfirmModal";
-import {instance, lookupByUsername, requestResetPassword} from "../../../http";
+import {
+  instance,
+  lookupByUsername,
+  requestResetPassword
+} from "../../../http";
 import backIcon from "../../../assets/images/back.svg";
-import {checkUsernameValidation2, checkUsernameValidation1, getParamFromUrl} from "../../../utils";
+import {
+  checkUsernameValidation2,
+  checkUsernameValidation1,
+  getParamFromUrl
+} from "../../../utils";
 import {useNavigate} from "react-router-dom";
 import {apiBaseUrl} from "../../../config";
 
@@ -42,7 +54,7 @@ const FormForgotPassword = (props) => {
   const changeFormField = (e) => {
     const {value, name} = e.target;
     setFieldValue(name, value);
-  }
+  };
 
   const handlePrevious = () => {
     const from = getParamFromUrl("from");
@@ -51,7 +63,7 @@ const FormForgotPassword = (props) => {
     } else {
       navigate('/login');
     }
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -117,7 +129,7 @@ const FormForgotPassword = (props) => {
       }
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

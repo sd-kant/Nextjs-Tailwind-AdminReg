@@ -1,11 +1,11 @@
 @import "src/assets/scss/colors";
 
 .TableHeaderCell {
+  border: 1px solid $app-bg;
   padding: 5px 10px;
   text-align: center;
   white-space: nowrap;
   background: $app-list-bg;
-  border: 1px solid $app-bg;
 
   .TableHeaderCellSpan {
     font-size: 18px;
@@ -14,10 +14,10 @@
 
   .ChevronWrapper {
     display: inline-flex;
-    width: 30px;
-    height: 30px;
     justify-content: flex-end;
     align-items: center;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
 
     .ChevronIcon {

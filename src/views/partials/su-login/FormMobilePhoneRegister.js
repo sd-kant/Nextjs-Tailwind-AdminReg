@@ -4,8 +4,15 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
-import {checkPhoneNumberValidation, getParamFromUrl} from "../../../utils";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
+import {
+  checkPhoneNumberValidation,
+  getParamFromUrl
+} from "../../../utils";
 import CustomPhoneInput from "../../components/PhoneInput";
 import style from "./FormPhoneRegister.module.scss";
 import clsx from "clsx";
@@ -30,7 +37,15 @@ const formSchema = (t) => {
 };
 
 const MobileFormPhoneRegister = (props) => {
-  const {values, errors, touched, t, setFieldValue, setRestBarClass, setToken} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    setRestBarClass,
+    setToken
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +55,7 @@ const MobileFormPhoneRegister = (props) => {
 
   const setClassName = () => {
     setRestBarClass(`progress-50`);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -104,7 +119,7 @@ const MobileFormPhoneRegister = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
