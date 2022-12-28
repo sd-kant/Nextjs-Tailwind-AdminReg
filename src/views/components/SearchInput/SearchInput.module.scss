@@ -2,12 +2,12 @@
 
 .Wrapper {
   display: inline-flex;
-  background: $app-ts;
-  padding: 8px 10px 8px 16px;
   border-radius: 5px;
+  padding: 8px 10px 8px 16px;
   align-items: center;
   width: 262px;
   max-width: calc(100% - 26px);
+  background: $app-ts;
 
   .SearchIcon {
     width: 16px;
@@ -21,13 +21,13 @@
   }
 
   .Input {
+    margin-left: 10px;
+    border: none;
+    width: calc(100% - 32px);
     background: $app-ts;
     color: white;
     outline: none;
-    border: none;
     font-size: 21px;
     line-height: 24.13px;
-    margin-left: 10px;
-    width: calc(100% - 32px);
   }
 }

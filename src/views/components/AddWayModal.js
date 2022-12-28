@@ -33,8 +33,8 @@ const AddWayModal = (props) => {
             <img src={editIcon} alt="edit icon"/>
 
             <span className='font-binary mt-8'>
-            {t("manual")}
-          </span>
+              {t("manual")}
+            </span>
           </div>
 
           <div

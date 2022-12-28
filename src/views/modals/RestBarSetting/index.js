@@ -157,6 +157,6 @@ const RestBarSetting = (
       </div>
     </Modal>
   )
-}
+};
 
 export default withTranslation()(RestBarSetting);

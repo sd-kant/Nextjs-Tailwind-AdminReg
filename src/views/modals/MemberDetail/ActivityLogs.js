@@ -35,8 +35,7 @@ const ActivityLogs = (
       {
         logsLoading ? (
           <div className={clsx(style.DataRow, style.Header, 'font-binary text-white')}>
-                  <span
-                    className={clsx('text-capitalize', style.Padding)}>{t("loading")}</span>
+            <span className={clsx('text-capitalize', style.Padding)}>{t("loading")}</span>
           </div>
         ) : (
           <React.Fragment>
@@ -51,8 +50,7 @@ const ActivityLogs = (
                   <span className={clsx('font-binary', style.Padding)}>{t("datetime")}{gmt ? ` (${timezone.displayName})` : ''}</span>
                 </div> :
                 <div className={clsx(style.DataRow, style.Header, 'font-button-label text-orange')}>
-                  <span
-                    className={clsx('font-binary text-capitalize', style.Padding)}>{activitiesFilter?.noText}</span>
+                  <span className={clsx('font-binary text-capitalize', style.Padding)}>{activitiesFilter?.noText}</span>
                 </div>
             }
             {
@@ -67,6 +65,6 @@ const ActivityLogs = (
       }
     </React.Fragment>
   )
-}
+};
 
 export default React.memo(ActivityLogs);

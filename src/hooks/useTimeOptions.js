@@ -1,4 +1,5 @@
 import * as React from "react";
+import {MINUTE_OPTIONS} from "../constant";
 
 function useTimeOptions() {
   const hourOptions = React.useMemo(() => {
@@ -10,9 +11,8 @@ function useTimeOptions() {
     }
     return options;
   }, []);
-  const minuteOptions = ["00", "15", "30", "45"];
 
-  return [hourOptions, minuteOptions];
+  return [hourOptions, MINUTE_OPTIONS];
 }
 
 export default useTimeOptions;

@@ -36,24 +36,24 @@ const SuccessModal = (props) => {
               style={{margin: 0}}
               onClick={props.onCancel}
             >
-            <span style={{textTransform: "uppercase"}}>
-              {t("create modify team")}
-            </span>
+              <span style={{textTransform: "uppercase"}}>
+                {t("create modify team")}
+              </span>
             </label>
             <br/>
             <button
               className={`button active mt-40`}
               onClick={props.onOk}
             >
-            <span className='font-button-label text-white text-uppercase'>
-              {t("log out")}
-            </span>
+              <span className='font-button-label text-white text-uppercase'>
+                {t("log out")}
+              </span>
             </button>
           </div>
         </div>
       </div>
     </div>
   )
-}
+};
 
 export default SuccessModal;

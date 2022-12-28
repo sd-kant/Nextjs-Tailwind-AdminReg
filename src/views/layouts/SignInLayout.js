@@ -54,7 +54,7 @@ const SignInLayout = (props) => {
       />
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   restBarClass: get(state, "ui.restBarClass"),

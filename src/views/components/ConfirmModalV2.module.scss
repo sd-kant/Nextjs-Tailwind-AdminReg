@@ -64,19 +64,16 @@
   }
 
   .Tap {
-    border: none;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border: none;
     border-radius: 20px;
     width: 105px;
     height: 114px;
     background: $app-bg;
   }
-}
-
-@media only screen and (min-width: 768px) {
 }
 
 @media only screen and (min-width: 1024px) {

@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'clsx';
 import { uuidv4 } from '../../../utils';
-import {getValueFromProps, getInputArrayFromProps} from './utils';
+import {
+  getValueFromProps,
+  getInputArrayFromProps
+} from './utils';
 import customStyle from "./ReactCodeInput.module.scss";
 
 const BACKSPACE_KEY = 8;

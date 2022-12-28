@@ -17,8 +17,8 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  padding: 35px 25px;
   border-radius: 20px;
+  padding: 35px 25px;
   max-width: 800px;
   transform: translate(-50%, -50%);
   background: $app-tf;
@@ -40,14 +40,6 @@
   .CloseIconSm {
     width: 32px;
     height: 32px;
-  }
-
-  .ModalHeader {
-
-  }
-
-  .ModalSubheader {
-
   }
 
   .ModalBody {
@@ -85,13 +77,10 @@
   }
 }
 
-@media only screen and (min-width: 768px) {
-}
-
 @media only screen and (min-width: 1024px) {
   .Modal {
-    padding: 40px 40px 25px 40px;
     border-radius: 40px;
+    padding: 40px 40px 25px 40px;
 
     .CloseIcon {
       top: 20px;

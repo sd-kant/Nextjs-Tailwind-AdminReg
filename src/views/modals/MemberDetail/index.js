@@ -267,8 +267,8 @@ const MemberDetail = (
                         /> : null
                     }
                     <span className={clsx('text-orange cursor-pointer text-capitalize')}>
-                    {t("edit")}
-                  </span>
+                      {t("edit")}
+                    </span>
                   </div>
 
                   <div className={clsx(style.NameDevice)}>
@@ -286,9 +286,9 @@ const MemberDetail = (
 
                     <div>
                       <div className={clsx(style.Mac_Battery)}>
-                      <span className={clsx('font-binary')}>
-                        {stat?.deviceId ?? "N/A"}
-                      </span>&nbsp;&nbsp;
+                        <span className={clsx('font-binary')}>
+                          {stat?.deviceId ?? "N/A"}
+                        </span>&nbsp;&nbsp;
                         <BatteryV3
                           charging={stat?.chargingFlag}
                           percent={stat?.batteryPercent}
@@ -297,34 +297,32 @@ const MemberDetail = (
                       {
                         kenzenDevice &&
                         <div>
-                        <span className={clsx('font-binary')}>
-                          FW Ver. {kenzenDevice?.version}
-                        </span>
+                          <span className={clsx('font-binary')}>
+                            FW Ver. {kenzenDevice?.version}
+                          </span>
                         </div>
                       }
                       {
                         phoneDevice &&
                         <div>
-                        <span className={clsx('font-binary')}>
-                          {phoneDevice?.type === "ios" ? "iOS Ver." : "Android Ver."} {phoneDevice?.osVersion}
-                        </span>
+                          <span className={clsx('font-binary')}>
+                            {phoneDevice?.type === "ios" ? "iOS Ver." : "Android Ver."} {phoneDevice?.osVersion}
+                          </span>
                         </div>
                       }
                       {
                         phoneDevice &&
                         <div>
-                        <span className={clsx('font-binary')}>
-                          App Ver. {phoneDevice?.version}
-                        </span>
+                          <span className={clsx('font-binary')}>
+                            App Ver. {phoneDevice?.version}
+                          </span>
                         </div>
                       }
                     </div>
                   </div>
                 </div>
 
-                <div className={clsx(style.Divider)}>
-                  {/*Divider*/}
-                </div>
+                <div className={clsx(style.Divider)} />
 
                 <div className={clsx(style.InformationArea)}>
                   <div>
@@ -341,8 +339,7 @@ const MemberDetail = (
                       <div>
                         <span className={clsx(style.HelperText, 'font-helper-text')}>{t("status")}</span>
                       </div>
-                      <div className={clsx(style.StatusCell)} title={invisibleHeatRisk ? null : alertObj?.label}
-                           style={{height: '18.38px'}}>
+                      <div className={clsx(style.StatusCell)} title={invisibleHeatRisk ? null : alertObj?.label} style={{height: '18.38px'}}>
                         <div className={clsx(style.BadgeWrapper)}>
                           <div className={clsx(style.StatusBadge, badgeColorStyle)}/>
                         </div>
@@ -363,12 +360,10 @@ const MemberDetail = (
 
                     <div className={clsx(style.InformationEntity)}>
                       <div>
-                        <span
-                          className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}>{t("connection status")}</span>
+                        <span className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}>{t("connection status")}</span>
                       </div>
                       <div className={clsx(style.Cell)}>
-                        <span className={clsx('font-input-label')}
-                              title={connectionObj?.label}>{connectionObj?.label}</span>
+                        <span className={clsx('font-input-label')} title={connectionObj?.label}>{connectionObj?.label}</span>
                       </div>
                     </div>
                   </div>
@@ -383,14 +378,13 @@ const MemberDetail = (
             <div className={clsx(style.HeartRiskCard)}>
               <div className={clsx(style.RiskCard, style.Card)}>
                 <div style={{display: "flex", flexDirection: 'column', alignItems: 'center', textAlign: 'center'}}>
-                <span className={clsx('font-input-label')}>
-                  {t("cbt avg")}
-                </span>
+                  <span className={clsx('font-input-label')}>
+                    {t("cbt avg")}
+                  </span>
                   <span className={'font-input-label text-uppercase'}>{metric ? '(°C)' : '(°F)'}</span>
                 </div>
 
-                <div className={clsx(style.InformationContent)}
-                     style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
+                <div className={clsx(style.InformationContent)} style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
                   <img src={thermometer} alt="thermometer" width={15}/>
                   {
                     hideCbtHR ?
@@ -405,14 +399,13 @@ const MemberDetail = (
 
               <div className={clsx(style.HeartCard, style.Card)}>
                 <div style={{display: "flex", flexDirection: 'column', alignItems: 'center', textAlign: 'center'}}>
-                <span className={clsx('font-input-label text-capitalize')}>
-                  {t("heart rate avg")}
-                </span>
+                  <span className={clsx('font-input-label text-capitalize')}>
+                    {t("heart rate avg")}
+                  </span>
                   <span className={clsx('font-input-label text-uppercase')}>(bpm)</span>
                 </div>
 
-                <div className={clsx(style.InformationContent)}
-                     style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
+                <div className={clsx(style.InformationContent)} style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
                   <img src={heart} alt="heart" width={30}/>
                   {
                     hideCbtHR ?
@@ -422,9 +415,9 @@ const MemberDetail = (
                 {
                   !hideCbtHR && visibleHeartStats &&
                   <div style={{display: 'flex', justifyContent: 'center'}}>
-                <span className={clsx('font-binary', heartRateZoneStyles[heartRateZone?.value?.toString()])}>
-                  {heartRateZone?.label}
-                </span>
+                    <span className={clsx('font-binary', heartRateZoneStyles[heartRateZone?.value?.toString()])}>
+                      {heartRateZone?.label}
+                    </span>
                   </div>
                 }
               </div>
@@ -503,9 +496,7 @@ const MemberDetail = (
               </div>
 
               <div className={clsx(style.MetricCardContent)}>
-                <MetricLogs
-                    metricStats={metricStats}
-                />
+                <MetricLogs metricStats={metricStats} />
               </div>
             </div>
 

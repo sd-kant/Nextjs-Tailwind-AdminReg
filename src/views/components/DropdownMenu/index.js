@@ -11,7 +11,7 @@ const popupContentStyle = {
   marginTop: '17px',
   background: 'white',
   width: '160px',
-}
+};
 
 const defaultItems = [
   {
@@ -87,6 +87,6 @@ const DropdownMenu = (
       </div>
     </Popup>
   )
-}
+};
 
 export default withTranslation()(React.memo(DropdownMenu));

@@ -94,7 +94,7 @@ function* loginSaga({payload: {
       });
 
       if (fromRegister) {
-        setStorageAfterRegisterLogin({token, baseUrl: instance.defaults.baseURL})
+        setStorageAfterRegisterLogin({token, baseUrl: instance.defaults.baseURL});
 
         if (!mfa) { // if multi-factor authentication off
           navigate("/create-account/name");

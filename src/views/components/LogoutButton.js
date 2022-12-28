@@ -29,11 +29,11 @@ const LogoutButton = ({t}) => {
         <img src={logoutIcon} alt="upload icon"/>
         &nbsp;&nbsp;&nbsp;
         <span className="capitalize">
-            {t("logout")}
+          {t("logout")}
         </span>
       </label>
     </div>
   )
-}
+};
 
 export default withTranslation()(LogoutButton);

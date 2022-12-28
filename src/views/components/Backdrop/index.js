@@ -8,6 +8,6 @@ const Backdrop = () => {
 
     </div>
   );
-}
+};
 
 export default Backdrop;

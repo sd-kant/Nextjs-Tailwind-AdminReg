@@ -45,6 +45,6 @@ const ResponsiveSelect = (
       onChange={onChange}
     />
   )
-}
+};
 
 export default withTranslation()(ResponsiveSelect);

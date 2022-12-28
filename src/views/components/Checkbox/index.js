@@ -38,6 +38,6 @@ const Checkbox = (
         <span className={clsx(style.CheckMark, sizeStyle)}/>
     </label>
   )
-}
+};
 
 export default React.memo(Checkbox);

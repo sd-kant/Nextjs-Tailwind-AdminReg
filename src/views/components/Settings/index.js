@@ -10,11 +10,19 @@ import Toggle from "../Toggle";
 import {get} from "lodash";
 import {setMetricAction} from "../../../redux/action/ui";
 import ConfirmModalV2 from "../ConfirmModalV2";
-import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN, CURRENT_VERSION} from "../../../constant";
+import {
+  USER_TYPE_ADMIN,
+  USER_TYPE_ORG_ADMIN,
+  USER_TYPE_TEAM_ADMIN,
+  CURRENT_VERSION
+} from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
 import queryString from "query-string";
-import {ableToLogin, concatAsUrlParam} from "../../../utils";
+import {
+  ableToLogin,
+  concatAsUrlParam
+} from "../../../utils";
 import {getCompanyById} from "../../../http";
 import LanguageModal from "../LanguageModal";
 import closeIconV2 from '../../../assets/images/close-white.svg';
@@ -27,7 +35,7 @@ const popupContentStyle = {
   marginTop: '17px',
   background: 'white',
   width: '268px'
-}
+};
 
 const Settings = (
   {
@@ -253,9 +261,7 @@ const Settings = (
             </div>
           </div>
 
-          <div className={clsx(style.Divider)}>
-
-          </div>
+          <div className={clsx(style.Divider)} />
 
           {
             items.map((it, index) => (
@@ -328,7 +334,7 @@ const Settings = (
       />
     </>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   metric: get(state, "ui.metric"),

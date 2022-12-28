@@ -15,7 +15,7 @@ const popupContentStyle = {
   width: '268px',
   border: 'none',
   position: 'absolute',
-}
+};
 
 const TeamsPopup = (
   {
@@ -74,6 +74,6 @@ const TeamsPopup = (
       </div>
     </Popup>
   )
-}
+};
 
 export default withTranslation()(TeamsPopup);

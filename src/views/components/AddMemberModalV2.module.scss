@@ -200,15 +200,11 @@
           }
         }
 
-        & > .UserRow:first-child > div {
-          margin-top: 0;
-        }
-
+        & > .UserRow:first-child > div,
         & > .UserRowV2:first-child > div {
           margin-top: 0;
         }
       }
-
     }
   }
 }
@@ -238,8 +234,8 @@
           }
 
           .SelectWrapper {
-            width: 50%;
             max-width: 397px;
+            width: 50%;
           }
 
           .FullWidthSelect {

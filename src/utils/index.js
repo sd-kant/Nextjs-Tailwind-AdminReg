@@ -1,4 +1,8 @@
-import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN} from "../constant";
+import {
+  USER_TYPE_ADMIN,
+  USER_TYPE_ORG_ADMIN,
+  USER_TYPE_TEAM_ADMIN
+} from "../constant";
 import {
   isValidPhoneNumber,
 } from 'libphonenumber-js';
@@ -10,12 +14,12 @@ export const getTokenFromUrl = () => {
   const urlParams = new URLSearchParams(queryString);
   // replace space because + was replaced with space
   return urlParams.get('token')?.replace(/ /g, '+');
-}
+};
 
 export const checkAlphaNumeric = str => {
   const regex=  /^[a-z0-9]+$/i;
   return str?.match(regex);
-}
+};
 
 export const countString = (str, letter) => {
   let count = 0;
@@ -29,7 +33,7 @@ export const countString = (str, letter) => {
     }
   }
   return count;
-}
+};
 
 export const checkUsernameValidation1 = str => {
   const dotCount = countString(str, '.');
@@ -39,30 +43,30 @@ export const checkUsernameValidation1 = str => {
   }
 
   return false;
-}
+};
 
 export const checkUsernameValidation2 = str => {
   return str?.charAt(str.length - 1) !== '.';
-}
+};
 
 export const getParamFromUrl = key => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const param = urlParams.get(key)?.replace(/ /g, '+');
   return param ? decodeURIComponent(param) : undefined;
-}
+};
 
 export const checkPasswordValidation = (password) => {
   const regex=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{6,1024}$/;
   return password && password.match(regex);
-}
+};
 
 export const checkPhoneNumberValidation = (value, country) => {
   if (!value) {
     return false;
   }
   return isValidPhoneNumber(value, country?.toUpperCase() ?? 'US');
-}
+};
 
 export const ableToLogin = userType => {
   const validRoles = [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN];
@@ -106,7 +110,7 @@ export const convertImperialToMetric = (imperial) => {
     };
   }
   return null;
-}
+};
 
 export const convertCmToImperial = value => {
   const numericValue = parseInt(value);
@@ -152,7 +156,7 @@ export const format2Digits = (value) => {
   if (!["", null, undefined].includes(value)) {
     return String(value).padStart(2, '0');
   } else return null;
-}
+};
 
 export const numMinutesBetween = (d1 = new Date(), d2 = new Date(1900, 1, 1)) => {
   const diff = (d1.getTime() - d2.getTime());
@@ -182,7 +186,7 @@ export const minutesToDaysHoursMinutes = minutes => {
     hours: Math.floor(minutes / 60 % 24),
     minutes: Math.ceil(minutes % 60),
   };
-}
+};
 
 export const celsiusToFahrenheit = t => {
   const a = ((t * 9 / 5) + 32);
@@ -197,7 +201,7 @@ export const getLatestDate = (d1, d2) => {
   }
 
   return d2;
-}
+};
 
 export const getLatestDateBeforeNow = (d1, d2) => {
   const now = new Date().getTime();
@@ -219,7 +223,7 @@ export const getLatestDateBeforeNow = (d1, d2) => {
   }
 
   return d2;
-}
+};
 
 export const concatAsUrlParam = q => {
   let str = '';
@@ -228,7 +232,7 @@ export const concatAsUrlParam = q => {
   });
 
   return str;
-}
+};
 
 export const updateUrlParam = ({param: {key, value}, reload = false}) => {
   // parse the query string into an object
@@ -241,7 +245,7 @@ export const updateUrlParam = ({param: {key, value}, reload = false}) => {
   } else {
     window.location.href = newUrl;
   }
-}
+};
 
 /**
  * @typedef TimezoneObj

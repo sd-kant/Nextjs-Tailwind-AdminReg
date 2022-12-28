@@ -25,7 +25,7 @@ const RoundIcon = (
       </div>
     </React.Fragment>
   )
-}
+};
 
 export default withTranslation()(RoundIcon);
 
