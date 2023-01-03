@@ -58,7 +58,16 @@ const formSchema = (t) => {
 };
 
 const FormForgotUsername = (props) => {
-  const {values, errors, touched, t, setFieldValue, status, setStatus, resetForm} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    status,
+    setStatus,
+    resetForm
+  } = props;
   const navigate = useNavigate();
 
   const changeFormField = (e) => {
@@ -104,8 +113,8 @@ const FormForgotUsername = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange' onClick={handlePrevious}>
-              {t("previous")}
-            </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='grouped-form mt-25'>

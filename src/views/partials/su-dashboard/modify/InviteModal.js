@@ -36,7 +36,7 @@ const InviteModal = (
 
   const handleItemClick = (id) => {
     handleInviteClick(id);
-  }
+  };
 
   return (
     <Modal
@@ -113,6 +113,6 @@ const InviteModal = (
       </div>
     </Modal>
   )
-}
+};
 
 export default withTranslation()(InviteModal);

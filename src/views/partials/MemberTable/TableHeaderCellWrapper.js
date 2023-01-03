@@ -48,6 +48,6 @@ const TableHeaderCellWrapper = (
       hideChevron={hideChevron}
     />
   )
-}
+};
 
 export default TableHeaderCellWrapper;

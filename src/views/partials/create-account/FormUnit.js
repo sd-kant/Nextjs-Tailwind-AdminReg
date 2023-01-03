@@ -7,7 +7,10 @@ import imperialIcon from "../../../assets/images/imperial.svg";
 import {Form, withFormik} from "formik";
 import * as Yup from "yup";
 import {bindActionCreators} from "redux";
-import {IMPERIAL, METRIC} from "../../../constant";
+import {
+  IMPERIAL,
+  METRIC
+} from "../../../constant";
 import {useNavigate} from "react-router-dom";
 
 export const formShape = t => ({
@@ -50,14 +53,14 @@ const FormUnit = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("unit description")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("unit description")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex">
@@ -68,8 +71,8 @@ const FormUnit = (props) => {
             <img src={imperialIcon} alt="imperial icon"/>
 
             <span className='font-binary mt-8'>
-            {t("imperial")}
-          </span>
+              {t("imperial")}
+            </span>
           </div>
 
           <div
@@ -79,8 +82,8 @@ const FormUnit = (props) => {
             <img src={metricIcon} alt="metric icon"/>
 
             <span className='font-binary mt-8'>
-            {t("metric")}
-          </span>
+              {t("metric")}
+            </span>
           </div>
         </div>
       </div>
@@ -98,7 +101,7 @@ const FormUnit = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

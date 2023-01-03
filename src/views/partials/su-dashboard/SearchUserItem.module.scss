@@ -38,25 +38,19 @@
       margin-top: 10px;
     }
 
-    .Input {
+    .Input,
+    .InputHalf {
       width: calc(100% - 45px);
     }
 
-    .InputHalf {
-      width: calc(100% - 45PX);
-    }
-
-    .PhoneWrapper {
+    .PhoneWrapper,
+    .Select {
       width: 100%;
     }
 
     .DisabledInput {
       border: 1px solid $app-ts;
       background-color: $app-tf;
-    }
-
-    .Select {
-      width: 100%;
     }
 
     .GroupWrapper {
@@ -72,16 +66,16 @@
       .ButtonWrapper {
         display: flex;
         justify-content: flex-end;
-        margin-top: 10px;
       }
 
+      .ButtonWrapper,
+      .PhoneNumberContainer,
       & > div:last-child {
         margin-top: 10px;
       }
     }
 
     .PhoneNumberContainer {
-      margin-top: 10px;
       border: none;
       width: 100%;
       height: 50px;
@@ -109,13 +103,16 @@
     border-radius: 24px;
     padding: 40px;
 
-    .RemoveIconWrapper {
+    .RemoveIconWrapper,
+    .LockIconWrapper {
       top: 20px;
+    }
+
+    .RemoveIconWrapper {
       right: 40px;
     }
 
     .LockIconWrapper {
-      top: 20px;
       right: 70px;
     }
 
@@ -129,10 +126,7 @@
           margin-top: 0;
         }
 
-        .PhoneWrapper {
-          width: 100%;
-        }
-
+        .PhoneWrapper,
         .Select {
           width: 100%;
         }
@@ -217,10 +211,7 @@
         max-width: 397px;
       }
 
-      .PhoneWrapper {
-        width: 397px;
-      }
-
+      .PhoneWrapper,
       .Select {
         width: 397px;
       }

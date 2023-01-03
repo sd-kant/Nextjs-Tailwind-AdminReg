@@ -23,6 +23,7 @@ import countryRegions from 'country-region-data/data.json';
 import {customStyles} from "./FormCompany";
 import CreatableSelect from "react-select/creatable";
 import {useNavigate} from "react-router-dom";
+import {INVALID_VALUES1} from "../../../constant";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -215,7 +216,7 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
     const {organizationId: orgId, navigate} = props;
-    if ([undefined, "-1", null, ""].includes(orgId?.toString())) {
+    if (INVALID_VALUES1.includes(orgId?.toString())) {
       navigate("/invite/company");
       return;
     }

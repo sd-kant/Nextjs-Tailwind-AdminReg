@@ -69,7 +69,7 @@ const FormUsername = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -105,14 +105,14 @@ const FormUsername = (props) => {
           className="button active cursor-pointer"
           type="submit"
         >
-              <span className='font-button-label text-white'>
-                {t("next")}
-              </span>
+          <span className='font-button-label text-white'>
+            {t("next")}
+          </span>
         </button>
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

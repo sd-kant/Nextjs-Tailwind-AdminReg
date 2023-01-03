@@ -54,9 +54,17 @@ export const formSchema = (t) => {
 
 const FormLoginEntry = (props) => {
   const {
-    values, errors, touched, t, setFieldValue, setRestBarClass,
-    setLoginSuccess, setLoggedIn, setPasswordExpired,
-    showErrorNotification, setRegisterLoginSuccess,
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    setRestBarClass,
+    setLoginSuccess,
+    setLoggedIn,
+    setPasswordExpired,
+    showErrorNotification,
+    setRegisterLoginSuccess,
     mobile, // true when rendering from /mobile-login
   } = props;
   const navigate = useNavigate();

@@ -28,7 +28,14 @@ const formSchema = (t) => {
 };
 
 const FormPhoneRegister = (props) => {
-  const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    setRestBarClass
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,8 +55,8 @@ const FormPhoneRegister = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>

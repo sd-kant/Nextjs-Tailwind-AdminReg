@@ -48,7 +48,7 @@ const FormPhoneVerification = (props) => {
   const getMyPhoneNumber = async () => {
     const phone = getParamFromUrl('phoneNumber');
     setPhoneNumber(phone);
-  }
+  };
 
   const resendCode = async () => {
     if (phoneNumber) {
@@ -80,8 +80,8 @@ const FormPhoneVerification = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-25'>
@@ -125,7 +125,7 @@ const FormPhoneVerification = (props) => {
       <div className='mt-80'/>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   smsAuthFailedCount: get(state, 'auth.smsAuthFailedCount'),

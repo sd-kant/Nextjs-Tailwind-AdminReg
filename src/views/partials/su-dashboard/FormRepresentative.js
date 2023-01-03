@@ -14,7 +14,10 @@ import {
   showSuccessNotificationAction,
 } from "../../../redux/action/ui";
 import {createUserByAdmin} from "../../../http";
-import {USER_TYPE_ORG_ADMIN} from "../../../constant";
+import {
+  INVALID_VALUES1,
+  USER_TYPE_ORG_ADMIN
+} from "../../../constant";
 import clsx from "clsx";
 import style from "./FormRepresentative.module.scss";
 import {useOrganizationContext} from "../../../providers/OrganizationProvider";
@@ -67,19 +70,19 @@ const FormRepresentative = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   const addAnother = () => {
     const data = JSON.parse(JSON.stringify(values["users"]));
     data.push(defaultMember);
     setFieldValue("users", data);
-  }
+  };
 
   const deleteMember = (index) => {
     const data = JSON.parse(JSON.stringify(values["users"]));
     data.splice(index, 1);
     setFieldValue("users", data);
-  }
+  };
 
   return (
     <Form className='form mt-57'>
@@ -91,8 +94,8 @@ const FormRepresentative = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-              {t("previous")}
-            </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='grouped-form mt-40'>
@@ -299,27 +302,26 @@ const FormRepresentative = (props) => {
         </button>
         {
           orgAdmins?.length > 0 &&
-          <span className={clsx(style.Skip, 'font-binary')}
-                onClick={() => navigate(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
+          <span className={clsx(style.Skip, 'font-binary')} onClick={() => navigate(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
         }
       </div>
     </Form>
   )
-}
+};
 
 export const lowercaseEmail = (users) => {
   return users && users.map((user) => ({
     ...user,
     email: user["email"] && user["email"].toLowerCase(),
   }));
-}
+};
 
 export const setUserTypeToUsers = (users, userType) => {
   return users && users.map((user) => ({
     ...user,
     userType: userType,
   }));
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
@@ -329,7 +331,7 @@ const EnhancedForm = withFormik({
   handleSubmit: async (values, {props}) => {
     const {organizationId, navigate} = props;
     let users = values?.users;
-    if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
+    if (INVALID_VALUES1.includes(organizationId?.toString())) {
       navigate("/invite/company");
     } else {
       users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);

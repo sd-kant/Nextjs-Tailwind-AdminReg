@@ -13,7 +13,7 @@ const StickyComponents = () => {
     <>
       {
         visible.statistics &&
-        <div className={clsx(style.Wrapper, style.StatisticsWrapper)}>
+        <div className={clsx(style.Wrapper)}>
           <Statistics
             boxShadow={true}
           />
@@ -22,7 +22,7 @@ const StickyComponents = () => {
 
       {
         visible.workRestBar &&
-        <div className={clsx(style.Wrapper, style.WorkRestBarWrapper)}>
+        <div className={clsx(style.Wrapper)}>
           <RestBar
             boxShadow={true}
           />
@@ -30,6 +30,6 @@ const StickyComponents = () => {
       }
     </>
   )
-}
+};
 
 export default withTranslation()(StickyComponents);

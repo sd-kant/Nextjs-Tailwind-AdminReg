@@ -80,9 +80,9 @@ const RestBar = (
             </div>
 
             <div className={clsx(style.Update)}>
-            <span className={clsx('font-button-label text-uppercase text-blue')}>
-              {t('update')}
-            </span>
+              <span className={clsx('font-button-label text-uppercase text-blue')}>
+                {t('update')}
+              </span>
             </div>
           </div>
 
@@ -107,9 +107,9 @@ const RestBar = (
             </div>
 
             <div className={clsx(style.Update)}>
-            <span className={clsx('font-button-label text-uppercase text-blue')}>
-              {t('update')}
-            </span>
+              <span className={clsx('font-button-label text-uppercase text-blue')}>
+                {t('update')}
+              </span>
             </div>
           </div>
         </div>
@@ -137,6 +137,6 @@ const RestBar = (
       </div>
     </div>
   )
-}
+};
 
 export default withTranslation()(RestBar);

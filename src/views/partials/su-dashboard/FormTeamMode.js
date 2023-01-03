@@ -15,6 +15,7 @@ import {
 } from "../../../redux/action/ui";
 import {get} from 'lodash';
 import {useNavigate} from "react-router-dom";
+import {INVALID_VALUES1} from "../../../constant";
 
 const FormTeamMode = (props) => {
   const {
@@ -31,7 +32,7 @@ const FormTeamMode = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const orgId = [undefined, "-1", null, ""].includes(organizationId?.toString()) ? myOrganizationId : organizationId;
+  const orgId = INVALID_VALUES1.includes(organizationId?.toString()) ? myOrganizationId : organizationId;
   const handleCancel = () => {
     navigate("/select-mode");
   };

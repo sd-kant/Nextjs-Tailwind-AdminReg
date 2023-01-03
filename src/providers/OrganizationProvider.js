@@ -13,6 +13,7 @@ import {
 } from "../http";
 import countryRegions from 'country-region-data/data.json';
 import {useParams} from "react-router-dom";
+import {INVALID_VALUES1} from "../constant";
 
 const OrganizationContext = React.createContext(null);
 
@@ -36,7 +37,7 @@ const OrganizationProvider = (
   }, [organizationId, isAdmin]);
 
   const fetchCompany = () => {
-    if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
+    if (!(INVALID_VALUES1.includes(organizationId?.toString()))) {
       getCompanyById(organizationId)
         .then(response => {
           setOrganization(response.data);
