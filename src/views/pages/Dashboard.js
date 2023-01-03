@@ -9,7 +9,10 @@ import {logout} from "../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
 
 const Dashboard = (props) => {
-  const {visibleSuccessModal, setVisibleSuccessModal} = props;
+  const {
+    visibleSuccessModal,
+    setVisibleSuccessModal
+  } = props;
   const navigate = useNavigate();
 
   return (
@@ -27,7 +30,7 @@ const Dashboard = (props) => {
       />
     </div>
   );
-}
+};
 
 const mapStateToProps = (state) => ({
   visibleSuccessModal: get(state, 'ui.visibleSuccessModal'),

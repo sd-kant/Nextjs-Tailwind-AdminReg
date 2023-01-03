@@ -28,6 +28,6 @@ const ResultTableBody = () => {
     }
     </tbody>
   )
-}
+};
 
 export default ResultTableBody;

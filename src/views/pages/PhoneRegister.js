@@ -24,6 +24,6 @@ const PhoneRegister = () => {
       />
     </div>
   )
-}
+};
 
 export default PhoneRegister;

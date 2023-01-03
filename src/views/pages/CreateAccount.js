@@ -49,7 +49,12 @@ const CreateAccount = (
     ...props
   }) => {
   const {t} = useTranslation();
-  const {token, getMyProfile, getMedicalQuestions, getMedicalResponses} = props;
+  const {
+    token,
+    getMyProfile,
+    getMedicalQuestions,
+    getMedicalResponses
+  } = props;
   const {pathname} = useLocation();
   const uris = pathname && pathname.split('/');
   const uri = uris && uris[uris.length - 1];
@@ -298,7 +303,7 @@ const CreateAccount = (
       </Suspense>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   token: get(state, 'auth.registerToken'),

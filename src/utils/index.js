@@ -1,5 +1,6 @@
 import {
   INVALID_VALUES3,
+  INVALID_VALUES4,
   TIME_FORMAT_YYYYMDHM,
   USER_TYPE_ADMIN,
   USER_TYPE_ORG_ADMIN,
@@ -155,7 +156,7 @@ export const convertKilosToLbs = value => {
 };
 
 export const format2Digits = (value) => {
-  if (!["", null, undefined].includes(value)) {
+  if (!INVALID_VALUES4.includes(value)) {
     return String(value).padStart(2, '0');
   } else return null;
 };

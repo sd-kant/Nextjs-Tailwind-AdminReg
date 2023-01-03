@@ -23,6 +23,6 @@ const PasswordExpired = () => {
       />
     </div>
   )
-}
+};
 
 export default PasswordExpired;

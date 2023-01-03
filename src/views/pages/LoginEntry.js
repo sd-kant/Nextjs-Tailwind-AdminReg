@@ -27,6 +27,6 @@ const LoginEntry = (
       />
     </div>
   )
-}
+};
 
 export default LoginEntry;

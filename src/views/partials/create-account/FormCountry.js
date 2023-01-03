@@ -17,7 +17,7 @@ export const customStyles = {
   menu: styles => ({...styles, zIndex: 2}),
   input: styles => ({...styles,zIndex: 1,}),
   singleValue: (provided) => ({...provided,zIndex: 1,}),
-}
+};
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -53,11 +53,11 @@ const FormCountry = (props) => {
 
   const navigateTo = (path) => {
     navigate(path);
-  }
+  };
 
   const changeHandler = value => {
     setFieldValue("country", value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -69,14 +69,14 @@ const FormCountry = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("country question")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("country question")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex flex-column">
@@ -107,7 +107,7 @@ const FormCountry = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

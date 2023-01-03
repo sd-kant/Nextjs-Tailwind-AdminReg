@@ -24,6 +24,6 @@ const SULogin = () => {
       />
     </div>
   )
-}
+};
 
 export default SULogin;

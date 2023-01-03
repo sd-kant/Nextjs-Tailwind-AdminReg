@@ -29,6 +29,6 @@ const SearchInput = (
       }
     </div>
   )
-}
+};
 
 export default withTranslation()(SearchInput);

@@ -24,7 +24,8 @@ const Checkbox = (
     <label
       className={clsx(style.Container)}
       onClick={e => e.stopPropagation()}
-    >{label ? <span>&nbsp;{label}</span> : ''}
+    >
+      {label ? <span>&nbsp;{label}</span> : ''}
       <input
         type="checkbox"
         checked={checked}

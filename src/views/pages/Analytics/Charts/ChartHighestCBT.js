@@ -31,7 +31,6 @@ const ChartHighestCBT = (
     chartRef,
     setIsEnablePrint
   } = useAnalyticsContext();
-
   const {t} = useTranslation();
 
   React.useEffect(() => {

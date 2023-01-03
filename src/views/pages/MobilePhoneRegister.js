@@ -24,6 +24,6 @@ const MobilePhoneRegister = () => {
       />
     </div>
   )
-}
+};
 
 export default MobilePhoneRegister;

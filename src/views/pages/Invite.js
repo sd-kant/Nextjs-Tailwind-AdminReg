@@ -1,6 +1,11 @@
 import React, {lazy, Suspense} from "react";
 import {connect} from "react-redux";
-import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useNavigate
+} from "react-router-dom";
 import logo from "../../assets/images/logo_light.svg";
 import {
   USER_TYPE_ADMIN,
@@ -174,7 +179,7 @@ const Invite = (
       </Suspense>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),

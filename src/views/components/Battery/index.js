@@ -24,9 +24,7 @@ const Battery = (
         <img className={clsx(style.Bolt)} src={bolt} width={15} alt="bolt"/>
       }
 
-      <div className={clsx(centered ? style.CenteredLevel: style.Level, percentStyle)} style={{width: `${28 * percent / 100}px`}}>
-
-      </div>
+      <div className={clsx(centered ? style.CenteredLevel: style.Level, percentStyle)} style={{width: `${28 * percent / 100}px`}} />
     </div>
   )
 };

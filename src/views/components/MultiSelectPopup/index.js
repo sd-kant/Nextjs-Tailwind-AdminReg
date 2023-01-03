@@ -145,6 +145,6 @@ const MultiSelectPopup = (
       </Modal>
     </>
   )
-}
+};
 
 export default MultiSelectPopup;
