@@ -1,8 +1,8 @@
 @import "src/assets/scss/colors";
 
 .Wrapper {
-  padding: 24px 12px;
   border-radius: 20px;
+  padding: 24px 12px;
   max-width: 100%;
   background: $app-ts;
 
@@ -53,13 +53,13 @@
       }
     }
 
-    .MiddleWrapper {
+    .MiddleWrapper,
+    .BottomWrapper {
       margin-top: 20px;
     }
 
     .BottomWrapper {
       text-align: center;
-      margin-top: 20px;
     }
   }
 }

@@ -154,9 +154,7 @@ const Header = (
                 }}
               /> :
               <div className={clsx(style.OrganizationLabel)}>
-              <span
-                className='font-heading-small'
-              >{orgLabel}</span>
+                <span className='font-heading-small'>{orgLabel}</span>
               </div>
           }
           {
@@ -264,7 +262,7 @@ const Header = (
       }
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   myOrgId: get(state, "auth.organizationId"),

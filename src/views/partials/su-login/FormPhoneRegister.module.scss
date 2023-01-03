@@ -1,16 +1,18 @@
 @import "../../../assets/scss/colors";
 
 .PhoneNumberWrapper {
-  .PhoneNumberContainer {
-    margin-top: 10px;
-    border: none;
-    width: 100%;
-    height: 50px;
-  }
-
+  .PhoneNumberContainer,
   .PhoneNumberInput {
     border: none;
     height: 50px;
+  }
+
+  .PhoneNumberContainer {
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .PhoneNumberInput {
     font-size: 21px;
     line-height: 24.13px;
     font-family: Ubuntu-Regular, sans-serif;

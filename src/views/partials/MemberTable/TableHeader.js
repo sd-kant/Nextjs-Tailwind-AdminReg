@@ -203,9 +203,7 @@ const TableHeader = (
     <tr className={clsx(style.TableHeaderRow)}>
       <td className={clsx(style.TableHeaderCell, style.UserNameHeader)}>
         {/*<Checkbox/>*/}
-        <span
-          className={clsx(style.TableHeaderCellSpan)}
-        >{userNameLabel}</span>
+        <span className={clsx(style.TableHeaderCellSpan)}>{userNameLabel}</span>
         <DropdownMenu
           title={userNameLabel}
           icon={
@@ -242,6 +240,6 @@ const TableHeader = (
     </tr>
     </thead>
   )
-}
+};
 
 export default React.memo(TableHeader);

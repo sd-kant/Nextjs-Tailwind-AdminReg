@@ -15,7 +15,7 @@ export const formShape = t => ({
         .required(t("timezone required")),
     })
     .required(t("timezone required")),
-})
+});
 
 const formSchema = (t) => {
   return Yup.object().shape(formShape(t));
@@ -47,7 +47,7 @@ const FormTimezone = (props) => {
 
   const changeHandler = value => {
     setFieldValue("timezone", value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -59,14 +59,14 @@ const FormTimezone = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("timezone question")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("timezone question")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex flex-column">
@@ -97,7 +97,7 @@ const FormTimezone = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

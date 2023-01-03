@@ -63,7 +63,7 @@ export const userSchema = (t) => {
       .required(t('role required')),
     phoneNumber: Yup.object(),
   }).required();
-}
+};
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -142,11 +142,9 @@ const FormSearch = (props) => {
       <Form className='form-group mt-57'>
         <div>
           <div className="d-flex align-center">
-            <img src={backIcon} alt="back" className={"cursor-pointer"}
-                 onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}/>
+            <img src={backIcon} alt="back" className={"cursor-pointer"} onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}/>
             &nbsp;&nbsp;
-            <span className='font-button-label text-orange cursor-pointer'
-                  onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
+            <span className='font-button-label text-orange cursor-pointer' onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
               {t("previous")}
             </span>
           </div>
@@ -154,15 +152,16 @@ const FormSearch = (props) => {
           <div className={clsx(style.FormHeader, "mt-40 d-flex flex-column")}>
             <ScrollToFieldError/>
             <div className={clsx(style.Header)}>
-              <div className={clsx("d-flex align-center", style.Title)}><span className='font-header-medium d-block text-capitalize'>{t("search")}</span>
+              <div className={clsx("d-flex align-center", style.Title)}>
+                <span className='font-header-medium d-block text-capitalize'>{t("search")}</span>
               </div>
 
               <div/>
 
               <div className={clsx(style.NoteWrapper)}>
-                <div className={clsx("d-flex align-center", style.ChangeNote)}><span>{t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}</span>
+                <div className={clsx("d-flex align-center", style.ChangeNote)}>
+                  <span>{t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}</span>
                 </div>
-
                 {
                   visibleSubmitBtn &&
                   <div className={clsx(style.SaveIconWrapper)}>
@@ -189,7 +188,8 @@ const FormSearch = (props) => {
                     <button
                       className={`button active cursor-pointer`}
                       type={"submit"}
-                    ><span className='font-button-label text-white'>{t("save & update")}</span>
+                    >
+                      <span className='font-button-label text-white'>{t("save & update")}</span>
                     </button>
                   </div> : null
               }
@@ -214,7 +214,7 @@ const FormSearch = (props) => {
       </Form>
     </>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

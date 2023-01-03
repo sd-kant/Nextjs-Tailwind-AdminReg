@@ -73,7 +73,7 @@ const MedicalQuestions = (
       )
     })
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   medicalQuestions: get(state, 'profile.medicalQuestions'),

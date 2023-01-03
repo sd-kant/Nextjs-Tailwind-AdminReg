@@ -38,14 +38,14 @@ const FormUploadSelect = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-              {t("previous")}
-            </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>
-            <span className='font-header-medium d-block'>
-              {t("add way header")}
-            </span>
+          <span className='font-header-medium d-block'>
+            {t("add way header")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex">
@@ -58,8 +58,8 @@ const FormUploadSelect = (props) => {
             <img src={editIcon} alt="male icon"/>
 
             <span className='font-binary mt-8'>
-                {t("manual")}
-              </span>
+              {t("manual")}
+            </span>
           </div>
 
           <div

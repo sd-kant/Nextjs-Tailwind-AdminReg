@@ -20,7 +20,7 @@ import {
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import {
-  AVAILABLE_JOBS,
+  AVAILABLE_JOBS, INVALID_VALUES1,
   permissionLevels
 } from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
@@ -219,7 +219,7 @@ const FormInvite = (props) => {
     } else {
       return permissionLevels.filter(it => ["2"].includes(it.value?.toString()));
     }
-  }, [isAdmin])
+  }, [isAdmin]);
 
   const renderUser = (user, index, key) => {
     let errorField = errors?.users?.[user.index];
@@ -410,11 +410,11 @@ const FormInvite = (props) => {
   const handleSubmit = () => {
     if (!ableToSubmit) return;
     submitForm().then();
-  }
+  };
 
   const handleBack = () => {
     navigate(`/invite/${organizationId}/team-mode`);
-  }
+  };
 
   return (
     <React.Fragment>
@@ -471,10 +471,11 @@ const FormInvite = (props) => {
 
           <div className={clsx(style.FormHeader, "d-flex flex-column")}>
             <div className={clsx(style.Header)}>
-              <div className={clsx('d-flex align-center', style.Title)}><span
-                className='font-header-medium d-block'>{t("create team")}</span></div>
+              <div className={clsx('d-flex align-center', style.Title)}>
+                <span className='font-header-medium d-block'>{t("create team")}</span></div>
               <div/>
-              <div className={clsx("d-flex align-center", style.ChangeNote)}><span className="text-capitalize">{num === 0 ? (t("no new team member")) : (num > 1 ? (t("n new team members", {n: num})) : (t("n new team member", {n: 1})))}</span>
+              <div className={clsx("d-flex align-center", style.ChangeNote)}>
+                <span className="text-capitalize">{num === 0 ? (t("no new team member")) : (num > 1 ? (t("n new team members", {n: num})) : (t("n new team member", {n: 1})))}</span>
               </div>
             </div>
 
@@ -497,14 +498,16 @@ const FormInvite = (props) => {
                 <button
                   className={`button ${ableToSubmit ? 'active cursor-pointer' : 'inactive cursor-default'}`}
                   type={values['users']?.length > 0 ? "submit" : "button"}
-                ><span className='font-button-label text-white text-uppercase'>{t("save")}</span>
+                >
+                  <span className='font-button-label text-white text-uppercase'>{t("save")}</span>
                 </button>
 
                 <button
                   className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
                   type={"button"}
                   onClick={handleBack}
-                ><span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
+                >
+                  <span className='font-button-label text-orange text-uppercase'>{t("cancel")}</span>
                 </button>
               </div>
 
@@ -526,8 +529,8 @@ const FormInvite = (props) => {
             <div className={clsx(style.AddButton)} onClick={addAnother}>
               <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
               <span className="font-heading-small">
-                    {t("add a team member")}
-                </span>
+                {t("add a team member")}
+              </span>
             </div>
           </div>
 
@@ -535,9 +538,9 @@ const FormInvite = (props) => {
             {
               operators?.length > 0 &&
               <div className="mt-28">
-              <span className="font-heading-small text-uppercase text-orange">
-                {t("operators")}
-              </span>
+                <span className="font-heading-small text-uppercase text-orange">
+                  {t("operators")}
+                </span>
               </div>
             }
 
@@ -548,9 +551,9 @@ const FormInvite = (props) => {
             {
               admins?.length > 0 &&
               <div className="mt-28">
-              <span className="font-heading-small text-uppercase text-orange">
-                {t("administrators")}
-              </span>
+                <span className="font-heading-small text-uppercase text-orange">
+                  {t("administrators")}
+                </span>
               </div>
             }
 
@@ -563,7 +566,7 @@ const FormInvite = (props) => {
       </Form>
     </React.Fragment>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
@@ -572,13 +575,16 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setStatus}) => {
     const {
-      showErrorNotification, setLoading,
-      t, organizationId, id: teamId,
+      showErrorNotification,
+      setLoading,
+      t,
+      organizationId,
+      id: teamId,
       navigate,
       isAdmin,
     } = props;
     let users = values?.users;
-    if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
+    if (INVALID_VALUES1.includes(organizationId?.toString())) {
       showErrorNotification(
         t("msg create organization before inviting users"),
       );

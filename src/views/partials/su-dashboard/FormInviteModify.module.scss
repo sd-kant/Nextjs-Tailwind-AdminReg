@@ -294,7 +294,6 @@
   }
 
   .FormBody {
-
     .User {
       border-radius: 12px;
       padding: 20px;
@@ -329,13 +328,12 @@
 }
 
 @media only screen and (min-width: 1400px) {
-  .FormHeader {
+  .FormHeader,
+  .FormBody {
     width: 910px;
   }
 
   .FormBody {
-    width: 910px;
-
     .User {
       border-radius: 24px;
       padding: 40px;

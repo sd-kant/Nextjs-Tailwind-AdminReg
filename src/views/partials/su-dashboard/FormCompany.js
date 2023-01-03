@@ -20,7 +20,9 @@ import {
 import {
   passwordExpirationDaysOptions,
   passwordMinLengthOptions,
-  twoFAOptions, USER_TYPE_ORG_ADMIN, hideCbtHROptions
+  twoFAOptions,
+  USER_TYPE_ORG_ADMIN,
+  hideCbtHROptions
 } from "../../../constant";
 import {queryAllOrganizationsAction} from "../../../redux/action/base";
 import {get, isEqual} from "lodash";
@@ -182,7 +184,7 @@ const FormCompany = (props) => {
       .catch(e => {
         console.error("get org admin error", e);
       });
-  }
+  };
   useEffect(() => {
     setRestBarClass("progress-0 medical");
     queryAllOrganizations();
@@ -192,17 +194,17 @@ const FormCompany = (props) => {
   const changeFormField = (e) => {
     const {value, name} = e.target;
     setFieldValue(name, value);
-  }
+  };
   const deleteMember = (index) => {
     const data = JSON.parse(JSON.stringify(values["users"]));
     data.splice(index, 1);
     setFieldValue("users", data);
-  }
+  };
   const addAnother = () => {
     const data = JSON.parse(JSON.stringify(values["users"]));
     data.push(defaultMember);
     setFieldValue("users", data);
-  }
+  };
   const changeHandler = (key, value) => {
     if (key === "companyName") {
       if (value?.__isNew__) {
@@ -232,7 +234,7 @@ const FormCompany = (props) => {
       }
     }
     setFieldValue(key, value);
-  }
+  };
   useEffect(() => {
     setOrganizations((allOrganizations && allOrganizations.map(organization => ({
       value: organization.id,
@@ -461,9 +463,9 @@ const FormCompany = (props) => {
           {
             (isEditing && values["companyCountry"]?.value) &&
             <div className='mt-40 d-flex flex-column'>
-            <span className='font-input-label'>
-              {t("company region")}
-            </span>
+              <span className='font-input-label'>
+                {t("company region")}
+              </span>
 
               <div className='mt-10 input-field'>
                 <MultiSelectPopup
@@ -895,7 +897,7 @@ const FormCompany = (props) => {
                     onOk={() => setStatus({visibleModal: false})}/>
     </React.Fragment>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToStatus: () => ({

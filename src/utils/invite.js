@@ -10,7 +10,7 @@ import {
   USER_TYPE_ADMIN,
   USER_TYPE_ORG_ADMIN,
   USER_TYPE_OPERATOR,
-  USER_TYPE_TEAM_ADMIN
+  USER_TYPE_TEAM_ADMIN, INVALID_VALUES1
 } from "../constant";
 import {isEqual} from "lodash";
 
@@ -259,7 +259,7 @@ export const handleModifyUsers = (
       const updatePromises = [];
       let inviteBody = {};
       usersToModify?.forEach(userToModify => {
-        if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
+        if (!(INVALID_VALUES1.includes(organizationId?.toString()))) {
           if (isAdmin) {
             updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
           }

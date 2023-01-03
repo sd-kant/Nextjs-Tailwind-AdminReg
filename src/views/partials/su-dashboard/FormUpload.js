@@ -56,8 +56,8 @@ const FormUpload = (props) => {
         <img src={uploadIcon} alt="upload icon"/>
 
         <span className={clsx(style.DropZoneLabel)}>
-                {t("upload csv")}
-              </span>
+          {t("upload csv")}
+        </span>
       </div>
     );
   };
@@ -129,14 +129,14 @@ const FormUpload = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-              {t("previous")}
-            </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>
-            <span className='font-header-medium d-block'>
-              {t("upload description")}
-            </span>
+          <span className='font-header-medium d-block'>
+            {t("upload description")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex">

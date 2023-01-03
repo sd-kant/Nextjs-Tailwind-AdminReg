@@ -19,6 +19,7 @@ import {
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import {
+  INVALID_VALUES1,
   permissionLevels,
 } from "../../../constant";
 import {
@@ -32,8 +33,14 @@ import AddMemberModalV2 from "../../components/AddMemberModalV2";
 import InviteModal from "./modify/InviteModal";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import {useNavigate} from "react-router-dom";
-import {defaultTeamMember, userSchema} from "./FormSearch";
-import {_handleSubmitV2, handleModifyUsers} from "../../../utils/invite";
+import {
+  defaultTeamMember,
+  userSchema
+} from "./FormSearch";
+import {
+  _handleSubmitV2,
+  handleModifyUsers
+} from "../../../utils/invite";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 import style from "./FormInviteModify.module.scss";
 import clsx from "clsx";
@@ -125,7 +132,7 @@ const FormInviteModify = (props) => {
     try {
       setLoading(true);
       const users = [user];
-      if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
+      if (INVALID_VALUES1.includes(organizationId?.toString())) {
         navigate("/invite/company");
         return;
       }
@@ -200,11 +207,9 @@ const FormInviteModify = (props) => {
       <Form className='form-group mt-57'>
         <div>
           <div className="d-flex align-center">
-            <img src={backIcon} alt="back" className={"cursor-pointer"}
-                 onClick={() => navigate(`/invite/${organizationId}/team-modify`)}/>
+            <img src={backIcon} alt="back" className={"cursor-pointer"} onClick={() => navigate(`/invite/${organizationId}/team-modify`)}/>
             &nbsp;&nbsp;
-            <span className='font-button-label text-orange cursor-pointer'
-                  onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
+            <span className='font-button-label text-orange cursor-pointer' onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
               {t("previous")}
             </span>
           </div>
@@ -212,11 +217,13 @@ const FormInviteModify = (props) => {
           <div className={clsx(style.FormHeader, "d-flex flex-column")}>
             <ScrollToFieldError/>
             <div className={clsx(style.Header)}>
-              <div className={clsx("d-flex align-center", style.Title)}><span className='font-header-medium d-block'>{t("modify team")}</span></div>
+              <div className={clsx("d-flex align-center", style.Title)}>
+                <span className='font-header-medium d-block'>{t("modify team")}</span></div>
               <div/>
 
               <div className={clsx(style.NoteWrapper)}>
-                <div className={clsx("align-center", style.ChangeNote)}><span>{t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}</span>
+                <div className={clsx("align-center", style.ChangeNote)}>
+                  <span>{t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}</span>
                 </div>
 
                 {
@@ -279,9 +286,9 @@ const FormInviteModify = (props) => {
             {
               values?.users?.length > 0 &&
               <div className="mt-28">
-              <span className="font-heading-small text-uppercase text-orange">
-                {t("operators")}
-              </span>
+                <span className="font-heading-small text-uppercase text-orange">
+                  {t("operators")}
+                </span>
               </div>
             }
 
@@ -301,9 +308,9 @@ const FormInviteModify = (props) => {
             {
               values?.admins?.length > 0 &&
               <div className="mt-28">
-              <span className="font-heading-small text-uppercase text-orange">
-                {t("administrators")}
-              </span>
+                <span className="font-heading-small text-uppercase text-orange">
+                  {t("administrators")}
+                </span>
               </div>
             }
 
@@ -325,7 +332,7 @@ const FormInviteModify = (props) => {
       </Form>
     </>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

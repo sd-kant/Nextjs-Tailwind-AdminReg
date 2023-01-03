@@ -72,8 +72,8 @@ const FormForgotPassword = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange' onClick={handlePrevious}>
-              {t("previous")}
-            </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='grouped-form mt-25'>

@@ -1,4 +1,6 @@
 import {
+  INVALID_VALUES3,
+  TIME_FORMAT_YYYYMDHM,
   USER_TYPE_ADMIN,
   USER_TYPE_ORG_ADMIN,
   USER_TYPE_TEAM_ADMIN
@@ -272,13 +274,7 @@ export const timeOnOtherZone = (time, timezone) => {
       }
     }
 
-    return ret.toLocaleString([], {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    return ret.toLocaleString([], TIME_FORMAT_YYYYMDHM);
   } else {
     return spacetime(time).goto(timezone.name).unixFmt('yyyy.MM.dd h:mm a');
   }
@@ -287,7 +283,7 @@ export const timeOnOtherZone = (time, timezone) => {
 
 export const getDeviceId = () => {
   let deviceId = localStorage.getItem("kop-v2-device-id");
-  if ([null, undefined, "null", "undefined", ""].includes(deviceId)) {
+  if (INVALID_VALUES3.includes(deviceId)) {
     deviceId = uuidv4();
     localStorage.setItem("kop-v2-device-id", deviceId);
   }

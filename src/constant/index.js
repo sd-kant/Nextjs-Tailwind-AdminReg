@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.9.10";
+export const CURRENT_VERSION = "3.9.11";
 export const EXPORT_OPTIONS = [
   {
     label: 'CSV',
@@ -503,6 +503,7 @@ export const ACTIVITIES_FILTERS = [
 
 export const INVALID_VALUES1 = ["-1", "", null, undefined];
 export const INVALID_VALUES2 = [null, undefined, "0", ""];
+export const INVALID_VALUES3 = [null, undefined, "null", "undefined", ""];
 export const MINUTE_OPTIONS = ["00", "15", "30", "45"];
 export const STAGE_VALUES = [
   {
@@ -553,3 +554,11 @@ export const HEART_RATE_VALUES = [
   }
 ];
 export const PREFERRED_COUNTRIES = ['us', 'ca', 'fr', 'de', 'jp', 'cn', 'au', 'za', 'in', 'qa', 'gb', 'sa', 'es'];
+
+export const TIME_FORMAT_YYYYMDHM = {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+};

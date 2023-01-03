@@ -254,7 +254,7 @@ const FormProfile = (props) => {
       if (!medicalResponses?.responses?.some(ele => ele.questionId?.toString() === it.questionId?.toString() && ele.answerId?.toString() === it.answerId?.toString())) {
         ret.push(`medicalQuestion-${it.questionId}`);
       }
-    })
+    });
 
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -263,7 +263,7 @@ const FormProfile = (props) => {
   const changeFormField = (e) => {
     const {value, name} = e.target;
     setFieldValue(name, value);
-  }
+  };
   const unitOptions = [
     {
       value: IMPERIAL,
@@ -679,7 +679,7 @@ const FormProfile = (props) => {
       </Form>
     </React.Fragment>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToStatus: () => ({

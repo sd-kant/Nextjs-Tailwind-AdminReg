@@ -24,7 +24,8 @@ const TableHeaderCell = (
       <DropdownMenu
         title={dropdownColumnsMap[value]}
         icon={
-          <td className={clsx(style.TableHeaderCell)}><span className={clsx(style.TableHeaderCellSpan)}>{label}</span>
+          <td className={clsx(style.TableHeaderCell)}>
+            <span className={clsx(style.TableHeaderCellSpan)}>{label}</span>
           </td>
         }
         items={items(value)}
@@ -42,6 +43,6 @@ const TableHeaderCell = (
         />
       </td>
   );
-}
+};
 
 export default React.memo(TableHeaderCell);

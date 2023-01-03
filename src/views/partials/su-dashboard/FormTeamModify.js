@@ -22,6 +22,7 @@ import {
 import {useOrganizationContext} from "../../../providers/OrganizationProvider";
 import CreatableSelect from "react-select/creatable";
 import {useNavigate} from "react-router-dom";
+import {INVALID_VALUES1} from "../../../constant";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -103,7 +104,7 @@ const FormTeamModify = (props) => {
     let teams = [];
     allTeams?.forEach(team => {
       if (
-        [undefined, "-1", null, ""].includes(organizationId?.toString()) ||
+        INVALID_VALUES1.includes(organizationId?.toString()) ||
         team.orgId?.toString() === organizationId?.toString()
       ) {
         teams.push({
@@ -164,8 +165,8 @@ const FormTeamModify = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-              {t("previous")}
-            </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='grouped-form mt-40'>
@@ -209,7 +210,7 @@ const FormTeamModify = (props) => {
           }
         </div>
         {
-          !([null, undefined, -1, ""].includes(values.name?.value)) ? (
+          !(INVALID_VALUES1.includes(values.name?.value)) ? (
             values?.editing ?
               <React.Fragment>
                 <div className='d-flex flex-column mt-40'>
@@ -283,7 +284,7 @@ const FormTeamModify = (props) => {
           )
         }
         {
-          !([null, undefined, -1, ""].includes(values.name?.value)) && values.editing && (
+          !(INVALID_VALUES1.includes(values.name?.value)) && values.editing && (
             <button
               className={`button cursor-pointer cancel ml-15`}
               type={"button"}

@@ -33,15 +33,15 @@ const FormInitial = (props) => {
     } else {
       showErrorNotification(t("msg no medical questions"));
     }
-  }
+  };
 
   return (
     <div className='form-group mt-57'>
       <div>
         <div className='form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("medical initial header")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("medical initial header")}
+          </span>
         </div>
 
         <div className="mt-40">
@@ -94,7 +94,7 @@ const FormInitial = (props) => {
       </div>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   medicalQuestions: get(state, 'profile.medicalQuestions'),

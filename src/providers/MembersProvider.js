@@ -110,7 +110,7 @@ const MembersProvider = (
     const entities = [];
     allTeams?.forEach(team => {
       if (
-        [undefined, "-1", null, ""].includes(organizationId?.toString()) ||
+        INVALID_VALUES1.includes(organizationId?.toString()) ||
         team?.orgId?.toString() === organizationId?.toString()
       ) {
         entities.push({
@@ -245,7 +245,7 @@ const MembersProvider = (
       if (page === "search") {
         if (trimmedKeyword) {
           let teamMembersResponse;
-          if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
+          if (INVALID_VALUES1.includes(organizationId?.toString())) {
             teamMembersResponse = await searchMembersAPI(trimmedKeyword);
           } else {
             teamMembersResponse = await searchMembersUnderOrganization({organizationId, keyword: trimmedKeyword});
@@ -821,7 +821,7 @@ const MembersProvider = (
     if (trimmedKeywordOnInvite) {
       let promise = null;
       let promiseBody = {};
-      if (isAdmin && ![undefined, "-1", null, ""].includes(organizationId?.toString())) {
+      if (isAdmin && !INVALID_VALUES1.includes(organizationId?.toString())) {
         promise = searchMembersUnderOrganization;
         promiseBody = {organizationId, keyword: trimmedKeywordOnInvite};
       } else {
