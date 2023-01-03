@@ -3,7 +3,11 @@ import clsx from "clsx";
 import style from "./Analytics.module.scss";
 import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
-import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAction} from "../../../redux/action/ui";
+import {
+  setLoadingAction,
+  showErrorNotificationAction,
+  showSuccessNotificationAction
+} from "../../../redux/action/ui";
 import {get} from "lodash";
 
 import FilterBoard from "./FilterBoard";
@@ -32,7 +36,7 @@ const Analytics = (
       </BasicProvider>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   metric: get(state, 'ui.metric'),

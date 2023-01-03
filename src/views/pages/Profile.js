@@ -22,6 +22,6 @@ const Profile = () => {
       <FormProfile navigate={navigate}/>
     </div>
   )
-}
+};
 
 export default Profile;

@@ -39,6 +39,6 @@ const ResultTableHeader = () => {
     </tr>
     </thead>
   )
-}
+};
 
 export default ResultTableHeader;

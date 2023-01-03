@@ -10,10 +10,7 @@
   .Content {
     height: calc(100vh - 233px);
 
-    .InformationalBoard {
-      margin-top: 25px;
-    }
-
+    .InformationalBoard,
     .RestBar {
       margin-top: 25px;
     }
@@ -30,11 +27,6 @@
 @media only screen and (min-width: 1024px) {
   .Wrapper {
     padding: 15px 25px;
-
-    .Content {
-      .InformationalBoard {
-      }
-    }
   }
 }
 

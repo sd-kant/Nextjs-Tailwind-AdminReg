@@ -29,7 +29,13 @@ const formSchema = (t) => {
 };
 
 const FormGender = (props) => {
-  const {t, values, setFieldValue, setRestBarClass, profile} = props;
+  const {
+    t,
+    values,
+    setFieldValue,
+    setRestBarClass,
+    profile
+  } = props;
   const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass("progress-27");
@@ -44,7 +50,7 @@ const FormGender = (props) => {
 
   const navigateTo = (path) => {
     navigate(path);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -56,14 +62,14 @@ const FormGender = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("gender question")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("gender question")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex">
@@ -74,8 +80,8 @@ const FormGender = (props) => {
             <img src={maleIcon} alt="male icon"/>
 
             <span className='font-binary mt-8'>
-            {t("male")}
-          </span>
+              {t("male")}
+            </span>
           </div>
 
           <div
@@ -85,8 +91,8 @@ const FormGender = (props) => {
             <img src={femaleIcon} alt="female icon"/>
 
             <span className='font-binary mt-8'>
-            {t("female")}
-          </span>
+              {t("female")}
+            </span>
           </div>
         </div>
       </div>
@@ -104,7 +110,7 @@ const FormGender = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

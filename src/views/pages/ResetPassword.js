@@ -20,6 +20,6 @@ const ResetPassword = () => {
       <FormResetPassword/>
     </div>
   )
-}
+};
 
 export default ResetPassword;

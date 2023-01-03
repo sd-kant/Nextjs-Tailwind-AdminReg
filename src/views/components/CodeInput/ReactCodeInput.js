@@ -13,18 +13,18 @@ const LEFT_ARROW_KEY = 37;
 const RIGHT_ARROW_KEY = 39;
 
 const defaultInputStyle = {
-  fontFamily: 'monospace',
-  MozAppearance: 'textfield',
+  margin: '4px',
   borderRadius: '6px',
   border: '1px solid',
-  boxShadow: '0px 0px 10px 0px rgba(0,0,0,.10)',
-  margin: '4px',
   paddingLeft: '8px',
   paddingRight: 0,
   width: '36px',
   height: '42px',
   fontSize: '32px',
+  boxShadow: '0px 0px 10px 0px rgba(0,0,0,.10)',
   boxSizing: 'border-box',
+  fontFamily: 'monospace',
+  MozAppearance: 'textfield',
 };
 
 class ReactCodeInput extends Component {
@@ -37,7 +37,6 @@ class ReactCodeInput extends Component {
     };
 
     this.textInput = [];
-
     this.uuid = uuidv4();
   }
 

@@ -104,7 +104,7 @@ const FormPhoneRegister = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

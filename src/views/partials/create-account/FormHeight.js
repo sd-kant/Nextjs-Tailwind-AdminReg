@@ -73,7 +73,15 @@ const formSchema = (t) => {
 };
 
 const FormHeight = (props) => {
-  const {t, values, setFieldValue, setRestBarClass, errors, touched, profile} = props;
+  const {
+    t,
+    values,
+    setFieldValue,
+    setRestBarClass,
+    errors,
+    touched,
+    profile
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -102,7 +110,7 @@ const FormHeight = (props) => {
 
   const onChange = (value) => {
     setFieldValue("height", value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -114,14 +122,14 @@ const FormHeight = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("height question")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("height question")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex flex-column">
@@ -214,7 +222,7 @@ const FormHeight = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 export const getHeightAsMetric = ({measure, feet, inch, height}) => {
   if (measure === IMPERIAL) {
@@ -223,7 +231,7 @@ export const getHeightAsMetric = ({measure, feet, inch, height}) => {
   } else {
     return height?.replaceAll('m', '').replaceAll('c', '');
   }
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

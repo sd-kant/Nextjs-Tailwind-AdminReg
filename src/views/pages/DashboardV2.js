@@ -95,6 +95,6 @@ const DashboardV2 = () => {
       <div className={clsx(style.StripeWrapper)} style={{width: `calc(100% - ${width + 40}px)`}}/>
     </div>
   );
-}
+};
 
 export default withTranslation()(DashboardV2);

@@ -44,7 +44,8 @@
   padding: 4px 25px;
 }
 
-.FullWidth.XS {
+.FullWidth.XS,
+.FullWidth.SM  {
   width: calc(100% - 50px);
 }
 
@@ -54,10 +55,6 @@
 
 .SM {
   padding: 10px 25px;
-}
-
-.FullWidth.SM {
-  width: calc(100% - 50px);
 }
 
 .SM.Dropdown {

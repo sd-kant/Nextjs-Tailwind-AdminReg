@@ -16,7 +16,8 @@ import {
   METRIC_USER_TABLE_VALUES
 } from "../../../../constant";
 import {
-  chartPlugins, checkEmptyData,
+  chartPlugins,
+  checkEmptyData,
 } from "../../../../utils/anlytics";
 
 ChartJS.register(ArcElement);

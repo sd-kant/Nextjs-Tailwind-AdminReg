@@ -26,7 +26,8 @@ const Pagination = (
       {
         start > 0 ?
           <React.Fragment>
-            <div className={clsx(style.Label)}><span className="font-binary text-white">{`${start} - ${end} of ${length}`}</span>
+            <div className={clsx(style.Label)}>
+              <span className="font-binary text-white">{`${start} - ${end} of ${length}`}</span>
             </div>
 
             <div className={clsx(style.Icons)}>

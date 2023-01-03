@@ -96,7 +96,7 @@ const FormPassword = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -158,9 +158,9 @@ const FormPassword = (props) => {
         </div>
 
         <div className='mt-40'>
-            <span className='font-helper-text'>
-              {t("password rule")}
-            </span>
+          <span className='font-helper-text'>
+            {t("password rule")}
+          </span>
         </div>
       </div>
 
@@ -169,14 +169,14 @@ const FormPassword = (props) => {
           className={`button ${values['password'] && values['confirmPassword'] ? "active cursor-pointer" : "inactive cursor-default"}`}
           type={values['password'] && values['confirmPassword'] ? "submit" : "button"}
         >
-              <span className='font-button-label text-white'>
-                {t("next")}
-              </span>
+          <span className='font-button-label text-white'>
+            {t("next")}
+          </span>
         </button>
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

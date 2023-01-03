@@ -66,7 +66,7 @@ const getAge = (dateString) => {
     age--;
   }
   return age;
-}
+};
 
 const FormBirth = (props) => {
   const {
@@ -91,12 +91,12 @@ const FormBirth = (props) => {
   }, [profile, setFieldValue]);
   const navigateTo = (path) => {
     navigate(path);
-  }
+  };
   const changeFormField = (e) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -108,14 +108,14 @@ const FormBirth = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("dob question")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("dob question")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex flex-column">
@@ -151,7 +151,7 @@ const FormBirth = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

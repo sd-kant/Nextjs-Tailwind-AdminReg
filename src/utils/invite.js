@@ -10,7 +10,8 @@ import {
   USER_TYPE_ADMIN,
   USER_TYPE_ORG_ADMIN,
   USER_TYPE_OPERATOR,
-  USER_TYPE_TEAM_ADMIN, INVALID_VALUES1
+  USER_TYPE_TEAM_ADMIN,
+  INVALID_VALUES1
 } from "../constant";
 import {isEqual} from "lodash";
 

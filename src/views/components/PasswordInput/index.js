@@ -25,7 +25,8 @@ const PasswordInput = (
       />
       {
         type === "password" ?
-          <img className={clsx(style.EyeIcon)} src={eye} alt="eye icon" onClick={() => setType('text')}/> :
+          <img className={clsx(style.EyeIcon)} src={eye} alt="eye icon" onClick={() => setType('text')}/>
+          :
           <img className={clsx(style.EyeIcon)} src={eyeSlash} alt="eye slash icon" onClick={() => setType('password')}/>
       }
     </div>

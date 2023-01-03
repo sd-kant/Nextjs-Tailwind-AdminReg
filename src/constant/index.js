@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.9.11";
+export const CURRENT_VERSION = "3.9.12";
 export const EXPORT_OPTIONS = [
   {
     label: 'CSV',
@@ -504,6 +504,7 @@ export const ACTIVITIES_FILTERS = [
 export const INVALID_VALUES1 = ["-1", "", null, undefined];
 export const INVALID_VALUES2 = [null, undefined, "0", ""];
 export const INVALID_VALUES3 = [null, undefined, "null", "undefined", ""];
+export const INVALID_VALUES4 = ["", null, undefined];
 export const MINUTE_OPTIONS = ["00", "15", "30", "45"];
 export const STAGE_VALUES = [
   {
@@ -562,3 +563,18 @@ export const TIME_FORMAT_YYYYMDHM = {
   hour: '2-digit',
   minute: '2-digit'
 };
+
+export const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "June",
+  "July",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];

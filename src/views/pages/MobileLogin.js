@@ -25,6 +25,6 @@ const MobileLogin = () => {
       />
     </div>
   )
-}
+};
 
 export default MobileLogin;

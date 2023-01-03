@@ -27,6 +27,6 @@ const Input = (
       />
     </div>
   )
-}
+};
 
 export default withTranslation()(Input);

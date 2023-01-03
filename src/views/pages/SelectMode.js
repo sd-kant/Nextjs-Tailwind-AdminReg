@@ -12,6 +12,6 @@ const SelectMode = () => {
       <FormSelectMode/>
     </div>
   )
-}
+};
 
 export default SelectMode;

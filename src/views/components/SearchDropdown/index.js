@@ -12,9 +12,7 @@ const SearchDropdown = React.forwardRef((props, ref) => {
   return (
     <React.Fragment>
       <div ref={ref} className={clsx(style.Wrapper)}>
-        {
-          renderInput()
-        }
+        {renderInput()}
         {
           visibleDropdown &&
           <div className={clsx(style.Card)}>

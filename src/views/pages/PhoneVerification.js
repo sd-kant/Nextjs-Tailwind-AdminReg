@@ -24,6 +24,6 @@ const PhoneVerification = () => {
       />
     </div>
   )
-}
+};
 
 export default PhoneVerification;
