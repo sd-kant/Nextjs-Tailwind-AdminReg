@@ -996,7 +996,7 @@ const EnhancedForm = withFormik({
           }
         } catch (e) {
           console.log("update company error", e);
-          props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
+          props.showErrorNotification(e.response?.data?.message);
           setLoading(false);
         }
       }
@@ -1011,7 +1011,7 @@ const EnhancedForm = withFormik({
           isSuperAdmin ? navigate(`/invite/${companyData?.id}/representative`) : navigate(`/invite/${companyData?.id}/team-mode`);
         } catch (e) {
           console.log("creating company error", e);
-          props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
+          props.showErrorNotification(e.response?.data?.message);
         } finally {
           setLoading(false);
         }

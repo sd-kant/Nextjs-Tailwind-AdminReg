@@ -710,7 +710,7 @@ const EnhancedForm = withFormik({
   enableReinitialize: true,
   handleSubmit: async (values, {props, setStatus}) => {
     const {
-      updateProfile, token, t,
+      updateProfile, token,
       getMedicalResponses, showErrorNotification,
       navigate,
     } = props;
@@ -762,7 +762,7 @@ const EnhancedForm = withFormik({
       setStatus({confirmedCnt: 0, edit: false, visibleModal: true});
     } catch (e) {
       console.error("save profile error", e);
-      showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+      showErrorNotification(e.response?.data?.message);
     }
   }
 })(FormProfile);

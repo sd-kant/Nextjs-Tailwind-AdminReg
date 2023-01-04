@@ -381,7 +381,7 @@ const EnhancedForm = withFormik({
       }
     } catch (e) {
       console.log("registering multiple users error", e);
-      props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
+      props.showErrorNotification(e.response?.data?.message);
     }
   }
 })(FormRepresentative);

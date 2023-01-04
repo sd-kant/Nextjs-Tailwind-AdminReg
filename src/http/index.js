@@ -1,4 +1,5 @@
 import axios from "axios";
+import { update } from 'lodash';
 import {apiBaseUrl as baseUrl} from "../config";
 import {toastr} from 'react-redux-toastr'
 import i18n from '../i18nextInit';
@@ -13,6 +14,10 @@ const showErrorAndLogout = () => {
     logout();
   }, 1500);
 };
+
+const showNetworkError = () => {
+  toastr.error('', i18n.t("no internet connection"));
+}
 
 const cachedBaseUrl = localStorage.getItem("kop-v2-base-url");
 
@@ -43,7 +48,7 @@ instance.interceptors.request.use(
     return config;
   },
   error => {
-    Promise.reject(error)
+    return Promise.reject(error);
   });
 
 // Add a response interceptor
@@ -55,7 +60,10 @@ instance.interceptors.response.use(function (response) {
   const originalRequest = error.config;
   // Any status codes that falls outside the range of 2xx cause this function to trigger
   // Do something with response error
-  if (["401"].includes(error.response?.status?.toString())) { // if token expired
+  if (error?.code === 'ERR_NETWORK') {
+    showNetworkError();
+    return Promise.reject(error);
+  } else if (["401"].includes(error.response?.status?.toString())) { // if token expired
     if (!originalRequest._retry) {
       const refreshToken = localStorage.getItem("kop-v2-refresh-token");
       if (refreshToken) {
@@ -82,7 +90,15 @@ instance.interceptors.response.use(function (response) {
       showErrorAndLogout();
     }
   }
-  return Promise.reject(error);
+
+  let errorObj = JSON.parse(JSON.stringify(error));
+  update(errorObj, 'response', () => ({
+    ...(error?.response ?? {}),
+  }));
+  if (!error?.response?.data?.message) {
+    update(errorObj, 'response.data.message', () => i18n.t("msg something went wrong"));
+  }
+  return Promise.reject(errorObj);
 });
 
 function get(url, token, customHeaders) {

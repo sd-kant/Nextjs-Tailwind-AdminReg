@@ -19,7 +19,6 @@ const OrganizationContext = React.createContext(null);
 
 const OrganizationProvider = (
   {
-    t,
     children,
     isAdmin,
     showErrorNotification,
@@ -56,7 +55,7 @@ const OrganizationProvider = (
           setOrgAdmins(res.data ?? []);
         })
         .catch(e => {
-          showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+          showErrorNotification(e.response?.data?.message);
         })
         .finally(() => {
           setLoading(false);

@@ -203,7 +203,7 @@ const EnhancedForm = withFormik({
       setPasswordExpired(false);
       navigate("/login");
     } catch (e) {
-      showErrorNotification(e.response?.data.message || props.t("msg something went wrong"));
+      showErrorNotification(e.response?.data.message);
     } finally {
       setLoading(false);
     }

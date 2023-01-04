@@ -658,5 +658,6 @@
   "please input a keyword": "キーワードを入力してください",
   "start date": "開始日",
   "end date": "終了日",
-  "export": "輸出"
+  "export": "輸出",
+  "no internet connection": "インターネット接続なし"
 }

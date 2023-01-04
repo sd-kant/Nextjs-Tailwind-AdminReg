@@ -215,7 +215,7 @@ const EnhancedForm = withFormik({
       if (e?.response?.data?.status?.toString() === "404") {
         showErrorNotification(t("msg token expired"));
       } else {
-        showErrorNotification(e.response?.data.message || t("msg something went wrong"));
+        showErrorNotification(e.response?.data.message);
       }
     } finally {
       setLoading(false);

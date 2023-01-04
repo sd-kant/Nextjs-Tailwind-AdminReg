@@ -120,10 +120,7 @@ const FormInviteModify = (props) => {
     if (user.email) {
       const alreadyExist = members?.findIndex(it => it.email === user.email) !== -1;
       if (alreadyExist) {
-        showErrorNotification(
-          '',
-          t('error member with same email address'),
-        );
+        showErrorNotification(t('error member with same email address'));
         return;
       }
     }

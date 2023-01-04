@@ -71,7 +71,7 @@ function* updateProfileSaga(
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+        msg: i18n.t(e.response?.data?.message),
       }
     });
   } finally {
@@ -118,7 +118,7 @@ function* getProfileSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+        msg: i18n.t(e.response?.data?.message),
       }
     });
   } finally {
@@ -156,7 +156,7 @@ function* getMedicalQuestionsSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+        msg: i18n.t(e.response?.data?.message),
       }
     });
   } finally {
@@ -194,7 +194,7 @@ function* getMedicalResponsesSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+        msg: i18n.t(e.response?.data?.message),
       }
     });
   } finally {

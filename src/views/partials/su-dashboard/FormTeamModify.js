@@ -93,7 +93,7 @@ const FormTeamModify = (props) => {
         setHasUnassignedMember(hasUnassignedMember);
       })
       .catch(err => {
-        showErrorNotification(err?.response?.data?.message ?? t("msg something went wrong"));
+        showErrorNotification(err?.response?.data?.message);
       })
       .finally(() => {
 

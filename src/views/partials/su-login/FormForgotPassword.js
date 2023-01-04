@@ -151,9 +151,7 @@ const EnhancedForm = withFormik({
       if (e.response?.data?.status?.toString() === "404") { // if user not found
         props.showErrorNotification(props.t("forgot password name not registered"));
       } else {
-        props.showErrorNotification(
-          e?.response.data?.message || props.t("msg something went wrong"),
-        );
+        props.showErrorNotification(e?.response.data?.message);
       }
     } finally {
       props.setLoading(false);

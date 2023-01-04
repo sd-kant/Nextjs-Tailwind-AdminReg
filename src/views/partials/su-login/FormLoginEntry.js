@@ -78,7 +78,7 @@ const FormLoginEntry = (props) => {
         const {
           message,
         } = JSON.parse(decoded);
-        showErrorNotification(message ?? t("msg something went wrong"));
+        showErrorNotification(message);
       } catch (e) {
         console.error("sso error response decode error", e);
       }
