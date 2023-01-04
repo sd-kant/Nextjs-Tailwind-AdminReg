@@ -19,7 +19,6 @@ const OrganizationContext = React.createContext(null);
 
 const OrganizationProvider = (
   {
-    t,
     children,
     isAdmin,
     showErrorNotification,
