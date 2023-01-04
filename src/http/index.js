@@ -89,12 +89,16 @@ instance.interceptors.response.use(function (response) {
     } else {
       showErrorAndLogout();
     }
-    let errorObj = JSON.parse(JSON.stringify(error));
-    if (!errorObj?.response?.data?.message) {
-      update(errorObj, 'response.data.message', () => i18n.t("msg something went wrong"));
-    }
-    return Promise.reject(errorObj);
   }
+
+  let errorObj = JSON.parse(JSON.stringify(error));
+  update(errorObj, 'response', () => ({
+    ...(error?.response ?? {}),
+  }));
+  if (!error?.response?.data?.message) {
+    update(errorObj, 'response.data.message', () => i18n.t("msg something went wrong"));
+  }
+  return Promise.reject(errorObj);
 });
 
 function get(url, token, customHeaders) {
