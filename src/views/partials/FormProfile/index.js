@@ -710,8 +710,11 @@ const EnhancedForm = withFormik({
   enableReinitialize: true,
   handleSubmit: async (values, {props, setStatus}) => {
     const {
-      updateProfile, token, t,
-      getMedicalResponses, showErrorNotification,
+      updateProfile,
+      token,
+      t,
+      getMedicalResponses,
+      showErrorNotification,
       navigate,
     } = props;
     try {

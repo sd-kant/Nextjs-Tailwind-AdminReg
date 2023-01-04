@@ -141,7 +141,7 @@ function* loginSaga({payload: {
       yield put({
         type: actionTypes.ERROR_NOTIFICATION,
         payload: {
-          msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+          msg: i18n.t(e.response?.data?.message ?? (e?.message === "Network Error" ? "no internet connection" : "msg something went wrong")),
         }
       });
     }
