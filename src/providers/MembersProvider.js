@@ -332,7 +332,7 @@ const MembersProvider = (
       setMembers(teamMembers);
       setTempMembers(teamMembers);
     } catch (e) {
-      showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+      showErrorNotification(e.response?.data?.message);
     }
   };
 
@@ -509,7 +509,7 @@ const MembersProvider = (
       });
     } catch (e) {
       console.log("reset phone number error", e.response?.data);
-      showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+      showErrorNotification(e.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -532,7 +532,7 @@ const MembersProvider = (
           setTempMembers(prev => prev?.filter(it => it.userId?.toString() !== selectedUser.userId?.toString()));
         }
       } catch (e) {
-        showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+        showErrorNotification(e.response?.data?.message);
       } finally {
         setLoading(false);
       }
@@ -558,7 +558,7 @@ const MembersProvider = (
             }));
           })
           .catch(e => {
-            showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+            showErrorNotification(e.response?.data?.message);
           })
           .finally(() => {
             setLoading(false);
@@ -595,7 +595,7 @@ const MembersProvider = (
         } : it));
       })
       .catch(e => {
-        showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+        showErrorNotification(e.response?.data?.message);
       })
       .finally(() => {
         setLoading(false);
@@ -646,7 +646,7 @@ const MembersProvider = (
           }));
         })
         .catch(e => {
-          showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+          showErrorNotification(e.response?.data?.message);
         })
         .finally(() => {
           setLoading(false);

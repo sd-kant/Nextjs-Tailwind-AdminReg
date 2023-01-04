@@ -657,5 +657,6 @@
   "please input a keyword": "Insira uma palavra-chave",
   "start date": "Data de Início",
   "end date": "Data de Término",
-  "export": "Exportação"
+  "export": "Exportação",
+  "no internet connection": "Sem Conexão Com a Internet"
 }

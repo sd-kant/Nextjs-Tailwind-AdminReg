@@ -585,9 +585,7 @@ const EnhancedForm = withFormik({
     } = props;
     let users = values?.users;
     if (INVALID_VALUES1.includes(organizationId?.toString())) {
-      showErrorNotification(
-        t("msg create organization before inviting users"),
-      );
+      showErrorNotification(t("msg create organization before inviting users"));
       navigate("/invite/company");
     } else {
       if (users?.length > 0) {

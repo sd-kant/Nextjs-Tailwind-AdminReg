@@ -762,7 +762,7 @@ const EnhancedForm = withFormik({
       setStatus({confirmedCnt: 0, edit: false, visibleModal: true});
     } catch (e) {
       console.error("save profile error", e);
-      showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+      showErrorNotification(e.response?.data?.message);
     }
   }
 })(FormProfile);
