@@ -148,11 +148,11 @@ export const convertCmToMetric = value => {
 };
 
 export const convertLbsToKilos = value => {
-  return Math.round(value * 0.45359237);
+  return Math.round(value * 45.359237) / 100;
 };
 
 export const convertKilosToLbs = value => {
-  return Math.round(value / 0.45359237);
+  return Math.round(100 * value / 0.45359237) / 100;
 };
 
 export const format2Digits = (value) => {

@@ -14,7 +14,12 @@ import maleIcon from "../../../assets/images/male.svg";
 import maleGrayIcon from "../../../assets/images/male-gray.svg";
 import femaleIcon from "../../../assets/images/female.svg";
 import femaleGrayIcon from "../../../assets/images/female-gray.svg";
-import {FEMALE, IMPERIAL, MALE, METRIC} from "../../../constant";
+import {
+  FEMALE,
+  IMPERIAL,
+  MALE,
+  METRIC
+} from "../../../constant";
 import imperialIcon from "../../../assets/images/imperial.svg";
 import imperialGrayIcon from "../../../assets/images/imperial-gray.svg";
 import metricIcon from "../../../assets/images/metric.svg";
@@ -500,7 +505,7 @@ const FormProfile = (props) => {
               className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
               type='number'
               disabled={!edit}
-              value={values["weight"]}
+              value={Math.round(values["weight"]) || ''}
               name="weight"
               step={5}
               onChange={changeFormField}
@@ -710,16 +715,24 @@ const EnhancedForm = withFormik({
   enableReinitialize: true,
   handleSubmit: async (values, {props, setStatus}) => {
     const {
-      updateProfile, token,
-      getMedicalResponses, showErrorNotification,
+      updateProfile,
+      token,
+      getMedicalResponses,
+      showErrorNotification,
       navigate,
     } = props;
     try {
       const {
         gender,
-        startTimeOption, hour, minute,
+        startTimeOption,
+        hour,
+        minute,
         dob,
-        measureType, height, feet, inch, weight,
+        measureType,
+        height,
+        feet,
+        inch,
+        weight,
         timezone: {value, gmtTz},
         workLength,
         responses,

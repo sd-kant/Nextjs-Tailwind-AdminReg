@@ -15,14 +15,6 @@ export const formShape = t => ({
   weight: Yup.string()
     .required(t("weight required"))
     .test(
-      'is-decimal',
-      t('weight not decimal'),
-      function (value) {
-        const str = value && value.toString();
-        return !(str && str.includes("."));
-      }
-    )
-    .test(
       'is-valid',
       t('weight invalid'),
       function (value) {
