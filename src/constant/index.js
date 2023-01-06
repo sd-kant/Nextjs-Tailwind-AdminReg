@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.9.13";
+export const CURRENT_VERSION = "3.9.14";
 export const EXPORT_OPTIONS = [
   {
     label: 'CSV',
