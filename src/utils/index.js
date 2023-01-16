@@ -124,8 +124,13 @@ export const convertCmToImperial = value => {
     };
   }
 
-  const feet = Math.floor(numericValue / 30.48);
-  const inch = Math.round((numericValue - (feet * 30.48)) / 2.54);
+  let feet = Math.floor(numericValue / 30.48);
+  let inch = Math.round((numericValue - (feet * 30.48)) / 2.54);
+
+  if (inch === 12) {
+    feet += 1;
+    inch = 0;
+  }
 
   return {
     feet,

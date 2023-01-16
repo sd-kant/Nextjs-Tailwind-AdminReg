@@ -12,7 +12,7 @@ import {
 } from "../../../utils";
 import {useNavigate} from "react-router-dom";
 
-export const ftOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+export const ftOptions = [1, 2, 3, 4, 5, 6, 7];
 export const inOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 export const formShape = t => ({
@@ -23,7 +23,7 @@ export const formShape = t => ({
       t('feet invalid'),
       function (value) {
         if (this.parent.heightUnit !== "2") {
-          return parseInt(value) < 10;
+          return parseInt(value) < 8;
         }
         return true;
       }
@@ -44,7 +44,7 @@ export const formShape = t => ({
       'is-valid',
       t('height invalid'),
       function (value) {
-        if (this.parent.heightUnit !== "1") {
+        // if (this.parent.heightUnit !== "1") {
           const strArr = value && value.split("cm");
           const cmArr = strArr && strArr[0] && strArr[0].split('m');
           const m = (cmArr && cmArr[0]) || "0";
@@ -61,9 +61,9 @@ export const formShape = t => ({
             return false;
           }
 
-          return !(parseInt(m) === 2 && parseInt(cm) > 30);
-        }
-        return true;
+          return !(parseInt(m) === 2 && parseInt(cm) >= 30);
+        // }
+        // return true;
       }
     ),
 });
@@ -108,8 +108,15 @@ const FormHeight = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-  const onChange = (value) => {
+  const onChangeHeight = (value) => {
     setFieldValue("height", value);
+  };
+
+  const onChangeFeetInch = (_feet, _inch) => {
+    setFieldValue("feet", _feet);
+    setFieldValue("inch", _inch);
+    const {m, cm} = convertImperialToMetric(`${_feet}ft${_inch}in`);
+    setFieldValue("height", `${m}m${cm}cm`);
   };
 
   return (
@@ -146,9 +153,7 @@ const FormHeight = (props) => {
                   <select
                     className="font-input-label text-white"
                     value={values["feet"]}
-                    onChange={(e) => {
-                      setFieldValue("feet", e.target.value);
-                    }}
+                    onChange={(e) => onChangeFeetInch( e.target.value, values["inch"])}
                   >
                     {
                       ftOptions && ftOptions.map(ftOption => (
@@ -168,9 +173,7 @@ const FormHeight = (props) => {
                   <select
                     className="font-input-label text-white"
                     value={values["inch"]}
-                    onChange={(e) => {
-                      setFieldValue("inch", e.target.value);
-                    }}
+                    onChange={(e) => onChangeFeetInch(values["feet"], e.target.value)}
                   >
                     {
                       inOptions && inOptions.map(inOption => (
@@ -192,7 +195,7 @@ const FormHeight = (props) => {
                 placeholder={`_m__cm`}
                 mask={`9m99cm`}
                 value={values["height"]}
-                onChange={e => onChange(e.target.value)}
+                onChange={e => onChangeHeight(e.target.value)}
               />
             )
           }
