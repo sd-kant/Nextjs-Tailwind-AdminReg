@@ -192,10 +192,18 @@ const FormProfile = (props) => {
     if (!profile || !values)
       return ret;
     const {
-      firstName, lastName, gender,
-      measureType, timezone, workLength,
-      startTimeOption, hour, minute,
-      responses, hideCbtHR, dob,
+      firstName,
+      lastName,
+      gender,
+      measureType,
+      timezone,
+      workLength,
+      startTimeOption,
+      hour,
+      minute,
+      responses,
+      hideCbtHR,
+      dob,
     } = values;
 
     if (firstName !== profile?.firstName) {
@@ -214,8 +222,8 @@ const FormProfile = (props) => {
       ret.push("measureType");
     }
     if (measureType === IMPERIAL) {
-      if (values?.feet && values?.inch) {
-        const {m, cm} = convertImperialToMetric(`${values?.feet}ft${values?.inch}in`);
+      if (values?.feet) {
+        const {m, cm} = convertImperialToMetric(`${values?.feet}ft${values?.inch ?? 0}in`);
         if (((m * 100) + parseInt(cm)).toString() !== profile?.height?.toString()) {
           ret.push("height");
         }
@@ -268,6 +276,18 @@ const FormProfile = (props) => {
   const changeFormField = (e) => {
     const {value, name} = e.target;
     setFieldValue(name, value);
+
+    let _feet = values?.feet ?? 0;
+    let _inch = values?.inch ?? 0;
+    if (['feet', 'inch'].includes(name)) {
+      if (name === 'feet') {
+        _feet = value;
+      } else {
+        _inch = value;
+      }
+      const {m, cm} = convertImperialToMetric(`${_feet}ft${_inch}in`);
+      setFieldValue("height", `${m}m${cm}cm`);
+    }
   };
   const unitOptions = [
     {
