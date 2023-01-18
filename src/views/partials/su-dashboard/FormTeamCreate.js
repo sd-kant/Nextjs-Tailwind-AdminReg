@@ -234,7 +234,7 @@ const EnhancedForm = withFormik({
       navigate(`/invite/${teamData?.orgId}/select/${teamData?.id}`);
     } catch (e) {
       console.log("creating team error", e);
-      props.showErrorNotification(e.response?.data?.message);
+      props.showErrorNotification((e.response?.data?.validationErrors?.filter(it => it?.messageCode === "error.team.duplicateName")?.length > 0) ? props.t("team already exist") : e.response?.data?.message);
     } finally {
       props.setLoading(false);
     }
