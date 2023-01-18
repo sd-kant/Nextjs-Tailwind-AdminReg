@@ -81,8 +81,12 @@
     }
   }
 
-  .AddButton {
+  .AddButton_Space {
     display: none;
+
+    .AddButton {
+      display: none;
+    }
   }
 }
 
@@ -235,20 +239,29 @@
       }
     }
 
-    .AddButton {
+    .AddButton_Space {
       display: flex;
-      justify-content: center;
-      border: 1px solid #DE7D2C;
-      border-radius: 24px;
-      padding: 36px;
-      box-sizing: border-box;
-      text-align: center;
-      cursor: pointer;
-      background-color: $app-bg;
-      z-index: 1;
+      justify-content: space-between;
+      align-items: center;
 
-      .PlusIcon {
-        margin-right: 24px;
+      .AddButton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #DE7D2C;
+        border-radius: 24px;
+        padding: 0 36px;
+        width: calc(50% - 20px);
+        height: 60px;
+        box-sizing: border-box;
+        text-align: center;
+        cursor: pointer;
+        background-color: $app-bg;
+        z-index: 1;
+
+        .PlusIcon {
+          margin-right: 24px;
+        }
       }
     }
   }

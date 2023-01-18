@@ -498,6 +498,7 @@
   "profile changes saved": "プロファイルの変更が保存されました",
   "must include email or phone": "メールアドレスまたは電話番号を含める必要があります",
   "add a team member": "チームメンバーを追加する",
+  "bulk add team members": "チームメンバーの一括追加",
   "job firefighter": "消防士",
   "job miner": "鉱夫",
   "job machine operator": "機械オペレータ",

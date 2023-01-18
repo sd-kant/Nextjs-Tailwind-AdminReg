@@ -64,7 +64,8 @@ const FormInviteModify = (props) => {
     errors,
     touched,
     t,
-    id, organizationId,
+    id,
+    organizationId,
     setLoading,
     showErrorNotification,
     setRestBarClass,
@@ -76,7 +77,7 @@ const FormInviteModify = (props) => {
   const [newChanges, setNewChanges] = useState(0);
   const [visibleAddModal, setVisibleAddModal] = useState(false);
   const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
-  const {setPage, users, admins, keyword, setKeyword, members, initializeMembers} = useMembersContext();
+  const {setPage, users, admins, keyword, setKeyword, members, initializeMembers, teams} = useMembersContext();
   const navigate = useNavigate();
   const [visibleInviteModal, setVisibleInviteModal] = React.useState(false);
   const { submitForm } = useFormikContext();
@@ -162,6 +163,10 @@ const FormInviteModify = (props) => {
     return newChanges > 0;
   }, [newChanges]);
 
+  const teamName = React.useMemo(() => {
+    return (teams || []).find(it => it.value?.toString() === id?.toString())?.label ?? '';
+  }, [id, teams]);
+
   return (
     <>
       <ConfirmModal
@@ -215,7 +220,7 @@ const FormInviteModify = (props) => {
             <ScrollToFieldError/>
             <div className={clsx(style.Header)}>
               <div className={clsx("d-flex align-center", style.Title)}>
-                <span className='font-header-medium d-block'>{t("modify team")}</span></div>
+                <span className='font-header-medium d-block'>{t("modify")} {teamName}</span></div>
               <div/>
 
               <div className={clsx(style.NoteWrapper)}>
@@ -270,13 +275,23 @@ const FormInviteModify = (props) => {
 
             {
               visibleAddBtn &&
-              <div className={clsx(style.AddButton, "mt-15")} onClick={addAnother}>
-                <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
-                <span className="font-heading-small text-capitalize">
+              <div className={clsx(style.AddButton_Space, "mt-15")}>
+                <div className={clsx(style.AddButton)} onClick={addAnother}>
+                  <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
+                  <span className="font-heading-small text-capitalize">
                   {t("add a team member")}
                 </span>
+                </div>
+
+                <div className={clsx(style.AddButton)} onClick={() => null}>
+                  <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
+                  <span className="font-heading-small text-capitalize">
+                  {t("bulk add team members")}
+                </span>
+                </div>
               </div>
             }
+
           </div>
 
           <div className={clsx(style.FormBody, "d-flex flex-column")}>
