@@ -1,4 +1,5 @@
 import {
+  IMPERIAL,
   INVALID_VALUES3,
   INVALID_VALUES4,
   TIME_FORMAT_YYYYMDHM,
@@ -318,4 +319,13 @@ export const dateFormat = d => { // return 2022-07-02
   const date = d.getDate();
   const formattedDate = String(date).padStart(2, '0');
   return `${year}-${formattedMonth}-${formattedDate}`;
+};
+
+export const getHeightAsMetric = ({measure, feet, inch, height}) => {
+  if (measure === IMPERIAL) {
+    const {m, cm} = convertImperialToMetric(`${feet}ft${inch}in`);
+    return (parseInt(m) * 100) + parseInt(cm);
+  } else {
+    return height?.replaceAll('m', '').replaceAll('c', '');
+  }
 };

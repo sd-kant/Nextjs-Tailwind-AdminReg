@@ -4,16 +4,19 @@ import InputMask from 'react-input-mask';
 import backIcon from "../../../assets/images/back.svg";
 import {Form, withFormik} from "formik";
 import * as Yup from "yup";
-import {IMPERIAL, METRIC} from "../../../constant";
+import {
+  FT_OPTIONS,
+  IN_OPTIONS,
+  IMPERIAL,
+  METRIC
+} from "../../../constant";
 import {
   convertCmToImperial,
   convertCmToMetric,
-  convertImperialToMetric
+  convertImperialToMetric,
+  getHeightAsMetric
 } from "../../../utils";
 import {useNavigate} from "react-router-dom";
-
-export const ftOptions = [1, 2, 3, 4, 5, 6, 7];
-export const inOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 export const formShape = t => ({
   heightUnit: Yup.string(),
@@ -92,17 +95,19 @@ const FormHeight = (props) => {
   useEffect(() => {
     if (profile) {
       const {measure, height} = profile;
+
+      if ([IMPERIAL, METRIC].includes(measure)) {
+        const {m, cm} = convertCmToMetric(height);
+        setFieldValue("height", `${m}m${cm}cm`);
+        setFieldValue("heightUnit", measure === IMPERIAL ? "1" : "2");
+      } else {
+        navigate("/create-account/unit");
+      }
+
       if (measure === IMPERIAL) {
         const {feet, inch} = convertCmToImperial(height);
         setFieldValue("feet", feet);
         setFieldValue("inch", inch);
-        setFieldValue("heightUnit", "1");
-      } else if (measure === METRIC) {
-        const {m, cm} = convertCmToMetric(height);
-        setFieldValue("height", `${m}m${cm}cm`);
-        setFieldValue("heightUnit", "2");
-      } else {
-        navigate("/create-account/unit");
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -156,7 +161,7 @@ const FormHeight = (props) => {
                     onChange={(e) => onChangeFeetInch( e.target.value, values["inch"])}
                   >
                     {
-                      ftOptions && ftOptions.map(ftOption => (
+                      FT_OPTIONS && FT_OPTIONS.map(ftOption => (
                         <option value={ftOption} key={`ft-${ftOption}`}>
                           {ftOption}
                         </option>
@@ -176,7 +181,7 @@ const FormHeight = (props) => {
                     onChange={(e) => onChangeFeetInch(values["feet"], e.target.value)}
                   >
                     {
-                      inOptions && inOptions.map(inOption => (
+                      IN_OPTIONS && IN_OPTIONS.map(inOption => (
                         <option value={inOption} key={`ft-${inOption}`}>
                           {inOption}
                         </option>
@@ -225,15 +230,6 @@ const FormHeight = (props) => {
       </div>
     </Form>
   )
-};
-
-export const getHeightAsMetric = ({measure, feet, inch, height}) => {
-  if (measure === IMPERIAL) {
-    const {m, cm} = convertImperialToMetric(`${feet}ft${inch}in`);
-    return (parseInt(m) * 100) + parseInt(cm);
-  } else {
-    return height?.replaceAll('m', '').replaceAll('c', '');
-  }
 };
 
 const EnhancedForm = withFormik({

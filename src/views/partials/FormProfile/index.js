@@ -18,7 +18,9 @@ import {
   FEMALE,
   IMPERIAL,
   MALE,
-  METRIC
+  METRIC,
+  FT_OPTIONS,
+  IN_OPTIONS,
 } from "../../../constant";
 import imperialIcon from "../../../assets/images/imperial.svg";
 import imperialGrayIcon from "../../../assets/images/imperial-gray.svg";
@@ -29,10 +31,7 @@ import {formShape as genderFormShape} from "../create-account/FormGender";
 import {formShape as dobFormShape} from "../create-account/FormBirth";
 import {formShape as unitFormShape} from "../create-account/FormUnit";
 import {
-  ftOptions,
-  inOptions,
   formShape as heightFormShape,
-  getHeightAsMetric
 } from "../create-account/FormHeight";
 import {formShape as weightFormShape} from "../create-account/FormWeight";
 import {formShape as timezoneFormShape} from "../create-account/FormTimezone";
@@ -49,7 +48,8 @@ import {
   convertImperialToMetric,
   convertKilosToLbs,
   convertLbsToKilos,
-  format2Digits
+  format2Digits,
+  getHeightAsMetric
 } from "../../../utils";
 import {
   getMedicalResponsesAction,
@@ -452,7 +452,7 @@ const FormProfile = (props) => {
                       onChange={changeFormField}
                     >
                       {
-                        ftOptions && ftOptions.map(ftOption => (
+                        FT_OPTIONS && FT_OPTIONS.map(ftOption => (
                           <option value={ftOption} key={`ft-${ftOption}`}>
                             {ftOption}
                           </option>
@@ -474,7 +474,7 @@ const FormProfile = (props) => {
                       onChange={changeFormField}
                     >
                       {
-                        inOptions && inOptions.map(inOption => (
+                        IN_OPTIONS && IN_OPTIONS.map(inOption => (
                           <option value={inOption} key={`ft-${inOption}`}>
                             {inOption}
                           </option>
