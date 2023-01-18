@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.9.15";
+export const CURRENT_VERSION = "3.9.16";
 export const EXPORT_OPTIONS = [
   {
     label: 'CSV',
@@ -578,3 +578,6 @@ export const MONTHS = [
   "Nov",
   "Dec",
 ];
+
+export const FT_OPTIONS = [1, 2, 3, 4, 5, 6, 7];
+export const IN_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
