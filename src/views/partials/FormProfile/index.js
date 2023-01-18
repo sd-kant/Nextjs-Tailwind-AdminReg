@@ -452,7 +452,7 @@ const FormProfile = (props) => {
                       onChange={changeFormField}
                     >
                       {
-                        FT_OPTIONS && FT_OPTIONS.map(ftOption => (
+                        FT_OPTIONS.map(ftOption => (
                           <option value={ftOption} key={`ft-${ftOption}`}>
                             {ftOption}
                           </option>
@@ -474,7 +474,7 @@ const FormProfile = (props) => {
                       onChange={changeFormField}
                     >
                       {
-                        IN_OPTIONS && IN_OPTIONS.map(inOption => (
+                        IN_OPTIONS.map(inOption => (
                           <option value={inOption} key={`ft-${inOption}`}>
                             {inOption}
                           </option>

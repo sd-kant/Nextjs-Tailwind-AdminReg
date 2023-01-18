@@ -47,26 +47,23 @@ export const formShape = t => ({
       'is-valid',
       t('height invalid'),
       function (value) {
-        // if (this.parent.heightUnit !== "1") {
-          const strArr = value && value.split("cm");
-          const cmArr = strArr && strArr[0] && strArr[0].split('m');
-          const m = (cmArr && cmArr[0]) || "0";
-          const cm = (cmArr && cmArr[1]) || "00";
+        const strArr = value && value.split("cm");
+        const cmArr = strArr && strArr[0] && strArr[0].split('m');
+        const m = (cmArr && cmArr[0]) || "0";
+        const cm = (cmArr && cmArr[1]) || "00";
 
-          if (cm && cm.includes("_")) {
-            return false;
-          }
-          if (parseInt(m) > 2) {
-            return false;
-          }
+        if (cm && cm.includes("_")) {
+          return false;
+        }
+        if (parseInt(m) > 2) {
+          return false;
+        }
 
-          if (parseInt(m) === 0 && parseInt(cm) < 50) {
-            return false;
-          }
+        if (parseInt(m) === 0 && parseInt(cm) < 50) {
+          return false;
+        }
 
-          return !(parseInt(m) === 2 && parseInt(cm) >= 30);
-        // }
-        // return true;
+        return !(parseInt(m) === 2 && parseInt(cm) >= 30);
       }
     ),
 });
@@ -98,16 +95,14 @@ const FormHeight = (props) => {
 
       if ([IMPERIAL, METRIC].includes(measure)) {
         const {m, cm} = convertCmToMetric(height);
+        const {feet, inch} = convertCmToImperial(height);
+
         setFieldValue("height", `${m}m${cm}cm`);
         setFieldValue("heightUnit", measure === IMPERIAL ? "1" : "2");
-      } else {
-        navigate("/create-account/unit");
-      }
-
-      if (measure === IMPERIAL) {
-        const {feet, inch} = convertCmToImperial(height);
         setFieldValue("feet", feet);
         setFieldValue("inch", inch);
+      } else {
+        navigate("/create-account/unit");
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -161,7 +156,7 @@ const FormHeight = (props) => {
                     onChange={(e) => onChangeFeetInch( e.target.value, values["inch"])}
                   >
                     {
-                      FT_OPTIONS && FT_OPTIONS.map(ftOption => (
+                      FT_OPTIONS.map(ftOption => (
                         <option value={ftOption} key={`ft-${ftOption}`}>
                           {ftOption}
                         </option>
@@ -181,7 +176,7 @@ const FormHeight = (props) => {
                     onChange={(e) => onChangeFeetInch(values["feet"], e.target.value)}
                   >
                     {
-                      IN_OPTIONS && IN_OPTIONS.map(inOption => (
+                      IN_OPTIONS.map(inOption => (
                         <option value={inOption} key={`ft-${inOption}`}>
                           {inOption}
                         </option>
