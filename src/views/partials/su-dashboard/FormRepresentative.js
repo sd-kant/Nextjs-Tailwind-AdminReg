@@ -122,10 +122,11 @@ const FormRepresentative = (props) => {
               >
                 <div className="d-flex flex-column">
                   {
-                    index === 0 &&
-                    <label className="font-input-label text-white">
-                      {t("firstName")}
-                    </label>
+                    index === 0 && (
+                        <label className="font-input-label text-white">
+                          {t("firstName")}
+                        </label>
+                    )
                   }
 
                   <input
@@ -139,10 +140,11 @@ const FormRepresentative = (props) => {
 
                 <div className="d-flex flex-column ml-25">
                   {
-                    index === 0 &&
-                    <label className="font-input-label text-white">
-                      {t("lastName")}
-                    </label>
+                    index === 0 && (
+                        <label className="font-input-label text-white">
+                          {t("lastName")}
+                        </label>
+                    )
                   }
 
                   <input
@@ -156,10 +158,11 @@ const FormRepresentative = (props) => {
 
                 <div className="d-flex flex-column ml-25">
                   {
-                    index === 0 &&
-                    <label className="font-input-label text-white">
-                      {t("administrator email")}
-                    </label>
+                    index === 0 && (
+                        <label className="font-input-label text-white">
+                          {t("administrator email")}
+                        </label>
+                    )
                   }
 
                   <input
@@ -182,10 +185,11 @@ const FormRepresentative = (props) => {
                 >
                   <div className="d-flex flex-column">
                     {
-                      (orgAdmins?.length === 0 && index === 0) &&
-                      <label className="font-input-label text-white">
-                        {t("firstName")}
-                      </label>
+                      (orgAdmins?.length === 0 && index === 0) && (
+                          <label className="font-input-label text-white">
+                            {t("firstName")}
+                          </label>
+                      )
                     }
 
                     <input
@@ -207,10 +211,11 @@ const FormRepresentative = (props) => {
 
                   <div className="d-flex flex-column ml-25">
                     {
-                      (orgAdmins?.length === 0 && index === 0) &&
-                      <label className="font-input-label text-white">
-                        {t("lastName")}
-                      </label>
+                      (orgAdmins?.length === 0 && index === 0) && (
+                          <label className="font-input-label text-white">
+                            {t("lastName")}
+                          </label>
+                      )
                     }
 
                     <input
@@ -232,10 +237,11 @@ const FormRepresentative = (props) => {
 
                   <div className="d-flex flex-column ml-25">
                     {
-                      (orgAdmins?.length === 0 && index === 0) &&
-                      <label className="font-input-label text-white">
-                        {t("administrator email")}
-                      </label>
+                      (orgAdmins?.length === 0 && index === 0) && (
+                          <label className="font-input-label text-white">
+                            {t("administrator email")}
+                          </label>
+                      )
                     }
 
                     <input
@@ -301,8 +307,9 @@ const FormRepresentative = (props) => {
           </span>
         </button>
         {
-          orgAdmins?.length > 0 &&
-          <span className={clsx(style.Skip, 'font-binary')} onClick={() => navigate(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
+          orgAdmins?.length > 0 && (
+              <span className={clsx(style.Skip, 'font-binary')} onClick={() => navigate(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
+          )
         }
       </div>
     </Form>

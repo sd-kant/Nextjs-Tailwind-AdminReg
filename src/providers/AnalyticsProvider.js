@@ -458,10 +458,12 @@ export const AnalyticsProvider = (
 
   const chartData = React.useMemo(() => {
     if (
-        metric === METRIC_USER_TABLE_VALUES.SWR_ACCLIM ||
-        metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE ||
-        metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE ||
-        metric === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
+        [
+          METRIC_USER_TABLE_VALUES.SWR_ACCLIM,
+          METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
+          METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
+          METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
+        ].includes(metric)
     ) { // 5, 23, 24, 30
       let tempRet = [0, 0, 0, 0, 0, 0];
       let totalHeat = 0, totalSweat = 0;

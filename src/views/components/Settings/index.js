@@ -14,7 +14,8 @@ import {
   USER_TYPE_ADMIN,
   USER_TYPE_ORG_ADMIN,
   USER_TYPE_TEAM_ADMIN,
-  CURRENT_VERSION
+  CURRENT_VERSION,
+  INVALID_VALUES3
 } from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
@@ -65,6 +66,11 @@ const Settings = (
 
   const cachedSearchUrl = localStorage.getItem("kop-params");
   const q = queryString.parse(cachedSearchUrl);
+
+  if (INVALID_VALUES3.includes(q.organization)) {
+    q.organization = localStorage.getItem("kop-v2-picked-organization-id");
+  }
+
   const flattened = concatAsUrlParam(q);
 
   const [leavePopup, setLeavePopup] = React.useState({

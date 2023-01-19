@@ -14,11 +14,17 @@ import style from "./FormSelectMode.module.scss";
 import queryString from "query-string";
 import {concatAsUrlParam} from "../../../utils";
 import {useNavigate} from "react-router-dom";
+import {INVALID_VALUES3} from "../../../constant";
 
 const FormSelectMode = (props) => {
   const {t, setRestBarClass} = props;
   const cachedSearchUrl = localStorage.getItem("kop-params");
   const q = queryString.parse(cachedSearchUrl);
+
+  if (INVALID_VALUES3.includes(q.organization)) {
+    q.organization = localStorage.getItem("kop-v2-picked-organization-id");
+  }
+
   const flattened = concatAsUrlParam(q);
   const navigate = useNavigate();
 
