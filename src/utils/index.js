@@ -234,6 +234,23 @@ export const getLatestDateBeforeNow = (d1, d2) => {
   return d2;
 };
 
+export const getUrlParamAsJson = () => {
+  const cachedSearchUrl = localStorage.getItem("kop-params");
+  const q = queryString.parse(cachedSearchUrl);
+
+  if (
+      INVALID_VALUES3.includes(q?.organization) &&
+      (
+          localStorage.getItem("kop-v2-user-type").includes(USER_TYPE_ORG_ADMIN) ||
+          localStorage.getItem("kop-v2-user-type").includes(USER_TYPE_TEAM_ADMIN)
+      )
+  ) {
+    q.organization = localStorage.getItem("kop-v2-picked-organization-id");
+  }
+
+  return q;
+};
+
 export const concatAsUrlParam = q => {
   let str = '';
   Object.keys(q)?.forEach((it, index) => {

@@ -19,7 +19,7 @@ export const formShape = t => ({
       'is-valid',
       t('gender required'),
       function (value) {
-        return (value !== "");
+        return !!value;
       }
     ),
 });

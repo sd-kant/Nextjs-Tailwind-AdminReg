@@ -1,7 +1,7 @@
 import axios from "axios";
 import { update } from 'lodash';
 import {apiBaseUrl as baseUrl} from "../config";
-import {toastr} from 'react-redux-toastr'
+import {toastr} from 'react-redux-toastr';
 import i18n from '../i18nextInit';
 import {logout} from "../views/layouts/MainLayout";
 
@@ -17,7 +17,7 @@ const showErrorAndLogout = () => {
 
 const showNetworkError = () => {
   toastr.error('', i18n.t("no internet connection"));
-}
+};
 
 const cachedBaseUrl = localStorage.getItem("kop-v2-base-url");
 

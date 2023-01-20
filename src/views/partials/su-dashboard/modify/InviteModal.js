@@ -15,9 +15,15 @@ const InviteModal = (
     onClose,
     onClickCreate,
   }) => {
+  const {
+    dropdownItems,
+    keywordOnInvite,
+    setKeywordOnInvite,
+    handleInviteClick
+  } = useMembersContext();
+
   const [visible, setVisible] = React.useState(false);
   const dropdownRef = React.useRef(null);
-  const {dropdownItems, keywordOnInvite, setKeywordOnInvite, handleInviteClick} = useMembersContext();
   useClickOutSide(dropdownRef, () => setVisible(false));
 
   const visibleDropdown = React.useMemo(() => {
@@ -107,9 +113,7 @@ const InviteModal = (
           </div>
         </div>
 
-        <div className={clsx(style.Footer)}>
-
-        </div>
+        <div className={clsx(style.Footer)} />
       </div>
     </Modal>
   )
