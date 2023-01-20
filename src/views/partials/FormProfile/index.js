@@ -109,6 +109,7 @@ const FormProfile = (props) => {
   React.useEffect(() => {
     setFieldValue("responses", medicalResponses?.responses ?? []);
   }, [medicalResponses, confirmedCnt, setFieldValue]);
+
   useEffect(() => {
     if (profile) {
       setStatus({edit: false, confirmedCnt, visibleModal});
@@ -398,6 +399,14 @@ const FormProfile = (props) => {
               onChange={v => changeFormField({target: {name: 'gender', value: v}})}
             />
           </div>
+          {
+            errors?.gender && touched?.gender && (
+                <div className="mt-10">
+                  <span className="font-helper-text text-error mt-10">{errors?.gender}</span>
+                </div>
+            )
+          }
+
           {/*birthday section*/}
           <div className='mt-28 form-header-medium'><span
             className='font-header-medium d-block'>{t("dob question")}</span></div>
