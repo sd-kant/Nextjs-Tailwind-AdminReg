@@ -275,21 +275,21 @@ const FormInviteModify = (props) => {
 
             {
               visibleAddBtn &&
-              <div className={clsx(style.AddButton_Space, "mt-15")}>
-                <div className={clsx(style.AddButton)} onClick={addAnother}>
-                  <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
-                  <span className="font-heading-small text-capitalize">
-                  {t("add a team member")}
-                </span>
-                </div>
+                <div className={clsx(style.AddButton_Space, "mt-15")}>
+                  <div className={clsx(style.AddButton)} onClick={addAnother}>
+                    <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
+                    <span className="font-heading-small text-capitalize">
+                      {t("add a team member")}
+                    </span>
+                  </div>
 
-                <div className={clsx(style.AddButton)} onClick={() => null}>
-                  <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
-                  <span className="font-heading-small text-capitalize">
-                  {t("bulk add team members")}
-                </span>
+                  {/*<div className={clsx(style.AddButton)} onClick={() => null}>*/}
+                  {/*  <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>*/}
+                  {/*  <span className="font-heading-small text-capitalize">*/}
+                  {/*  {t("bulk add team members")}*/}
+                  {/*</span>*/}
+                  {/*</div>*/}
                 </div>
-              </div>
             }
 
           </div>
