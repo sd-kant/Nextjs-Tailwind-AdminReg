@@ -659,5 +659,6 @@
   "start date": "Data de Início",
   "end date": "Data de Término",
   "export": "Exportação",
-  "no internet connection": "Sem Conexão Com a Internet"
+  "no internet connection": "Sem Conexão Com a Internet",
+  "team already exist": "A equipe já existe"
 }

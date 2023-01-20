@@ -18,10 +18,10 @@ import {
 } from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
-import queryString from "query-string";
 import {
   ableToLogin,
-  concatAsUrlParam
+  concatAsUrlParam,
+  getUrlParamAsJson
 } from "../../../utils";
 import {getCompanyById} from "../../../http";
 import LanguageModal from "../LanguageModal";
@@ -63,9 +63,7 @@ const Settings = (
       });
   }, [myOrgId]);
 
-  const cachedSearchUrl = localStorage.getItem("kop-params");
-  const q = queryString.parse(cachedSearchUrl);
-  const flattened = concatAsUrlParam(q);
+  const flattened = concatAsUrlParam(getUrlParamAsJson());
 
   const [leavePopup, setLeavePopup] = React.useState({
     visible: false, title: '',

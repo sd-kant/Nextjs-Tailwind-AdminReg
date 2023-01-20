@@ -20,7 +20,8 @@ import {
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import {
-  AVAILABLE_JOBS, INVALID_VALUES1,
+  AVAILABLE_JOBS,
+  INVALID_VALUES1,
   permissionLevels
 } from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
@@ -163,8 +164,8 @@ const FormInvite = (props) => {
       const selectedJob = AVAILABLE_JOBS.find(ele => ele.value === job);
       const phoneNumber = `${it.countryCode ?? ""}${it.phoneNumber ?? ""}`;
       const phoneNumberWithPlus = `+${it.countryCode ?? ""}${it.phoneNumber ?? ""}`;
-      const asYouType = new AsYouType()
-      asYouType.input(phoneNumberWithPlus)
+      const asYouType = new AsYouType();
+      asYouType.input(phoneNumberWithPlus);
       const country = asYouType?.getCountry();
 
       return {
@@ -229,8 +230,11 @@ const FormInvite = (props) => {
 
     return (
       <div className={clsx(style.User)} key={`${key}-${index}`}>
-        <img src={removeIcon} className={clsx(style.RemoveIcon)} alt="remove icon"
-             onClick={() => deleteMember(index)}/>
+        <img
+            src={removeIcon}
+            className={clsx(style.RemoveIcon)} alt="remove icon"
+            onClick={() => deleteMember(index)}
+        />
 
         <div className={clsx(style.UserRow)}>
           <div className="d-flex flex-column">
@@ -371,9 +375,7 @@ const FormInvite = (props) => {
             }
           </div>
 
-          <div>
-
-          </div>
+          <div />
         </div>
       </div>
     );
@@ -462,7 +464,7 @@ const FormInvite = (props) => {
             className="d-flex align-center cursor-pointer"
             onClick={() => navigate(-1)}
           >
-            <img src={backIcon} alt="back"/>
+            <img src={backIcon} alt="back" />
             &nbsp;&nbsp;
             <span className='font-button-label text-orange'>
               {t("previous")}

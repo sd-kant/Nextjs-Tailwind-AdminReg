@@ -18,7 +18,9 @@ import {
   FEMALE,
   IMPERIAL,
   MALE,
-  METRIC
+  METRIC,
+  FT_OPTIONS,
+  IN_OPTIONS,
 } from "../../../constant";
 import imperialIcon from "../../../assets/images/imperial.svg";
 import imperialGrayIcon from "../../../assets/images/imperial-gray.svg";
@@ -29,10 +31,7 @@ import {formShape as genderFormShape} from "../create-account/FormGender";
 import {formShape as dobFormShape} from "../create-account/FormBirth";
 import {formShape as unitFormShape} from "../create-account/FormUnit";
 import {
-  ftOptions,
-  inOptions,
   formShape as heightFormShape,
-  getHeightAsMetric
 } from "../create-account/FormHeight";
 import {formShape as weightFormShape} from "../create-account/FormWeight";
 import {formShape as timezoneFormShape} from "../create-account/FormTimezone";
@@ -49,7 +48,8 @@ import {
   convertImperialToMetric,
   convertKilosToLbs,
   convertLbsToKilos,
-  format2Digits
+  format2Digits,
+  getHeightAsMetric
 } from "../../../utils";
 import {
   getMedicalResponsesAction,
@@ -109,6 +109,7 @@ const FormProfile = (props) => {
   React.useEffect(() => {
     setFieldValue("responses", medicalResponses?.responses ?? []);
   }, [medicalResponses, confirmedCnt, setFieldValue]);
+
   useEffect(() => {
     if (profile) {
       setStatus({edit: false, confirmedCnt, visibleModal});
@@ -398,6 +399,14 @@ const FormProfile = (props) => {
               onChange={v => changeFormField({target: {name: 'gender', value: v}})}
             />
           </div>
+          {
+            errors?.gender && touched?.gender && (
+                <div className="mt-10">
+                  <span className="font-helper-text text-error mt-10">{errors?.gender}</span>
+                </div>
+            )
+          }
+
           {/*birthday section*/}
           <div className='mt-28 form-header-medium'><span
             className='font-header-medium d-block'>{t("dob question")}</span></div>
@@ -452,7 +461,7 @@ const FormProfile = (props) => {
                       onChange={changeFormField}
                     >
                       {
-                        ftOptions && ftOptions.map(ftOption => (
+                        FT_OPTIONS.map(ftOption => (
                           <option value={ftOption} key={`ft-${ftOption}`}>
                             {ftOption}
                           </option>
@@ -474,7 +483,7 @@ const FormProfile = (props) => {
                       onChange={changeFormField}
                     >
                       {
-                        inOptions && inOptions.map(inOption => (
+                        IN_OPTIONS.map(inOption => (
                           <option value={inOption} key={`ft-${inOption}`}>
                             {inOption}
                           </option>
