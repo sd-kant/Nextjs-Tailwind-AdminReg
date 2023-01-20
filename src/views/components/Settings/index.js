@@ -14,15 +14,14 @@ import {
   USER_TYPE_ADMIN,
   USER_TYPE_ORG_ADMIN,
   USER_TYPE_TEAM_ADMIN,
-  CURRENT_VERSION,
-  INVALID_VALUES3
+  CURRENT_VERSION
 } from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
-import queryString from "query-string";
 import {
   ableToLogin,
-  concatAsUrlParam
+  concatAsUrlParam,
+  getUrlParamAsJson
 } from "../../../utils";
 import {getCompanyById} from "../../../http";
 import LanguageModal from "../LanguageModal";
@@ -64,14 +63,7 @@ const Settings = (
       });
   }, [myOrgId]);
 
-  const cachedSearchUrl = localStorage.getItem("kop-params");
-  const q = queryString.parse(cachedSearchUrl);
-
-  if (INVALID_VALUES3.includes(q.organization)) {
-    q.organization = localStorage.getItem("kop-v2-picked-organization-id");
-  }
-
-  const flattened = concatAsUrlParam(q);
+  const flattened = concatAsUrlParam(getUrlParamAsJson());
 
   const [leavePopup, setLeavePopup] = React.useState({
     visible: false, title: '',
