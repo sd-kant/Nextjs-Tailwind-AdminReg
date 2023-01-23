@@ -31,7 +31,10 @@ import ResponsiveSelect from "../../components/ResponsiveSelect";
 import SuccessModal from "../../components/SuccessModal";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
-import {_handleSubmitV2} from "../../../utils/invite";
+import {
+  _handleSubmitV2,
+  checkIfSpacesOnly
+} from "../../../utils/invite";
 import {AsYouType} from "libphonenumber-js";
 import style from "./FormInvite.module.scss";
 import clsx from "clsx";
@@ -62,9 +65,23 @@ export const userSchema = (t) => {
         }
       ),
     firstName: Yup.string()
+      .test(
+          'is-valid',
+          t('firstName required'),
+          function (value) {
+            return checkIfSpacesOnly(value);
+          }
+      )
       .required(t('firstName required'))
       .max(1024, t("firstName max error")),
     lastName: Yup.string()
+      .test(
+          'is-valid',
+          t('lastName required'),
+          function (value) {
+            return checkIfSpacesOnly(value);
+          }
+      )
       .required(t('lastName required'))
       .max(1024, t("lastName max error")),
     userType: Yup.object()

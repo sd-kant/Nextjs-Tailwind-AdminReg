@@ -360,3 +360,10 @@ export const handleModifyUsers = (
     console.log('_handleSubmit error', e);
   }
 };
+
+/**
+ * Check if string contains only spaces
+ */
+export const checkIfSpacesOnly = (str) => {
+  return !!(str?.replace(/\s/g, '').length);
+};

@@ -26,7 +26,10 @@ import ConfirmModal from "../../components/ConfirmModal";
 import {getParamFromUrl} from "../../../utils";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import {useNavigate} from "react-router-dom";
-import {handleModifyUsers} from "../../../utils/invite";
+import {
+  handleModifyUsers,
+  checkIfSpacesOnly
+} from "../../../utils/invite";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 import style from "./FormSearch.module.scss";
 import clsx from "clsx";
@@ -54,9 +57,23 @@ export const userSchema = (t) => {
       }
     )*/,
     firstName: Yup.string()
+      .test(
+          'is-valid',
+          t('firstName required'),
+          function (value) {
+            return checkIfSpacesOnly(value);
+          }
+      )
       .required(t('firstName required'))
       .max(1024, t("firstName max error")),
     lastName: Yup.string()
+      .test(
+          'is-valid',
+          t('lastName required'),
+          function (value) {
+            return checkIfSpacesOnly(value);
+          }
+      )
       .required(t('lastName required'))
       .max(1024, t("lastName max error")),
     job: Yup.object()
