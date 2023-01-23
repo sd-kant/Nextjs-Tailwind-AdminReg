@@ -69,7 +69,7 @@ export const userSchema = (t) => {
           'is-valid',
           t('firstName required'),
           function (value) {
-            return checkIfSpacesOnly(value);
+            return !checkIfSpacesOnly(value);
           }
       )
       .required(t('firstName required'))
@@ -79,7 +79,7 @@ export const userSchema = (t) => {
           'is-valid',
           t('lastName required'),
           function (value) {
-            return checkIfSpacesOnly(value);
+            return !checkIfSpacesOnly(value);
           }
       )
       .required(t('lastName required'))
@@ -603,11 +603,18 @@ const EnhancedForm = withFormik({
       isAdmin,
     } = props;
     let users = values?.users;
+
     if (INVALID_VALUES1.includes(organizationId?.toString())) {
       showErrorNotification(t("msg create organization before inviting users"));
       navigate("/invite/company");
     } else {
       if (users?.length > 0) {
+        users = users.map(it => ({
+          ...it,
+          firstName: it.firstName.trim(),
+          lastName: it.lastName.trim(),
+        }));
+
         const {numberOfSuccess} =
           await _handleSubmitV2({
             users,

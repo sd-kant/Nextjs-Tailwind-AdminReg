@@ -365,5 +365,5 @@ export const handleModifyUsers = (
  * Check if string contains only spaces
  */
 export const checkIfSpacesOnly = (str) => {
-  return !!(str?.replace(/\s/g, '').length);
+  return !(str?.replace(/\s/g, '').length);
 };

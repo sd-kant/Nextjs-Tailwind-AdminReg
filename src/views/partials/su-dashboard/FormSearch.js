@@ -61,7 +61,7 @@ export const userSchema = (t) => {
           'is-valid',
           t('firstName required'),
           function (value) {
-            return checkIfSpacesOnly(value);
+            return !checkIfSpacesOnly(value);
           }
       )
       .required(t('firstName required'))
@@ -71,7 +71,7 @@ export const userSchema = (t) => {
           'is-valid',
           t('lastName required'),
           function (value) {
-            return checkIfSpacesOnly(value);
+            return !checkIfSpacesOnly(value);
           }
       )
       .required(t('lastName required'))

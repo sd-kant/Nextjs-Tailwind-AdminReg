@@ -240,7 +240,11 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   enableReinitialize: true,
   handleSubmit: async (values, {props}) => {
-    props.onAdd(values.user);
+    props.onAdd({
+      ...values.user,
+      firstName: values.user.firstName.trim(),
+      lastName: values.user.lastName.trim(),
+    });
   },
 })(AddMemberModalV2);
 
