@@ -611,8 +611,8 @@ const EnhancedForm = withFormik({
       if (users?.length > 0) {
         users = users.map(it => ({
           ...it,
-          firstName: it.firstName.trim(),
-          lastName: it.lastName.trim(),
+          firstName: it?.firstName?.trim() ?? 'first name',
+          lastName: it?.lastName?.trim() ?? 'last name',
         }));
 
         const {numberOfSuccess} =

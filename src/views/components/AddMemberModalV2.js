@@ -242,8 +242,8 @@ const EnhancedForm = withFormik({
   handleSubmit: async (values, {props}) => {
     props.onAdd({
       ...values.user,
-      firstName: values.user.firstName.trim(),
-      lastName: values.user.lastName.trim(),
+      firstName: values?.user?.firstName?.trim() ?? 'first name',
+      lastName: values?.user?.lastName?.trim() ?? 'last name',
     });
   },
 })(AddMemberModalV2);
