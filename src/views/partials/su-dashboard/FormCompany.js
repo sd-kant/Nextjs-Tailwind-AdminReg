@@ -41,6 +41,7 @@ import {
 } from "./FormRepresentative";
 import {useNavigate} from "react-router-dom";
 import ConfirmModal from "../../components/ConfirmModal";
+import {checkIfSpacesOnly} from "../../../utils/invite";
 
 export const customStyles = () => ({
   option: (provided, state) => ({
@@ -96,9 +97,23 @@ const formSchema = (t) => {
           .email(t("email invalid"))
           .max(1024, t('email max error')),
         firstName: Yup.string()
+          .test(
+              'is-valid',
+              t('firstName required'),
+              function (value) {
+                return !checkIfSpacesOnly(value);
+              }
+          )
           .required(t('firstName required'))
           .max(1024, t("firstName max error")),
         lastName: Yup.string()
+          .test(
+              'is-valid',
+              t('lastName required'),
+              function (value) {
+                return !checkIfSpacesOnly(value);
+              }
+          )
           .required(t('lastName required'))
           .max(1024, t("lastName max error")),
       }).required(),
@@ -893,8 +908,11 @@ const FormCompany = (props) => {
           </button>
         </div>
       </Form>
-      <ConfirmModal header={t("org admin invite sent")} show={visibleModal}
-                    onOk={() => setStatus({visibleModal: false})}/>
+      <ConfirmModal
+          header={t("org admin invite sent")}
+          show={visibleModal}
+          onOk={() => setStatus({visibleModal: false})}
+      />
     </React.Fragment>
   )
 };
@@ -954,7 +972,13 @@ const EnhancedForm = withFormik({
 
           // creating org admins
           let users = values?.users;
-          users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
+
+          users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN)?.map(it => ({
+            ...it,
+            firstName: it?.firstName?.trim() ?? 'first name',
+            lastName: it?.lastName?.trim() ?? 'last name',
+          }));
+
           const promises = [];
           let totalSuccessForInvite = 0;
 
