@@ -6,12 +6,27 @@ import {Form, withFormik} from "formik";
 import backIcon from "../../../assets/images/back.svg";
 import {bindActionCreators} from "redux";
 import {useNavigate} from "react-router-dom";
+import {checkIfSpacesOnly} from "../../../utils/invite";
 
 export const formShape = t => ({
   firstName: Yup.string()
+    .test(
+        'is-valid',
+        t('your firstName required'),
+        function (value) {
+          return !checkIfSpacesOnly(value);
+        }
+    )
     .required(t('your firstName required'))
     .max(1024, t('firstName max error')),
   lastName: Yup.string()
+    .test(
+        'is-valid',
+        t('your lastName required'),
+        function (value) {
+          return !checkIfSpacesOnly(value);
+        }
+    )
     .required(t('your lastName required'))
     .max(1024, t('lastName max error')),
 });
@@ -137,8 +152,8 @@ const EnhancedForm = withFormik({
       const {updateProfile, navigate} = props;
       updateProfile({
         body: {
-          firstName: values["firstName"],
-          lastName: values["lastName"],
+          firstName: values["firstName"]?.trim() ?? 'first name',
+          lastName: values["lastName"]?.trim() ?? 'last name',
         },
         nextPath: "/create-account/gender",
         navigate,
