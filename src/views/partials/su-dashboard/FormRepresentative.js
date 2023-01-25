@@ -22,6 +22,7 @@ import clsx from "clsx";
 import style from "./FormRepresentative.module.scss";
 import {useOrganizationContext} from "../../../providers/OrganizationProvider";
 import {useNavigate} from "react-router-dom";
+import {checkIfSpacesOnly} from "../../../utils/invite";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -32,11 +33,25 @@ const formSchema = (t) => {
           .email(t("email invalid"))
           .max(1024, t('email max error')),
         firstName: Yup.string()
+          .test(
+              'is-valid',
+              t('firstName required'),
+              function (value) {
+                return !checkIfSpacesOnly(value);
+              }
+          )
           .required(t('firstName required'))
-          .max(1024, t("firstName max error")),
+          .max(50, t("firstName max error")),
         lastName: Yup.string()
+          .test(
+              'is-valid',
+              t('lastName required'),
+              function (value) {
+                return !checkIfSpacesOnly(value);
+              }
+          )
           .required(t('lastName required'))
-          .max(1024, t("lastName max error")),
+          .max(50, t("lastName max error")),
       }).required(),
     )
   });
@@ -341,8 +356,13 @@ const EnhancedForm = withFormik({
     if (INVALID_VALUES1.includes(organizationId?.toString())) {
       navigate("/invite/company");
     } else {
-      users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
+      users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN)?.map(it => ({
+        ...it,
+        firstName: it?.firstName?.trim() ?? 'first name',
+        lastName: it?.lastName?.trim() ?? 'last name',
+      }));
     }
+
     try {
       const promises = [];
       let totalSuccessForInvite = 0;

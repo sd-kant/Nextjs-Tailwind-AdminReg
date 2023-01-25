@@ -24,10 +24,25 @@ import {customStyles} from "./FormCompany";
 import CreatableSelect from "react-select/creatable";
 import {useNavigate} from "react-router-dom";
 import {INVALID_VALUES1} from "../../../constant";
+import {checkIfSpacesOnly} from "../../../utils/invite";
 
 const formSchema = (t) => {
   return Yup.object().shape({
     name: Yup.string()
+      .test(
+          'is-valid',
+          t('team name required'),
+          function (value) {
+            return !checkIfSpacesOnly(value);
+          }
+      )
+      .test(
+          'is-valid',
+          t('team name min error'),
+          function (value) {
+            return value?.trim()?.length >= 6;
+          }
+      )
       .required(t('team name required'))
       .min(6, t('team name min error'))
       .max(1024, t('team name max error')),
@@ -222,7 +237,7 @@ const EnhancedForm = withFormik({
     }
     const data = {
       orgId: parseInt(orgId),
-      name: values?.name,
+      name: values?.name?.trim() ?? 'team name',
       location: values?.location?.label,
       region: values?.region?.label,
     };

@@ -65,7 +65,7 @@ export const userSchema = (t) => {
           }
       )
       .required(t('firstName required'))
-      .max(1024, t("firstName max error")),
+      .max(50, t("firstName max error")),
     lastName: Yup.string()
       .test(
           'is-valid',
@@ -75,7 +75,7 @@ export const userSchema = (t) => {
           }
       )
       .required(t('lastName required'))
-      .max(1024, t("lastName max error")),
+      .max(50, t("lastName max error")),
     job: Yup.object()
       .required(t('role required')),
     phoneNumber: Yup.object(),
