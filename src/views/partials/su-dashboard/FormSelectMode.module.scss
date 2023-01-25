@@ -33,24 +33,28 @@
       }
     }
 
-    .ImageWrapper2 {
+    .ImageWrapper2_Body {
       position: relative;
-      display: flex;
-      justify-content: center;
-      padding: 15px 0;
-      width: 100%;
 
-      .WorkerOrangeImage {
-        width: 78px;
-        z-index: 2;
-      }
+      .ImageWrapper2 {
+        display: flex;
+        justify-content: center;
+        padding: 15px 0;
+        width: 100%;
 
-      .WorkerWhiteImage1,
-      .WorkerWhiteImage2 {
-        position: absolute;
-        top: 13px;
-        left: 0;
-        width: 54px;
+        .WorkerOrangeImage {
+          margin-left: 35px;
+          width: 78px;
+          z-index: 2;
+        }
+
+        .WorkerWhiteImage1,
+        .WorkerWhiteImage2 {
+          position: absolute;
+          top: 13px;
+          left: 0;
+          width: 54px;
+        }
       }
     }
 
@@ -63,6 +67,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-align: center;
     }
   }
 }
