@@ -73,7 +73,14 @@ export const userSchema = (t) => {
           }
       )
       .required(t('firstName required'))
-      .max(1024, t("firstName max error")),
+      .test(
+          'is-valid',
+          t('firstName max error'),
+          function (value) {
+            return value?.trim()?.length <= 50;
+          }
+      )
+      .max(50, t("firstName max error")),
     lastName: Yup.string()
       .test(
           'is-valid',
@@ -83,7 +90,14 @@ export const userSchema = (t) => {
           }
       )
       .required(t('lastName required'))
-      .max(1024, t("lastName max error")),
+      .test(
+          'is-valid',
+          t('lastName max error'),
+          function (value) {
+            return value?.trim()?.length <= 50;
+          }
+      )
+      .max(50, t("lastName max error")),
     userType: Yup.object()
       .required(t('role required')),
     job: Yup.object()
