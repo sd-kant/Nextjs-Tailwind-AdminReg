@@ -18,13 +18,6 @@ export const formShape = t => ({
         }
     )
     .required(t('your firstName required'))
-    .test(
-        'is-valid',
-        t('firstName max error'),
-        function (value) {
-          return value?.trim()?.length <= 50;
-        }
-    )
     .max(50, t('firstName max error')),
   lastName: Yup.string()
     .test(
@@ -35,13 +28,6 @@ export const formShape = t => ({
         }
     )
     .required(t('your lastName required'))
-    .test(
-        'is-valid',
-        t('lastName max error'),
-        function (value) {
-          return value?.trim()?.length <= 50;
-        }
-    )
     .max(50, t('lastName max error')),
 });
 
