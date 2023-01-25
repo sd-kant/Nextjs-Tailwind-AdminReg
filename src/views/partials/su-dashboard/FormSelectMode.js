@@ -65,10 +65,12 @@ const FormSelectMode = (props) => {
               <span className={clsx('font-button-label')}>{t("dashboard")}</span>
             </div>
 
-            <div className={clsx(style.ImageWrapper2)}>
-              <img src={workerOrange} className={clsx(style.WorkerWhiteImage1)} alt="settings"/>
-              <img src={workerOrange} className={clsx(style.WorkerWhiteImage2)} alt="settings"/>
-              <img src={workerOrange} className={clsx(style.WorkerOrangeImage)} alt="worker orange"/>
+            <div className={clsx(style.ImageWrapper2_Body)}>
+              <div className={clsx(style.ImageWrapper2)}>
+                <img src={workerOrange} className={clsx(style.WorkerWhiteImage1)} alt="settings"/>
+                <img src={workerOrange} className={clsx(style.WorkerWhiteImage2)} alt="settings"/>
+                <img src={workerOrange} className={clsx(style.WorkerOrangeImage)} alt="worker orange"/>
+              </div>
             </div>
 
             <div className={clsx(style.DescriptionDiv)}>
