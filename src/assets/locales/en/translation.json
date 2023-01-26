@@ -11,7 +11,7 @@
   "username max error": "Please enter less than 1024 letters",
   "firstName": "First Name",
   "firstName required": "Please enter a first name",
-  "firstName max error": "Please enter less than 50 characters",
+  "firstName max error": "Please enter less than 50 letters",
   "lastName": "Last Name",
   "lastName required": "Please enter a last name",
   "lastName max error": "Please enter less than 50 letters",
