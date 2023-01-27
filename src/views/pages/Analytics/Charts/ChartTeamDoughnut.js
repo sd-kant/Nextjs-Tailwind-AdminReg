@@ -12,7 +12,8 @@ import {
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {
   HEAT_SWEAT_CHART_COLORS,
-  LABELS_DOUGHNUT,
+  LABELS_HEAT_DOUGHNUT,
+  LABELS_SWEAT_DOUGHNUT,
   METRIC_USER_TABLE_VALUES
 } from "../../../../constant";
 import {
@@ -66,7 +67,7 @@ const ChartTeamDoughnut = () => {
                 return (
                     <div key={key} className={clsx(style.LegendFlex)}>
                       <div className={clsx(style.LegendBoxItem)} style={{backgroundColor: item}} />
-                      <div className={clsx(style.LegendBoxTxt)}>{LABELS_DOUGHNUT[key]}</div>
+                      <div className={clsx(style.LegendBoxTxt)}>{LABELS_HEAT_DOUGHNUT[key]}</div>
                     </div>
                 )
               })}
@@ -91,7 +92,7 @@ const ChartTeamDoughnut = () => {
                 return (
                     <div key={key} className={clsx(style.LegendFlex)}>
                       <div className={clsx(style.LegendBoxItem)} style={{backgroundColor: item}} />
-                      <div className={clsx(style.LegendBoxTxt)}>{LABELS_DOUGHNUT[key]}</div>
+                      <div className={clsx(style.LegendBoxTxt)}>{LABELS_SWEAT_DOUGHNUT[key]}</div>
                     </div>
                 )
               })}

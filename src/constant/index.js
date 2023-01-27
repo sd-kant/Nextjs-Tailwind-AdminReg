@@ -5,7 +5,7 @@ export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
 export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
 export const USER_TYPE_OPERATOR = "Operator";
 
-export const CURRENT_VERSION = "3.9.25";
+export const CURRENT_VERSION = "3.9.26";
 export const EXPORT_OPTIONS = [
   {
     label: 'CSV',
@@ -292,13 +292,21 @@ export const TYPES = [
     label: i18n.t('week')
   },
 ];
-export const LABELS_DOUGHNUT = [
+export const LABELS_HEAT_DOUGHNUT = [
   i18n.t('low %'),
   i18n.t('medium'),
   i18n.t('high')
 ];
+export const LABELS_SWEAT_DOUGHNUT = [
+  i18n.t('low %'),
+  i18n.t('moderate'),
+  i18n.t('high')
+];
 export const HEAT_LOW_MEDIUM_HIGH = [
   "low", "medium", "high"
+];
+export const SWEAT_LOW_MEDIUM_HIGH = [
+  "low", "moderate", "high"
 ];
 
 export const ANALYTICS_API_KEYS = {

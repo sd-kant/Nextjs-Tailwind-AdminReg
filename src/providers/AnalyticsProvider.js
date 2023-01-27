@@ -28,7 +28,6 @@ import {
   COLOR_WHITE,
   HEAT_SWEAT_CHART_COLORS,
   HEAT_LOW_MEDIUM_HIGH,
-  LABELS_DOUGHNUT,
   METRIC_TEAM_TABLE_VALUES,
   METRIC_USER_TABLE_VALUES,
   METRIC_USER_CHART_VALUES,
@@ -42,6 +41,9 @@ import {
   USER_STATUS_METRICS,
   TEAM_STATUS_METRICS,
   SORT_TITLES,
+  SWEAT_LOW_MEDIUM_HIGH,
+  LABELS_HEAT_DOUGHNUT,
+  LABELS_SWEAT_DOUGHNUT,
 } from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {
@@ -470,7 +472,7 @@ export const AnalyticsProvider = (
 
       onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, null)?.forEach(it => {
         let findHeatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.heatSusceptibility?.toLowerCase());
-        let findSweatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.sweatRateCategory?.toLowerCase());
+        let findSweatIndex = SWEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.sweatRateCategory?.toLowerCase());
 
         if (findHeatIndex > -1) {
           tempRet[findHeatIndex] += 1;
@@ -508,7 +510,7 @@ export const AnalyticsProvider = (
           }
           return {
             type: 'doughnut',
-            labels: LABELS_DOUGHNUT,
+            labels: mode === 'heat' ? LABELS_HEAT_DOUGHNUT : LABELS_SWEAT_DOUGHNUT,
             datasets: [
               {
                 label: label,
