@@ -622,7 +622,7 @@
   "heat susceptibility and sweat rate": "Sensibilité à la Chaleur et Taux de Transpiration",
   "chart required": "Veuillez Sélectionner un Graphique",
   "userId": "userId",
-  "time spent in safe to work": "Temps passé en sécurité au travail 38C",
+  "time spent in safe to work": "Temps passé en sécurité au travail 38C (h)",
   "time spent in mild heat exhaustion": "Temps passé dans l’épuisement par la chaleur légère 38C – 38.49C (h)",
   "time spent in moderate hyperthermia": "Temps passé en hyperthermie modérée > 38,5 °C (h)",
   "low %": "Basses",
