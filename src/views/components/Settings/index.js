@@ -69,7 +69,11 @@ const Settings = (
     visible: false, title: '',
   });
   const hasAccessToAnalytics = React.useMemo(() => {
-    return userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
+    if (process.env.REACT_APP_ENV === 'PRODUCTION') {
+      return userType?.some(it => [USER_TYPE_ADMIN].includes(it));
+    } else {
+      return userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
+    }
   }, [userType]);
 
   const role = React.useMemo(() => {
