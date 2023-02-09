@@ -52,7 +52,15 @@ export const options = [
 ];
 
 const FormStartWork = (props) => {
-  const {t, values, profile, setFieldValue, setRestBarClass, errors, touched} = props;
+  const {
+    t,
+    values,
+    profile,
+    setFieldValue,
+    setRestBarClass,
+    errors,
+    touched
+  } = props;
   const [hourOptions, minuteOptions] = useTimeOptions();
   const navigate = useNavigate();
 
@@ -95,14 +103,14 @@ const FormStartWork = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("start work question")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("start work question")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex flex-column">
@@ -186,7 +194,7 @@ const FormStartWork = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 export const hourTo24Hour = ({hour, startTimeOption}) => {
   let hour24;
@@ -197,7 +205,7 @@ export const hourTo24Hour = ({hour, startTimeOption}) => {
   }
 
   return hour24;
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

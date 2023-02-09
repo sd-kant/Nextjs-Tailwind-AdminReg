@@ -2,8 +2,8 @@
 
 @mixin FirstColumn {
   position: sticky;
-  left: 0;
   top: auto;
+  left: 0;
   border-top-width: 1px;
 }
 
@@ -16,20 +16,17 @@
   .TableHeaderRow {
     cursor: pointer;
 
-    & > td:first-child {
-      border-radius: 0;
-    }
-
+    & > td:first-child,
     & > td:last-child {
       border-radius: 0;
     }
 
     .TableHeaderCell {
+      border: 1px solid $app-bg;
       padding: 5px 10px;
       text-align: center;
       white-space: nowrap;
       background: $app-list-bg;
-      border: 1px solid $app-bg;
 
       .TableHeaderCellSpan {
         font-size: 18px;
@@ -38,10 +35,10 @@
 
       .ChevronWrapper {
         display: inline-flex;
-        width: 30px;
-        height: 30px;
         justify-content: flex-end;
         align-items: center;
+        width: 30px;
+        height: 30px;
         cursor: pointer;
 
         .ChevronIcon {

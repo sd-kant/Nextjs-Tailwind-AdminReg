@@ -14,11 +14,15 @@ import {
   showSuccessNotificationAction,
 } from "../../../redux/action/ui";
 import {createUserByAdmin} from "../../../http";
-import {USER_TYPE_ORG_ADMIN} from "../../../constant";
+import {
+  INVALID_VALUES1,
+  USER_TYPE_ORG_ADMIN
+} from "../../../constant";
 import clsx from "clsx";
 import style from "./FormRepresentative.module.scss";
 import {useOrganizationContext} from "../../../providers/OrganizationProvider";
 import {useNavigate} from "react-router-dom";
+import {checkIfSpacesOnly} from "../../../utils/invite";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -29,11 +33,25 @@ const formSchema = (t) => {
           .email(t("email invalid"))
           .max(1024, t('email max error')),
         firstName: Yup.string()
+          .test(
+              'is-valid',
+              t('firstName required'),
+              function (value) {
+                return !checkIfSpacesOnly(value);
+              }
+          )
           .required(t('firstName required'))
-          .max(1024, t("firstName max error")),
+          .max(50, t("firstName max error")),
         lastName: Yup.string()
+          .test(
+              'is-valid',
+              t('lastName required'),
+              function (value) {
+                return !checkIfSpacesOnly(value);
+              }
+          )
           .required(t('lastName required'))
-          .max(1024, t("lastName max error")),
+          .max(50, t("lastName max error")),
       }).required(),
     )
   });
@@ -47,7 +65,15 @@ export const defaultMember = {
 
 const FormRepresentative = (props) => {
   const {orgAdmins} = useOrganizationContext();
-  const {values, errors, touched, t, setFieldValue, setRestBarClass, organizationId} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    setRestBarClass,
+    organizationId
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,19 +85,19 @@ const FormRepresentative = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   const addAnother = () => {
     const data = JSON.parse(JSON.stringify(values["users"]));
     data.push(defaultMember);
     setFieldValue("users", data);
-  }
+  };
 
   const deleteMember = (index) => {
     const data = JSON.parse(JSON.stringify(values["users"]));
     data.splice(index, 1);
     setFieldValue("users", data);
-  }
+  };
 
   return (
     <Form className='form mt-57'>
@@ -83,8 +109,8 @@ const FormRepresentative = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-              {t("previous")}
-            </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='grouped-form mt-40'>
@@ -111,10 +137,11 @@ const FormRepresentative = (props) => {
               >
                 <div className="d-flex flex-column">
                   {
-                    index === 0 &&
-                    <label className="font-input-label text-white">
-                      {t("firstName")}
-                    </label>
+                    index === 0 && (
+                        <label className="font-input-label text-white">
+                          {t("firstName")}
+                        </label>
+                    )
                   }
 
                   <input
@@ -128,10 +155,11 @@ const FormRepresentative = (props) => {
 
                 <div className="d-flex flex-column ml-25">
                   {
-                    index === 0 &&
-                    <label className="font-input-label text-white">
-                      {t("lastName")}
-                    </label>
+                    index === 0 && (
+                        <label className="font-input-label text-white">
+                          {t("lastName")}
+                        </label>
+                    )
                   }
 
                   <input
@@ -145,10 +173,11 @@ const FormRepresentative = (props) => {
 
                 <div className="d-flex flex-column ml-25">
                   {
-                    index === 0 &&
-                    <label className="font-input-label text-white">
-                      {t("administrator email")}
-                    </label>
+                    index === 0 && (
+                        <label className="font-input-label text-white">
+                          {t("administrator email")}
+                        </label>
+                    )
                   }
 
                   <input
@@ -171,10 +200,11 @@ const FormRepresentative = (props) => {
                 >
                   <div className="d-flex flex-column">
                     {
-                      (orgAdmins?.length === 0 && index === 0) &&
-                      <label className="font-input-label text-white">
-                        {t("firstName")}
-                      </label>
+                      (orgAdmins?.length === 0 && index === 0) && (
+                          <label className="font-input-label text-white">
+                            {t("firstName")}
+                          </label>
+                      )
                     }
 
                     <input
@@ -196,10 +226,11 @@ const FormRepresentative = (props) => {
 
                   <div className="d-flex flex-column ml-25">
                     {
-                      (orgAdmins?.length === 0 && index === 0) &&
-                      <label className="font-input-label text-white">
-                        {t("lastName")}
-                      </label>
+                      (orgAdmins?.length === 0 && index === 0) && (
+                          <label className="font-input-label text-white">
+                            {t("lastName")}
+                          </label>
+                      )
                     }
 
                     <input
@@ -221,10 +252,11 @@ const FormRepresentative = (props) => {
 
                   <div className="d-flex flex-column ml-25">
                     {
-                      (orgAdmins?.length === 0 && index === 0) &&
-                      <label className="font-input-label text-white">
-                        {t("administrator email")}
-                      </label>
+                      (orgAdmins?.length === 0 && index === 0) && (
+                          <label className="font-input-label text-white">
+                            {t("administrator email")}
+                          </label>
+                      )
                     }
 
                     <input
@@ -290,28 +322,28 @@ const FormRepresentative = (props) => {
           </span>
         </button>
         {
-          orgAdmins?.length > 0 &&
-          <span className={clsx(style.Skip, 'font-binary')}
-                onClick={() => navigate(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
+          orgAdmins?.length > 0 && (
+              <span className={clsx(style.Skip, 'font-binary')} onClick={() => navigate(`/invite/${organizationId}/team-mode`)}>{t("skip")}</span>
+          )
         }
       </div>
     </Form>
   )
-}
+};
 
 export const lowercaseEmail = (users) => {
   return users && users.map((user) => ({
     ...user,
     email: user["email"] && user["email"].toLowerCase(),
   }));
-}
+};
 
 export const setUserTypeToUsers = (users, userType) => {
   return users && users.map((user) => ({
     ...user,
     userType: userType,
   }));
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
@@ -321,11 +353,16 @@ const EnhancedForm = withFormik({
   handleSubmit: async (values, {props}) => {
     const {organizationId, navigate} = props;
     let users = values?.users;
-    if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
+    if (INVALID_VALUES1.includes(organizationId?.toString())) {
       navigate("/invite/company");
     } else {
-      users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
+      users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN)?.map(it => ({
+        ...it,
+        firstName: it?.firstName?.trim() ?? 'first name',
+        lastName: it?.lastName?.trim() ?? 'last name',
+      }));
     }
+
     try {
       const promises = [];
       let totalSuccessForInvite = 0;
@@ -371,7 +408,7 @@ const EnhancedForm = withFormik({
       }
     } catch (e) {
       console.log("registering multiple users error", e);
-      props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
+      props.showErrorNotification(e.response?.data?.message);
     }
   }
 })(FormRepresentative);

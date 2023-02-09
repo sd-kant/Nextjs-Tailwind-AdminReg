@@ -1,4 +1,12 @@
-import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN} from "../constant";
+import {
+  IMPERIAL,
+  INVALID_VALUES3,
+  INVALID_VALUES4,
+  TIME_FORMAT_YYYYMDHM,
+  USER_TYPE_ADMIN,
+  USER_TYPE_ORG_ADMIN,
+  USER_TYPE_TEAM_ADMIN
+} from "../constant";
 import {
   isValidPhoneNumber,
 } from 'libphonenumber-js';
@@ -10,12 +18,12 @@ export const getTokenFromUrl = () => {
   const urlParams = new URLSearchParams(queryString);
   // replace space because + was replaced with space
   return urlParams.get('token')?.replace(/ /g, '+');
-}
+};
 
 export const checkAlphaNumeric = str => {
   const regex=  /^[a-z0-9]+$/i;
   return str?.match(regex);
-}
+};
 
 export const countString = (str, letter) => {
   let count = 0;
@@ -29,7 +37,7 @@ export const countString = (str, letter) => {
     }
   }
   return count;
-}
+};
 
 export const checkUsernameValidation1 = str => {
   const dotCount = countString(str, '.');
@@ -39,30 +47,30 @@ export const checkUsernameValidation1 = str => {
   }
 
   return false;
-}
+};
 
 export const checkUsernameValidation2 = str => {
   return str?.charAt(str.length - 1) !== '.';
-}
+};
 
 export const getParamFromUrl = key => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const param = urlParams.get(key)?.replace(/ /g, '+');
   return param ? decodeURIComponent(param) : undefined;
-}
+};
 
 export const checkPasswordValidation = (password) => {
   const regex=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{6,1024}$/;
   return password && password.match(regex);
-}
+};
 
 export const checkPhoneNumberValidation = (value, country) => {
   if (!value) {
     return false;
   }
   return isValidPhoneNumber(value, country?.toUpperCase() ?? 'US');
-}
+};
 
 export const ableToLogin = userType => {
   const validRoles = [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN];
@@ -106,7 +114,7 @@ export const convertImperialToMetric = (imperial) => {
     };
   }
   return null;
-}
+};
 
 export const convertCmToImperial = value => {
   const numericValue = parseInt(value);
@@ -117,8 +125,13 @@ export const convertCmToImperial = value => {
     };
   }
 
-  const feet = Math.floor(numericValue / 30.48);
-  const inch = Math.round((numericValue - (feet * 30.48)) / 2.54);
+  let feet = Math.floor(numericValue / 30.48);
+  let inch = Math.round((numericValue - (feet * 30.48)) / 2.54);
+
+  if (inch === 12) {
+    feet += 1;
+    inch = 0;
+  }
 
   return {
     feet,
@@ -141,18 +154,18 @@ export const convertCmToMetric = value => {
 };
 
 export const convertLbsToKilos = value => {
-  return Math.round(value * 0.45359237);
+  return Math.round(value * 45.359237) / 100;
 };
 
 export const convertKilosToLbs = value => {
-  return Math.round(value / 0.45359237);
+  return Math.round(100 * value / 0.45359237) / 100;
 };
 
 export const format2Digits = (value) => {
-  if (!["", null, undefined].includes(value)) {
+  if (!INVALID_VALUES4.includes(value)) {
     return String(value).padStart(2, '0');
   } else return null;
-}
+};
 
 export const numMinutesBetween = (d1 = new Date(), d2 = new Date(1900, 1, 1)) => {
   const diff = (d1.getTime() - d2.getTime());
@@ -182,7 +195,7 @@ export const minutesToDaysHoursMinutes = minutes => {
     hours: Math.floor(minutes / 60 % 24),
     minutes: Math.ceil(minutes % 60),
   };
-}
+};
 
 export const celsiusToFahrenheit = t => {
   const a = ((t * 9 / 5) + 32);
@@ -197,7 +210,7 @@ export const getLatestDate = (d1, d2) => {
   }
 
   return d2;
-}
+};
 
 export const getLatestDateBeforeNow = (d1, d2) => {
   const now = new Date().getTime();
@@ -219,7 +232,24 @@ export const getLatestDateBeforeNow = (d1, d2) => {
   }
 
   return d2;
-}
+};
+
+export const getUrlParamAsJson = () => {
+  const cachedSearchUrl = localStorage.getItem("kop-params");
+  const q = queryString.parse(cachedSearchUrl);
+
+  if (
+      INVALID_VALUES3.includes(q?.organization) &&
+      (
+          localStorage.getItem("kop-v2-user-type").includes(USER_TYPE_ORG_ADMIN) ||
+          localStorage.getItem("kop-v2-user-type").includes(USER_TYPE_TEAM_ADMIN)
+      )
+  ) {
+    q.organization = localStorage.getItem("kop-v2-picked-organization-id");
+  }
+
+  return q;
+};
 
 export const concatAsUrlParam = q => {
   let str = '';
@@ -228,7 +258,7 @@ export const concatAsUrlParam = q => {
   });
 
   return str;
-}
+};
 
 export const updateUrlParam = ({param: {key, value}, reload = false}) => {
   // parse the query string into an object
@@ -241,7 +271,7 @@ export const updateUrlParam = ({param: {key, value}, reload = false}) => {
   } else {
     window.location.href = newUrl;
   }
-}
+};
 
 /**
  * @typedef TimezoneObj
@@ -268,13 +298,7 @@ export const timeOnOtherZone = (time, timezone) => {
       }
     }
 
-    return ret.toLocaleString([], {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    return ret.toLocaleString([], TIME_FORMAT_YYYYMDHM);
   } else {
     return spacetime(time).goto(timezone.name).unixFmt('yyyy.MM.dd h:mm a');
   }
@@ -283,13 +307,13 @@ export const timeOnOtherZone = (time, timezone) => {
 
 export const getDeviceId = () => {
   let deviceId = localStorage.getItem("kop-v2-device-id");
-  if ([null, undefined, "null", "undefined", ""].includes(deviceId)) {
+  if (INVALID_VALUES3.includes(deviceId)) {
     deviceId = uuidv4();
     localStorage.setItem("kop-v2-device-id", deviceId);
   }
 
   return deviceId;
-}
+};
 
 export const setStorageAfterLogin = ({token, refreshToken, userType, orgId, baseUrl}) => {
   localStorage.setItem("kop-v2-token", token);
@@ -298,18 +322,27 @@ export const setStorageAfterLogin = ({token, refreshToken, userType, orgId, base
   localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
   localStorage.setItem("kop-v2-picked-organization-id", orgId);
   localStorage.setItem("kop-v2-base-url", baseUrl);
-}
+};
 
 export const setStorageAfterRegisterLogin = ({token, baseUrl}) => {
   localStorage.setItem("kop-v2-register-token", token);
   localStorage.setItem("kop-v2-base-url", baseUrl);
-}
+};
 
 export const dateFormat = d => { // return 2022-07-02
   const year = d.getFullYear();
   const month = d.getMonth() + 1;
-  const formattedMonth = String(month).padStart(2, '0')
+  const formattedMonth = String(month).padStart(2, '0');
   const date = d.getDate();
   const formattedDate = String(date).padStart(2, '0');
   return `${year}-${formattedMonth}-${formattedDate}`;
-}
+};
+
+export const getHeightAsMetric = ({measure, feet, inch, height}) => {
+  if (measure === IMPERIAL) {
+    const {m, cm} = convertImperialToMetric(`${feet}ft${inch}in`);
+    return (parseInt(m) * 100) + parseInt(cm);
+  } else {
+    return height?.replaceAll('m', '').replaceAll('c', '');
+  }
+};

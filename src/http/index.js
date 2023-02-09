@@ -1,6 +1,7 @@
 import axios from "axios";
+import { update } from 'lodash';
 import {apiBaseUrl as baseUrl} from "../config";
-import {toastr} from 'react-redux-toastr'
+import {toastr} from 'react-redux-toastr';
 import i18n from '../i18nextInit';
 import {logout} from "../views/layouts/MainLayout";
 
@@ -12,7 +13,11 @@ const showErrorAndLogout = () => {
   setTimeout(() => {
     logout();
   }, 1500);
-}
+};
+
+const showNetworkError = () => {
+  toastr.error('', i18n.t("no internet connection"));
+};
 
 const cachedBaseUrl = localStorage.getItem("kop-v2-base-url");
 
@@ -39,11 +44,11 @@ instance.interceptors.request.use(
     config.headers = {
       ...config.headers,
       'Accept-Language': lang,
-    }
+    };
     return config;
   },
   error => {
-    Promise.reject(error)
+    return Promise.reject(error);
   });
 
 // Add a response interceptor
@@ -55,7 +60,10 @@ instance.interceptors.response.use(function (response) {
   const originalRequest = error.config;
   // Any status codes that falls outside the range of 2xx cause this function to trigger
   // Do something with response error
-  if (["401"].includes(error.response?.status?.toString())) { // if token expired
+  if (error?.code === 'ERR_NETWORK') {
+    showNetworkError();
+    return Promise.reject(error);
+  } else if (["401"].includes(error.response?.status?.toString())) { // if token expired
     if (!originalRequest._retry) {
       const refreshToken = localStorage.getItem("kop-v2-refresh-token");
       if (refreshToken) {
@@ -82,7 +90,15 @@ instance.interceptors.response.use(function (response) {
       showErrorAndLogout();
     }
   }
-  return Promise.reject(error);
+
+  let errorObj = JSON.parse(JSON.stringify(error));
+  update(errorObj, 'response', () => ({
+    ...(error?.response ?? {}),
+  }));
+  if (!error?.response?.data?.message) {
+    update(errorObj, 'response.data.message', () => i18n.t("msg something went wrong"));
+  }
+  return Promise.reject(errorObj);
 });
 
 function get(url, token, customHeaders) {
@@ -176,89 +192,89 @@ function deleteRequest(url, token) {
 
 export const login = (body) => {
   return post("/auth/login", body);
-}
+};
 
 export const createCompany = (body) => {
   return post("/organization", body);
-}
+};
 
 export const getCompanyById = id => {
   return get(`/organization/${id}`);
-}
+};
 
 export const updateCompany = (id, body) => {
   return patch(`/organization/${id}`, body);
-}
+};
 
 export const createTeam = (body) => {
   return post("/team", body);
-}
+};
 
 export const updateTeam = (teamId, body) => {
   return patch(`/team/${teamId}`, body);
-}
+};
 
 export const queryAllOrganizations = () => {
   return get("organization");
-}
+};
 
 export const queryTeams = () => {
   return get("team");
-}
+};
 
 export const sendRegistrationEmail = (data) => {
   return post("email/reSend", data);
-}
+};
 
 export const queryTeamMembers = (teamId) => {
   return get(`team/${teamId}/members`);
-}
+};
 
 export const getTeamStats = teamId => {
   return get(`team/${teamId}/stats`);
-}
+};
 
 export const getTeamDevices = teamId => {
   return get(`team/${teamId}/devices`);
-}
+};
 
 export const getTeamAlerts = (teamId, since) => {
   return get(`team/${teamId}/alerts`, null, {
     "If-None-Match": since,
   });
-}
+};
 
 export const searchMembers = keyword => {
   return get(`user/find/${keyword}`);
-}
+};
 
 export const searchMembersByPhone = phoneNumber => {
   return get(`user/phone/${phoneNumber}`);
-}
+};
 
 export const searchMembersUnderOrganization = ({keyword, organizationId}) => {
   return get(`organization/${organizationId}/user/find/${keyword}`);
-}
+};
 
 export const getUsersUnderOrganization = ({userType, organizationId}) => {
   return get(`organization/${organizationId}/user?userType=${userType}`);
-}
+};
 
 export const removeTeamMember = (userId) => {
   return post(`team/remove/user/${userId}`, {});
-}
+};
 
 export const deleteUser = ({organizationId, userId}) => {
   return deleteRequest(`organization/${organizationId}/user/${userId}`);
-}
+};
 
 export const reInviteOrganizationUser = ({organizationId, userId}) => {
   return get(`organization/${organizationId}/user/${userId}/invite`);
-}
+};
 
 export const reInviteTeamUser = ({teamId, userId}) => {
   return get(`team/${teamId}/invite/${userId}`);
-}
+};
 
 export const createUserByAdmin = (orgId, user) => {
   return post(`organization/${orgId}/user`, user);
@@ -282,11 +298,11 @@ export const requestSmsCode = phoneNumber => {
 
 export const getMyProfileWithToken = token => {
   return get("/user", token);
-}
+};
 
 export const setMyProfileWithToken = (body, token) => {
   return patch("/user", body, token);
-}
+};
 
 export const subscribeDataEvents = (
   {
@@ -296,15 +312,15 @@ export const subscribeDataEvents = (
     cancelToken,
   }) => {
   return post(`/organization/${orgId}/subscribe/${horizon}`, filter, null, null, cancelToken);
-}
+};
 
 export const updateProfile = (body, token) => {
   return post("user/update/profile", body, token);
-}
+};
 
 export const resetPasswordV2 = payload => {
   return patch("auth/token", payload)
-}
+};
 
 export const updateProfileV2 = (payload, token) => {
   return patch("/user", payload, token);
@@ -328,7 +344,7 @@ export const getMedicalResponsesV2 = token => {
 
 export const answerMedicalQuestionsV2 = (body, token) => {
   return post("/questionnaire", body, token)
-}
+};
 
 export const recoverUsername = email => {
   return get(`/auth/forgot/username/${email}`);
@@ -374,12 +390,52 @@ export const logoutAPI = () => {
 
 export const queryOrganizationWearTime = (orgId, data) => {
   return post(`/organization/${orgId}/data/wearTime`, data);
-}
+};
 
 export const queryOrganizationAlertMetrics = (orgId, data) => {
   return post(`/organization/${orgId}/data/alertMetrics`, data);
-}
+};
+
+export const queryOrganizationMaxCbt = (orgId, data) => {
+  return post(`/organization/${orgId}/data/maxCbt`, data);
+};
+
+export const queryOrganizationUsersInCBTZones = (orgId, data) => {
+  return post(`/organization/${orgId}/data/temperatureCategories`, data);
+};
+
+export const queryOrganizationActiveUsers = (orgId, data) => {
+  return post(`/organization/${orgId}/data/activeUsers`, data);
+};
+
+export const queryOrganizationSWRFluid = (orgId, data) => {
+  return post(`/organization/${orgId}/data/fluidMetrics`, data);
+};
+
+export const queryOrganizationAlertedUserCount = (orgId, data) => {
+  return post(`/organization/${orgId}/data/alertedUserCount`, data);
+};
+
+export const queryAmbientTempHumidity = (orgId, data) => {
+  return post(`/organization/${orgId}/data/tempHumidityRange`, data);
+};
 
 export const getRiskLevels = () => {
   return get('risklevel');
-}
+};
+
+export const queryOrganizationFluidMetricsByTeam = (orgId, data) => {
+  return post(`/organization/${orgId}/data/fluidMetricsByTeam`, data);
+};
+
+export const queryOrganizationDeviceData = (orgId, data) => {
+  return post(`/organization/${orgId}/data/devices`, data);
+};
+
+export const queryOrganizationTempCateData = (orgId, data) => {
+  return post(`/organization/${orgId}/data/temperatureCategoriesByUser`, data);
+};
+
+export const queryOrganizationCategoriesUsersInCBTZones = (orgId, data) => {
+  return post(`/organization/${orgId}/data/temperatureCategoriesAndAlerts`, data);
+};

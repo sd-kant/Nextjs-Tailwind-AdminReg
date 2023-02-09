@@ -1,13 +1,7 @@
 .Wrapper {
-  width: calc(100% - 40px);
   position: fixed;
   top: 200px;
-}
-
-.StatisticsWrapper {
-}
-
-.WorkRestBarWrapper {
+  width: calc(100% - 40px);
 }
 
 @media only screen and (min-width: 768px) {
@@ -18,8 +12,8 @@
 
 @media only screen and (min-width: 1024px) {
   .Wrapper {
-    width: calc(100% - 50px);
     top: 170px;
+    width: calc(100% - 50px);
   }
 }
 

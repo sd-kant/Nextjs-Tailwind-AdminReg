@@ -1,0 +1,119 @@
+@import "src/assets/scss/colors";
+
+.Header {
+  position: sticky;
+  padding: 10px 0;
+  background: $app-bg;
+  opacity: 1;
+  z-index: 5;
+
+  .Second {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+
+    .PaginationWrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-top: 5px;
+
+      .SelectorWrapper {
+        margin-left: 10px;
+
+        .Selector {
+          border: 1px solid $app-white;
+          border-radius: 10px;
+          padding: 5px 20px;
+          outline: none;
+          color: white;
+          background: transparent;
+          text-align: center;
+
+          /* for Firefox */
+          -moz-appearance: none;
+          /* for Safari, Chrome, Opera */
+          -webkit-appearance: none;
+
+          &::-ms-expand {
+            display: none;
+          }
+
+          & > option {
+            color: $app-white;
+            background: $app-bg;
+          }
+        }
+      }
+
+      .BtnBack {
+        margin-right: 20px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        border: none;
+        padding: 0 10px;
+        width: 80px;
+        height: 30px;
+        font-size: 14px;
+        font-family: Ubuntu-Bold, sans-serif;
+        background-color: $app-orange;
+        color: $app-white;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+
+      .TxtEllipse1 {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        width: 60px;
+        text-align: center;
+        white-space: normal;
+        -webkit-line-clamp: 1;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .Header {
+    .Second {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-column-gap: 25px;
+
+      .PaginationWrapper {
+        margin-top: 10px;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .Header {
+    .First {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      grid-column-gap: 25px;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .Header {
+    .Second {
+      .PaginationWrapper {
+        display: flex;
+        align-content: flex-start;
+        align-items: stretch;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}

@@ -4,7 +4,6 @@ import {useTranslation} from "react-i18next";
 import FormSULogin from "../partials/su-login/FormSULogin";
 import {useNavigate} from "react-router-dom";
 
-
 const SULogin = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
@@ -25,6 +24,6 @@ const SULogin = () => {
       />
     </div>
   )
-}
+};
 
 export default SULogin;

@@ -4,21 +4,16 @@ import backIcon from "../../../assets/images/back.svg";
 import * as Yup from "yup";
 import {Form, withFormik} from "formik";
 import {IMPERIAL, METRIC} from "../../../constant";
-import {convertKilosToLbs, convertLbsToKilos} from "../../../utils";
+import {
+  convertKilosToLbs,
+  convertLbsToKilos
+} from "../../../utils";
 import {useNavigate} from "react-router-dom";
 
 export const formShape = t => ({
   weightUnit: Yup.string(),
   weight: Yup.string()
     .required(t("weight required"))
-    .test(
-      'is-decimal',
-      t('weight not decimal'),
-      function (value) {
-        const str = value && value.toString();
-        return !(str && str.includes("."));
-      }
-    )
     .test(
       'is-valid',
       t('weight invalid'),
@@ -59,7 +54,7 @@ const FormWeight = (props) => {
 
   const onChange = (value) => {
     setFieldValue("weight", value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -71,14 +66,14 @@ const FormWeight = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("weight question")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("weight question")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex flex-column">
@@ -116,7 +111,7 @@ const FormWeight = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

@@ -4,12 +4,16 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import {loginAction} from "../../../redux/action/auth";
 import {
   checkPasswordValidation,
   checkUsernameValidation1,
-  checkUsernameValidation2, getParamFromUrl
+  checkUsernameValidation2,
+  getParamFromUrl
 } from "../../../utils";
 import {Link, useNavigate} from "react-router-dom";
 import backIcon from "../../../assets/images/back.svg";
@@ -51,7 +55,14 @@ export const formSchema = (t) => {
 };
 
 const FormSULogin = (props) => {
-  const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    setRestBarClass
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -80,14 +91,14 @@ const FormSULogin = (props) => {
     setFieldValue(name, value);
 
     setClassName();
-  }
+  };
 
   const setClassName = () => {
     let sum = 0;
     sum += values["password"] ? 1 : 0;
     sum += values["username"] ? 1 : 0;
     setRestBarClass(`progress-${sum * 50}`);
-  }
+  };
 
   const handlePrevious = () => {
     const source = getParamFromUrl('source');
@@ -96,7 +107,7 @@ const FormSULogin = (props) => {
     } else {
       navigate("/login");
     }
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -168,7 +179,7 @@ const FormSULogin = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

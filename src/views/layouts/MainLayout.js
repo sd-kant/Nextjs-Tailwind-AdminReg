@@ -25,7 +25,7 @@ export const logout = () => {
         window.location.href = "/";
       }
     });
-}
+};
 
 const MainLayout = (props) => {
   return (
@@ -42,6 +42,6 @@ const MainLayout = (props) => {
       </div>
     </div>
   );
-}
+};
 
 export default MainLayout;

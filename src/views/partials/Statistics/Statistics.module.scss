@@ -5,36 +5,30 @@
   background: $app-ts;
 
   .InnerWrapper {
-    background: $app-ts;
-    color: white;
-    padding: 0 24px;
-    border-radius: 24px;
     display: inline-flex;
     align-items: center;
+    border-radius: 24px;
+    padding: 0 24px;
+    background: $app-ts;
+    color: white;
   }
 
   .LeftWrapper {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 115px 115px;
-    height: 230px;
     grid-column-gap: 20px;
+    height: 230px;
   }
 
   .RightWrapper {
-    height: 115px;
     max-width: 376px;
+    height: 115px;
   }
 }
 
 .BoxShadow {
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-}
-
-@media only screen and (min-width: 768px) {
-  .Wrapper {
-
-  }
 }
 
 @media only screen and (min-width: 1024px) {

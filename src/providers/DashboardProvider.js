@@ -4,11 +4,13 @@ import {bindActionCreators} from "redux";
 import {
   getTeamAlerts,
   getTeamDevices,
-  getTeamStats, inviteTeamMemberV2,
+  getTeamStats,
+  inviteTeamMemberV2,
   queryAllOrganizations,
   queryTeamMembers,
   queryTeams,
-  subscribeDataEvents, unlockUser
+  subscribeDataEvents,
+  unlockUser
 } from "../http";
 import axios from "axios";
 import {
@@ -28,7 +30,10 @@ import {
 } from "../constant";
 import useForceUpdate from "../hooks/useForceUpdate";
 import {useNotificationContext} from "./NotificationProvider";
-import {formatLastSync, sortMembers} from "../utils/dashboard";
+import {
+  formatLastSync,
+  sortMembers
+} from "../utils/dashboard";
 import {setLoadingAction} from "../redux/action/ui";
 import {useUtilsContext} from "./UtilsProvider";
 
@@ -537,7 +542,6 @@ const DashboardProviderDraft = (
                   };
                 }
 
-
                 if (memberDeviceLogs?.length > 0) {
                   const devicesTemp = JSON.parse(JSON.stringify(valuesV2Temp?.devices));
                   const devicesMemberIndex = devicesTemp.findIndex(it => it.userId?.toString() === member.userId?.toString()) ?? [];
@@ -554,7 +558,7 @@ const DashboardProviderDraft = (
                     } else {
                       memberDevices.push({...it, type: 'kenzen'});
                     }
-                  })
+                  });
                   if (devicesMemberIndex !== -1) {
                     devicesTemp.splice(devicesMemberIndex, 1, {userId: member.userId, devices: memberDevices});
                   } else {
@@ -745,7 +749,7 @@ const DashboardProviderDraft = (
   const unlockMember = React.useCallback(member => {
     return new Promise((resolve, reject) => {
       if (member?.locked && member?.userId && member?.teamId) {
-        setLoading(true)
+        setLoading(true);
         unlockUser({
           teamId: member?.teamId,
           userId: member?.userId,

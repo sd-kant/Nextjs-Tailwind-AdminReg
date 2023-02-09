@@ -12,13 +12,14 @@ const SearchInput = (
     visibleClearIcon,
     onChange,
     onClear,
+    placeholder,
   }) => {
   return (
     <div className={clsx(style.Wrapper)}>
       <img className={clsx(style.SearchIcon)} src={searchIcon} alt="search icon"/>
       <input
         className={clsx(style.Input)}
-        placeholder={t("search input placeholder")}
+        placeholder={t(placeholder || "search input placeholder")}
         value={keyword}
         onChange={onChange}
       />
@@ -28,6 +29,6 @@ const SearchInput = (
       }
     </div>
   )
-}
+};
 
 export default withTranslation()(SearchInput);

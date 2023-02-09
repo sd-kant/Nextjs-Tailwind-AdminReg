@@ -9,6 +9,7 @@ import {
   USER_TYPE_TEAM_ADMIN,
   USER_TYPE_OPERATOR,
   permissionLevels,
+  INVALID_VALUES1,
 } from "../constant";
 import {queryAllTeamsAction} from "../redux/action/base";
 import {
@@ -19,45 +20,28 @@ import {
   getUsersUnderOrganization,
   deleteUser,
   reInviteOrganizationUser,
-  reInviteTeamUser, unlockUser, inviteTeamMemberV2,
+  reInviteTeamUser,
+  unlockUser,
+  inviteTeamMemberV2,
 } from "../http";
 import {get, isEqual} from "lodash";
 import ConfirmModalV2 from "../views/components/ConfirmModalV2";
 import {withTranslation} from "react-i18next";
-import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAction} from "../redux/action/ui";
+import {
+  setLoadingAction,
+  showErrorNotificationAction,
+  showSuccessNotificationAction
+} from "../redux/action/ui";
 import {updateUrlParam} from "../utils";
 import ConfirmModal from "../views/components/ConfirmModal";
 import {useParams} from "react-router-dom";
+import {
+  checkIfHigherThanMe,
+  getPermissionLevelFromUserTypes
+} from "../utils/members";
 
 const MembersContext = React.createContext(null);
 let searchTimeout = null;
-
-export const getPermissionLevelFromUserTypes = (userTypes) => {
-  let permissionLevel;
-  if (userTypes?.includes(USER_TYPE_ADMIN)) {
-    permissionLevel = permissionLevels?.find(it => it.value?.toString() === "3");
-  } else if (userTypes?.includes(USER_TYPE_ORG_ADMIN)) {
-    permissionLevel = permissionLevels?.find(it => it.value?.toString() === "4");
-  } else if (userTypes?.includes(USER_TYPE_TEAM_ADMIN)) {
-    permissionLevel = permissionLevels?.find(it => it.value?.toString() === "1");
-  } else if (userTypes?.includes(USER_TYPE_OPERATOR)) {
-    permissionLevel = permissionLevels?.find(it => it.value?.toString() === "2");
-  }
-
-  return permissionLevel;
-};
-
-export const checkIfHigherThanMe = (myUserType, opponentPermissionLevel) => {
-  if (myUserType.includes(USER_TYPE_ADMIN)) {
-    return false;
-  } else if (myUserType.includes(USER_TYPE_ORG_ADMIN)) {
-    return ["3"].includes(opponentPermissionLevel?.value?.toString());
-  } else if (myUserType.includes(USER_TYPE_TEAM_ADMIN)) {
-    return ["3", "4"].includes(opponentPermissionLevel?.value?.toString());
-  }
-
-  return true;
-}
 
 const MembersProvider = (
   {
@@ -112,9 +96,8 @@ const MembersProvider = (
   const trimmedKeyword = React.useMemo(() => keyword.trim().toLowerCase(), [keyword]);
   React.useEffect(() => {
     if (page === "search") {
-      if (searchTimeout) {
+      if (searchTimeout)
         clearTimeout(searchTimeout);
-      }
       updateUrlParam({param: {key: 'keyword', value: trimmedKeyword}});
       searchTimeout = setTimeout(() => {
         initializeMembers().then();
@@ -127,7 +110,7 @@ const MembersProvider = (
     const entities = [];
     allTeams?.forEach(team => {
       if (
-        [undefined, "-1", null, ""].includes(organizationId?.toString()) ||
+        INVALID_VALUES1.includes(organizationId?.toString()) ||
         team?.orgId?.toString() === organizationId?.toString()
       ) {
         entities.push({
@@ -185,7 +168,6 @@ const MembersProvider = (
       } else if (page === "search") {
         users.push(memberItem);
       }
-
     });
     setUsers(users);
     setAdmins(admins);
@@ -263,7 +245,7 @@ const MembersProvider = (
       if (page === "search") {
         if (trimmedKeyword) {
           let teamMembersResponse;
-          if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
+          if (INVALID_VALUES1.includes(organizationId?.toString())) {
             teamMembersResponse = await searchMembersAPI(trimmedKeyword);
           } else {
             teamMembersResponse = await searchMembersUnderOrganization({organizationId, keyword: trimmedKeyword});
@@ -350,7 +332,7 @@ const MembersProvider = (
       setMembers(teamMembers);
       setTempMembers(teamMembers);
     } catch (e) {
-      showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+      showErrorNotification(e.response?.data?.message);
     }
   };
 
@@ -527,7 +509,7 @@ const MembersProvider = (
       });
     } catch (e) {
       console.log("reset phone number error", e.response?.data);
-      showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+      showErrorNotification(e.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -550,7 +532,7 @@ const MembersProvider = (
           setTempMembers(prev => prev?.filter(it => it.userId?.toString() !== selectedUser.userId?.toString()));
         }
       } catch (e) {
-        showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+        showErrorNotification(e.response?.data?.message);
       } finally {
         setLoading(false);
       }
@@ -560,7 +542,7 @@ const MembersProvider = (
   const handleDeleteUser = React.useCallback(() => {
     // only super or org admin can do this
     if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) {
-      if (!(["-1", "", null, undefined].includes(organizationId?.toString())) && selectedUser?.userId) {
+      if (!(INVALID_VALUES1.includes(organizationId?.toString())) && selectedUser?.userId) {
         setLoading(true);
         deleteUser({
           organizationId,
@@ -576,7 +558,7 @@ const MembersProvider = (
             }));
           })
           .catch(e => {
-            showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+            showErrorNotification(e.response?.data?.message);
           })
           .finally(() => {
             setLoading(false);
@@ -588,10 +570,10 @@ const MembersProvider = (
   const _handleUnlockUser = React.useCallback(() => {
     setLoading(true);
     let fTeamId = teamId;
-    if (["-1", "", null, undefined].includes(teamId?.toString())) {
+    if (INVALID_VALUES1.includes(teamId?.toString())) {
       fTeamId = teams?.[0].value;
     }
-    if (["-1", "", null, undefined].includes(fTeamId?.toString())) return;
+    if (INVALID_VALUES1.includes(fTeamId?.toString())) return;
 
     unlockUser({
       teamId: fTeamId,
@@ -613,7 +595,7 @@ const MembersProvider = (
         } : it));
       })
       .catch(e => {
-        showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+        showErrorNotification(e.response?.data?.message);
       })
       .finally(() => {
         setLoading(false);
@@ -625,7 +607,7 @@ const MembersProvider = (
     let requestHttp = null;
     let payload = null;
     if (userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it))) { // super or org admin
-      if (!["-1", "", null, undefined].includes(organizationId?.toString()) && user?.userId) {
+      if (!INVALID_VALUES1.includes(organizationId?.toString()) && user?.userId) {
         requestHttp = reInviteOrganizationUser;
         payload = {
           organizationId: organizationId,
@@ -664,7 +646,7 @@ const MembersProvider = (
           }));
         })
         .catch(e => {
-          showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+          showErrorNotification(e.response?.data?.message);
         })
         .finally(() => {
           setLoading(false);
@@ -839,7 +821,7 @@ const MembersProvider = (
     if (trimmedKeywordOnInvite) {
       let promise = null;
       let promiseBody = {};
-      if (isAdmin && ![undefined, "-1", null, ""].includes(organizationId?.toString())) {
+      if (isAdmin && !INVALID_VALUES1.includes(organizationId?.toString())) {
         promise = searchMembersUnderOrganization;
         promiseBody = {organizationId, keyword: trimmedKeywordOnInvite};
       } else {

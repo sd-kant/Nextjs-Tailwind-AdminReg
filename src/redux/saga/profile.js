@@ -6,7 +6,12 @@ import {
 } from 'redux-saga/effects';
 import {actionTypes} from '../type';
 import i18n from '../../i18nextInit';
-import {getMedicalQuestionsV2, getMedicalResponsesV2, getProfileV2, updateProfileV2} from "../../http";
+import {
+  getMedicalQuestionsV2,
+  getMedicalResponsesV2,
+  getProfileV2,
+  updateProfileV2
+} from "../../http";
 import {get} from "lodash";
 
 function* actionWatcher() {
@@ -66,7 +71,7 @@ function* updateProfileSaga(
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+        msg: i18n.t(e.response?.data?.message),
       }
     });
   } finally {
@@ -113,7 +118,7 @@ function* getProfileSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+        msg: i18n.t(e.response?.data?.message),
       }
     });
   } finally {
@@ -151,7 +156,7 @@ function* getMedicalQuestionsSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+        msg: i18n.t(e.response?.data?.message),
       }
     });
   } finally {
@@ -189,7 +194,7 @@ function* getMedicalResponsesSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+        msg: i18n.t(e.response?.data?.message),
       }
     });
   } finally {

@@ -1,10 +1,10 @@
 .Wrapper {
   position: relative;
   display: inline-block;
+  border: 1px solid;
+  border-radius: 10px;
   text-transform: uppercase;
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  border: 1px solid;
   cursor: pointer;
 
   .InnerWrapper {
@@ -16,17 +16,17 @@
 
   .IconWrapper {
     position: absolute;
-    width: 35px;
-    right: 0;
     top: 5px;
+    right: 0;
     bottom: 5px;
     border: solid white;
     border-width: 0 0 0 1px;
+    width: 35px;
 
     img {
       position: absolute;
-      right: 12px;
       top: 50%;
+      right: 12px;
       transform: translateY(-50%);
     }
   }
@@ -44,7 +44,8 @@
   padding: 4px 25px;
 }
 
-.FullWidth.XS {
+.FullWidth.XS,
+.FullWidth.SM  {
   width: calc(100% - 50px);
 }
 
@@ -54,10 +55,6 @@
 
 .SM {
   padding: 10px 25px;
-}
-
-.FullWidth.SM {
-  width: calc(100% - 50px);
 }
 
 .SM.Dropdown {

@@ -14,11 +14,11 @@ const DashLogoutButton = ({t}) => {
         <img src={logoutIcon} alt="upload icon"/>
         &nbsp;&nbsp;&nbsp;
         <span className="capitalize">
-            {t("logout")}
-          </span>
+          {t("logout")}
+        </span>
       </label>
     </div>
   )
-}
+};
 
 export default withTranslation()(DashLogoutButton);

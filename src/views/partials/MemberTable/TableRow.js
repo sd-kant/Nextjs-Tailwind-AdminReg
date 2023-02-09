@@ -81,11 +81,10 @@ const TableRow = (
       }
       {
         visibleColumns?.length < (Object.keys(columnsMap)?.length + 1) &&
-        <td className={clsx(style.TableCell)}>
-        </td>
+        <td className={clsx(style.TableCell)}/>
       }
     </tr>
   )
-}
+};
 
 export default React.memo(TableRow);

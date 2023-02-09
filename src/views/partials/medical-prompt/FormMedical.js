@@ -3,7 +3,10 @@ import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import {get} from "lodash";
-import {QUESTION_TYPE_BOOLEAN, QUESTION_TYPE_RADIO} from "../../../constant";
+import {
+  QUESTION_TYPE_BOOLEAN,
+  QUESTION_TYPE_RADIO
+} from "../../../constant";
 import RadioGroup from "../../components/RadioGroup";
 import MedicalTrueFalse from "../../components/MedicalTrueFalse";
 import {bindActionCreators} from "redux";
@@ -36,13 +39,20 @@ export const formatAnswersToOptions = (answers) => {
         }
       }
     });
-}
+};
 
 const FormMedical = (props) => {
   const {
-    t, medicalQuestions, order, setLoading,
-    showErrorNotification, showSuccessNotification, setRestBarClass,
-    token, profile, medicalResponses,
+    t,
+    medicalQuestions,
+    order,
+    setLoading,
+    showErrorNotification,
+    showSuccessNotification,
+    setRestBarClass,
+    token,
+    profile,
+    medicalResponses,
   } = props;
   const [questionOrder, setQuestionOrder] = useState(null);
   const [questionContent, setQuestionContent] = useState(null);
@@ -80,11 +90,11 @@ const FormMedical = (props) => {
     } else {
       setAnswer(null);
     }
-  }
+  };
 
   const onChangeOption = (value) => {
     setAnswer(value);
-  }
+  };
 
   const goToPrev = () => {
     const prevQuestions =
@@ -102,7 +112,7 @@ const FormMedical = (props) => {
     } else {
       navigate(`/create-account/medical-initial`);
     }
-  }
+  };
 
   const goToNext = () => {
     // store in local storage
@@ -137,7 +147,7 @@ const FormMedical = (props) => {
     } else { // all question answered
       submit().then();
     }
-  }
+  };
 
   const submit = async () => {
     const medicalQuestionsStr = localStorage.getItem("medicalQuestions");
@@ -166,7 +176,7 @@ const FormMedical = (props) => {
     } else { // show error notification
       showErrorNotification(t("msg no medical answers"));
     }
-  }
+  };
 
   return (
     <div className='form-group mt-57'>
@@ -178,14 +188,14 @@ const FormMedical = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28'>
-        <span className='font-binary d-block'>
-          {questionContent?.text}
-        </span>
+          <span className='font-binary d-block'>
+            {questionContent?.text}
+          </span>
         </div>
         {
           questionContent?.type === QUESTION_TYPE_RADIO &&
@@ -223,7 +233,7 @@ const FormMedical = (props) => {
       </div>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   medicalQuestions: get(state, 'profile.medicalQuestions'),

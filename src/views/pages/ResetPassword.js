@@ -3,7 +3,6 @@ import logo from "../../assets/images/logo_light.svg";
 import {useTranslation} from "react-i18next";
 import FormResetPassword from "../partials/su-login/FormResetPassword";
 
-
 const ResetPassword = () => {
   const {t} = useTranslation();
 
@@ -21,6 +20,6 @@ const ResetPassword = () => {
       <FormResetPassword/>
     </div>
   )
-}
+};
 
 export default ResetPassword;

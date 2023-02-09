@@ -1,9 +1,18 @@
 import {
   searchMembersUnderOrganization,
   searchMembers,
-  inviteTeamMemberV2, createUserByAdmin, updateUserByAdmin, searchMembersByPhone,
+  inviteTeamMemberV2,
+  createUserByAdmin,
+  updateUserByAdmin,
+  searchMembersByPhone,
 } from "../http";
-import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_OPERATOR, USER_TYPE_TEAM_ADMIN} from "../constant";
+import {
+  USER_TYPE_ADMIN,
+  USER_TYPE_ORG_ADMIN,
+  USER_TYPE_OPERATOR,
+  USER_TYPE_TEAM_ADMIN,
+  INVALID_VALUES1
+} from "../constant";
 import {isEqual} from "lodash";
 
 const setTeamIdToUsers = (users, teamId) => {
@@ -11,7 +20,7 @@ const setTeamIdToUsers = (users, teamId) => {
     ...user,
     teamId,
   }));
-}
+};
 
 const formatUserType = (users) => {
   return users && users.map((user) => ({
@@ -19,21 +28,21 @@ const formatUserType = (users) => {
     userTypes: [user?.userType?.value?.toString() === "1" ? USER_TYPE_TEAM_ADMIN : USER_TYPE_OPERATOR],
     userType: user?.userType?.value?.toString() === "1" ? USER_TYPE_TEAM_ADMIN : null,
   }));
-}
+};
 
 const formatJob = (users) => {
   return users && users.map((user) => ({
     ...user,
     job: user?.job?.value,
   }));
-}
+};
 
 const formatPhoneNumber = (users) => {
   return users && users.map((user) => ({
     ...user,
     phoneNumber: user?.phoneNumber?.value ? `+${user?.phoneNumber?.value}` : null,
   }));
-}
+};
 
 const formatEmail = (users) => {
   return users && users.map((user) => ({
@@ -41,7 +50,8 @@ const formatEmail = (users) => {
     // fixme admin can set user's email as empty, in this case how to un-assign email from user
     email: user.email ? user.email.toLowerCase() : null,
   }));
-}
+};
+
 // create users
 export const _handleSubmitV2 = (
   {
@@ -250,7 +260,7 @@ export const handleModifyUsers = (
       const updatePromises = [];
       let inviteBody = {};
       usersToModify?.forEach(userToModify => {
-        if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
+        if (!(INVALID_VALUES1.includes(organizationId?.toString()))) {
           if (isAdmin) {
             updatePromises.push(updateUserByAdmin(organizationId, userToModify.userId, userToModify));
           }
@@ -349,4 +359,11 @@ export const handleModifyUsers = (
   } catch (e) {
     console.log('_handleSubmit error', e);
   }
-}
+};
+
+/**
+ * Check if string contains only spaces
+ */
+export const checkIfSpacesOnly = (str) => {
+  return !(str?.replace(/\s/g, '').length);
+};

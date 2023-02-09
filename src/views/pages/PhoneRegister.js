@@ -4,7 +4,6 @@ import {useTranslation} from "react-i18next";
 import FormPhoneRegister from "../partials/su-login/FormPhoneRegister";
 import {useNavigate} from "react-router-dom";
 
-
 const PhoneRegister = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
@@ -25,6 +24,6 @@ const PhoneRegister = () => {
       />
     </div>
   )
-}
+};
 
 export default PhoneRegister;

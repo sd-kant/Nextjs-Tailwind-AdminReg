@@ -7,11 +7,11 @@
 }
 
 .ContentWrapper {
-  height: calc(100vh - 386px);
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px 0;
   margin-top: 15px;
+  padding: 20px 0;
+  height: calc(100vh - 386px);
 
   &.OverflowYHidden {
     overflow-y: hidden;
@@ -23,13 +23,13 @@
 }
 
 .CancelBtn {
-  margin-left: 0;
   margin-top: 15px;
+  margin-left: 0;
 }
 
 @media only screen and (min-width: 768px) {
   .CancelBtn {
-    margin-left: 15px;
     margin-top: 0;
+    margin-left: 15px;
   }
 }

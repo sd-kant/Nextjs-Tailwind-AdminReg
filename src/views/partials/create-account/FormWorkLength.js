@@ -22,7 +22,15 @@ const formSchema = (t) => {
 };
 
 const FormWorkLength = (props) => {
-  const {t, values, errors, touched, setFieldValue, setRestBarClass, profile} = props;
+  const {
+    t,
+    values,
+    errors,
+    touched,
+    setFieldValue,
+    setRestBarClass,
+    profile
+  } = props;
   const navigate = useNavigate();
   useEffect(() => {
     setRestBarClass('progress-90');
@@ -46,14 +54,14 @@ const FormWorkLength = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("work length question")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("work length question")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex flex-column">
@@ -88,7 +96,7 @@ const FormWorkLength = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

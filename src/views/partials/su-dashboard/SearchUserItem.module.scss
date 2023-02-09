@@ -1,28 +1,27 @@
 @import "../../../assets/scss/colors";
 
 .User {
-  background: #313131;
+  position: relative;
+  margin-top: 40px;
   border-radius: 6px;
   padding: 10px;
-  margin-top: 40px;
-  position: relative;
+  background: #313131;
 
-  .RemoveIconWrapper {
-    width: 24px;
-    height: 24px;
+  .RemoveIconWrapper,
+  .LockIconWrapper {
     position: absolute;
     top: 10px;
-    right: 10px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
   }
 
+  .RemoveIconWrapper {
+    right: 10px;
+  }
+
   .LockIconWrapper {
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    top: 10px;
     right: 40px;
-    cursor: pointer;
 
     .LockIcon {
       margin-top: 1px;
@@ -39,25 +38,19 @@
       margin-top: 10px;
     }
 
-    .Input {
+    .Input,
+    .InputHalf {
       width: calc(100% - 45px);
     }
 
-    .InputHalf {
-      width: calc(100% - 45PX);
-    }
-
-    .PhoneWrapper {
+    .PhoneWrapper,
+    .Select {
       width: 100%;
     }
 
     .DisabledInput {
       border: 1px solid $app-ts;
       background-color: $app-tf;
-    }
-
-    .Select {
-      width: 100%;
     }
 
     .GroupWrapper {
@@ -73,40 +66,29 @@
       .ButtonWrapper {
         display: flex;
         justify-content: flex-end;
-        margin-top: 10px;
       }
 
+      .ButtonWrapper,
+      .PhoneNumberContainer,
       & > div:last-child {
         margin-top: 10px;
       }
     }
 
-    /*.GroupWrapper2 {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      grid-column-gap: 20px;
-
-      .ButtonWrapper {
-        display: flex;
-        justify-content: flex-end;
-      }
-    }*/
-
     .PhoneNumberContainer {
+      border: none;
       width: 100%;
       height: 50px;
-      border: none;
-      margin-top: 10px;
     }
 
     .PhoneNumberInput {
-      background-color: $app-ts;
-      color: $app-white;
-      height: 50px;
       border: none;
+      height: 50px;
       font-size: 21px;
       line-height: 24.13px;
       font-family: Ubuntu-Regular, sans-serif;
+      background-color: $app-ts;
+      color: $app-white;
     }
 
     .PhoneNumberDropdown {
@@ -114,15 +96,6 @@
       color: black;
     }
   }
-
-  /*.UserRow.ButtonRow {
-    justify-content: flex-end;
-
-    .ButtonWrapper {
-      display: flex;
-      justify-content: flex-end;
-    }
-  }*/
 }
 
 @media only screen and (min-width: 768px) {
@@ -130,13 +103,16 @@
     border-radius: 24px;
     padding: 40px;
 
-    .RemoveIconWrapper {
+    .RemoveIconWrapper,
+    .LockIconWrapper {
       top: 20px;
+    }
+
+    .RemoveIconWrapper {
       right: 40px;
     }
 
     .LockIconWrapper {
-      top: 20px;
       right: 70px;
     }
 
@@ -150,10 +126,7 @@
           margin-top: 0;
         }
 
-        .PhoneWrapper {
-          width: 100%;
-        }
-
+        .PhoneWrapper,
         .Select {
           width: 100%;
         }
@@ -171,13 +144,16 @@
     border-radius: 12px;
     padding: 20px;
 
-    .RemoveIconWrapper {
+    .RemoveIconWrapper,
+    .LockIconWrapper {
       top: 20px;
+    }
+
+    .RemoveIconWrapper {
       right: 20px;
     }
 
     .LockIconWrapper {
-      top: 20px;
       right: 50px;
     }
 
@@ -193,15 +169,7 @@
         max-width: 370px;
       }
 
-      /*.GroupWrapper2 {
-        width: 50%;
-        max-width: 370px;
-      }*/
-
-      .PhoneWrapper {
-        width: 372px;
-      }
-
+      .PhoneWrapper,
       .Select {
         width: 372px;
       }
@@ -218,13 +186,16 @@
     border-radius: 24px;
     padding: 40px;
 
-    .RemoveIconWrapper {
+    .RemoveIconWrapper,
+    .LockIconWrapper {
       top: 20px;
+    }
+
+    .RemoveIconWrapper {
       right: 40px;
     }
 
     .LockIconWrapper {
-      top: 20px;
       right: 70px;
     }
 
@@ -240,15 +211,7 @@
         max-width: 397px;
       }
 
-      /*.GroupWrapper2 {
-        width: 50%;
-        max-width: 397px;
-      }*/
-
-      .PhoneWrapper {
-        width: 397px;
-      }
-
+      .PhoneWrapper,
       .Select {
         width: 397px;
       }

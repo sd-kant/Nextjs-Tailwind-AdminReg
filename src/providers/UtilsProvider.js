@@ -7,6 +7,11 @@ import {
   numMinutesBetweenWithNow as numMinutesBetween,
 } from "../utils";
 import {isProductionMode} from "../App";
+import {
+  HEART_RATE_VALUES,
+  INVALID_VALUES2,
+  STAGE_VALUES
+} from "../constant";
 
 const UtilsContext = React.createContext(null);
 
@@ -61,7 +66,7 @@ export const UtilsProviderDraft = (
           value: 8,
         };
       }
-    }
+    };
 
     if (!deviceId || deviceId?.toString().includes("none")) { // if no device
       return {
@@ -105,40 +110,28 @@ export const UtilsProviderDraft = (
 
   const formatAlert = stageId => {
     if (!stageId) {
-      return {
-        label: "Safe",
-        value: 5,
-      };
+      return STAGE_VALUES[5]; // Safe
     }
 
     switch (stageId?.toString()) {
       case "1":
-        return {
-          label: "At Risk",
-          value: 1,
-        };
+        return STAGE_VALUES[1]; // At Risk
       case "2":
-        return {
-          label: "Elevated Risk",
-          value: 2,
-        };
+        return STAGE_VALUES[2]; // Elevated Risk
       case "3":
-        return {
-          label: "Safe",
-          value: 3,
-        };
+        return STAGE_VALUES[3]; // Safe
       case "4":
-        return {
-          label: "Safe",
-          value: 4,
-        };
+        return STAGE_VALUES[4]; // Safe
       default:
-        return {
-          label: "N/A",
-          value: null,
-        };
+        return STAGE_VALUES[0]; // N/A
     }
   };
+  const alertPriorities = direction => ({
+    "at risk": direction === 'asc' ? 2 : 1,
+    "elevated risk": direction === 'asc' ? 1 : 2,
+    "safe": 3,
+    "n/a": 3,
+  });
   // fixme translation
   const formatAlertForDetail = stageId => {
     switch (stageId?.toString()) {
@@ -197,7 +190,7 @@ export const UtilsProviderDraft = (
   };
 
   const formatHeartCbt = cbt => {
-    if ([null, undefined, "0", ""].includes(cbt?.toString())) {
+    if (INVALID_VALUES2.includes(cbt?.toString())) {
       return "--";
     }
     if (metric) {
@@ -209,44 +202,27 @@ export const UtilsProviderDraft = (
 
   const getHeartRateZone = (birthday, heartRate) => {
     if (!heartRate) {
-      return {
-        label: null,
-        value: null,
-      }
+      return HEART_RATE_VALUES[0];
     }
+
     const arr = birthday?.split("-");
     if (arr?.length === 3) {
       const ageDifMs = Date.now() - new Date(arr[0], parseInt(arr[1]) - 1, arr[2]).getTime();
       const ageDate = new Date(ageDifMs); // milliseconds from epoch
       const age = Math.abs(ageDate.getUTCFullYear() - 1970);
       const maxHR = 208 - (0.7 * age);
-      if (heartRate <= 0.57 * maxHR) {
-        return {
-          label: t("very light"),
-          value: 1,
-        };
-      } else if (heartRate <= 0.64 * maxHR) {
-        return {
-          label: t('light'),
-          value: 2,
-        };
-      } else if (heartRate <= 0.75 * maxHR) {
-        return {
-          label: t("moderate"),
-          value: 3,
-        };
-      } else {
-        return {
-          label: t('high'),
-          value: 4,
-        };
-      }
+
+      if (heartRate <= 0.57 * maxHR)
+        return HEART_RATE_VALUES[1]; // very light
+      else if (heartRate <= 0.64 * maxHR)
+        return HEART_RATE_VALUES[2]; // light
+      else if (heartRate <= 0.75 * maxHR)
+        return HEART_RATE_VALUES[3]; // moderate
+      else
+        return HEART_RATE_VALUES[4]; // high
     }
 
-    return {
-      label: null,
-      value: null,
-    }
+    return HEART_RATE_VALUES[0];
   };
 
   const providerValue = {
@@ -256,6 +232,7 @@ export const UtilsProviderDraft = (
     formatAlert,
     formatConnectionStatusV2,
     formatActivityLog,
+    alertPriorities,
   };
 
   return (

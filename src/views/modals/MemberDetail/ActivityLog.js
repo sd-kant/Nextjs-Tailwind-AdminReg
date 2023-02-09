@@ -26,24 +26,24 @@ const ActivityLog = ({item, timezone}) => {
 
       <div className={clsx(item.type !== "Alert" ? style.HideSM : null)}>
         <div className={clsx('font-binary', style.Rounded)}>
-          <img className={style.MobileOnly} src={thermometer} alt="thermometer" width={8}
-               style={{marginRight: '3px'}}/>
+          <img className={style.MobileOnly} src={thermometer} alt="thermometer" width={8} style={{marginRight: '3px'}}/>
           <div className={clsx(style.HeartCBTSpan)}>
             {
               hideCbtHR ?
-                <img src={blockIcon} className={clsx(style.BlockIcon)} alt="block icon"/> :
+                <img src={blockIcon} className={clsx(style.BlockIcon)} alt="block icon"/>
+                :
                 <span>{item.type === "Alert" ? formatHeartCbt(item.heartCbtAvg) : '--'}</span>
             }
           </div>
         </div>
 
         <div className={clsx('font-binary', style.Rounded, 'ml-15')}>
-          <img className={style.MobileOnly} src={heart} alt="heart" width={13}
-               style={{marginRight: '3px'}}/>
+          <img className={style.MobileOnly} src={heart} alt="heart" width={13} style={{marginRight: '3px'}}/>
           <div className={clsx(style.HeartCBTSpan)}>
             {
               hideCbtHR ?
-                <img src={blockIcon} className={clsx(style.BlockIcon)} alt="block icon"/> :
+                <img src={blockIcon} className={clsx(style.BlockIcon)} alt="block icon"/>
+                :
                 <span>{item.type === "Alert" ? formatHeartRate(item.heartRateAvg) : '--'}</span>
             }
           </div>
@@ -57,6 +57,6 @@ const ActivityLog = ({item, timezone}) => {
       </div>
     </div>
   )
-}
+};
 
 export default React.memo(ActivityLog);

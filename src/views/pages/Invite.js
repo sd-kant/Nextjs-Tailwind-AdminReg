@@ -1,8 +1,16 @@
 import React, {lazy, Suspense} from "react";
 import {connect} from "react-redux";
-import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useNavigate
+} from "react-router-dom";
 import logo from "../../assets/images/logo_light.svg";
-import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
+import {
+  USER_TYPE_ADMIN,
+  USER_TYPE_ORG_ADMIN
+} from "../../constant";
 import {get} from "lodash";
 import Loader from "../components/Loader";
 
@@ -171,7 +179,7 @@ const Invite = (
       </Suspense>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),

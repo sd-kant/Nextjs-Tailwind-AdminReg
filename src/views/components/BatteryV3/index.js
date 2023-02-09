@@ -37,6 +37,6 @@ const BatteryV3 = (
       <img src={imgSrc} width={36} alt="battery"/>
     </div>
   )
-}
+};
 
 export default withTranslation()(React.memo(BatteryV3));

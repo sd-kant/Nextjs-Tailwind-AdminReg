@@ -5,13 +5,13 @@ import clsx from 'clsx';
 import style from './DropdownMenu.module.scss';
 
 const popupContentStyle = {
-  boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
+  marginTop: '17px',
   borderRadius: '10px 0 10px 10px',
   padding: '16px 10px',
-  marginTop: '17px',
-  background: 'white',
   width: '160px',
-}
+  boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
+  background: 'white',
+};
 
 const defaultItems = [
   {
@@ -47,7 +47,6 @@ const DropdownMenu = (
     closeTooltip();
   }, []);
 
-
   return (
     <Popup
       ref={ref}
@@ -58,9 +57,7 @@ const DropdownMenu = (
       {...{ contentStyle: popupContentStyle }}
     >
       <div className={clsx(style.Popup)}>
-        <div
-          className={clsx(style.MenuHeaderItem)}
-        >
+        <div className={clsx(style.MenuHeaderItem)}>
           <span className={clsx('font-binary text-capitalize')}>
             {title}
           </span>
@@ -83,10 +80,9 @@ const DropdownMenu = (
             </div>
           ))
         }
-
       </div>
     </Popup>
   )
-}
+};
 
 export default withTranslation()(React.memo(DropdownMenu));

@@ -6,12 +6,19 @@ import Settings from "../components/Settings";
 import clsx from 'clsx';
 import style from './MainLayoutV2.module.scss';
 import {useWidthContext} from "../../providers/WidthProvider";
+import {useLocation} from "react-router-dom";
 
 const MenuContent = () => {
+  const location = useLocation();
+  const mode = React.useMemo(() => {
+    if (location.pathname.includes("analytics")) {
+      return "analytics";
+    } else if (location.pathname.includes("dashboard")) {
+      return "dashboard";
+    }
+  }, [location.pathname]);
   return (
-    <>
-      <Settings mode="dashboard"/>
-    </>
+      <Settings mode={mode}/>
   )
 };
 

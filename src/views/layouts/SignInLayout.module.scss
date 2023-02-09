@@ -1,32 +1,27 @@
 // settings menu button
 .MenuWrapper {
-  display: block;
   position: absolute;
   top: 90px;
-  bottom: auto;
   right: 40px;
+  bottom: auto;
+  display: block;
   z-index: 99;
 }
 
 @media only screen and (min-width: 768px) {
   .MenuWrapper {
-    display: block;
     position: absolute;
     top: 90px;
     right: 30px;
-  }
-}
-
-@media only screen and (min-width: 1024px) {
-  .MenuWrapper {
+    display: block;
   }
 }
 
 @media only screen and (min-width: 1400px) {
   .MenuWrapper {
-    display: block;
     position: absolute;
     top: 50px;
     right: 30px;
+    display: block;
   }
 }

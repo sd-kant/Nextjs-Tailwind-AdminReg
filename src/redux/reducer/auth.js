@@ -1,7 +1,13 @@
 import {produce} from 'immer';
 import {actionTypes} from "../type";
-import {USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN} from "../../constant";
-const userType = localStorage.getItem("kop-v2-user-type") ? JSON.parse(localStorage.getItem("kop-v2-user-type")) : null;
+import {
+  USER_TYPE_ADMIN,
+  USER_TYPE_ORG_ADMIN
+} from "../../constant";
+const userType = localStorage.getItem("kop-v2-user-type") ?
+    JSON.parse(localStorage.getItem("kop-v2-user-type"))
+    :
+    null;
 const initialState = {
   token: localStorage.getItem("kop-v2-token"),
   registerToken: localStorage.getItem("kop-v2-register-token"),
@@ -62,6 +68,6 @@ const authReducer =  (state = initialState, action) => {
     default:
       return state;
   }
-}
+};
 
 export default authReducer;

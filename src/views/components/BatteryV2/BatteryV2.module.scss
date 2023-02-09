@@ -1,7 +1,7 @@
 .TopWrapper {
   display: inline-flex;
-  align-items: flex-end;
   justify-content: center;
+  align-items: flex-end;
 }
 
 .Wrapper {
@@ -10,9 +10,9 @@
 
   .Piece {
     position: absolute;
+    top: 3px;
     width: 16%;
     height: calc(100% - 6px);
-    top: 3px;
     background-color: greenyellow;
   }
 

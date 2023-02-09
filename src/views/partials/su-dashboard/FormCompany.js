@@ -5,7 +5,12 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
 import CreatableSelect from 'react-select/creatable';
-import {createCompany, createUserByAdmin, getUsersUnderOrganization, updateCompany} from "../../../http";
+import {
+  createCompany,
+  createUserByAdmin,
+  getUsersUnderOrganization,
+  updateCompany
+} from "../../../http";
 import {
   setLoadingAction,
   setRestBarClassAction,
@@ -15,7 +20,9 @@ import {
 import {
   passwordExpirationDaysOptions,
   passwordMinLengthOptions,
-  twoFAOptions, USER_TYPE_ORG_ADMIN, hideCbtHROptions
+  twoFAOptions,
+  USER_TYPE_ORG_ADMIN,
+  hideCbtHROptions
 } from "../../../constant";
 import {queryAllOrganizationsAction} from "../../../redux/action/base";
 import {get, isEqual} from "lodash";
@@ -27,9 +34,14 @@ import MultiSelectPopup from "../../components/MultiSelectPopup";
 import countryRegions from 'country-region-data/data.json';
 import removeIcon from "../../../assets/images/remove.svg";
 import plusCircleFire from "../../../assets/images/plus-circle-fire.svg";
-import {defaultMember, lowercaseEmail, setUserTypeToUsers} from "./FormRepresentative";
+import {
+  defaultMember,
+  lowercaseEmail,
+  setUserTypeToUsers
+} from "./FormRepresentative";
 import {useNavigate} from "react-router-dom";
 import ConfirmModal from "../../components/ConfirmModal";
+import {checkIfSpacesOnly} from "../../../utils/invite";
 
 export const customStyles = () => ({
   option: (provided, state) => ({
@@ -85,11 +97,25 @@ const formSchema = (t) => {
           .email(t("email invalid"))
           .max(1024, t('email max error')),
         firstName: Yup.string()
+          .test(
+              'is-valid',
+              t('firstName required'),
+              function (value) {
+                return !checkIfSpacesOnly(value);
+              }
+          )
           .required(t('firstName required'))
-          .max(1024, t("firstName max error")),
+          .max(50, t("firstName max error")),
         lastName: Yup.string()
+          .test(
+              'is-valid',
+              t('lastName required'),
+              function (value) {
+                return !checkIfSpacesOnly(value);
+              }
+          )
           .required(t('lastName required'))
-          .max(1024, t("lastName max error")),
+          .max(50, t("lastName max error")),
       }).required(),
     ),
     sso: Yup.boolean(),
@@ -173,7 +199,7 @@ const FormCompany = (props) => {
       .catch(e => {
         console.error("get org admin error", e);
       });
-  }
+  };
   useEffect(() => {
     setRestBarClass("progress-0 medical");
     queryAllOrganizations();
@@ -183,17 +209,17 @@ const FormCompany = (props) => {
   const changeFormField = (e) => {
     const {value, name} = e.target;
     setFieldValue(name, value);
-  }
+  };
   const deleteMember = (index) => {
     const data = JSON.parse(JSON.stringify(values["users"]));
     data.splice(index, 1);
     setFieldValue("users", data);
-  }
+  };
   const addAnother = () => {
     const data = JSON.parse(JSON.stringify(values["users"]));
     data.push(defaultMember);
     setFieldValue("users", data);
-  }
+  };
   const changeHandler = (key, value) => {
     if (key === "companyName") {
       if (value?.__isNew__) {
@@ -223,7 +249,7 @@ const FormCompany = (props) => {
       }
     }
     setFieldValue(key, value);
-  }
+  };
   useEffect(() => {
     setOrganizations((allOrganizations && allOrganizations.map(organization => ({
       value: organization.id,
@@ -452,9 +478,9 @@ const FormCompany = (props) => {
           {
             (isEditing && values["companyCountry"]?.value) &&
             <div className='mt-40 d-flex flex-column'>
-            <span className='font-input-label'>
-              {t("company region")}
-            </span>
+              <span className='font-input-label'>
+                {t("company region")}
+              </span>
 
               <div className='mt-10 input-field'>
                 <MultiSelectPopup
@@ -882,11 +908,14 @@ const FormCompany = (props) => {
           </button>
         </div>
       </Form>
-      <ConfirmModal header={t("org admin invite sent")} show={visibleModal}
-                    onOk={() => setStatus({visibleModal: false})}/>
+      <ConfirmModal
+          header={t("org admin invite sent")}
+          show={visibleModal}
+          onOk={() => setStatus({visibleModal: false})}
+      />
     </React.Fragment>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToStatus: () => ({
@@ -943,7 +972,13 @@ const EnhancedForm = withFormik({
 
           // creating org admins
           let users = values?.users;
-          users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN);
+
+          users = setUserTypeToUsers(lowercaseEmail(users), USER_TYPE_ORG_ADMIN)?.map(it => ({
+            ...it,
+            firstName: it?.firstName?.trim() ?? 'first name',
+            lastName: it?.lastName?.trim() ?? 'last name',
+          }));
+
           const promises = [];
           let totalSuccessForInvite = 0;
 
@@ -985,7 +1020,7 @@ const EnhancedForm = withFormik({
           }
         } catch (e) {
           console.log("update company error", e);
-          props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
+          props.showErrorNotification(e.response?.data?.message);
           setLoading(false);
         }
       }
@@ -1000,7 +1035,7 @@ const EnhancedForm = withFormik({
           isSuperAdmin ? navigate(`/invite/${companyData?.id}/representative`) : navigate(`/invite/${companyData?.id}/team-mode`);
         } catch (e) {
           console.log("creating company error", e);
-          props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
+          props.showErrorNotification(e.response?.data?.message);
         } finally {
           setLoading(false);
         }

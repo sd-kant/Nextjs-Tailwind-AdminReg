@@ -1,6 +1,14 @@
 import * as React from "react";
 import clsx from "clsx";
 import style from "./Analytics.module.scss";
+import {bindActionCreators} from "redux";
+import {connect} from "react-redux";
+import {
+  setLoadingAction,
+  showErrorNotificationAction,
+  showSuccessNotificationAction
+} from "../../../redux/action/ui";
+import {get} from "lodash";
 
 import FilterBoard from "./FilterBoard";
 import QueryResult from "./QueryResult";
@@ -8,19 +16,43 @@ import {BasicProvider} from "../../../providers/BasicProvider";
 import {AnalyticsProvider} from "../../../providers/AnalyticsProvider";
 import {UtilsProvider} from "../../../providers/UtilsProvider";
 
-const Analytics = () => {
+const Analytics = (
+  {
+    metric,
+    setLoading,
+  }) => {
   return (
     <div className={clsx(style.Wrapper)}>
       <BasicProvider>
-        <AnalyticsProvider>
-          <UtilsProvider>
+        <UtilsProvider>
+          <AnalyticsProvider
+            metric={metric}
+            setLoading={setLoading}
+          >
             <FilterBoard/>
             <QueryResult/>
-          </UtilsProvider>
-        </AnalyticsProvider>
+          </AnalyticsProvider>
+        </UtilsProvider>
       </BasicProvider>
     </div>
   )
-}
+};
 
-export default Analytics;
+const mapStateToProps = (state) => ({
+  metric: get(state, 'ui.metric'),
+});
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setLoading: setLoadingAction,
+      showErrorNotification: showErrorNotificationAction,
+      showSuccessNotification: showSuccessNotificationAction,
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Analytics);

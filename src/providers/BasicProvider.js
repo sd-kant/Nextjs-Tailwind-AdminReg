@@ -76,6 +76,7 @@ const BasicProviderDraft = (
             ret.push({
               value: team.id,
               label: team.name,
+              region: team?.region,
             });
           }
         }
@@ -83,6 +84,7 @@ const BasicProviderDraft = (
         ret.push({
           value: team.id,
           label: team.name,
+          region: team?.region,
         });
       }
     });

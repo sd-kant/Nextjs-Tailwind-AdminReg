@@ -6,14 +6,29 @@ import {Form, withFormik} from "formik";
 import backIcon from "../../../assets/images/back.svg";
 import {bindActionCreators} from "redux";
 import {useNavigate} from "react-router-dom";
+import {checkIfSpacesOnly} from "../../../utils/invite";
 
 export const formShape = t => ({
   firstName: Yup.string()
+    .test(
+        'is-valid',
+        t('your firstName required'),
+        function (value) {
+          return !checkIfSpacesOnly(value);
+        }
+    )
     .required(t('your firstName required'))
-    .max(1024, t('firstName max error')),
+    .max(50, t('firstName max error')),
   lastName: Yup.string()
+    .test(
+        'is-valid',
+        t('your lastName required'),
+        function (value) {
+          return !checkIfSpacesOnly(value);
+        }
+    )
     .required(t('your lastName required'))
-    .max(1024, t('lastName max error')),
+    .max(50, t('lastName max error')),
 });
 
 const formSchema = (t) => {
@@ -23,7 +38,9 @@ const formSchema = (t) => {
 const FormName = (props) => {
   const {
     profile,
-    values, errors, touched,
+    values,
+    errors,
+    touched,
     t,
     setFieldValue,
     setRestBarClass,
@@ -47,7 +64,7 @@ const FormName = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -59,14 +76,14 @@ const FormName = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-28 form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("name description")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("name description")}
+          </span>
         </div>
 
         <div className='mt-40 d-flex flex-column'>
@@ -122,7 +139,7 @@ const FormName = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
@@ -135,8 +152,8 @@ const EnhancedForm = withFormik({
       const {updateProfile, navigate} = props;
       updateProfile({
         body: {
-          firstName: values["firstName"],
-          lastName: values["lastName"],
+          firstName: values["firstName"]?.trim() ?? 'first name',
+          lastName: values["lastName"]?.trim() ?? 'last name',
         },
         nextPath: "/create-account/gender",
         navigate,

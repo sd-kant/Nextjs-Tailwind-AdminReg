@@ -4,12 +4,99 @@
 
 .CustomInputWrapper {
   position: relative;
+
   .CalendarIcon {
     position: absolute;
-    right: 20px;
     top: calc(50% + 5px);
+    right: 20px;
     transform: translateY(-50%);
     width: 20px;
     height: 21px;
+  }
+}
+
+.FilterDiv {
+  display: flex;
+  align-content: flex-start;
+  align-items: stretch;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+
+  button {
+    max-width: calc(100% - 16px);
+  }
+
+  @media screen and (max-width: 480px) {
+    display: block;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  label {
+    margin-top: 15px !important;
+  }
+
+  & > span {
+    min-width: 145px;
+
+    @media screen and (max-width: 480px) {
+      display: block;
+
+      input {
+        min-width: unset;
+        max-width: unset;
+        height: 46px;
+      }
+    }
+  }
+
+  & > div {
+    margin-right: 12px;
+    min-width: 240px;
+
+    .FlexLeft {
+      display: flex;
+      justify-content: left;
+
+      input {
+        border-radius: 4px;
+        min-width: 150px;
+        max-width: 195px;
+        height: 46px;
+      }
+
+      @media screen and (max-width: 480px) {
+        display: block;
+
+        input {
+          min-width: unset;
+          max-width: unset;
+          height: 46px;
+        }
+      }
+    }
+  }
+}
+
+@media print {
+  html, body {
+    width: 1450px !important;
+    height: initial !important;
+    -webkit-print-color-adjust: exact;
+  }
+
+  @page {
+    margin: 20mm;
+    size: A4 landscape;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  div {
+    color: black;
   }
 }

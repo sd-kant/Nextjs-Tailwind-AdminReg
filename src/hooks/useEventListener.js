@@ -1,4 +1,7 @@
-import { useEffect, useRef } from 'react'
+import {
+  useEffect,
+  useRef
+} from 'react'
 
 function useEventListener(
   eventName,
@@ -25,9 +28,9 @@ function useEventListener(
       if (savedHandler?.current) {
         savedHandler.current(event)
       }
-    }
+    };
 
-    targetElement.addEventListener(eventName, eventListener)
+    targetElement.addEventListener(eventName, eventListener);
 
     // Remove event listener on cleanup
     return () => {

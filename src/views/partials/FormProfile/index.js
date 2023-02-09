@@ -6,12 +6,22 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import InputMask from 'react-input-mask';
 import {bindActionCreators} from "redux";
-import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import maleIcon from "../../../assets/images/male.svg";
 import maleGrayIcon from "../../../assets/images/male-gray.svg";
 import femaleIcon from "../../../assets/images/female.svg";
 import femaleGrayIcon from "../../../assets/images/female-gray.svg";
-import {FEMALE, IMPERIAL, MALE, METRIC} from "../../../constant";
+import {
+  FEMALE,
+  IMPERIAL,
+  MALE,
+  METRIC,
+  FT_OPTIONS,
+  IN_OPTIONS,
+} from "../../../constant";
 import imperialIcon from "../../../assets/images/imperial.svg";
 import imperialGrayIcon from "../../../assets/images/imperial-gray.svg";
 import metricIcon from "../../../assets/images/metric.svg";
@@ -20,7 +30,9 @@ import {formShape as nameFormShape} from "../create-account/FormName";
 import {formShape as genderFormShape} from "../create-account/FormGender";
 import {formShape as dobFormShape} from "../create-account/FormBirth";
 import {formShape as unitFormShape} from "../create-account/FormUnit";
-import {ftOptions, inOptions, formShape as heightFormShape, getHeightAsMetric} from "../create-account/FormHeight";
+import {
+  formShape as heightFormShape,
+} from "../create-account/FormHeight";
 import {formShape as weightFormShape} from "../create-account/FormWeight";
 import {formShape as timezoneFormShape} from "../create-account/FormTimezone";
 import {formShape as workLengthFormShape} from "../create-account/FormWorkLength";
@@ -34,10 +46,15 @@ import {
   convertCmToImperial,
   convertCmToMetric,
   convertImperialToMetric,
-  convertKilosToLbs, convertLbsToKilos,
-  format2Digits
+  convertKilosToLbs,
+  convertLbsToKilos,
+  format2Digits,
+  getHeightAsMetric
 } from "../../../utils";
-import {getMedicalResponsesAction, updateMyProfileAction} from "../../../redux/action/profile";
+import {
+  getMedicalResponsesAction,
+  updateMyProfileAction
+} from "../../../redux/action/profile";
 import MedicalQuestions from "../MedicalQuestions";
 import clsx from "clsx";
 import style from "./FormProfile.module.scss";
@@ -92,6 +109,7 @@ const FormProfile = (props) => {
   React.useEffect(() => {
     setFieldValue("responses", medicalResponses?.responses ?? []);
   }, [medicalResponses, confirmedCnt, setFieldValue]);
+
   useEffect(() => {
     if (profile) {
       setStatus({edit: false, confirmedCnt, visibleModal});
@@ -175,10 +193,18 @@ const FormProfile = (props) => {
     if (!profile || !values)
       return ret;
     const {
-      firstName, lastName, gender,
-      measureType, timezone, workLength,
-      startTimeOption, hour, minute,
-      responses, hideCbtHR, dob,
+      firstName,
+      lastName,
+      gender,
+      measureType,
+      timezone,
+      workLength,
+      startTimeOption,
+      hour,
+      minute,
+      responses,
+      hideCbtHR,
+      dob,
     } = values;
 
     if (firstName !== profile?.firstName) {
@@ -197,8 +223,8 @@ const FormProfile = (props) => {
       ret.push("measureType");
     }
     if (measureType === IMPERIAL) {
-      if (values?.feet && values?.inch) {
-        const {m, cm} = convertImperialToMetric(`${values?.feet}ft${values?.inch}in`);
+      if (values?.feet) {
+        const {m, cm} = convertImperialToMetric(`${values?.feet}ft${values?.inch ?? 0}in`);
         if (((m * 100) + parseInt(cm)).toString() !== profile?.height?.toString()) {
           ret.push("height");
         }
@@ -242,7 +268,7 @@ const FormProfile = (props) => {
       if (!medicalResponses?.responses?.some(ele => ele.questionId?.toString() === it.questionId?.toString() && ele.answerId?.toString() === it.answerId?.toString())) {
         ret.push(`medicalQuestion-${it.questionId}`);
       }
-    })
+    });
 
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -251,7 +277,19 @@ const FormProfile = (props) => {
   const changeFormField = (e) => {
     const {value, name} = e.target;
     setFieldValue(name, value);
-  }
+
+    let _feet = values?.feet ?? 0;
+    let _inch = values?.inch ?? 0;
+    if (['feet', 'inch'].includes(name)) {
+      if (name === 'feet') {
+        _feet = value;
+      } else {
+        _inch = value;
+      }
+      const {m, cm} = convertImperialToMetric(`${_feet}ft${_inch}in`);
+      setFieldValue("height", `${m}m${cm}cm`);
+    }
+  };
   const unitOptions = [
     {
       value: IMPERIAL,
@@ -361,6 +399,14 @@ const FormProfile = (props) => {
               onChange={v => changeFormField({target: {name: 'gender', value: v}})}
             />
           </div>
+          {
+            errors?.gender && touched?.gender && (
+                <div className="mt-10">
+                  <span className="font-helper-text text-error mt-10">{errors?.gender}</span>
+                </div>
+            )
+          }
+
           {/*birthday section*/}
           <div className='mt-28 form-header-medium'><span
             className='font-header-medium d-block'>{t("dob question")}</span></div>
@@ -415,7 +461,7 @@ const FormProfile = (props) => {
                       onChange={changeFormField}
                     >
                       {
-                        ftOptions && ftOptions.map(ftOption => (
+                        FT_OPTIONS.map(ftOption => (
                           <option value={ftOption} key={`ft-${ftOption}`}>
                             {ftOption}
                           </option>
@@ -437,7 +483,7 @@ const FormProfile = (props) => {
                       onChange={changeFormField}
                     >
                       {
-                        inOptions && inOptions.map(inOption => (
+                        IN_OPTIONS.map(inOption => (
                           <option value={inOption} key={`ft-${inOption}`}>
                             {inOption}
                           </option>
@@ -488,7 +534,7 @@ const FormProfile = (props) => {
               className={`input input-field mt-10 font-heading-small ${edit ? 'text-white' : 'text-gray'}`}
               type='number'
               disabled={!edit}
-              value={values["weight"]}
+              value={Math.round(values["weight"]) || ''}
               name="weight"
               step={5}
               onChange={changeFormField}
@@ -667,7 +713,7 @@ const FormProfile = (props) => {
       </Form>
     </React.Fragment>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToStatus: () => ({
@@ -698,16 +744,24 @@ const EnhancedForm = withFormik({
   enableReinitialize: true,
   handleSubmit: async (values, {props, setStatus}) => {
     const {
-      updateProfile, token, t,
-      getMedicalResponses, showErrorNotification,
+      updateProfile,
+      token,
+      getMedicalResponses,
+      showErrorNotification,
       navigate,
     } = props;
     try {
       const {
         gender,
-        startTimeOption, hour, minute,
+        startTimeOption,
+        hour,
+        minute,
         dob,
-        measureType, height, feet, inch, weight,
+        measureType,
+        height,
+        feet,
+        inch,
+        weight,
         timezone: {value, gmtTz},
         workLength,
         responses,
@@ -750,7 +804,7 @@ const EnhancedForm = withFormik({
       setStatus({confirmedCnt: 0, edit: false, visibleModal: true});
     } catch (e) {
       console.error("save profile error", e);
-      showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+      showErrorNotification(e.response?.data?.message);
     }
   }
 })(FormProfile);

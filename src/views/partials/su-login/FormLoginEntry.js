@@ -4,11 +4,18 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import {
   ableToLogin,
   checkUsernameValidation1,
-  checkUsernameValidation2, getDeviceId, getParamFromUrl, setStorageAfterLogin, setStorageAfterRegisterLogin
+  checkUsernameValidation2,
+  getDeviceId,
+  getParamFromUrl,
+  setStorageAfterLogin,
+  setStorageAfterRegisterLogin
 } from "../../../utils";
 import {apiBaseUrl} from "../../../config";
 import {Buffer} from "buffer";
@@ -47,9 +54,17 @@ export const formSchema = (t) => {
 
 const FormLoginEntry = (props) => {
   const {
-    values, errors, touched, t, setFieldValue, setRestBarClass,
-    setLoginSuccess, setLoggedIn, setPasswordExpired,
-    showErrorNotification, setRegisterLoginSuccess,
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    setRestBarClass,
+    setLoginSuccess,
+    setLoggedIn,
+    setPasswordExpired,
+    showErrorNotification,
+    setRegisterLoginSuccess,
     mobile, // true when rendering from /mobile-login
   } = props;
   const navigate = useNavigate();
@@ -63,7 +78,7 @@ const FormLoginEntry = (props) => {
         const {
           message,
         } = JSON.parse(decoded);
-        showErrorNotification(message ?? t("msg something went wrong"));
+        showErrorNotification(message);
       } catch (e) {
         console.error("sso error response decode error", e);
       }
@@ -139,13 +154,13 @@ const FormLoginEntry = (props) => {
     setFieldValue(name, value);
 
     setClassName();
-  }
+  };
 
   const setClassName = () => {
     let sum = 0;
     sum += values["username"] ? 1 : 0;
     setRestBarClass(`progress-${sum * 100}`);
-  }
+  };
 
   const source = getParamFromUrl('source');
   const fromMobile =  mobile || source === "mobile";
@@ -192,7 +207,7 @@ const FormLoginEntry = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

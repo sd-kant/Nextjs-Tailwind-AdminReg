@@ -17,6 +17,6 @@ const ForgotUsername = ({t}) => {
       <FormForgotUsername/>
     </div>
   )
-}
+};
 
 export default withTranslation()(ForgotUsername);

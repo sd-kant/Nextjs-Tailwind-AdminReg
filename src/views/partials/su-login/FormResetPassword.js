@@ -4,10 +4,18 @@ import {bindActionCreators} from "redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
-import {checkPasswordValidation, getTokenFromUrl} from "../../../utils";
-import {instance, lookupByToken, resetPasswordV2} from "../../../http";
 import {
-  setLoadingAction, setRestBarClassAction,
+  checkPasswordValidation,
+  getTokenFromUrl
+} from "../../../utils";
+import {
+  instance,
+  lookupByToken,
+  resetPasswordV2
+} from "../../../http";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
@@ -71,7 +79,7 @@ const FormResetPassword = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -114,9 +122,9 @@ const FormResetPassword = (props) => {
         </div>
 
         <div className='mt-40'>
-            <span className='font-helper-text'>
-              {t("password rule")}
-            </span>
+          <span className='font-helper-text'>
+            {t("password rule")}
+          </span>
         </div>
       </div>
 
@@ -125,9 +133,9 @@ const FormResetPassword = (props) => {
           className={`button ${values['password'] && values['confirmPassword'] ? "active cursor-pointer" : "inactive cursor-default"}`}
           type={values['password'] && values['confirmPassword'] ? "submit" : "button"}
         >
-              <span className='font-button-label text-white'>
-                {t("next")}
-              </span>
+          <span className='font-button-label text-white'>
+            {t("next")}
+          </span>
         </button>
       </div>
       {
@@ -145,7 +153,7 @@ const FormResetPassword = (props) => {
       }
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
@@ -174,7 +182,7 @@ const EnhancedForm = withFormik({
       if (e?.response?.data?.status?.toString() === "404") {
         props.showErrorNotification(props.t("msg token expired"));
       } else {
-        props.showErrorNotification(e.response?.data.message || props.t("msg something went wrong"));
+        props.showErrorNotification(e.response?.data.message);
       }
     } finally {
       props.setLoading(false);

@@ -8,7 +8,7 @@ const Children = () => (
   <div className="d-flex justify-center">
     <img src={CheckCircle} alt="flower" width={105} height={105}/>
   </div>
-)
+);
 
 const ConfirmModal = (
   {
@@ -27,21 +27,19 @@ const ConfirmModal = (
     <div className={clsx(style.Overlay, show ? "d-block" : "d-none")}>
       <div className={clsx(style.Modal, `z-index-2 ${show ? "d-block" : "d-none"}`)}>
         <div className={clsx(style.ModalHeader, "text-center")}>
-        <span className={"font-modal-header text-white"}>
-          {header}
-        </span>
+          <span className={"font-modal-header text-white"}>
+            {header}
+          </span>
         </div>
 
         <div className={clsx(style.ModalSubheader, "mt-10 text-center")}>
-        <span className="font-binary text-white">
-          {subheader}
-        </span>
+          <span className="font-binary text-white">
+            {subheader}
+          </span>
         </div>
 
         <div className={clsx(style.ModalBody, "mt-25")}>
-          {
-            content
-          }
+          {content}
         </div>
 
         <div className={clsx(style.ModalFooter, "mt-65")}>
@@ -67,9 +65,9 @@ const ConfirmModal = (
                 className={`button active ${onCancel ? 'mt-40' : ''}`}
                 onClick={onOk}
               >
-              <span className='font-button-label text-white text-uppercase'>
-                {okText ? okText : t("done")}
-              </span>
+                <span className='font-button-label text-white text-uppercase'>
+                  {okText ? okText : t("done")}
+                </span>
               </button>
             }
           </div>
@@ -77,6 +75,6 @@ const ConfirmModal = (
       </div>
     </div>
   )
-}
+};
 
 export default ConfirmModal;

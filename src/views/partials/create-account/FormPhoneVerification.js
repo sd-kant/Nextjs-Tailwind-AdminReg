@@ -4,7 +4,10 @@ import {withTranslation, Trans} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import {bindActionCreators} from "redux";
 import {getParamFromUrl} from "../../../utils";
-import {setLoadingAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setLoadingAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import CodeInput from "../../components/CodeInput";
 import {loginWithCodeAction} from "../../../redux/action/auth";
 import {requestSmsCode} from "../../../http";
@@ -12,7 +15,14 @@ import {get} from "lodash";
 import {useNavigate} from "react-router-dom";
 
 const FormPhoneVerification = (props) => {
-  const {t, setRestBarClass, showErrorNotification, setLoading, login, smsAuthFailedCount} = props;
+  const {
+    t,
+    setRestBarClass,
+    showErrorNotification,
+    setLoading,
+    login,
+    smsAuthFailedCount
+  } = props;
   const [code, setCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState(null);
   const navigate = useNavigate();
@@ -38,7 +48,7 @@ const FormPhoneVerification = (props) => {
   const getMyPhoneNumber = async () => {
     const phone = getParamFromUrl('phoneNumber');
     setPhoneNumber(phone);
-  }
+  };
 
   const resendCode = async () => {
     if (phoneNumber) {
@@ -70,8 +80,8 @@ const FormPhoneVerification = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='mt-25'>
@@ -115,7 +125,7 @@ const FormPhoneVerification = (props) => {
       <div className='mt-80'/>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   smsAuthFailedCount: get(state, 'auth.smsAuthFailedCount'),

@@ -44,13 +44,9 @@ const SignInLayout = (props) => {
         </div>
 
         <div className='rest-bar'>
-          <div className={`progress ${props.restBarClass}`}>
-
-          </div>
+          <div className={`progress ${props.restBarClass}`} />
         </div>
-        {
-          props.children
-        }
+        {props.children}
       </div>
 
       <Footer
@@ -58,7 +54,7 @@ const SignInLayout = (props) => {
       />
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   restBarClass: get(state, "ui.restBarClass"),

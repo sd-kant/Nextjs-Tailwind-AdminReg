@@ -2,20 +2,20 @@
 
 .Wrapper {
   position: fixed;
+  bottom: 10px;
   left: 50%;
   width: calc(100% - 90px);
   transform: translateX(-50%);
-  bottom: 10px;
   z-index: 10;
 
   .Notification {
-    padding: 25px;
-    background: $app-white;
-    border-radius: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    border-radius: 20px;
+    padding: 25px;
+    background: $app-white;
   }
 }
 
@@ -29,7 +29,7 @@
 
 @media only screen and (min-width: 768px) {
   .Wrapper {
-    max-width: 892px;
     justify-content: space-around;
+    max-width: 892px;
   }
 }

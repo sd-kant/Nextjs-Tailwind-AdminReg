@@ -11,26 +11,26 @@
 
   .settings-icon {
     position: absolute;
-    right: 80px;
     top: 25px;
+    right: 80px;
     width: 35px;
     height: 35px;
   }
 
   .timer-icon {
-    display: none;
     position: absolute;
-    right: 120px;
     top: 25px;
+    right: 120px;
+    display: none;
     width: 35px;
     height: 35px;
   }
 
   .search-wrapper {
-    display: none;
     position: absolute;
-    right: 150px;
     top: 25px;
+    right: 150px;
+    display: none;
 
     .search-content {
       position: relative;
@@ -38,18 +38,18 @@
 
       .search-icon {
         position: absolute;
-        left: 16px;
         top: 10px;
+        left: 16px;
       }
 
       .search-user-input {
+        border: none;
+        border-radius: 10px;
+        padding: 10px 10px 10px 50px;
         width: 215px;
         height: 20px;
         background: $app-ts;
-        border-radius: 10px;
-        padding: 10px 10px 10px 50px;
         outline: none;
-        border: none;
         color: $app-white;
       }
 
@@ -81,8 +81,8 @@
   position: relative;
 
   .team-mate-wrapper {
-    max-width: 375px;
     flex-direction: column;
+    max-width: 375px;
 
     .select-custom-class {
       width: auto;
@@ -90,8 +90,8 @@
   }
 
   .team-mate-wrapper > div {
-    margin-left: 0;
     margin-top: 20px;
+    margin-left: 0;
   }
 
   .team-mate-wrapper .input {
@@ -151,8 +151,8 @@
     }
 
     .team-mate-wrapper > div {
-      margin-left: 20px;
       margin-top: 0;
+      margin-left: 20px;
     }
 
     .team-mate-wrapper > div:first-child {

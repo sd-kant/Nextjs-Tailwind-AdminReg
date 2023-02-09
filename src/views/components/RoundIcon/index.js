@@ -18,14 +18,14 @@ const RoundIcon = (
           <img className={clsx(style.Icon)} src={icon} alt="icon"/>
         </div>
         {!!title &&
-        <span className={clsx('font-search', style.Label, selected ? 'text-white' : 'text-gray-2')}>
-          {title}
-        </span>
+          <span className={clsx('font-search', style.Label, selected ? 'text-white' : 'text-gray-2')}>
+            {title}
+          </span>
         }
       </div>
     </React.Fragment>
   )
-}
+};
 
 export default withTranslation()(RoundIcon);
 

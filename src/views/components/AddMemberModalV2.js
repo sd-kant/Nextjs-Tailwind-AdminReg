@@ -4,7 +4,11 @@ import {connect} from "react-redux";
 import {get} from "lodash";
 import clsx from "clsx";
 import style from "./AddMemberModalV2.module.scss";
-import {customStyles, defaultTeamMember, userSchema} from "../partials/su-dashboard/FormInvite";
+import {
+  customStyles,
+  defaultTeamMember,
+  userSchema
+} from "../partials/su-dashboard/FormInvite";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
@@ -67,10 +71,7 @@ const AddMemberModalV2 = (
             className={clsx(style.RemoveIconWrapper)}
             onClick={onClose}
           >
-            <img
-              src={removeIcon}
-              alt="remove icon"
-            />
+            <img src={removeIcon} alt="remove icon" />
           </div>
 
           <div className={clsx(style.Header)}>
@@ -216,10 +217,6 @@ const AddMemberModalV2 = (
                   ) : null
                 }
               </div>
-
-              <div>
-
-              </div>
             </div>
           </div>
           <div className={clsx(style.Footer)}>
@@ -236,14 +233,18 @@ const AddMemberModalV2 = (
       </Form>
     </Modal>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({user: defaultTeamMember}),
   validationSchema: ((props) => formSchema(props.t)),
   enableReinitialize: true,
   handleSubmit: async (values, {props}) => {
-    props.onAdd(values.user);
+    props.onAdd({
+      ...values.user,
+      firstName: values?.user?.firstName?.trim() ?? 'first name',
+      lastName: values?.user?.lastName?.trim() ?? 'last name',
+    });
   },
 })(AddMemberModalV2);
 

@@ -95,6 +95,6 @@ const CodeInput = ({
       />
     </div>
   )
-}
+};
 
 export default CodeInput;

@@ -3,16 +3,22 @@ import {bindActionCreators} from "redux";
 import {connect} from "react-redux";
 import {get} from "lodash";
 import {withTranslation} from "react-i18next";
-import {setLoadingAction, showErrorNotificationAction} from "../redux/action/ui";
-import {getCompanyById, getUsersUnderOrganization} from "../http";
+import {
+  setLoadingAction,
+  showErrorNotificationAction
+} from "../redux/action/ui";
+import {
+  getCompanyById,
+  getUsersUnderOrganization
+} from "../http";
 import countryRegions from 'country-region-data/data.json';
 import {useParams} from "react-router-dom";
+import {INVALID_VALUES1} from "../constant";
 
 const OrganizationContext = React.createContext(null);
 
 const OrganizationProvider = (
   {
-    t,
     children,
     isAdmin,
     showErrorNotification,
@@ -30,13 +36,13 @@ const OrganizationProvider = (
   }, [organizationId, isAdmin]);
 
   const fetchCompany = () => {
-    if (!([undefined, "-1", null, ""].includes(organizationId?.toString()))) {
+    if (!(INVALID_VALUES1.includes(organizationId?.toString()))) {
       getCompanyById(organizationId)
         .then(response => {
           setOrganization(response.data);
         });
     }
-  }
+  };
 
   const fetchOrgAdmins = () => {
     setLoading(true);
@@ -49,13 +55,13 @@ const OrganizationProvider = (
           setOrgAdmins(res.data ?? []);
         })
         .catch(e => {
-          showErrorNotification(e.response?.data?.message || t("msg something went wrong"));
+          showErrorNotification(e.response?.data?.message);
         })
         .finally(() => {
           setLoading(false);
         });
     }
-  }
+  };
 
   const regions = React.useMemo(() => {
     let ret = [];

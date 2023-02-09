@@ -25,6 +25,7 @@ import {useUserSubscriptionContext} from "../../../providers/UserSubscriptionPro
 import ActivityLogs from "./ActivityLogs";
 import lockIcon from "../../../assets/images/lock.svg";
 import blockIcon from "../../../assets/images/no.svg";
+import MetricLogs from "./MetricLogs";
 
 export const filters = [
   {
@@ -55,7 +56,16 @@ const MemberDetail = (
     setMember,
     unlockMember,
   } = useDashboardContext();
-  const {setUser, logs, activitiesFilters, activitiesFilter, setActivitiesFilter} = useUserSubscriptionContext();
+  const {
+    setUser,
+    logs,
+    metricStats,
+    activitiesFilters,
+    activitiesFilter,
+    setActivitiesFilter,
+    metricsFilter,
+    setMetricsFilter,
+  } = useUserSubscriptionContext();
   const [warningModal, setWarningModal] = React.useState({visible: false, title: '', mode: null}); // mode: 'move', 'unlock'
   const [confirmModal, setConfirmModal] = React.useState({visible: false, title: '', mode: null}); // mode: move, unlock
   const memberId = React.useRef(origin?.userId);
@@ -66,7 +76,6 @@ const MemberDetail = (
     stat: null, alertsForMe: null, lastSyncStr: null, numberOfAlerts: null, settings: {hideCbtHR: false}
   };
   const hideCbtHR = data?.settings?.hideCbtHR;
-  console.log("member", data);
   let badgeColorStyle = style.Off;
   if (connectionObj?.value?.toString() === "3") {
     if (["1", "2"].includes(alertObj?.value?.toString())) {
@@ -106,7 +115,7 @@ const MemberDetail = (
       } else {
         return it.type !== "kenzen" && it.deviceId?.toLowerCase() === stat.sourceDeviceId?.toLowerCase();
       }
-    }
+    };
     phoneDevice = userDevices?.filter(filterFunc)?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
     if (!phoneDevice) phoneDevice = userDevices?.filter(it => it.type !== "kenzen")?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
   }
@@ -115,7 +124,7 @@ const MemberDetail = (
 
   const hideWarningModal = () => {
     setWarningModal({visible: false, title: '', mode: null});
-  }
+  };
 
   const handleConfirm = React.useCallback(() => {
     switch (confirmModal.mode) {
@@ -156,7 +165,7 @@ const MemberDetail = (
         }
       </>
     );
-  }
+  };
 
   const handleClickMoveTeam = () => {
     setWarningModal({
@@ -258,8 +267,8 @@ const MemberDetail = (
                         /> : null
                     }
                     <span className={clsx('text-orange cursor-pointer text-capitalize')}>
-                    {t("edit")}
-                  </span>
+                      {t("edit")}
+                    </span>
                   </div>
 
                   <div className={clsx(style.NameDevice)}>
@@ -277,9 +286,9 @@ const MemberDetail = (
 
                     <div>
                       <div className={clsx(style.Mac_Battery)}>
-                      <span className={clsx('font-binary')}>
-                        {stat?.deviceId ?? "N/A"}
-                      </span>&nbsp;&nbsp;
+                        <span className={clsx('font-binary')}>
+                          {stat?.deviceId ?? "N/A"}
+                        </span>&nbsp;&nbsp;
                         <BatteryV3
                           charging={stat?.chargingFlag}
                           percent={stat?.batteryPercent}
@@ -288,34 +297,32 @@ const MemberDetail = (
                       {
                         kenzenDevice &&
                         <div>
-                        <span className={clsx('font-binary')}>
-                          FW Ver. {kenzenDevice?.version}
-                        </span>
+                          <span className={clsx('font-binary')}>
+                            FW Ver. {kenzenDevice?.version}
+                          </span>
                         </div>
                       }
                       {
                         phoneDevice &&
                         <div>
-                        <span className={clsx('font-binary')}>
-                          {phoneDevice?.type === "ios" ? "iOS Ver." : "Android Ver."} {phoneDevice?.osVersion}
-                        </span>
+                          <span className={clsx('font-binary')}>
+                            {phoneDevice?.type === "ios" ? "iOS Ver." : "Android Ver."} {phoneDevice?.osVersion}
+                          </span>
                         </div>
                       }
                       {
                         phoneDevice &&
                         <div>
-                        <span className={clsx('font-binary')}>
-                          App Ver. {phoneDevice?.version}
-                        </span>
+                          <span className={clsx('font-binary')}>
+                            App Ver. {phoneDevice?.version}
+                          </span>
                         </div>
                       }
                     </div>
                   </div>
                 </div>
 
-                <div className={clsx(style.Divider)}>
-                  {/*Divider*/}
-                </div>
+                <div className={clsx(style.Divider)} />
 
                 <div className={clsx(style.InformationArea)}>
                   <div>
@@ -332,8 +339,7 @@ const MemberDetail = (
                       <div>
                         <span className={clsx(style.HelperText, 'font-helper-text')}>{t("status")}</span>
                       </div>
-                      <div className={clsx(style.StatusCell)} title={invisibleHeatRisk ? null : alertObj?.label}
-                           style={{height: '18.38px'}}>
+                      <div className={clsx(style.StatusCell)} title={invisibleHeatRisk ? null : alertObj?.label} style={{height: '18.38px'}}>
                         <div className={clsx(style.BadgeWrapper)}>
                           <div className={clsx(style.StatusBadge, badgeColorStyle)}/>
                         </div>
@@ -354,12 +360,10 @@ const MemberDetail = (
 
                     <div className={clsx(style.InformationEntity)}>
                       <div>
-                        <span
-                          className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}>{t("connection status")}</span>
+                        <span className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}>{t("connection status")}</span>
                       </div>
                       <div className={clsx(style.Cell)}>
-                        <span className={clsx('font-input-label')}
-                              title={connectionObj?.label}>{connectionObj?.label}</span>
+                        <span className={clsx('font-input-label')} title={connectionObj?.label}>{connectionObj?.label}</span>
                       </div>
                     </div>
                   </div>
@@ -374,18 +378,17 @@ const MemberDetail = (
             <div className={clsx(style.HeartRiskCard)}>
               <div className={clsx(style.RiskCard, style.Card)}>
                 <div style={{display: "flex", flexDirection: 'column', alignItems: 'center', textAlign: 'center'}}>
-                <span className={clsx('font-input-label')}>
-                  {t("cbt avg")}
-                </span>
+                  <span className={clsx('font-input-label')}>
+                    {t("cbt avg")}
+                  </span>
                   <span className={'font-input-label text-uppercase'}>{metric ? '(°C)' : '(°F)'}</span>
                 </div>
 
-                <div className={clsx(style.InformationContent)}
-                     style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
+                <div className={clsx(style.InformationContent)} style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
                   <img src={thermometer} alt="thermometer" width={15}/>
                   {
                     hideCbtHR ?
-                      <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon"/> : <span className={'font-big-number'}>{formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}</span>
+                      <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon"/> : <span className={'font-big-number'}>{stat?.chargingFlag ? "--" : formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}</span>
                   }
                 </div>
 
@@ -396,28 +399,45 @@ const MemberDetail = (
 
               <div className={clsx(style.HeartCard, style.Card)}>
                 <div style={{display: "flex", flexDirection: 'column', alignItems: 'center', textAlign: 'center'}}>
-                <span className={clsx('font-input-label text-capitalize')}>
-                  {t("heart rate avg")}
-                </span>
+                  <span className={clsx('font-input-label text-capitalize')}>
+                    {t("heart rate avg")}
+                  </span>
                   <span className={clsx('font-input-label text-uppercase')}>(bpm)</span>
                 </div>
 
-                <div className={clsx(style.InformationContent)}
-                     style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
+                <div className={clsx(style.InformationContent)} style={{display: 'flex', justifyContent: 'center', height: '55px'}}>
                   <img src={heart} alt="heart" width={30}/>
                   {
                     hideCbtHR ?
-                      <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon"/> : <span className={clsx('font-big-number')}>{formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)}</span>
+                      <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon"/> : <span className={clsx('font-big-number')}>{stat?.chargingFlag ? "--" : formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)}</span>
                   }
                 </div>
                 {
                   !hideCbtHR && visibleHeartStats &&
                   <div style={{display: 'flex', justifyContent: 'center'}}>
-                <span className={clsx('font-binary', heartRateZoneStyles[heartRateZone?.value?.toString()])}>
-                  {heartRateZone?.label}
-                </span>
+                    <span className={clsx('font-binary', heartRateZoneStyles[heartRateZone?.value?.toString()])}>
+                      {heartRateZone?.label}
+                    </span>
                   </div>
                 }
+              </div>
+            </div>
+
+            <div className="mt-15">
+              <div className={clsx(style.CardHeader, 'font-heading-small')}>
+                <span>{t("modify team")}</span>
+              </div>
+
+              <div>
+                <ResponsiveSelect
+                    className='mt-10 font-heading-small text-black'
+                    placeholder={t("select")}
+                    styles={customStyles()}
+                    options={formattedTeams}
+                    value={team}
+                    onChange={e => setTeam(e)}
+                    maxMenuHeight={190}
+                />
               </div>
             </div>
           </div>
@@ -453,25 +473,36 @@ const MemberDetail = (
               </div>
             </div>
 
-            <div className={clsx(style.ActivityRoleCard)}>
-              <div className={clsx(style.ActivityCard, style.Card_No_Back)}>
+            <div className={clsx(style.AlertsCard, style.MetricsCard, style.Card, style.CardMetric)}>
+              <div className={clsx(style.CardTop)}>
                 <div className={clsx(style.CardHeader, 'font-heading-small')}>
-                  <span>{t("modify team")}</span>
+                  <img src={alertsIcon} alt="alerts icon"/>
+                  &nbsp;&nbsp;
+                  <span>{t("metrics")}</span>
                 </div>
 
-                <div>
+                <div className={clsx(style.FilterArea)}>
                   <ResponsiveSelect
-                    className='mt-10 font-heading-small text-black'
-                    placeholder={t("select")}
-                    styles={customStyles()}
-                    options={formattedTeams}
-                    value={team}
-                    onChange={e => setTeam(e)}
-                    maxMenuHeight={190}
+                      className={clsx('font-binary text-black', style.Dropdown)}
+                      placeholder={t("filter by")}
+                      styles={customStyles()}
+                      options={activitiesFilters}
+                      value={metricsFilter}
+                      onChange={setMetricsFilter}
+                      maxMenuHeight={190}
+                      writable={false}
                   />
                 </div>
+              </div>
 
-                <div className='mt-15 d-flex justify-end'>
+              <div className={clsx(style.MetricCardContent)}>
+                <MetricLogs metricStats={metricStats} />
+              </div>
+            </div>
+
+            <div className={clsx(style.ActivityRoleCard)}>
+              <div className={clsx(style.ActivityCard, style.Card_No_Back)}>
+                <div className='d-flex justify-end'>
                   <Button
                     title={'update team'}
                     size='sm'
@@ -501,7 +532,7 @@ const MemberDetail = (
       />
     </React.Fragment>
   );
-}
+};
 
 const mapStateToProps = (state) => ({
   metric: get(state, 'ui.metric'),

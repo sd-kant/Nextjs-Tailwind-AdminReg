@@ -4,7 +4,6 @@ import {useTranslation} from "react-i18next";
 import FormProfile from "../partials/FormProfile";
 import {useNavigate} from "react-router-dom";
 
-
 const Profile = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
@@ -23,6 +22,6 @@ const Profile = () => {
       <FormProfile navigate={navigate}/>
     </div>
   )
-}
+};
 
 export default Profile;

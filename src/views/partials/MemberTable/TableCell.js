@@ -4,9 +4,13 @@ import {get} from "lodash";
 import {useUtilsContext} from "../../../providers/UtilsProvider";
 import clsx from "clsx";
 import style from "./TableCell.module.scss";
-import {formatDevice4Digits, formatHeartRate} from "../../../utils/dashboard";
+import {
+  formatDevice4Digits,
+  formatHeartRate
+} from "../../../utils/dashboard";
 import BatteryV3 from "../../components/BatteryV3";
 import {useTranslation} from "react-i18next";
+import {TIME_FORMAT_YYYYMDHM} from "../../../constant";
 
 const TableCell = (
   {
@@ -40,19 +44,23 @@ const TableCell = (
           <div className={clsx(style.Device)}>
             {
               !invisibleDeviceMac && formatDevice4Digits(stat?.deviceId) ?
-                <span>
-                {formatDevice4Digits(stat?.deviceId)}
-                </span> : null
+                <span>{formatDevice4Digits(stat?.deviceId)}</span>
+                  :
+                  null
             }
             <span>{connectionObj?.label}</span>
             {
-              !invisibleBattery ?
-                (stat?.batteryPercent >= 20 ?
-                    <BatteryV3
-                      percent={stat?.batteryPercent}
-                      charging={stat?.chargingFlag}
-                    /> : <span className={clsx('text-risk')}>{t('battery very low')}</span>
-              ) : null
+              !invisibleBattery ? (
+                      stat?.batteryPercent >= 20 ?
+                          <BatteryV3
+                              percent={stat?.batteryPercent}
+                              charging={stat?.chargingFlag}
+                          />
+                          :
+                          <span className={clsx('text-risk')}>{t('battery very low')}</span>
+              )
+                  :
+                  null
             }
           </div>
         </td>
@@ -72,17 +80,11 @@ const TableCell = (
                   {
                     !hideCbtHR &&
                     <span>
-                    {formatHeartCbt(alert?.heartCbtAvg)}{metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;{formatHeartRate(alert?.heartRateAvg)} BPM
-                  </span>
+                      {formatHeartCbt(alert?.heartCbtAvg)}{metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;{formatHeartRate(alert?.heartRateAvg)} BPM
+                    </span>
                   }
                   <span>
-                    {alert?.utcTs ? new Date(alert?.utcTs).toLocaleString([], {
-                      year: 'numeric',
-                      month: 'numeric',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    }) : ''}
+                    {alert?.utcTs ? new Date(alert?.utcTs).toLocaleString([], TIME_FORMAT_YYYYMDHM) : ''}
                   </span>
                 </React.Fragment>
               }
@@ -113,7 +115,7 @@ const TableCell = (
     default:
       return null;
   }
-}
+};
 
 const mapStateToProps = (state) => ({
   metric: get(state, 'ui.metric'),

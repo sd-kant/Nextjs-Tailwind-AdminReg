@@ -53,10 +53,10 @@ const MemberTable = (
 
         <tbody>
         {
-          members?.map(member => (
+          members?.map((member, key) => (
             <TableRow
               member={member}
-              key={`member-${member.userId}`}
+              key={`member-${key}-${member.userId}`}
               visibleColumns={visibleColumns}
               columnsMap={columnsMap}
             />

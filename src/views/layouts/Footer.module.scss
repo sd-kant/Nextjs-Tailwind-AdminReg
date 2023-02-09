@@ -1,8 +1,5 @@
-.ReInviteWrapper {
-  display: none;
-}
-
-.LanguageWrapper {
+.ReInviteWrapper,
+.LanguageWrapper  {
   display: none;
 }
 
@@ -19,7 +16,8 @@
 }
 
 @media only screen and (min-width: 1400px) {
-  .ReInviteWrapper, .LanguageWrapper {
+  .ReInviteWrapper,
+  .LanguageWrapper {
     display: none;
   }
 }

@@ -1,9 +1,17 @@
 import * as React from 'react';
-import {getTeamMemberEvents, getTeamMemberAlerts, subscribeDataEvents} from "../http";
+import {
+  getTeamMemberEvents,
+  getTeamMemberAlerts,
+  subscribeDataEvents,
+} from "../http";
 import axios from "axios";
-import {useTranslation} from "react-i18next";
 import {useDashboardContext} from "./DashboardProvider";
-import {ALERT_STAGE_ID_LIST} from "../constant";
+import {
+  ACTIVITIES_FILTERS,
+  ALERT_STAGE_ID_LIST
+} from "../constant";
+import {useUtilsContext} from "./UtilsProvider";
+import {formatHeartRate} from "../utils/dashboard";
 
 const UserSubscriptionContext = React.createContext(null);
 
@@ -11,27 +19,12 @@ export const UserSubscriptionProvider = (
   {
     children,
   }) => {
-  const {t} = useTranslation();
   const {organization} = useDashboardContext();
+  const {formatHeartCbt} = useUtilsContext();
   const [duration] = React.useState(30); // 1, 7, or 30 days
-  const activitiesFilters = [
-    {
-      value: 1,
-      label: t("24 hours"),
-      noText: t("no activity logs in 24 hours"),
-    },
-    {
-      value: 7,
-      label: t("week"),
-      noText: t("no activity logs in week"),
-    },
-    {
-      value: 30,
-      label: t("month"),
-      noText: t("no activity logs in month"),
-    },
-  ];
+  const activitiesFilters = ACTIVITIES_FILTERS;
   const [activitiesFilter, setActivitiesFilter] = React.useState(activitiesFilters[0]);
+  const [metricsFilter, setMetricsFilter] = React.useState(activitiesFilters[0]);
   const [user, setUser] = React.useState(null);
   const [horizon, _setHorizon] = React.useState(null);
   const horizonRef = React.useRef(horizon);
@@ -52,11 +45,17 @@ export const UserSubscriptionProvider = (
     activitiesRef.current = v;
     _setActivities(v);
   };
-
+  const [metricsLog, _setMetricsLog] = React.useState([]);
+  const metricsLogRef = React.useRef(metricsLog);
+  const setMetricsLog = v => {
+    metricsLogRef.current = v;
+    _setMetricsLog(v);
+  };
   React.useEffect(() => {
     return () => {
       setAlerts([]);
       setActivities([]);
+      setMetricsLog([]);
       setHorizon(null);
       setUser(null);
     }
@@ -64,6 +63,7 @@ export const UserSubscriptionProvider = (
   React.useEffect(() => {
     setAlerts([]);
     setActivities([]);
+    setMetricsLog([]);
     if (user?.userId && user?.teamId) {
       const promises = [];
       const d = new Date();
@@ -76,6 +76,7 @@ export const UserSubscriptionProvider = (
         endDate: getDateStr(new Date()),
         startDate: getDateStr(d),
       });
+
       const source = axios.CancelToken.source();
       promises.push(a, b);
       if (promises?.length > 0) {
@@ -186,20 +187,48 @@ export const UserSubscriptionProvider = (
         unique.push(entry);
       }
     }
+
     return unique;
   }, [alerts, activities, activitiesFilter?.value]);
+
+  const metricStats = React.useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - (metricsFilter?.value ?? 1));
+    let tempAlerts = [...alerts]?.filter(it => new Date(it.utcTs).getTime() > d.getTime())
+        ?.sort((a, b) => new Date(b.utcTs).getTime() - new Date(a.utcTs).getTime());
+
+    const unique = [];
+    for (const entry of tempAlerts) {
+      if (!unique.some(x => (entry.utcTs === x.utcTs))) {
+        unique.push(entry);
+      }
+    }
+
+    return {
+      totalAlerts: unique.length || 0,
+      stopAlerts: unique?.filter(it => ["1", "2"].includes(it?.alertStageId?.toString())).length,
+      highestCbt: unique.length > 0 ?
+          formatHeartCbt(unique.sort((a, b) => (b?.heartCbtAvg ?? 0) - (a?.heartCbtAvg ?? 0))[0]?.heartCbtAvg) : 0,
+      highestHr: unique.length > 0 ?
+          formatHeartRate(unique.sort((a, b) => (b?.heartRateAvg ?? 0) - (a?.heartRateAvg ?? 0))[0]?.heartRateAvg) : 0
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [alerts, metricsFilter?.value]);
 
   const getDateStr = date => {
     const d = new Date(date);
     return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-  }
+  };
 
   const providerValue = {
     setUser,
     logs,
+    metricStats,
     activitiesFilter,
     setActivitiesFilter,
     activitiesFilters,
+    metricsFilter,
+    setMetricsFilter,
     loading,
   };
 

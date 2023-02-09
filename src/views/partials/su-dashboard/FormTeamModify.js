@@ -4,16 +4,25 @@ import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import {queryAllTeamsAction} from "../../../redux/action/base";
 import {get} from "lodash";
 import {customStyles} from "./FormCompany";
 import backIcon from "../../../assets/images/back.svg";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
-import {getUsersUnderOrganization, queryTeamMembers, updateTeam} from "../../../http";
+import {
+  getUsersUnderOrganization,
+  queryTeamMembers,
+  updateTeam
+} from "../../../http";
 import {useOrganizationContext} from "../../../providers/OrganizationProvider";
-import CreatableSelect from "react-select/creatable/dist/react-select.esm";
+import CreatableSelect from "react-select/creatable";
 import {useNavigate} from "react-router-dom";
+import {INVALID_VALUES1} from "../../../constant";
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -36,7 +45,19 @@ const formSchema = (t) => {
 };
 
 const FormTeamModify = (props) => {
-  const {values, errors, touched, t, allTeams, setRestBarClass, setFieldValue, queryAllTeams, organizationId, isAdmin, showErrorNotification,} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    allTeams,
+    setRestBarClass,
+    setFieldValue,
+    queryAllTeams,
+    organizationId,
+    isAdmin,
+    showErrorNotification
+    ,} = props;
   const [hasUnassignedMember, setHasUnassignedMember] = React.useState(false);
   const {regions, locations} = useOrganizationContext();
   const navigate = useNavigate();
@@ -54,7 +75,7 @@ const FormTeamModify = (props) => {
 
   const changeHandler = (key, value) => {
     setFieldValue(key, value);
-  }
+  };
 
   React.useEffect(() => {
     if (values.name?.value) {
@@ -72,18 +93,18 @@ const FormTeamModify = (props) => {
         setHasUnassignedMember(hasUnassignedMember);
       })
       .catch(err => {
-        showErrorNotification(err?.response?.data?.message ?? t("msg something went wrong"));
+        showErrorNotification(err?.response?.data?.message);
       })
       .finally(() => {
 
       });
-  }
+  };
 
   const filteredTeams = React.useMemo(() => {
     let teams = [];
     allTeams?.forEach(team => {
       if (
-        [undefined, "-1", null, ""].includes(organizationId?.toString()) ||
+        INVALID_VALUES1.includes(organizationId?.toString()) ||
         team.orgId?.toString() === organizationId?.toString()
       ) {
         teams.push({
@@ -108,7 +129,7 @@ const FormTeamModify = (props) => {
       ...(values.name),
       label: e.target.value,
     })
-  }
+  };
 
   const handleCancel = () => {
     setFieldValue("editing", false);
@@ -144,8 +165,8 @@ const FormTeamModify = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-              {t("previous")}
-            </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='grouped-form mt-40'>
@@ -189,7 +210,7 @@ const FormTeamModify = (props) => {
           }
         </div>
         {
-          !([null, undefined, -1, ""].includes(values.name?.value)) ? (
+          !(INVALID_VALUES1.includes(values.name?.value)) ? (
             values?.editing ?
               <React.Fragment>
                 <div className='d-flex flex-column mt-40'>
@@ -263,7 +284,7 @@ const FormTeamModify = (props) => {
           )
         }
         {
-          !([null, undefined, -1, ""].includes(values.name?.value)) && values.editing && (
+          !(INVALID_VALUES1.includes(values.name?.value)) && values.editing && (
             <button
               className={`button cursor-pointer cancel ml-15`}
               type={"button"}
@@ -278,7 +299,7 @@ const FormTeamModify = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

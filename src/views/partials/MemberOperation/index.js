@@ -82,6 +82,6 @@ const MemberOperation = (
       </div>
     </div>
   )
-}
+};
 
 export default withTranslation()(MemberOperation);

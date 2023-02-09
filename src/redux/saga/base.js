@@ -8,7 +8,10 @@ import {get} from 'lodash';
 import {actionTypes} from '../type';
 import {
   deleteUser,
-  queryAllOrganizations, queryTeamMembers, queryTeams, removeTeamMember,
+  queryAllOrganizations,
+  queryTeamMembers,
+  queryTeams,
+  removeTeamMember,
 } from "../../http";
 import i18n from '../../i18nextInit';
 
@@ -46,7 +49,7 @@ function* queryAllOrganizationsSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: e.response?.data?.message ?? i18n.t("msg something went wrong"),
+        msg: e.response?.data?.message,
       }
     });
   } finally {
@@ -84,7 +87,7 @@ function* queryAllTeamsSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: e.response?.data?.message ?? i18n.t("msg something went wrong"),
+        msg: e.response?.data?.message,
       }
     });
   } finally {
@@ -130,7 +133,7 @@ function* queryTeamMembersSaga({payload: {teamId}}) {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: e.response?.data?.message ?? i18n.t("msg something went wrong"),
+        msg: e.response?.data?.message,
       }
     });
   } finally {
@@ -189,7 +192,7 @@ function* removeTeamMemberSaga({payload: {userId}}) {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: e.response?.data?.message ?? i18n.t("msg something went wrong"),
+        msg: e.response?.data?.message,
       }
     });
   } finally {
@@ -248,7 +251,7 @@ function* deleteUserSaga({payload: {userId}}) {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: e.response?.data?.message ?? i18n.t("msg something went wrong"),
+        msg: e.response?.data?.message,
       }
     });
   } finally {

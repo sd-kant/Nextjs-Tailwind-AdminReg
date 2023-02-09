@@ -1,6 +1,7 @@
 import * as React from "react";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import {PREFERRED_COUNTRIES} from "../../../constant";
 
 const CustomPhoneInput = (
   {
@@ -14,13 +15,13 @@ const CustomPhoneInput = (
       country={'us'}
       value={value}
       disabled={disabled}
-      preferredCountries={['us', 'ca', 'fr', 'de', 'jp', 'cn', 'au', 'za', 'in', 'qa', 'gb', 'sa', 'es']}
+      preferredCountries={PREFERRED_COUNTRIES}
       onChange={(value, country) => {
         onChange(value, country.countryCode);
       }}
       {...props}
     />
   )
-}
+};
 
 export default CustomPhoneInput;

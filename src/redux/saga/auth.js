@@ -6,7 +6,12 @@ import {
 import {actionTypes} from '../type';
 import {instance, login, lookupByUsername} from "../../http";
 import i18n from '../../i18nextInit';
-import {ableToLogin, getDeviceId, setStorageAfterLogin, setStorageAfterRegisterLogin} from "../../utils";
+import {
+  ableToLogin,
+  getDeviceId,
+  setStorageAfterLogin,
+  setStorageAfterRegisterLogin
+} from "../../utils";
 import {apiBaseUrl} from "../../config";
 
 function* actionWatcher() {
@@ -89,7 +94,7 @@ function* loginSaga({payload: {
       });
 
       if (fromRegister) {
-        setStorageAfterRegisterLogin({token, baseUrl: instance.defaults.baseURL})
+        setStorageAfterRegisterLogin({token, baseUrl: instance.defaults.baseURL});
 
         if (!mfa) { // if multi-factor authentication off
           navigate("/create-account/name");
@@ -136,7 +141,7 @@ function* loginSaga({payload: {
       yield put({
         type: actionTypes.ERROR_NOTIFICATION,
         payload: {
-          msg: i18n.t(e.response?.data?.message ?? "msg something went wrong"),
+          msg: i18n.t(e.response?.data?.message),
         }
       });
     }

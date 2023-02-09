@@ -2,21 +2,47 @@ import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
-import {Form, withFormik} from "formik";
+import {
+  Form,
+  withFormik
+} from "formik";
 import {bindActionCreators} from "redux";
-import {createTeam, getCompanyById} from "../../../http";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  createTeam,
+  getCompanyById
+} from "../../../http";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import backIcon from "../../../assets/images/back.svg";
 import {get} from "lodash";
 import ResponsiveSelect from "../../components/ResponsiveSelect";
 import countryRegions from 'country-region-data/data.json';
 import {customStyles} from "./FormCompany";
-import CreatableSelect from "react-select/creatable/dist/react-select.esm";
+import CreatableSelect from "react-select/creatable";
 import {useNavigate} from "react-router-dom";
+import {INVALID_VALUES1} from "../../../constant";
+import {checkIfSpacesOnly} from "../../../utils/invite";
 
 const formSchema = (t) => {
   return Yup.object().shape({
     name: Yup.string()
+      .test(
+          'is-valid',
+          t('team name required'),
+          function (value) {
+            return !checkIfSpacesOnly(value);
+          }
+      )
+      .test(
+          'is-valid',
+          t('team name min error'),
+          function (value) {
+            return value?.trim()?.length >= 6;
+          }
+      )
       .required(t('team name required'))
       .min(6, t('team name min error'))
       .max(1024, t('team name max error')),
@@ -49,7 +75,7 @@ const FormTeamCreate = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   const regions = React.useMemo(() => {
     let ret = [];
@@ -194,7 +220,7 @@ const FormTeamCreate = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
@@ -205,13 +231,13 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props}) => {
     const {organizationId: orgId, navigate} = props;
-    if ([undefined, "-1", null, ""].includes(orgId?.toString())) {
+    if (INVALID_VALUES1.includes(orgId?.toString())) {
       navigate("/invite/company");
       return;
     }
     const data = {
       orgId: parseInt(orgId),
-      name: values?.name,
+      name: values?.name?.trim() ?? 'team name',
       location: values?.location?.label,
       region: values?.region?.label,
     };
@@ -223,7 +249,7 @@ const EnhancedForm = withFormik({
       navigate(`/invite/${teamData?.orgId}/select/${teamData?.id}`);
     } catch (e) {
       console.log("creating team error", e);
-      props.showErrorNotification(e.response?.data?.message ?? props.t("msg something went wrong"));
+      props.showErrorNotification((e.response?.data?.validationErrors?.filter(it => it?.messageCode === "error.team.duplicateName")?.length > 0) ? props.t("team already exist") : e.response?.data?.message);
     } finally {
       props.setLoading(false);
     }

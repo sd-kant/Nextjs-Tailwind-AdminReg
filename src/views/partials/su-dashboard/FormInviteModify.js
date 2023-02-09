@@ -2,7 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as Yup from 'yup';
-import {Form, withFormik, useFormikContext} from "formik";
+import {
+  Form,
+  withFormik,
+  useFormikContext
+} from "formik";
 import {withTranslation} from "react-i18next";
 import backIcon from "../../../assets/images/back.svg";
 import plusIcon from "../../../assets/images/plus-circle-fire.svg";
@@ -15,6 +19,7 @@ import {
   showSuccessNotificationAction
 } from "../../../redux/action/ui";
 import {
+  INVALID_VALUES1,
   permissionLevels,
 } from "../../../constant";
 import {
@@ -28,8 +33,14 @@ import AddMemberModalV2 from "../../components/AddMemberModalV2";
 import InviteModal from "./modify/InviteModal";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import {useNavigate} from "react-router-dom";
-import {defaultTeamMember, userSchema} from "./FormSearch";
-import {_handleSubmitV2, handleModifyUsers} from "../../../utils/invite";
+import {
+  defaultTeamMember,
+  userSchema
+} from "./FormSearch";
+import {
+  _handleSubmitV2,
+  handleModifyUsers
+} from "../../../utils/invite";
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 import style from "./FormInviteModify.module.scss";
 import clsx from "clsx";
@@ -53,7 +64,8 @@ const FormInviteModify = (props) => {
     errors,
     touched,
     t,
-    id, organizationId,
+    id,
+    organizationId,
     setLoading,
     showErrorNotification,
     setRestBarClass,
@@ -65,7 +77,7 @@ const FormInviteModify = (props) => {
   const [newChanges, setNewChanges] = useState(0);
   const [visibleAddModal, setVisibleAddModal] = useState(false);
   const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
-  const {setPage, users, admins, keyword, setKeyword, members, initializeMembers} = useMembersContext();
+  const {setPage, users, admins, keyword, setKeyword, members, initializeMembers, teams} = useMembersContext();
   const navigate = useNavigate();
   const [visibleInviteModal, setVisibleInviteModal] = React.useState(false);
   const { submitForm } = useFormikContext();
@@ -109,10 +121,7 @@ const FormInviteModify = (props) => {
     if (user.email) {
       const alreadyExist = members?.findIndex(it => it.email === user.email) !== -1;
       if (alreadyExist) {
-        showErrorNotification(
-          '',
-          t('error member with same email address'),
-        );
+        showErrorNotification(t('error member with same email address'));
         return;
       }
     }
@@ -121,7 +130,7 @@ const FormInviteModify = (props) => {
     try {
       setLoading(true);
       const users = [user];
-      if ([undefined, "-1", null, ""].includes(organizationId?.toString())) {
+      if (INVALID_VALUES1.includes(organizationId?.toString())) {
         navigate("/invite/company");
         return;
       }
@@ -153,6 +162,10 @@ const FormInviteModify = (props) => {
   const visibleSubmitBtn = React.useMemo(() => {
     return newChanges > 0;
   }, [newChanges]);
+
+  const teamName = React.useMemo(() => {
+    return (teams || []).find(it => it.value?.toString() === id?.toString())?.label ?? '';
+  }, [id, teams]);
 
   return (
     <>
@@ -196,11 +209,9 @@ const FormInviteModify = (props) => {
       <Form className='form-group mt-57'>
         <div>
           <div className="d-flex align-center">
-            <img src={backIcon} alt="back" className={"cursor-pointer"}
-                 onClick={() => navigate(`/invite/${organizationId}/team-modify`)}/>
+            <img src={backIcon} alt="back" className={"cursor-pointer"} onClick={() => navigate(`/invite/${organizationId}/team-modify`)}/>
             &nbsp;&nbsp;
-            <span className='font-button-label text-orange cursor-pointer'
-                  onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
+            <span className='font-button-label text-orange cursor-pointer' onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
               {t("previous")}
             </span>
           </div>
@@ -208,11 +219,13 @@ const FormInviteModify = (props) => {
           <div className={clsx(style.FormHeader, "d-flex flex-column")}>
             <ScrollToFieldError/>
             <div className={clsx(style.Header)}>
-              <div className={clsx("d-flex align-center", style.Title)}><span className='font-header-medium d-block'>{t("modify team")}</span></div>
+              <div className={clsx("d-flex align-center", style.Title)}>
+                <span className='font-header-medium d-block'>{t("modify")} {teamName}</span></div>
               <div/>
 
               <div className={clsx(style.NoteWrapper)}>
-                <div className={clsx("align-center", style.ChangeNote)}><span>{t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}</span>
+                <div className={clsx("align-center", style.ChangeNote)}>
+                  <span>{t(newChanges === 0 ? 'no new change' : (newChanges > 1 ? 'new changes' : 'new change'), {numberOfChanges: newChanges})}</span>
                 </div>
 
                 {
@@ -262,22 +275,32 @@ const FormInviteModify = (props) => {
 
             {
               visibleAddBtn &&
-              <div className={clsx(style.AddButton, "mt-15")} onClick={addAnother}>
-                <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
-                <span className="font-heading-small text-capitalize">
-                  {t("add a team member")}
-                </span>
-              </div>
+                <div className={clsx(style.AddButton_Space, "mt-15")}>
+                  <div className={clsx(style.AddButton)} onClick={addAnother}>
+                    <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
+                    <span className="font-heading-small text-capitalize">
+                      {t("add a team member")}
+                    </span>
+                  </div>
+
+                  {/*<div className={clsx(style.AddButton)} onClick={() => null}>*/}
+                  {/*  <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>*/}
+                  {/*  <span className="font-heading-small text-capitalize">*/}
+                  {/*  {t("bulk add team members")}*/}
+                  {/*</span>*/}
+                  {/*</div>*/}
+                </div>
             }
+
           </div>
 
           <div className={clsx(style.FormBody, "d-flex flex-column")}>
             {
               values?.users?.length > 0 &&
               <div className="mt-28">
-              <span className="font-heading-small text-uppercase text-orange">
-                {t("operators")}
-              </span>
+                <span className="font-heading-small text-uppercase text-orange">
+                  {t("operators")}
+                </span>
               </div>
             }
 
@@ -297,9 +320,9 @@ const FormInviteModify = (props) => {
             {
               values?.admins?.length > 0 &&
               <div className="mt-28">
-              <span className="font-heading-small text-uppercase text-orange">
-                {t("administrators")}
-              </span>
+                <span className="font-heading-small text-uppercase text-orange">
+                  {t("administrators")}
+                </span>
               </div>
             }
 
@@ -321,7 +344,7 @@ const FormInviteModify = (props) => {
       </Form>
     </>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

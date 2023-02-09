@@ -6,11 +6,18 @@ import backIcon from "../../../assets/images/back.svg";
 import {
   getTokenFromUrl,
 } from "../../../utils";
-import {setLoadingAction, showErrorNotificationAction, showSuccessNotificationAction} from "../../../redux/action/ui";
+import {
+  setLoadingAction,
+  showErrorNotificationAction,
+  showSuccessNotificationAction
+} from "../../../redux/action/ui";
 import {useNavigate} from "react-router-dom";
 
 const FormPhotoUpload = (props) => {
-  const {t, setRestBarClass} = props;
+  const {
+    t,
+    setRestBarClass
+  } = props;
   // eslint-disable-next-line no-unused-vars
   const [photo, setPhoto] = useState('');
   // eslint-disable-next-line no-unused-vars
@@ -47,8 +54,8 @@ const FormPhotoUpload = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange'>
-          {t("previous")}
-        </span>
+            {t("previous")}
+          </span>
         </div>
       </div>
 

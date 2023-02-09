@@ -15,15 +15,15 @@ const FormComplete = (props) => {
     <div className='form-group mt-57'>
       <div>
         <div className='form-header-medium'>
-        <span className='font-header-medium d-block'>
-          {t("medical complete header")}
-        </span>
+          <span className='font-header-medium d-block'>
+            {t("medical complete header")}
+          </span>
         </div>
 
         <div className="mt-40">
-        <span className="font-binary text-white">
-          {t("medical complete description")}
-        </span>
+          <span className="font-binary text-white">
+            {t("medical complete description")}
+          </span>
         </div>
 
         <div className="mt-80 d-flex justify-start align-center">
@@ -66,6 +66,6 @@ const FormComplete = (props) => {
       </div>
     </div>
   )
-}
+};
 
 export default withTranslation()(FormComplete);

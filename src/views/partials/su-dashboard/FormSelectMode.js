@@ -2,21 +2,24 @@ import React, {useEffect} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import {bindActionCreators} from "redux";
-import {setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
+import {
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
 import workerOrange from "../../../assets/images/worker-orange-2.svg";
 import workerOrange1 from "../../../assets/images/worker-orange.svg";
 import settings from "../../../assets/images/settings-orange.svg";
 import clsx from "clsx";
 import style from "./FormSelectMode.module.scss";
-import queryString from "query-string";
-import {concatAsUrlParam} from "../../../utils";
+import {
+  concatAsUrlParam,
+  getUrlParamAsJson
+} from "../../../utils";
 import {useNavigate} from "react-router-dom";
 
 const FormSelectMode = (props) => {
   const {t, setRestBarClass} = props;
-  const cachedSearchUrl = localStorage.getItem("kop-params");
-  const q = queryString.parse(cachedSearchUrl);
-  const flattened = concatAsUrlParam(q);
+  const flattened = concatAsUrlParam(getUrlParamAsJson());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,10 +65,12 @@ const FormSelectMode = (props) => {
               <span className={clsx('font-button-label')}>{t("dashboard")}</span>
             </div>
 
-            <div className={clsx(style.ImageWrapper2)}>
-              <img src={workerOrange} className={clsx(style.WorkerWhiteImage1)} alt="settings"/>
-              <img src={workerOrange} className={clsx(style.WorkerWhiteImage2)} alt="settings"/>
-              <img src={workerOrange} className={clsx(style.WorkerOrangeImage)} alt="worker orange"/>
+            <div className={clsx(style.ImageWrapper2_Body)}>
+              <div className={clsx(style.ImageWrapper2)}>
+                <img src={workerOrange} className={clsx(style.WorkerWhiteImage1)} alt="settings"/>
+                <img src={workerOrange} className={clsx(style.WorkerWhiteImage2)} alt="settings"/>
+                <img src={workerOrange} className={clsx(style.WorkerOrangeImage)} alt="worker orange"/>
+              </div>
             </div>
 
             <div className={clsx(style.DescriptionDiv)}>
@@ -78,7 +83,7 @@ const FormSelectMode = (props) => {
       <div/>
     </div>
   )
-}
+};
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(

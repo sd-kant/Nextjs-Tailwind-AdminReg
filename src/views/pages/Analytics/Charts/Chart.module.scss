@@ -1,0 +1,298 @@
+@import "../../../../assets/scss/colors";
+
+.ChartBody {
+  overflow-x: auto;
+  min-height: 580px;
+
+  .FlexSpace {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .TxtLabel {
+    padding-left: 10px;
+    transform: rotate(180deg);
+    writing-mode: tb-rl;
+  }
+
+  .TxtLabel,
+  .Txt18 {
+    font-size: 18px;
+  }
+
+  .ChartLabel {
+    padding-top: 10px;
+    font-size: 22px;
+    font-weight: 500;
+  }
+
+  .DoughnutGrid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 0;
+    margin: 35px auto 0;
+    width: 1100px;
+
+    .TxtCenter {
+      text-align: center;
+    }
+
+    & > div {
+      margin: 0 auto 20px;
+      width: 100%;
+      max-width: 80%;
+
+      .LegendBoxBody {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        margin-top: 50px;
+
+        .LegendFlex {
+          display: flex;
+          justify-content: left;
+          align-content: center;
+
+          .LegendBoxItem {
+            margin-left: 10px;
+            border: 1px solid #fff;
+            width: 20px;
+            height: 20px;
+          }
+
+          .LegendBoxTxt {
+            padding-left: 10px;
+            font-size: 16px;
+          }
+        }
+
+        @media screen and (max-width: 1200px) {
+          margin-bottom: 30px;
+        }
+      }
+    }
+
+    @media screen and (max-width: 1200px) {
+      grid-template-columns: 1fr;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      width: 100%;
+
+      & > div {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 350px;
+      }
+    }
+  }
+
+  .BarBody {
+    overflow: auto;
+    overflow-y: hidden;
+    margin: 0 auto;
+    width: 900px;
+    font-family: Ubuntu-Medium, sans-serif;
+
+    .TxtCenter {
+      text-align: center;
+    }
+
+    .TxtWeek {
+      font-size: 18px;
+    }
+
+    .TxtCenter {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    .BarCanvas {
+      width: calc(100% - 30px);
+    }
+  }
+
+  .LineBody {
+    margin: 0 auto;
+    width: 1000px;
+
+    .TxtCenter {
+      text-align: center;
+    }
+
+    .LineFlex {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+
+      .SelectMw {
+        width: 300px;
+      }
+    }
+  }
+
+  .HighestCbtBody {
+    margin: 0 auto;
+    width: 1200px;
+    font-family: Ubuntu-Medium, sans-serif;
+
+    .TxtCenter {
+      text-align: center;
+    }
+
+    .CbtChartW30 {
+      width: 30px;
+    }
+
+    .CbtChartWRemain {
+      position: relative;
+      width: 100%;
+      max-width: calc(100% - 30px);
+
+      .CbtEmptyData {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        transform: translate(-20%, -50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif, sans-serif;
+        color: $app-black;
+      }
+    }
+
+    .DayItemBody {
+      height: 50px;
+
+      .DayTxt {
+        padding-right: 8px;
+        width: 60px;
+        text-align: right;
+      }
+
+      .DayTimeGrid16 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        width: 100%;
+        max-width: calc(100% - 60px);
+
+        .DivRect {
+          border-right: 1px solid $app-white;
+          border-bottom: 1px solid $app-white;
+          width: 49px;
+          height: 49px;
+
+          &.RectHover:hover {
+            opacity: 0.7;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .TimeLabel {
+        display: flex;
+        align-items: center;
+        width: 50px;
+        height: 80px;
+        transform: rotate(180deg);
+        writing-mode: tb-rl;
+        font-size: 14px;
+      }
+    }
+
+    .JustifyCenter {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 31px auto 32px;
+    }
+
+    .ProgressBarContainer {
+      width: 500px;
+      height: 20px;
+      position: relative;
+
+      .Point99,
+      .Point100,
+      .Point101,
+      .TxtPoint99,
+      .TxtPoint100,
+      .TxtPoint101 {
+        position: absolute;
+      }
+
+      .Point99,
+      .Point100,
+      .Point101 {
+        top: 0;
+        width: 1px;
+        height: 20px;
+        background-color: $app-white;
+      }
+
+      .TxtPoint99,
+      .TxtPoint100,
+      .TxtPoint101 {
+        top: 28px;
+        font-size: 13px;
+      }
+
+      .Point99 {
+        left: calc(500px/6.6);
+      }
+
+      .TxtPoint99 {
+        left: calc(500px/6.6 - 8px);
+      }
+
+      .Point100 {
+        left: calc(500px/6.6 * 3);
+      }
+
+      .TxtPoint100 {
+        left: calc(500px/6.6 * 3 - 12px);
+      }
+
+      .Point101 {
+        left: calc(500px/6.6 * 5);
+      }
+
+      .TxtPoint101 {
+        left: calc(500px/6.6 * 5 - 12px);
+      }
+    }
+
+    .ProgressBarChild {
+      width: 100%;
+      height: 100%;
+    }
+
+    .Progress {
+      text-align: center;
+      animation-direction: reverse;
+      background: $app-chart-yellow;
+      color: $app-white;
+      background: linear-gradient(to right, $app-chart-yellow 0%, $app-chart-red 85%);
+    }
+  }
+}
+
+@keyframes timelapse {
+  0% {
+    width: 100%;
+  }
+
+  100% {
+    width: 0;
+  }
+}
+
+.EmptyHeight {
+  height: 581px;
+
+  @media screen and (max-width: 768px) {
+    height: 50px;
+  }
+}

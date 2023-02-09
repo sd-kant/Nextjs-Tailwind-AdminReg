@@ -69,7 +69,7 @@ const FormUsername = (props) => {
     const {value, name} = e.target;
 
     setFieldValue(name, value);
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -105,14 +105,14 @@ const FormUsername = (props) => {
           className="button active cursor-pointer"
           type="submit"
         >
-              <span className='font-button-label text-white'>
-                {t("next")}
-              </span>
+          <span className='font-button-label text-white'>
+            {t("next")}
+          </span>
         </button>
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
@@ -142,7 +142,7 @@ const EnhancedForm = withFormik({
       if (e?.response?.data?.status?.toString() === "404") {
         showErrorNotification(t("msg token expired"));
       } else {
-        showErrorNotification(e.response?.data.message || t("msg something went wrong"));
+        showErrorNotification(e.response?.data.message);
       }
     } finally {
       setLoading(false);

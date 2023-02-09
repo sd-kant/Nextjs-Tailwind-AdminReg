@@ -3,22 +3,14 @@ import DatePicker from "react-datepicker";
 import {range} from "lodash";
 
 import "./react-datepicker.css";
+import {
+  METRIC_TEAM_CHART_VALUES,
+  METRIC_USER_CHART_VALUES,
+  MONTHS,
+} from "../../../constant";
+import {checkMetric} from "../../../utils/anlytics";
 
 const years = range(1900, new Date().getFullYear() + 1, 1);
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "June",
-  "July",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
 
 const CustomHeader = (
   {
@@ -52,12 +44,12 @@ const CustomHeader = (
     </select>
 
     <select
-      value={months[new Date(date).getMonth()]}
+      value={MONTHS[new Date(date).getMonth()]}
       onChange={({target: {value}}) =>
-        changeMonth(months.indexOf(value))
+        changeMonth(MONTHS.indexOf(value))
       }
     >
-      {months.map((option) => (
+      {MONTHS.map((option) => (
         <option key={option} value={option}>
           {option}
         </option>
@@ -68,10 +60,11 @@ const CustomHeader = (
       {">"}
     </button>
   </div>
-)
+);
 
 const CustomDatePicker = (
   {
+    selectedMetric,
     date,
     setDate,
     maxDate,
@@ -84,6 +77,11 @@ const CustomDatePicker = (
       selected={date}
       maxDate={maxDate}
       onChange={v => setDate(v)}
+      readOnly={
+        (selectedMetric?.value && checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) ||
+        METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
+        METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK === selectedMetric?.value
+      }
     />
   );
 };

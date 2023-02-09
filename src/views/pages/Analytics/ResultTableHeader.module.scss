@@ -7,14 +7,32 @@
 }
 
 .HeaderCell {
+  border: 1px solid $app-bg;
   padding: 5px 10px;
   text-align: center;
   white-space: nowrap;
   background: $app-list-bg;
-  border: 1px solid $app-bg;
-
   font-size: 18px;
   line-height: 20.13px;
+
+  &.FirstColumn {
+    position: sticky;
+    top: auto;
+    left: 0;
+  }
+
+  .ChevronWrapper {
+    display: inline-flex;
+    justify-content: flex-end;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    cursor: pointer;
+
+    .ChevronIcon {
+      width: 12px;
+    }
+  }
 }
 
 @media only screen and (min-width: 768px) {

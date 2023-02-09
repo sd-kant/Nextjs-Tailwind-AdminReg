@@ -3,8 +3,15 @@ import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
-import {setLoadingAction, setRestBarClassAction, showErrorNotificationAction} from "../../../redux/action/ui";
-import {setBaseUriAction, setMobileTokenAction} from "../../../redux/action/auth";
+import {
+  setLoadingAction,
+  setRestBarClassAction,
+  showErrorNotificationAction
+} from "../../../redux/action/ui";
+import {
+  setBaseUriAction,
+  setMobileTokenAction
+} from "../../../redux/action/auth";
 // import MicrosoftLogin from "react-microsoft-login";
 import {apiBaseUrl} from "../../../config";
 import axios from "axios";
@@ -15,13 +22,20 @@ import backIcon from "../../../assets/images/back.svg";
 import PasswordInput from "../../components/PasswordInput";
 
 const FormMobileLogin = (props) => {
-  const {values, errors, touched, t, setFieldValue, setRestBarClass} = props;
+  const {
+    values,
+    errors,
+    touched,
+    t,
+    setFieldValue,
+    setRestBarClass
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
     setClassName();
-    const deviceId = getParamFromUrl("deviceId")
-    const username = getParamFromUrl("username")
+    const deviceId = getParamFromUrl("deviceId");
+    const username = getParamFromUrl("username");
     if (deviceId) setFieldValue("deviceId", deviceId);
     if (username) setFieldValue('username', username);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -32,18 +46,18 @@ const FormMobileLogin = (props) => {
     setFieldValue(name, value);
 
     setClassName();
-  }
+  };
 
   const setClassName = () => {
     let sum = 0;
     sum += values["password"] ? 1 : 0;
     sum += values["username"] ? 1 : 0;
     setRestBarClass(`progress-${sum * 50}`);
-  }
+  };
 
   const handlePrevious = () => {
     navigate("/mobile-login");
-  }
+  };
 
   return (
     <Form className='form-group mt-57'>
@@ -52,8 +66,8 @@ const FormMobileLogin = (props) => {
           <img src={backIcon} alt="back"/>
           &nbsp;&nbsp;
           <span className='font-button-label text-orange' onClick={handlePrevious}>
-              {t("previous")}
-            </span>
+            {t("previous")}
+          </span>
         </div>
 
         <div className='d-flex flex-column mt-25'>
@@ -115,7 +129,7 @@ const FormMobileLogin = (props) => {
       </div>
     </Form>
   )
-}
+};
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({

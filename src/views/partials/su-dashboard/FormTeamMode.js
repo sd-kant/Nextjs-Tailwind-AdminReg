@@ -15,9 +15,16 @@ import {
 } from "../../../redux/action/ui";
 import {get} from 'lodash';
 import {useNavigate} from "react-router-dom";
+import {INVALID_VALUES1} from "../../../constant";
 
 const FormTeamMode = (props) => {
-  const {t, setRestBarClass, organizationId, myOrganizationId, isAdmin} = props;
+  const {
+    t,
+    setRestBarClass,
+    organizationId,
+    myOrganizationId,
+    isAdmin
+  } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,7 +32,7 @@ const FormTeamMode = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const orgId = [undefined, "-1", null, ""].includes(organizationId?.toString()) ? myOrganizationId : organizationId;
+  const orgId = INVALID_VALUES1.includes(organizationId?.toString()) ? myOrganizationId : organizationId;
   const handleCancel = () => {
     navigate("/select-mode");
   };
@@ -48,15 +55,15 @@ const FormTeamMode = (props) => {
         }
 
         <div className='mt-28 form-header-medium'>
-            <span className='font-header-medium d-block'>
-              {t("create or modify team")}
-            </span>
+          <span className='font-header-medium d-block'>
+            {t("create or modify team")}
+          </span>
         </div>
 
         <div className='mt-8'>
-            <span className='font-binary'>
-              {t("select option")}
-            </span>
+          <span className='font-binary'>
+            {t("select option")}
+          </span>
         </div>
 
         <div className="mt-40 d-flex">
@@ -69,8 +76,8 @@ const FormTeamMode = (props) => {
             <img src={plusIcon} alt="male icon"/>
 
             <span className='font-binary mt-8'>
-                {t("create")}
-              </span>
+              {t("create")}
+            </span>
           </div>
 
           <div
@@ -82,8 +89,8 @@ const FormTeamMode = (props) => {
             <img src={editIcon} alt="female icon"/>
 
             <span className='font-binary mt-8 capitalize'>
-                {t("modify")}
-              </span>
+              {t("modify")}
+            </span>
           </div>
 
           <div
@@ -95,8 +102,8 @@ const FormTeamMode = (props) => {
             <img src={searchIcon} alt="search icon"/>
 
             <span className='font-binary mt-8 capitalize'>
-                {t("search")}
-              </span>
+              {t("search")}
+            </span>
           </div>
         </div>
       </div>
@@ -117,7 +124,7 @@ const FormTeamMode = (props) => {
       </div>
     </div>
   )
-}
+};
 
 const mapStateToProps = (state) => ({
   isAdmin: get(state, 'auth.isAdmin'),

@@ -1,14 +1,20 @@
 @import "src/assets/scss/colors";
 
 .Cell {
+  border: 1px solid $app-bg;
+  padding: 0 5px;
+  height: 45px;
   background: $app-list-bg;
   text-align: center;
-  border: 1px solid $app-bg;
-  height: 45px;
-  padding: 0 5px;
-
   font-size: 14px;
   line-height: 21px;
+
+  &.FirstColumn {
+    position: sticky;
+    top: auto;
+    left: 0;
+    //border-top-width: 1px;
+  }
 }
 
 @media only screen and (min-width: 768px) {
