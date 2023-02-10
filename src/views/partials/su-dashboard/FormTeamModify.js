@@ -1,9 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {bindActionCreators} from "redux";
+import CreatableSelect from "react-select/creatable";
+import {useNavigate} from "react-router-dom";
 import {
   setLoadingAction,
   setRestBarClassAction,
@@ -20,9 +22,8 @@ import {
   updateTeam
 } from "../../../http";
 import {useOrganizationContext} from "../../../providers/OrganizationProvider";
-import CreatableSelect from "react-select/creatable";
-import {useNavigate} from "react-router-dom";
 import {INVALID_VALUES1} from "../../../constant";
+import countryRegions from 'country-region-data/data.json';
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -33,7 +34,10 @@ const formSchema = (t) => {
       })
       .nullable()
       .required(t('team name required')),
-    region: Yup.object(),
+    country: Yup.object()
+        .required(t('company country required')),
+    region: Yup.object()
+        .required(t('company region required')),
     location: Yup.object()
       .shape({
         label: Yup.string()
@@ -56,10 +60,11 @@ const FormTeamModify = (props) => {
     queryAllTeams,
     organizationId,
     isAdmin,
-    showErrorNotification
-    ,} = props;
+    showErrorNotification,
+  } = props;
   const [hasUnassignedMember, setHasUnassignedMember] = React.useState(false);
-  const {regions, locations} = useOrganizationContext();
+  const {locations, organization} = useOrganizationContext();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -77,14 +82,40 @@ const FormTeamModify = (props) => {
     setFieldValue(key, value);
   };
 
+  const options = useMemo(() =>
+          countryRegions?.filter(it => organization?.country?.split("@").includes(it.countryName))?.map(it => ({label: it.countryName, value: it.countryShortCode})),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [countryRegions, organization]
+  );
+
+  const regions = React.useMemo(() => {
+    let ret = [];
+    if (values?.country) {
+      ret = countryRegions.find(it => values?.country?.label === it.countryName)?.regions;
+    }
+
+    return ret.map(it => ({
+      label: it.name,
+      value: it.shortCode,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values?.country]);
+
   React.useEffect(() => {
     if (values.name?.value) {
+      setFieldValue("country", options.find(it => it.label === values.name?.country));
       setFieldValue("region", regions?.find(it => it.label === values.name?.region));
       setFieldValue("location", locations?.find(it => it.label === values.name?.location));
     }
     setFieldValue("editing", false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.name?.value]);
+
+  React.useEffect(() => {
+    if (values.name?.region) {
+      setFieldValue("region", regions?.find(it => it.label === values.name?.region));
+    }
+  }, [regions]);
 
   const unAssignedUsersUnderOrganization = () => {
     getUsersUnderOrganization({userType: 'unassigned', organizationId})
@@ -110,6 +141,7 @@ const FormTeamModify = (props) => {
         teams.push({
           value: team.id,
           label: team.name,
+          country: team.country,
           location: team.location,
           region: team.region,
           orgId: team.orgId,
@@ -149,6 +181,9 @@ const FormTeamModify = (props) => {
       }
       if (values.location?.label?.trim() !== team?.location?.trim()) {
         ret.push('location');
+      }
+      if (values.country?.label?.trim() !== team?.country?.trim()) {
+        ret.push('country');
       }
     }
 
@@ -213,6 +248,32 @@ const FormTeamModify = (props) => {
           !(INVALID_VALUES1.includes(values.name?.value)) ? (
             values?.editing ?
               <React.Fragment>
+                <div className='mt-40 d-flex flex-column'>
+                  <label className='font-input-label'>
+                    {t("company country")}
+                  </label>
+
+                  <div className='mt-10 input-field'>
+                    <ResponsiveSelect
+                        className='mt-10 font-heading-small text-black input-field'
+                        options={options}
+                        value={values["country"]}
+                        name="country"
+                        styles={customStyles()}
+                        onChange={(value) => setFieldValue("country", value)}
+                        menuPortalTarget={document.body}
+                        menuPosition={'fixed'}
+                        placeholder={t("select")}
+                    />
+                  </div>
+
+                  {
+                    touched.country && errors.country && (
+                        <span className="font-helper-text text-error mt-10">{errors.country}</span>
+                    )
+                  }
+                </div>
+
                 <div className='d-flex flex-column mt-40'>
                   <span className='font-input-label'>
                     {t("team region")}
@@ -304,6 +365,7 @@ const FormTeamModify = (props) => {
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     name: '',
+    country: '',
     location: '',
     region: '',
     editing: false,
@@ -324,6 +386,7 @@ const EnhancedForm = withFormik({
           await updateTeam(teamId, {
             orgId: values.name?.orgId,
             name: values.name?.label,
+            country: values.country?.label,
             region: values.region?.label,
             location: values.location?.label,
           });
