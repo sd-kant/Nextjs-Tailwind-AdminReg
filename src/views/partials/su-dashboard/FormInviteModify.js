@@ -363,7 +363,7 @@ const EnhancedForm = withFormik({
     } = props;
     // filter users that were modified to update
     let users = ([...(values?.users ?? []), ...(values?.admins ?? [])])?.filter(it => it.updated);
-    handleModifyUsers({
+    await handleModifyUsers({
       setLoading,
       users,
       organizationId,
