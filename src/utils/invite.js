@@ -224,7 +224,7 @@ const setUserType = (users) => {
 };
 
 // update users
-export const handleModifyUsers = (
+export const handleModifyUsers = async (
   {
     setLoading,
     users,
@@ -302,22 +302,40 @@ export const handleModifyUsers = (
       const failedEmails = [];
       let totalSuccessForModify = 0;
 
-      const inviteFunc = () => {
-        const invitePromises = [];
+      const inviteFunc = async () => {
+        const removePromises = [];
+        const addPromises = [];
         if (inviteBody) {
           Object.keys(inviteBody).forEach((teamId, index) => {
-            invitePromises.push(inviteTeamMemberV2(teamId, Object.values(inviteBody)?.[index]));
+            if (Object.values(inviteBody)?.[index]?.remove) {
+              removePromises.push(inviteTeamMemberV2(teamId, {
+                remove: Object.values(inviteBody)?.[index]?.remove,
+              }));
+            }
           });
+
+          if (removePromises?.length > 0) {
+            await Promise.allSettled(removePromises);
+          }
+
+          Object.keys(inviteBody).forEach((teamId, index) => {
+            if (Object.values(inviteBody)?.[index]?.add) {
+              addPromises.push(inviteTeamMemberV2(teamId, {
+                add: Object.values(inviteBody)?.[index]?.add,
+              }));
+            }
+          });
+
+          if (addPromises?.length > 0) {
+            await Promise.allSettled(addPromises);
+          }
         }
 
-        if (invitePromises?.length > 0) {
-          Promise.allSettled(invitePromises)
-            .finally(() => {
-              if (failedEmails?.length === 0) {
-                setStatus({visibleSuccessModal: true});
-              }
-              setLoading(false);
-            });
+        if (removePromises?.length > 0 || addPromises?.length > 0) {
+          if (failedEmails?.length === 0) {
+            setStatus({visibleSuccessModal: true});
+          }
+          setLoading(false);
         } else {
           setStatus({visibleSuccessModal: true});
           setLoading(false);
@@ -348,10 +366,10 @@ export const handleModifyUsers = (
           })
           .finally(async () => {
             // finished promise
-            inviteFunc();
+            await inviteFunc();
           });
       } else {
-        inviteFunc();
+        await inviteFunc();
       }
     } else {
       setLoading(false);
