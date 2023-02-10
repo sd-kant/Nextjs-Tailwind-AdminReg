@@ -115,6 +115,7 @@ const FormTeamModify = (props) => {
     if (values.name?.region) {
       setFieldValue("region", regions?.find(it => it.label === values.name?.region));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [regions]);
 
   const unAssignedUsersUnderOrganization = () => {
