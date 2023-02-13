@@ -249,7 +249,8 @@ const FormCompany = (props) => {
           idp: '',
         });
       } else if (value?.created) { // if already created company, then set country according to picked company
-        const country = options?.filter(entity => value.country?.includes(entity.label));
+        let countries = value.country?.split("@");
+        const country = options?.filter(entity => countries?.includes(entity.label));
         if (country?.length > 0) {
           setFieldValue("companyCountry", country);
         } else {
@@ -266,7 +267,7 @@ const FormCompany = (props) => {
     setOrganizations((allOrganizations && allOrganizations.map(organization => ({
       value: organization.id,
       label: organization.name,
-      country: organization.country.split("@"),
+      country: organization.country?.split("@") ?? [],
       twoFA: organization.settings?.twoFA ?? false,
       passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 10,
       passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
