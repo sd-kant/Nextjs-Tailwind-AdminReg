@@ -660,5 +660,7 @@
   "end date": "Date de Fin",
   "export": "Exportation",
   "no internet connection": "Pas De connexion Internet",
-  "team already exist": "L’équipe existe déjà"
+  "team already exist": "L’équipe existe déjà",
+  "up to n countries": "Vous pouvez sélectionner jusqu’à {{n}} pays",
+  "n countries selected": "{{n}} countries selected"
 }
