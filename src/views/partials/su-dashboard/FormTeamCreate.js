@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import * as Yup from 'yup';
@@ -46,6 +46,8 @@ const formSchema = (t) => {
       .required(t('team name required'))
       .min(6, t('team name min error'))
       .max(1024, t('team name max error')),
+    country: Yup.object()
+        .required(t('company country required')),
     region: Yup.object()
       /*.required(t('region required'))*/,
     location: Yup.object()
@@ -76,23 +78,23 @@ const FormTeamCreate = (props) => {
 
     setFieldValue(name, value);
   };
+  const options = useMemo(() =>
+          countryRegions?.filter(it => organization?.country?.split("@").includes(it.countryName))?.map(it => ({label: it.countryName, value: it.countryShortCode})),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [countryRegions, organization]
+  );
 
   const regions = React.useMemo(() => {
     let ret = [];
-    if (organization) {
-      const regionsForOrganization = countryRegions.find(it => it.countryName === organization.country)?.regions;
-      if (isAdmin) {
-        ret = regionsForOrganization;
-      } else {
-        ret = regionsForOrganization?.filter(it => organization.regions.some(ele => ele === it.name));
-      }
+    if (values?.country) {
+      ret = countryRegions.find(it => values?.country?.label === it.countryName)?.regions;
     }
     return ret.map(it => ({
       label: it.name,
       value: it.shortCode,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organization, isAdmin]);
+  }, [values?.country]);
 
   const locations = React.useMemo(() => {
     return organization?.locations?.map((it, index) => ({
@@ -145,6 +147,33 @@ const FormTeamCreate = (props) => {
             )
           }
         </div>
+
+        <div className='mt-40 d-flex flex-column'>
+          <label className='font-input-label'>
+            {t("company country")}
+          </label>
+
+          <div className='mt-10 input-field'>
+            <ResponsiveSelect
+              className='mt-10 font-heading-small text-black input-field'
+              options={options}
+              value={values["country"]}
+              name="country"
+              styles={customStyles()}
+              onChange={(value) => setFieldValue("country", value)}
+              menuPortalTarget={document.body}
+              menuPosition={'fixed'}
+              placeholder={t("select")}
+            />
+          </div>
+
+          {
+            touched.country && errors.country && (
+                <span className="font-helper-text text-error mt-10">{errors.country}</span>
+            )
+          }
+        </div>
+
         <div className='d-flex flex-column mt-40'>
           <span className='font-input-label'>
             {t("team region")}
@@ -225,6 +254,7 @@ const FormTeamCreate = (props) => {
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     name: '',
+    country: '',
     location: '',
     region: '',
   }),
@@ -238,6 +268,7 @@ const EnhancedForm = withFormik({
     const data = {
       orgId: parseInt(orgId),
       name: values?.name?.trim() ?? 'team name',
+      country: values?.country?.label,
       location: values?.location?.label,
       region: values?.region?.label,
     };

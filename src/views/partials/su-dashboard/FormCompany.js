@@ -83,9 +83,20 @@ const formSchema = (t) => {
       )
       .min(6, t('company name min error'))
       .max(1024, t('company name max error')),
-    companyCountry: Yup.object()
-      .required(t('company country required')),
-    regions: Yup.array().required(t('company region required')),
+    companyCountry: Yup.array().required(t('company country required'))
+        .test(
+            'is-valid',
+            t('company country required'),
+            function (value) {
+              return value?.length > 0;
+            })
+        .test(
+        'is-valid',
+        t('up to n countries', {n: 3}),
+        function (value) {
+          return value?.length <= 3;
+        }),
+    // regions: Yup.array().required(t('company region required')),
     twoFA: Yup.boolean(),
     passwordMinimumLength: Yup.number(),
     passwordExpirationDays: Yup.number(),
@@ -173,7 +184,7 @@ const FormCompany = (props) => {
     setValues,
     status: {visibleModal},
   } = props;
-  // const options = useMemo(() => AVAILABLE_COUNTRIES, []);
+
   const options = useMemo(() =>
       countryRegions?.map(it => ({label: it.countryName, value: it.countryShortCode})),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,7 +235,7 @@ const FormCompany = (props) => {
     if (key === "companyName") {
       if (value?.__isNew__) {
         setValues({
-          companyCountry: '',
+          companyCountry: [],
           regions: [],
           twoFA: false,
           passwordMinimumLength: 10,
@@ -238,11 +249,12 @@ const FormCompany = (props) => {
           idp: '',
         });
       } else if (value?.created) { // if already created company, then set country according to picked company
-        const country = options?.find(entity => entity.label === value.country);
-        if (country) {
+        let countries = value.country?.split("@");
+        const country = options?.filter(entity => countries?.includes(entity.label));
+        if (country?.length > 0) {
           setFieldValue("companyCountry", country);
         } else {
-          setFieldValue("companyCountry", options?.[0]);
+          setFieldValue("companyCountry", [options?.[0]]);
         }
         const fields = ["twoFA", 'passwordMinimumLength', 'passwordExpirationDays', 'hideCbtHR', 'sso', 'samlUrl', 'samlLogoutUrl', 'samlIssuer', 'idp'];
         fields?.forEach(item => setFieldValue(item, value[item]))
@@ -250,12 +262,12 @@ const FormCompany = (props) => {
     }
     setFieldValue(key, value);
   };
+
   useEffect(() => {
     setOrganizations((allOrganizations && allOrganizations.map(organization => ({
       value: organization.id,
       label: organization.name,
-      country: organization.country,
-      regions: organization.regions,
+      country: organization.country?.split("@") ?? [],
       twoFA: organization.settings?.twoFA ?? false,
       passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 10,
       passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
@@ -290,35 +302,21 @@ const FormCompany = (props) => {
   };
 
   const isEditing = useMemo(() => values.companyName?.__isNew__ || values["isEditing"], [values]);
-  const regionsInCountry = useMemo(() => countryRegions?.find(it => it.countryShortCode === values.companyCountry?.value)?.regions ?? [], [values.companyCountry]);
-  const formattedRegions = useMemo(() =>
-    regionsInCountry?.map(it => ({
-      value: it.shortCode,
-      label: it.name,
-    })), [regionsInCountry]);
-  const regionSelectorLabel = React.useMemo(() => {
-    if (values?.regions?.length > 0) {
-      if (formattedRegions?.length > 1 && (values?.regions?.length === formattedRegions?.length)) {
-        return t("all regions");
-      } else if (values?.regions?.length > 1) {
-        return t("n regions selected", {n: values?.regions.length});
+
+  const countrySelectorLabel = React.useMemo(() => {
+    if (values?.companyCountry?.length > 0) {
+      if (options?.length > 1 && (values?.companyCountry?.length === options?.length)) {
+        return t("all countries");
+      } else if (values?.companyCountry?.length > 1) {
+        return t("n countries selected", {n: values?.companyCountry.length});
       } else {
-        return formattedRegions?.find(it => it.label === values?.regions?.[0]?.label)?.label;
+        return options?.find(it => it.label === values?.companyCountry?.[0]?.label)?.label;
       }
     } else {
-      return t("select region");
+      return t("select country");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values.regions, formattedRegions]);
-  useEffect(() => {
-    if (values.companyName?.__isNew__) {
-      setFieldValue("regions", []);
-    } else {
-      const organization = organizations?.find(it => it.value?.toString() === values.companyName?.value?.toString());
-      setFieldValue("regions", formattedRegions?.filter(it => organization?.regions.some(ele => ele === it.label)) ?? []);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formattedRegions, values.companyName]);
+  }, [values.companyCountry, options]);
 
   const handleCancel = () => {
     if (isEditing) {
@@ -337,15 +335,10 @@ const FormCompany = (props) => {
       if (values?.companyName?.label?.toString()?.trim() !== values?.editingCompanyName?.toString()?.trim()) {
         ret.push("name");
       }
-
-      if (values?.companyCountry?.label?.toString()?.trim() !== organization?.country?.toString()?.trim()) {
+      const countries = (values?.companyCountry ?? []).map(it => it.label);
+      const orgCountries = JSON.parse(JSON.stringify(organization?.country ?? []));
+      if (!isEqual(countries?.sort(), orgCountries?.sort())) {
         ret.push("country");
-      }
-
-      const regions = values?.regions?.map(it => it.label);
-      const orgRegions = JSON.parse(JSON.stringify(organization?.regions ?? []));
-      if (!isEqual(regions?.sort(), orgRegions?.sort())) {
-        ret.push("regions");
       }
 
       if (values?.users?.length > 0) {
@@ -436,7 +429,6 @@ const FormCompany = (props) => {
             }
           </div>
 
-
           {
             (values.companyName?.created && !values.isEditing) ?
               <div className="d-flex flex-column mt-25">
@@ -456,43 +448,18 @@ const FormCompany = (props) => {
                 {t("company country")}
               </label>
 
-              <ResponsiveSelect
-                className='mt-10 font-heading-small text-black input-field'
-                options={options}
-                value={values["companyCountry"]}
-                name="companyCountry"
-                styles={customStyles()}
-                onChange={(value) => changeHandler("companyCountry", value)}
-                menuPortalTarget={document.body}
-                menuPosition={'fixed'}
-                placeholder={t("select")}
-              />
+              <div className='mt-10 input-field'>
+                <MultiSelectPopup
+                    label={countrySelectorLabel}
+                    options={options}
+                    value={values["companyCountry"]}
+                    onChange={value => changeHandler('companyCountry', value)}
+                />
+              </div>
 
               {
                 touched.companyCountry && errors.companyCountry && (
                   <span className="font-helper-text text-error mt-10">{errors.companyCountry}</span>
-                )
-              }
-            </div>
-          }
-          {
-            (isEditing && values["companyCountry"]?.value) &&
-            <div className='mt-40 d-flex flex-column'>
-              <span className='font-input-label'>
-                {t("company region")}
-              </span>
-
-              <div className='mt-10 input-field'>
-                <MultiSelectPopup
-                  label={regionSelectorLabel}
-                  options={formattedRegions}
-                  value={values["regions"]}
-                  onChange={value => changeHandler('regions', value)}
-                />
-              </div>
-              {
-                touched.regions && errors.regions && (
-                  <span className="font-helper-text text-error mt-10">{errors.regions}</span>
                 )
               }
             </div>
@@ -923,7 +890,7 @@ const EnhancedForm = withFormik({
   }),
   mapPropsToValues: () => ({
     companyName: '',
-    companyCountry: '',
+    companyCountry: [],
     regions: [],
     twoFA: false,
     passwordMinimumLength: 10,
@@ -939,10 +906,20 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue, setStatus}) => {
     const {isSuperAdmin, navigate, setLoading} = props;
+    let country = "";
+    if (!Array.isArray(values?.companyCountry)) {
+      country = values?.companyCountry?.label;
+    } else {
+      values?.companyCountry?.forEach(it => {
+        if (it?.label) {
+          country += (country ? '@' : '') + it.label;
+        }
+      });
+    }
+
     const data = {
       name: values.isEditing ? values?.editingCompanyName : values?.companyName?.label,
-      country: values?.companyCountry?.label,
-      regions: values?.regions?.map(it => it.label) ?? [],
+      country: country,
       settings: {
         sso: values.sso,
         samlUrl: values.samlUrl,
