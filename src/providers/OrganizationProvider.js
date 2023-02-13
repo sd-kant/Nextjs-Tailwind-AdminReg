@@ -73,7 +73,7 @@ const OrganizationProvider = (
         ret = regionsForOrganization?.filter(it => organization.regions.some(ele => ele === it.name));
       }
     }
-    return ret.map(it => ({
+    return ret?.map(it => ({
       label: it.name,
       value: it.shortCode,
     }));

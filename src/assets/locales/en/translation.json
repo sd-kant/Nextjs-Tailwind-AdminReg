@@ -661,5 +661,7 @@
   "end date": "End Date",
   "export": "Export",
   "no internet connection": "No Internet Connection",
-  "team already exist": "The team already exist"
+  "team already exist": "The team already exist",
+  "up to n countries": "You can select up to {{n}} countries",
+  "n countries selected": "{{n}} countries selected"
 }
