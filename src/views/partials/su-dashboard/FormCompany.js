@@ -249,8 +249,7 @@ const FormCompany = (props) => {
           idp: '',
         });
       } else if (value?.created) { // if already created company, then set country according to picked company
-        let countries = value.country?.split("@");
-        const country = options?.filter(entity => countries?.includes(entity.label));
+        const country = options?.filter(entity => value.country.includes(entity.label));
         if (country?.length > 0) {
           setFieldValue("companyCountry", country);
         } else {
