@@ -79,6 +79,7 @@ const MembersProvider = (
 
   React.useEffect(() => {
     loadAllTeams();
+    setTeamId(id);
     return () => {
       setTeamId(null);
     }

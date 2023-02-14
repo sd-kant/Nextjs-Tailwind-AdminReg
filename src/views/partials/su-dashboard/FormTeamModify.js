@@ -32,18 +32,36 @@ const formSchema = (t) => {
         label: Yup.string()
           .required(t('team name required'))
       })
-      .nullable()
       .required(t('team name required')),
     country: Yup.object()
-        .required(t('company country required')),
+      .shape({
+        label: Yup.string()
+      })
+      .test(
+        'is-valid',
+        t('company country required'),
+        function (value) {
+          return this.parent.editing ? !!value?.label : true;
+        }
+      ),
     region: Yup.object()
-        .required(t('company region required')),
+      .shape({
+        label: Yup.string()
+      })
+      .test(
+        'is-valid',
+        t('company region required'),
+        function (value) {
+          return this.parent.editing ? !!value?.label : true;
+        }
+      ),
     location: Yup.object()
       .shape({
         label: Yup.string()
           .min(2, t('team location min error'))
           .max(1024, t('team location max error')),
-      }),
+      })
+      .nullable(),
     editing: Yup.boolean(),
   });
 };
@@ -83,9 +101,12 @@ const FormTeamModify = (props) => {
   };
 
   const options = useMemo(() =>
-          countryRegions?.filter(it => organization?.country?.split("@").includes(it.countryName))?.map(it => ({label: it.countryName, value: it.countryShortCode})),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [countryRegions, organization]
+      countryRegions?.filter(it => organization?.country?.split("@").includes(it.countryName))?.map(it => ({
+        label: it.countryName,
+        value: it.countryShortCode
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [countryRegions, organization]
   );
 
   const regions = React.useMemo(() => {
@@ -103,9 +124,9 @@ const FormTeamModify = (props) => {
 
   React.useEffect(() => {
     if (values.name?.value) {
-      setFieldValue("country", options.find(it => it.label === values.name?.country));
-      setFieldValue("region", regions?.find(it => it.label === values.name?.region));
-      setFieldValue("location", locations?.find(it => it.label === values.name?.location));
+      setFieldValue("country", options.find(it => it.label === values.name?.country) ?? '');
+      setFieldValue("region", regions?.find(it => it.label === values.name?.region) ?? '');
+      setFieldValue("location", locations?.find(it => it.label === values.name?.location) ?? '');
     }
     setFieldValue("editing", false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -237,7 +258,7 @@ const FormTeamModify = (props) => {
                   onChange={(value) => changeHandler("name", value)}
                 />
               </React.Fragment>
-              )
+            )
           }
           {
             touched?.name && errors?.name && (
@@ -256,21 +277,21 @@ const FormTeamModify = (props) => {
 
                   <div className='mt-10 input-field'>
                     <ResponsiveSelect
-                        className='mt-10 font-heading-small text-black input-field'
-                        options={options}
-                        value={values["country"]}
-                        name="country"
-                        styles={customStyles()}
-                        onChange={(value) => setFieldValue("country", value)}
-                        menuPortalTarget={document.body}
-                        menuPosition={'fixed'}
-                        placeholder={t("select")}
+                      className='mt-10 font-heading-small text-black input-field'
+                      options={options}
+                      value={values["country"]}
+                      name="country"
+                      styles={customStyles()}
+                      onChange={(value) => setFieldValue("country", value)}
+                      menuPortalTarget={document.body}
+                      menuPosition={'fixed'}
+                      placeholder={t("select")}
                     />
                   </div>
 
                   {
                     touched.country && errors.country && (
-                        <span className="font-helper-text text-error mt-10">{errors.country}</span>
+                      <span className="font-helper-text text-error mt-10">{errors.country}</span>
                     )
                   }
                 </div>
@@ -291,7 +312,7 @@ const FormTeamModify = (props) => {
                   />
                   {
                     touched.region && errors.region && (
-                      <span className="font-helper-text text-error mt-10">{errors.region?.label}</span>
+                      <span className="font-helper-text text-error mt-10">{errors.region}</span>
                     )
                   }
                 </div>
