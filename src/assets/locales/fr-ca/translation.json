@@ -567,6 +567,7 @@
   "open analytics": "Kenzen Analytics s'ouvrira dans une nouvelle fenêtre de navigateur",
   "user": "Utilisateur",
   "users": "Utilisateurs",
+
   "avg wear time": "Avg Temps de port",
   "total wear time": "Temps de Port Total",
   "alert time": "Heure de l’alerte",
@@ -640,7 +641,6 @@
   "day of week": "Jour de la semaine",
   "time of day": "Heure de la journée",
   "back": "Nous ne pouvons pas supprimer votre",
-
   "sun": "Dim",
   "mon": "Lun",
   "tues": "Mar",
@@ -662,5 +662,6 @@
   "no internet connection": "Pas De connexion Internet",
   "team already exist": "L’équipe existe déjà",
   "up to n countries": "Vous pouvez sélectionner jusqu’à {{n}} pays",
-  "n countries selected": "{{n}} countries selected"
+  "n countries selected": "{{n}} countries selected",
+  "team region required": "Veuillez sélectionner la région"
 }

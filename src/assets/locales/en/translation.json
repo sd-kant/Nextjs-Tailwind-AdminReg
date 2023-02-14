@@ -641,7 +641,6 @@
   "day of week": "Day Of Week",
   "time of day": "Time of Day",
   "back": "Back",
-
   "sun": "Sun",
   "mon": "Mon",
   "tues": "Tues",
@@ -663,5 +662,6 @@
   "no internet connection": "No Internet Connection",
   "team already exist": "The team already exist",
   "up to n countries": "You can select up to {{n}} countries",
-  "n countries selected": "{{n}} countries selected"
+  "n countries selected": "{{n}} countries selected",
+  "team region required": "Please select region"
 }

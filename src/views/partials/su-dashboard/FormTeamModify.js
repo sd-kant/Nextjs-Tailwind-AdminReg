@@ -50,7 +50,7 @@ const formSchema = (t) => {
       })
       .test(
         'is-valid',
-        t('company region required'),
+        t('team region required'),
         function (value) {
           return this.parent.editing ? !!value?.label : true;
         }
