@@ -226,7 +226,6 @@
   "create password": "Créer un mot de passe",
   "password required": "Veuillez saisir un mot de passe",
   "confirm password required": "Veuillez confirmer votre mot de passe",
-  "confirm password invalid": "Veuillez faire correspondre le mot de passe",
   "name description": "Quel est votre nom ?",
   "your firstName required": "Veuillez saisir votre prénom",
   "your lastName required": "Veuillez saisir votre nom de famille",
@@ -427,6 +426,7 @@
   "security": "Sécurité",
   "add company admin": "Ajouter un administrateur de société",
 
+  "confirm password invalid": "Les mots de passe ne correspondent pas.",
   "username invalid 1": "Le nom d'utilisateur doit comporter au moins cinq caractères, commencer par une lettre et ne contenir que des lettres, des chiffres ou un point ",
   "username invalid 2": "Le nom d'utilisateur ne peut pas se terminer par un point",
   "select action": "Sélectionnez l'action",

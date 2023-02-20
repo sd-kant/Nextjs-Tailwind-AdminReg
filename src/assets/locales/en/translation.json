@@ -226,7 +226,6 @@
   "create password": "Create Password",
   "password required": "Please enter a password",
   "confirm password required": "Please confirm your password",
-  "confirm password invalid": "Please match password",
   "name description": "What is your name?",
   "your firstName required": "Please enter your first name",
   "your lastName required": "Please enter your last name",
@@ -427,6 +426,7 @@
   "security": "Security",
   "add company admin": "Add Company Administrator",
 
+  "confirm password invalid": "Passwords do not match.",
   "username invalid 1": "Username must be at least five characters long, start with a letter, and only contain letters, numbers or one dot",
   "username invalid 2": "Username cannot end with a dot",
   "select action": "Select Action",
