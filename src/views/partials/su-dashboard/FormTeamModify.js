@@ -243,13 +243,11 @@ const FormTeamModify = (props) => {
   const handleConfirmOk = () => {
     setVisibleDeleteTeamSuccessModal(false);
     queryAllTeams();
-    setFieldValue({
-      "name": '',
-      "country": '',
-      "location": '',
-      "region": '',
-      "editing": false,
-    });
+    setFieldValue("name", '');
+    setFieldValue("country", '');
+    setFieldValue("location", '');
+    setFieldValue("region", '');
+    setFieldValue("editing", false);
   };
 
   return (
