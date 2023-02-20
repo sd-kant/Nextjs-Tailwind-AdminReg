@@ -663,5 +663,7 @@
   "team already exist": "L’équipe existe déjà",
   "up to n countries": "Vous pouvez sélectionner jusqu’à {{n}} pays",
   "n countries selected": "{{n}} countries selected",
-  "team region required": "Veuillez sélectionner une région"
+  "team region required": "Veuillez sélectionner une région",
+  "remove team": "Voulez-vous vraiment supprimer cette équipe ?",
+  "team delete success": "L’équipe a été supprimée."
 }
