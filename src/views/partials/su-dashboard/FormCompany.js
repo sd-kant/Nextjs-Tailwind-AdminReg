@@ -182,7 +182,7 @@ const FormCompany = (props) => {
     isSuperAdmin,
     setStatus,
     setValues,
-    status: {visibleModal},
+    status: {visibleModal, visibleChangeEditModal},
   } = props;
 
   const options = useMemo(() =>
@@ -199,6 +199,7 @@ const FormCompany = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.companyName?.value, values.isEditing]);
+
   const fetchOrgAdmins = organizationId => {
     getUsersUnderOrganization({
       organizationId,
@@ -879,6 +880,12 @@ const FormCompany = (props) => {
           show={visibleModal}
           onOk={() => setStatus({visibleModal: false})}
       />
+      <ConfirmModal
+          show={visibleChangeEditModal}
+          header={t('change saved')}
+          okText={t('ok')}
+          onOk={() => setStatus({visibleChangeEditModal: false})}
+      />
     </React.Fragment>
   )
 };
@@ -886,6 +893,7 @@ const FormCompany = (props) => {
 const EnhancedForm = withFormik({
   mapPropsToStatus: () => ({
     visibleModal: false,
+    visibleChangeEditModal: false,
   }),
   mapPropsToValues: () => ({
     companyName: '',
@@ -945,7 +953,7 @@ const EnhancedForm = withFormik({
           setLoading(true);
           const organizationId = values.selectedItem;
           await updateCompany(organizationId, data);
-
+          setStatus({visibleChangeEditModal: true});
           // creating org admins
           let users = values?.users;
 
