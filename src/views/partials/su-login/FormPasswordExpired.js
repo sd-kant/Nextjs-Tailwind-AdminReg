@@ -164,7 +164,7 @@ const FormPasswordExpired = (props) => {
             type={active ? "submit" : "button"}
           >
           <span className='font-button-label text-white'>
-            {t("next")}
+            {t("reset")}
           </span>
           </button>
         </div>
