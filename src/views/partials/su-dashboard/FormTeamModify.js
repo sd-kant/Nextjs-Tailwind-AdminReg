@@ -240,20 +240,29 @@ const FormTeamModify = (props) => {
     }
   };
 
+  const handleConfirmOk = () => {
+    setVisibleDeleteTeamSuccessModal(false);
+    queryAllTeams();
+    setFieldValue({
+      "name": '',
+      "country": '',
+      "location": '',
+      "region": '',
+      "editing": false,
+    });
+  };
+
   return (
     <>
       <ConfirmModal
           show={visibleDeleteTeamSuccessModal}
           header={t('team delete success')}
-          onOk={() => {
-            setVisibleDeleteTeamSuccessModal(false);
-            window.location.reload();
-          }}
+          onOk={handleConfirmOk}
       />
       <ConfirmModalV2
           show={visibleDeleteTeamModal}
           header={t('remove team')}
-          onOk={() => handleWarningOk()}
+          onOk={handleWarningOk}
           onCancel={() => setVisibleDeleteTeamModal(false)}
       />
 
