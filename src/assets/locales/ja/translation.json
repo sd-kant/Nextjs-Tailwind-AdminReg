@@ -665,5 +665,6 @@
   "n countries selected": "{{n}}カ国選択",
   "team region required": "地域を選択してください",
   "remove team": "このチームを削除してもよろしいですか?",
-  "team delete success": "チームは削除されました。"
+  "team delete success": "チームは削除されました。",
+  "change saved": "変更が保存されました"
 }

@@ -665,5 +665,6 @@
   "n countries selected": "{{n}} countries selected",
   "team region required": "Please select a region",
   "remove team": "Are you sure you want to delete this team?",
-  "team delete success": "Team has been deleted."
+  "team delete success": "Team has been deleted.",
+  "change saved": "Changes have been saved"
 }
