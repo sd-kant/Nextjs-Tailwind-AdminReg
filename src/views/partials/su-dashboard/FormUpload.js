@@ -92,11 +92,10 @@ const FormUpload = (props) => {
               columnMap["phoneNumber"] = index;
             }
           });
-
           const xlsxData = rows.map(it => {
             const ret = {};
             Object.keys(columnMap)?.forEach(key => {
-              ret[key] = it[columnMap[key]];
+              ret[key] = `${it[columnMap[key]]}`;
             });
             return ret;
           });
