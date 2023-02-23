@@ -85,7 +85,7 @@ export const userSchema = (t) => {
       .required(t('lastName required'))
       .max(50, t("lastName max error")),
     userType: Yup.object()
-      .required(t('role required')),
+      .required(t('permission level required')),
     job: Yup.object()
       .required(t('role required')),
     phoneNumber: Yup.object()

@@ -666,5 +666,6 @@
   "team region required": "Please select a region",
   "remove team": "Are you sure you want to delete this team?",
   "team delete success": "Team has been deleted.",
-  "change saved": "Changes have been saved"
+  "change saved": "Changes have been saved",
+  "permission level required": "Please select the permission level"
 }
