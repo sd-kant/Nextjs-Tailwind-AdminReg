@@ -27,13 +27,30 @@ import {INVALID_VALUES1} from "../../../constant";
 import countryRegions from 'country-region-data/data.json';
 import ConfirmModal from "../../components/ConfirmModal";
 import ConfirmModalV2 from "../../components/ConfirmModalV2";
+import {checkIfSpacesOnly} from "../../../utils/invite";
 
 const formSchema = (t) => {
   return Yup.object().shape({
     name: Yup.object()
       .shape({
         label: Yup.string()
+          .test(
+            'is-valid',
+            t('team name required'),
+            function (value) {
+              return !checkIfSpacesOnly(value);
+            }
+          )
+          .test(
+            'is-valid',
+            t('team name min error'),
+            function (value) {
+              return value?.trim()?.length >= 6;
+            }
+          )
           .required(t('team name required'))
+          .min(6, t('team name min error'))
+          .max(1024, t('team name max error')),
       })
       .required(t('team name required')),
     country: Yup.object()
