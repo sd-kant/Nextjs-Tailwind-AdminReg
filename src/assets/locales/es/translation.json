@@ -666,5 +666,6 @@
   "team region required": "Seleccione una región",
   "remove team": "¿Está seguro de que desea eliminar este equipo?",
   "team delete success": "Se ha eliminado el equipo.",
-  "change saved": "Se han guardado los cambios"
+  "change saved": "Se han guardado los cambios",
+  "permission level required": "Seleccione el nivel de permiso"
 }

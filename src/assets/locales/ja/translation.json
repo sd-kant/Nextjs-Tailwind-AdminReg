@@ -666,5 +666,6 @@
   "team region required": "地域を選択してください",
   "remove team": "このチームを削除してもよろしいですか?",
   "team delete success": "チームは削除されました。",
-  "change saved": "変更が保存されました"
+  "change saved": "変更が保存されました",
+  "permission level required": "許可レベルを選択してください"
 }
