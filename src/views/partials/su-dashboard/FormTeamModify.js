@@ -397,7 +397,6 @@ const FormTeamModify = (props) => {
                         </label>
                         <CreatableSelect
                             className='mt-10 font-heading-small text-black input-field'
-                            isClearable
                             options={locations}
                             value={values["location"]}
                             name="location"
