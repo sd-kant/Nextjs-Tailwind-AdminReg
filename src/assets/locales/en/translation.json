@@ -668,5 +668,6 @@
   "team delete success": "Team has been deleted.",
   "change saved": "Changes have been saved",
   "permission level required": "Please select the permission level",
-  "team country required": "Please select a country"
+  "team country required": "Please select a country",
+  "alert metrics": "Alert Metrics"
 }
