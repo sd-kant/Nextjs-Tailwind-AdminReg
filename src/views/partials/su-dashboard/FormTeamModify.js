@@ -59,7 +59,7 @@ const formSchema = (t) => {
       })
       .test(
         'is-valid',
-        t('company country required'),
+        t('team country required'),
         function (value) {
           return this.parent.editing ? !!value?.label : true;
         }
@@ -81,7 +81,13 @@ const formSchema = (t) => {
           .min(2, t('team location min error'))
           .max(1024, t('team location max error')),
       })
-      .nullable(),
+      .test(
+        'is-valid',
+        t('team location required'),
+        function (value) {
+          return !!value?.label;
+        }
+      ),
     editing: Yup.boolean(),
   });
 };

@@ -667,5 +667,6 @@
   "remove team": "Voulez-vous vraiment supprimer cette équipe ?",
   "team delete success": "L’équipe a été supprimée.",
   "change saved": "Les modifications ont été enregistrées",
-  "permission level required": "Veuillez sélectionner le niveau d'autorisation"
+  "permission level required": "Veuillez sélectionner le niveau d'autorisation",
+  "team country required": "Veuillez sélectionner un pays"
 }
