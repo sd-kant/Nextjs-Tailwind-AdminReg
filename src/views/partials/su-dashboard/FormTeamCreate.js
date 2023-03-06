@@ -230,26 +230,6 @@ const FormTeamCreate = (props) => {
             )
           }
         </div>
-
-        {/*<div className='grouped-form mt-40'>
-          <label className='font-input-label'>
-            {t("team location")}
-          </label>
-
-          <input
-            className='input input-field mt-10 font-heading-small text-white'
-            name="location"
-            value={values["location"]}
-            type='text'
-            onChange={changeFormField}
-          />
-
-          {
-            touched?.location && errors?.location && (
-              <span className="font-helper-text text-error mt-10">{errors.location}</span>
-            )
-          }
-        </div>*/}
       </div>
 
       <div className='mt-80'>
