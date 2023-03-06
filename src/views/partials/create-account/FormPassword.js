@@ -8,7 +8,8 @@ import {
   checkUsernameValidation2,
   checkUsernameValidation1,
   checkPasswordValidation,
-  getTokenFromUrl
+  getTokenFromUrl,
+  getParamFromUrl
 } from "../../../utils";
 import {resetPasswordV2} from "../../../http";
 import {
@@ -43,13 +44,13 @@ const formSchema = (t) => {
       ),
     password: Yup.string()
       .required(t('your password required'))
-      .min(10, t('password min error'))
+      .min(getParamFromUrl("minPasswordLength") ?? 10, t('n password min error', {n: getParamFromUrl("minPasswordLength") ?? 10}))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
         t('password invalid'),
         function (value) {
-          return checkPasswordValidation(value);
+          return checkPasswordValidation(value, getParamFromUrl("minPasswordLength") ?? 10);
         }
       ),
     confirmPassword: Yup.string()
@@ -159,7 +160,7 @@ const FormPassword = (props) => {
 
         <div className='mt-40'>
           <span className='font-helper-text'>
-            {t("password rule")}
+            {t('n password rule', {n: getParamFromUrl("minPasswordLength") ?? 10})}
           </span>
         </div>
       </div>

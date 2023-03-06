@@ -19,6 +19,7 @@ import {
 } from "../../../redux/action/auth";
 import {
   checkPasswordValidation,
+  getParamFromUrl,
 } from "../../../utils";
 import {resetPasswordWithToken} from "../../../http";
 import {get} from "lodash";
@@ -28,24 +29,24 @@ export const formSchema = (t) => {
   return Yup.object().shape({
     password: Yup.string()
       .required(t('your password required'))
-      .min(10, t('password min error'))
+      .min(getParamFromUrl("minPasswordLength") ?? 10, t('n password min error', {n: getParamFromUrl("minPasswordLength") ?? 10}))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
         t('password invalid'),
         function (value) {
-          return checkPasswordValidation(value);
+          return checkPasswordValidation(value, getParamFromUrl("minPasswordLength") ?? 10);
         },
       ),
     newPassword: Yup.string()
       .required(t('your password required'))
-      .min(10, t('password min error'))
+      .min(getParamFromUrl("minPasswordLength") ?? 10, t('n password min error', {n: getParamFromUrl("minPasswordLength") ?? 10}))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
         t('password invalid'),
         function (value) {
-          return checkPasswordValidation(value);
+          return checkPasswordValidation(value, getParamFromUrl("minPasswordLength") ?? 10);
         },
       ),
     confirmPassword: Yup.string()

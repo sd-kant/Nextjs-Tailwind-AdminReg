@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {
   checkPasswordValidation,
+  getParamFromUrl,
   getTokenFromUrl
 } from "../../../utils";
 import {
@@ -29,13 +30,13 @@ const formSchema = (t) => {
     token: Yup.string(),
     password: Yup.string()
       .required(t('your password required'))
-      .min(10, t('password rule'))
+      .min(getParamFromUrl("minPasswordLength") ?? 10, t('n password rule', {n: getParamFromUrl("minPasswordLength") ?? 10}))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
         t('password rule'),
         function (value) {
-          return checkPasswordValidation(value);
+          return checkPasswordValidation(value, getParamFromUrl("minPasswordLength") ?? 10);
         }
       ),
     confirmPassword: Yup.string()
@@ -123,7 +124,7 @@ const FormResetPassword = (props) => {
 
         <div className='mt-40'>
           <span className='font-helper-text'>
-            {t("password rule")}
+            {t('n password rule', {n: getParamFromUrl("minPasswordLength") ?? 10})}
           </span>
         </div>
       </div>
