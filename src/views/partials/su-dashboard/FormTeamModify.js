@@ -407,7 +407,7 @@ const FormTeamModify = (props) => {
                         />
                         {
                           touched?.location && errors?.location && (
-                              <span className="font-helper-text text-error mt-10">{errors.location?.label}</span>
+                              <span className="font-helper-text text-error mt-10">{errors.location}</span>
                           )
                         }
                       </div>
