@@ -47,15 +47,31 @@ const formSchema = (t) => {
       .min(6, t('team name min error'))
       .max(1024, t('team name max error')),
     country: Yup.object()
-        .required(t('company country required')),
+        .required(t('team country required')),
     region: Yup.object()
-      /*.required(t('region required'))*/,
+      .shape({
+        label: Yup.string()
+      })
+      .test(
+        'is-valid',
+        t('team region required'),
+        function (value) {
+          return !!value?.label;
+        }
+      ),
     location: Yup.object()
       .shape({
         label: Yup.string()
           .min(2, t('team location min error'))
           .max(1024, t('team location max error')),
-      }),
+      })
+      .test(
+        'is-valid',
+        t('team location required'),
+        function (value) {
+          return !!value?.label;
+        }
+      ),
   });
 };
 
@@ -190,7 +206,7 @@ const FormTeamCreate = (props) => {
           />
           {
               touched.region && errors.region && (
-                <span className="font-helper-text text-error mt-10">{errors.region?.label}</span>
+                <span className="font-helper-text text-error mt-10">{errors.region}</span>
               )
           }
         </div>
@@ -201,7 +217,6 @@ const FormTeamCreate = (props) => {
           </label>
           <CreatableSelect
             className='mt-10 font-heading-small text-black input-field'
-            isClearable
             options={locations}
             value={values["location"]}
             name="location"
@@ -211,7 +226,7 @@ const FormTeamCreate = (props) => {
           />
           {
             touched?.location && errors?.location && (
-              <span className="font-helper-text text-error mt-10">{errors.location?.label}</span>
+              <span className="font-helper-text text-error mt-10">{errors.location}</span>
             )
           }
         </div>
