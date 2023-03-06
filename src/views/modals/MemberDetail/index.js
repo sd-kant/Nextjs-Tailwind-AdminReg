@@ -478,7 +478,7 @@ const MemberDetail = (
                 <div className={clsx(style.CardHeader, 'font-heading-small')}>
                   <img src={alertsIcon} alt="alerts icon"/>
                   &nbsp;&nbsp;
-                  <span>{t("metrics")}</span>
+                  <span>{t("alert metrics")}</span>
                 </div>
 
                 <div className={clsx(style.FilterArea)}>

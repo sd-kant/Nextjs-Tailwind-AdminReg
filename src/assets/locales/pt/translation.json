@@ -668,5 +668,6 @@
   "team delete success": "A equipe foi excluída.",
   "change saved": "As alterações foram salvas",
   "permission level required": "Selecione o nível de permissão",
-  "team country required": "Por favor, selecione um País: Brasil"
+  "team country required": "Por favor, selecione um País: Brasil",
+  "alert metrics": "Métricas de alerta"
 }

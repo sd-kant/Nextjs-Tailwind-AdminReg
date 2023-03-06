@@ -668,5 +668,6 @@
   "team delete success": "チームは削除されました。",
   "change saved": "変更が保存されました",
   "permission level required": "許可レベルを選択してください",
-  "team country required": "国を選択してください"
+  "team country required": "国を選択してください",
+  "alert metrics": "アラート指標"
 }
