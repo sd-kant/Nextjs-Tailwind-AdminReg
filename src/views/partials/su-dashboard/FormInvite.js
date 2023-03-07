@@ -85,7 +85,7 @@ export const userSchema = (t) => {
       .required(t('lastName required'))
       .max(50, t("lastName max error")),
     userType: Yup.object()
-      .required(t('role required')),
+      .required(t('permission level required')),
     job: Yup.object()
       .required(t('role required')),
     phoneNumber: Yup.object()
@@ -165,7 +165,6 @@ const FormInvite = (props) => {
     setStatus,
     organizationId,
     id: teamId,
-    isAdmin,
   } = props;
   const navigate = useNavigate();
   const {submitForm} = useFormikContext();
@@ -231,13 +230,8 @@ const FormInvite = (props) => {
   const pathname = window.location.pathname;
   const isManual = pathname.split("/").includes("manual");
 
-  const options = useMemo(() => {
-    if (isAdmin) {
-      return permissionLevels.filter(it => ["1", "2"].includes(it.value?.toString()));
-    } else {
-      return permissionLevels.filter(it => ["2"].includes(it.value?.toString()));
-    }
-  }, [isAdmin]);
+  const options = useMemo(() => permissionLevels.filter(it => ["1", "2"].includes(it.value?.toString())),
+    []);
 
   const renderUser = (user, index, key) => {
     let errorField = errors?.users?.[user.index];

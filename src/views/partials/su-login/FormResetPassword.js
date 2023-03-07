@@ -134,7 +134,7 @@ const FormResetPassword = (props) => {
           type={values['password'] && values['confirmPassword'] ? "submit" : "button"}
         >
           <span className='font-button-label text-white'>
-            {t("next")}
+            {t("reset")}
           </span>
         </button>
       </div>

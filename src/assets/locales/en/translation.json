@@ -215,7 +215,7 @@
   "re-invite user": "Re-Invite User",
   "ends with": "ending-{{number}}",
   "not registered": "not registered",
-  "reset": "reset",
+  "reset": "Reset",
   "msg wrong code": "Wrong code, please check your code",
   "logout kenzen": "Log Out?",
   "no team assigned": "no team assigned",
@@ -226,7 +226,6 @@
   "create password": "Create Password",
   "password required": "Please enter a password",
   "confirm password required": "Please confirm your password",
-  "confirm password invalid": "Please match password",
   "name description": "What is your name?",
   "your firstName required": "Please enter your first name",
   "your lastName required": "Please enter your last name",
@@ -427,6 +426,7 @@
   "security": "Security",
   "add company admin": "Add Company Administrator",
 
+  "confirm password invalid": "Passwords do not match.",
   "username invalid 1": "Username must be at least five characters long, start with a letter, and only contain letters, numbers or one dot",
   "username invalid 2": "Username cannot end with a dot",
   "select action": "Select Action",
@@ -641,7 +641,6 @@
   "day of week": "Day Of Week",
   "time of day": "Time of Day",
   "back": "Back",
-
   "sun": "Sun",
   "mon": "Mon",
   "tues": "Tues",
@@ -661,5 +660,14 @@
   "end date": "End Date",
   "export": "Export",
   "no internet connection": "No Internet Connection",
-  "team already exist": "The team already exist"
+  "team already exist": "The team already exist",
+  "up to n countries": "You can select up to {{n}} countries",
+  "n countries selected": "{{n}} countries selected",
+  "team region required": "Please select a region",
+  "remove team": "Are you sure you want to delete this team?",
+  "team delete success": "Team has been deleted.",
+  "change saved": "Changes have been saved",
+  "permission level required": "Please select the permission level",
+  "team country required": "Please select a country",
+  "alert metrics": "Alert Metrics"
 }

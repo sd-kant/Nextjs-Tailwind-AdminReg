@@ -23,32 +23,35 @@ const OrganizationProvider = (
     isAdmin,
     showErrorNotification,
     setLoading,
+    profile,
   }) => {
   const [orgAdmins, setOrgAdmins] = React.useState([]);
   const [organization, setOrganization] = React.useState(null);
   const {organizationId} = useParams();
   React.useEffect(() => {
-    if (organizationId) {
-      fetchOrgAdmins();
-      fetchCompany();
+    if (!(INVALID_VALUES1.includes(organizationId?.toString()))) {
+      fetchCompany(organizationId);
+      if (isAdmin) {
+        fetchOrgAdmins(organizationId);
+      }
+    } else if (!(INVALID_VALUES1.includes(profile?.orgId?.toString()))) {
+      fetchCompany(profile?.orgId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organizationId, isAdmin]);
+  }, [organizationId, isAdmin, profile?.orgId]);
 
-  const fetchCompany = () => {
-    if (!(INVALID_VALUES1.includes(organizationId?.toString()))) {
-      getCompanyById(organizationId)
-        .then(response => {
-          setOrganization(response.data);
-        });
-    }
+  const fetchCompany = (orgId) => {
+    getCompanyById(orgId)
+      .then(response => {
+        setOrganization(response.data);
+      });
   };
 
-  const fetchOrgAdmins = () => {
+  const fetchOrgAdmins = (orgId) => {
     setLoading(true);
     if (isAdmin) {
       getUsersUnderOrganization({
-        organizationId,
+        organizationId: orgId,
         userType: 'OrgAdmin',
       })
         .then(res => {
@@ -73,7 +76,7 @@ const OrganizationProvider = (
         ret = regionsForOrganization?.filter(it => organization.regions.some(ele => ele === it.name));
       }
     }
-    return ret.map(it => ({
+    return ret?.map(it => ({
       label: it.name,
       value: it.shortCode,
     }));
@@ -104,6 +107,7 @@ const OrganizationProvider = (
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
   isAdmin: get(state, 'auth.isAdmin'),
+  profile: get(state, 'profile.profile'),
 });
 
 const mapDispatchToProps = (dispatch) =>

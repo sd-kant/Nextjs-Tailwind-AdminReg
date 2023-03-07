@@ -215,7 +215,7 @@
   "re-invite user": "Volver a invitar usuario",
   "ends with": "Termina en-{{number}}",
   "not registered": "no registrado",
-  "reset": "reestablecer",
+  "reset": "Reestablecer",
   "msg wrong code": "Código incorrecto, verifique el código",
   "logout kenzen": "¿Cerrar sesión?",
   "no team assigned": "ningún equipo asignado",
@@ -226,7 +226,6 @@
   "create password": "Cear contraseña",
   "password required": "Ingrese una contraseña",
   "confirm password required": "Confirme su contraseña",
-  "confirm password invalid": "Escriba la misma contraseña",
   "name description": "¿Cuál es su nombre?",
   "your firstName required": "Ingrese su nombre",
   "your lastName required": "Ingrese su apellido",
@@ -427,6 +426,7 @@
   "security": "Seguridad",
   "add company admin": "Agregar administrador de la empresa",
 
+  "confirm password invalid": "Las contraseñas no coinciden.",
   "username invalid 1": "El nombre de usuario debe tener al menos cinco caracteres, comenzar con una letra y solo contener letras, números o un punto",
   "username invalid 2": "El nombre de usuario no puede terminar con un punto",
   "select action": "Seleccionar acción",
@@ -567,6 +567,7 @@
   "open analytics": "Kenzen Analytics se abrirá en una nueva ventana del navegador",
   "user": "Usuario",
   "users": "Usuarios",
+
   "avg wear time": "Avg tiempo de desgaste",
   "total wear time": "Tiempo Total de Desgaste",
   "alert time": "Tiempo de Alerta",
@@ -640,7 +641,6 @@
   "day of week": "Día de la semana",
   "time of day": "Hora del día",
   "back": "Remontan",
-
   "sun": "Dom",
   "mon": "Lun",
   "tues": "Mart",
@@ -660,5 +660,14 @@
   "end date": "Fecha de Finalización",
   "export": "Exportar",
   "no internet connection": "Sin Conexión a Internet",
-  "team already exist": "El equipo ya existe"
+  "team already exist": "El equipo ya existe",
+  "up to n countries": "Puede seleccionar hasta {{n}} países",
+  "n countries selected": "{{n}} países seleccionados",
+  "team region required": "Seleccione una región",
+  "remove team": "¿Está seguro de que desea eliminar este equipo?",
+  "team delete success": "Se ha eliminado el equipo.",
+  "change saved": "Se han guardado los cambios",
+  "permission level required": "Seleccione el nivel de permiso",
+  "team country required": "Por favor seleccione un país",
+  "alert metrics": "Métricas de alerta"
 }

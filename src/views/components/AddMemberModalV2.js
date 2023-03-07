@@ -34,18 +34,13 @@ const AddMemberModalV2 = (
     resetForm,
     errors,
     touched,
-    isAdmin,
   }) => {
   const {user} = values;
   const {jobs} = useMembersContext();
-  const options = useMemo(() => {
-    if (isAdmin) {
-      return permissionLevels.filter(it => ["1", "2"].includes(it.value?.toString()));
-    } else {
-      return permissionLevels.filter(it => ["2"].includes(it.value?.toString()));
-    }
+  const options = useMemo(() => permissionLevels.filter(it => ["1", "2"].includes(it.value?.toString())),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAdmin]);
+    []);
+
 
   useEffect(() => {
     if (isOpen) {

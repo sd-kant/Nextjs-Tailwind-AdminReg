@@ -264,6 +264,10 @@ export const removeTeamMember = (userId) => {
   return post(`team/remove/user/${userId}`, {});
 };
 
+export const removeTeam = (teamId) => {
+  return deleteRequest(`team/${teamId}`);
+};
+
 export const deleteUser = ({organizationId, userId}) => {
   return deleteRequest(`organization/${organizationId}/user/${userId}`);
 };
