@@ -14,7 +14,6 @@ import {
   USER_TYPE_ADMIN,
   USER_TYPE_ORG_ADMIN,
   USER_TYPE_TEAM_ADMIN,
-  CURRENT_VERSION
 } from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
@@ -27,6 +26,7 @@ import {getCompanyById} from "../../../http";
 import LanguageModal from "../LanguageModal";
 import closeIconV2 from '../../../assets/images/close-white.svg';
 import menuIcon from '../../../assets/images/menu.svg';
+import pjson from '../../../../package.json';
 
 const popupContentStyle = {
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
@@ -302,7 +302,7 @@ const Settings = (
 
           <div className={clsx(style.VersionWrapper)}>
             <span className='font-helper-text'>
-              v{CURRENT_VERSION}
+              v{pjson.version}
             </span>
           </div>
         </div>
