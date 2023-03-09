@@ -22,7 +22,6 @@ import {
   concatAsUrlParam,
   getUrlParamAsJson
 } from "../../../utils";
-import {getCompanyById} from "../../../http";
 import LanguageModal from "../LanguageModal";
 import closeIconV2 from '../../../assets/images/close-white.svg';
 import menuIcon from '../../../assets/images/menu.svg';
@@ -45,7 +44,7 @@ const Settings = (
     metric,
     setMetric,
     isEntry,
-    myOrgId,
+    myOrganization,
     mode // dashboard | analytics | admin
   }
 ) => {
@@ -57,11 +56,10 @@ const Settings = (
   const [openMode, setOpenMode] = React.useState(""); // dashboard | analytics | admin
 
   React.useEffect(() => {
-    getCompanyById(myOrgId)
-      .then(res => {
-        setOrgLabel(res.data?.name);
-      });
-  }, [myOrgId]);
+    if (myOrganization?.name) {
+      setOrgLabel(myOrganization?.name);
+    }
+  }, [myOrganization?.name]);
 
   const flattened = concatAsUrlParam(getUrlParamAsJson());
 
@@ -342,7 +340,7 @@ const mapStateToProps = (state) => ({
   metric: get(state, "ui.metric"),
   userType: get(state, 'auth.userType'),
   profile: get(state, 'profile.profile'),
-  myOrgId: get(state, "auth.organizationId"),
+  myOrganization: get(state, "profile.organization"),
 });
 
 const mapDispatchToProps = (dispatch) =>

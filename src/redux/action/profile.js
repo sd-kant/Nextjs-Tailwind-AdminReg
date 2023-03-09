@@ -31,3 +31,8 @@ export const getMyProfileAction = () => ({
   type: actionTypes.GET_PROFILE,
   payload: {},
 });
+
+export const getMyOrganizationAction = () => ({
+  type: actionTypes.GET_MY_ORGANIZATION,
+  payload: {},
+});

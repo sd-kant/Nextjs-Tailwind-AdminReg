@@ -5,6 +5,7 @@ const initialState = {
   medicalQuestions: null,
   medicalResponses: null,
   profile: null,
+  organization: null,
 };
 
 const profileReducer = (state = initialState, action) => {
@@ -12,6 +13,11 @@ const profileReducer = (state = initialState, action) => {
     case actionTypes.SET_MEDICAL_QUESTIONS:
       return produce(state, draft => {
         draft.medicalQuestions = action.payload.medicalQuestions;
+      });
+
+    case actionTypes.SET_MY_ORGANIZATION:
+      return produce(state, draft => {
+        draft.organization = action.payload.orgData;
       });
 
     case actionTypes.SET_MEDICAL_RESPONSES:

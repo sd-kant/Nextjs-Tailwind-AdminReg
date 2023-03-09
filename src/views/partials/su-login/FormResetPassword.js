@@ -25,18 +25,20 @@ import {useNavigate} from "react-router-dom";
 import {apiBaseUrl} from "../../../config";
 import PasswordInput from "../../components/PasswordInput";
 
+const pwMinLength = getParamFromUrl("minPasswordLength") ?? 10;
+
 const formSchema = (t) => {
   return Yup.object().shape({
     token: Yup.string(),
     password: Yup.string()
       .required(t('your password required'))
-      .min(getParamFromUrl("minPasswordLength") ?? 10, t('n password rule', {n: getParamFromUrl("minPasswordLength") ?? 10}))
+      .min(pwMinLength, t('n password rule', {n: pwMinLength}))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
         t('password rule'),
         function (value) {
-          return checkPasswordValidation(value, getParamFromUrl("minPasswordLength") ?? 10);
+          return checkPasswordValidation(value, pwMinLength);
         }
       ),
     confirmPassword: Yup.string()
@@ -124,7 +126,7 @@ const FormResetPassword = (props) => {
 
         <div className='mt-40'>
           <span className='font-helper-text'>
-            {t('n password rule', {n: getParamFromUrl("minPasswordLength") ?? 10})}
+            {t('n password rule', {n: pwMinLength})}
           </span>
         </div>
       </div>
