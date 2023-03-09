@@ -8,7 +8,8 @@ import {
   checkUsernameValidation2,
   checkUsernameValidation1,
   checkPasswordValidation,
-  getTokenFromUrl
+  getTokenFromUrl,
+  getParamFromUrl
 } from "../../../utils";
 import {resetPasswordV2} from "../../../http";
 import {
@@ -20,6 +21,7 @@ import {loginAction} from "../../../redux/action/auth";
 import {useNavigate} from "react-router-dom";
 import PasswordInput from "../../components/PasswordInput";
 
+const pwMinLength = getParamFromUrl("minPasswordLength") ?? 10;
 const formSchema = (t) => {
   return Yup.object().shape({
     token: Yup.string(),
@@ -43,13 +45,13 @@ const formSchema = (t) => {
       ),
     password: Yup.string()
       .required(t('your password required'))
-      .min(10, t('password min error'))
+      .min(pwMinLength, t('n password min error', {n: pwMinLength}))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
         t('password invalid'),
         function (value) {
-          return checkPasswordValidation(value);
+          return checkPasswordValidation(value, pwMinLength);
         }
       ),
     confirmPassword: Yup.string()
@@ -159,7 +161,7 @@ const FormPassword = (props) => {
 
         <div className='mt-40'>
           <span className='font-helper-text'>
-            {t("password rule")}
+            {t('n password rule', {n: pwMinLength})}
           </span>
         </div>
       </div>

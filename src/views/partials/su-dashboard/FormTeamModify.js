@@ -85,7 +85,7 @@ const formSchema = (t) => {
         'is-valid',
         t('team location required'),
         function (value) {
-          return !!value?.label;
+          return this.parent.editing ? !!value?.label : true;
         }
       ),
     editing: Yup.boolean(),

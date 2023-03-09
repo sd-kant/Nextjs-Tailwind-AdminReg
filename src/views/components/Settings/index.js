@@ -14,7 +14,6 @@ import {
   USER_TYPE_ADMIN,
   USER_TYPE_ORG_ADMIN,
   USER_TYPE_TEAM_ADMIN,
-  CURRENT_VERSION
 } from "../../../constant";
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
@@ -23,10 +22,10 @@ import {
   concatAsUrlParam,
   getUrlParamAsJson
 } from "../../../utils";
-import {getCompanyById} from "../../../http";
 import LanguageModal from "../LanguageModal";
 import closeIconV2 from '../../../assets/images/close-white.svg';
 import menuIcon from '../../../assets/images/menu.svg';
+import pjson from '../../../../package.json';
 
 const popupContentStyle = {
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
@@ -45,7 +44,7 @@ const Settings = (
     metric,
     setMetric,
     isEntry,
-    myOrgId,
+    myOrganization,
     mode // dashboard | analytics | admin
   }
 ) => {
@@ -57,11 +56,10 @@ const Settings = (
   const [openMode, setOpenMode] = React.useState(""); // dashboard | analytics | admin
 
   React.useEffect(() => {
-    getCompanyById(myOrgId)
-      .then(res => {
-        setOrgLabel(res.data?.name);
-      });
-  }, [myOrgId]);
+    if (myOrganization?.name) {
+      setOrgLabel(myOrganization?.name);
+    }
+  }, [myOrganization?.name]);
 
   const flattened = concatAsUrlParam(getUrlParamAsJson());
 
@@ -302,7 +300,7 @@ const Settings = (
 
           <div className={clsx(style.VersionWrapper)}>
             <span className='font-helper-text'>
-              v{CURRENT_VERSION}
+              v{pjson.version}
             </span>
           </div>
         </div>
@@ -342,7 +340,7 @@ const mapStateToProps = (state) => ({
   metric: get(state, "ui.metric"),
   userType: get(state, 'auth.userType'),
   profile: get(state, 'profile.profile'),
-  myOrgId: get(state, "auth.organizationId"),
+  myOrganization: get(state, "profile.organization"),
 });
 
 const mapDispatchToProps = (dispatch) =>

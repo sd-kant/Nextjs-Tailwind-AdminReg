@@ -60,8 +60,8 @@ export const getParamFromUrl = key => {
   return param ? decodeURIComponent(param) : undefined;
 };
 
-export const checkPasswordValidation = (password) => {
-  const regex=  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{6,1024}$/;
+export const checkPasswordValidation = (password, minLength) => {
+  const regex = new RegExp(`^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{${minLength ?? 6},1024}$`, 'gi');
   return password && password.match(regex);
 };
 

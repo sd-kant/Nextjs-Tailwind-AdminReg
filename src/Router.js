@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import {get} from "lodash";
-import {getMyProfileAction} from "./redux/action/profile";
+import {getMyOrganizationAction, getMyProfileAction} from "./redux/action/profile";
 
 const Dashboard = lazy(() => import("./views/pages/Dashboard"));
 const SULogin = lazy(() => import("./views/pages/SULogin"));
@@ -36,12 +36,14 @@ const Router = (
     token,
     loggedIn,
     getMyProfile,
+    getMyOrganization,
   }) => {
   React.useEffect(() => {
     if (token && loggedIn) {
       getMyProfile();
+      getMyOrganization();
     }
-  }, [token, loggedIn, getMyProfile]);
+  }, [token, loggedIn, getMyProfile, getMyOrganization]);
 
   return (
     <BrowserRouter basename="/">
@@ -295,6 +297,7 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       getMyProfile: getMyProfileAction,
+      getMyOrganization: getMyOrganizationAction,
     },
     dispatch
   );

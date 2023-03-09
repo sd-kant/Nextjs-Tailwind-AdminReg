@@ -7,6 +7,7 @@ import {
 import {actionTypes} from '../type';
 import i18n from '../../i18nextInit';
 import {
+  getCompanyById,
   getMedicalQuestionsV2,
   getMedicalResponsesV2,
   getProfileV2,
@@ -17,6 +18,7 @@ import {get} from "lodash";
 function* actionWatcher() {
   yield takeLatest(actionTypes.UPDATE_PROFILE, updateProfileSaga);
   yield takeLatest(actionTypes.GET_PROFILE, getProfileSaga);
+  yield takeLatest(actionTypes.GET_MY_ORGANIZATION, getMyOrganizationSaga);
   yield takeLatest(actionTypes.GET_MEDICAL_QUESTIONS, getMedicalQuestionsSaga);
   yield takeLatest(actionTypes.GET_MEDICAL_RESPONSES, getMedicalResponsesSaga);
 }
@@ -126,6 +128,30 @@ function* getProfileSaga() {
       type: actionTypes.LOADING,
       payload: {
         loading: false,
+      }
+    });
+  }
+}
+
+function* getMyOrganizationSaga() {
+  try {
+    const state = yield select();
+    const orgId = get(state, 'auth.organizationId');
+    if (orgId) {
+      const orgRes = yield call(getCompanyById, orgId);
+      const orgData = orgRes.data;
+      yield put({
+        type: actionTypes.SET_MY_ORGANIZATION,
+        payload: {
+          orgData,
+        }
+      });
+    }
+  } catch (e) {
+    yield put({
+      type: actionTypes.ERROR_NOTIFICATION,
+      payload: {
+        msg: i18n.t(e.response?.data?.message),
       }
     });
   }

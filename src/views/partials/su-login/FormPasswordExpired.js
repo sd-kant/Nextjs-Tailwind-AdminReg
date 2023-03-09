@@ -24,28 +24,28 @@ import {resetPasswordWithToken} from "../../../http";
 import {get} from "lodash";
 import PasswordInput from "../../components/PasswordInput";
 
-export const formSchema = (t) => {
+const formSchema = (t, pwMinLength) => {
   return Yup.object().shape({
     password: Yup.string()
       .required(t('your password required'))
-      .min(10, t('password min error'))
+      .min(pwMinLength, t('n password min error', {n: pwMinLength}))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
         t('password invalid'),
         function (value) {
-          return checkPasswordValidation(value);
+          return checkPasswordValidation(value, pwMinLength);
         },
       ),
     newPassword: Yup.string()
       .required(t('your password required'))
-      .min(10, t('password min error'))
+      .min(pwMinLength, t('n password min error', {n: pwMinLength}))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
         t('password invalid'),
         function (value) {
-          return checkPasswordValidation(value);
+          return checkPasswordValidation(value, pwMinLength);
         },
       ),
     confirmPassword: Yup.string()
@@ -67,7 +67,7 @@ const FormPasswordExpired = (props) => {
     touched,
     t,
     setFieldValue,
-    setRestBarClass
+    setRestBarClass,
   } = props;
 
   useEffect(() => {
@@ -179,7 +179,7 @@ const EnhancedForm = withFormik({
     newPassword: '',
     confirmPassword: '',
   }),
-  validationSchema: ((props) => formSchema(props.t)),
+  validationSchema: ((props) => formSchema(props.t, props.pwMinLength)),
   handleSubmit: async (values, {props}) => {
     const {
       t,
