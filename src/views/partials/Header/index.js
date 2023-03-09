@@ -12,7 +12,6 @@ import ResponsiveSelect from "../../components/ResponsiveSelect";
 import {useWidthContext} from "../../../providers/WidthProvider";
 import MultiSelectPopup from "../../components/MultiSelectPopup";
 import {get} from "lodash";
-import {getCompanyById} from "../../../http";
 import SearchInput from "../../components/SearchInput";
 import Pagination from "../../components/Pagination";
 import refreshIcon from "../../../assets/images/refresh.svg";
@@ -20,7 +19,7 @@ import refreshIcon from "../../../assets/images/refresh.svg";
 const Header = (
   {
     t,
-    myOrgId,
+    myOrganization,
   }) => {
   const {
     pickedTeams,
@@ -61,13 +60,10 @@ const Header = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visibleStatisticsButton]);
   React.useEffect(() => {
-    if (!isAdmin && myOrgId) {
-      getCompanyById(myOrgId)
-        .then(res => {
-          setOrgLabel(res.data?.name);
-        });
+    if (!isAdmin && myOrganization?.name) {
+      setOrgLabel(myOrganization?.name);
     }
-  }, [isAdmin, myOrgId]);
+  }, [isAdmin, myOrganization?.name]);
 
   // eslint-disable-next-line no-unused-vars
   const handleScroll = () => {
@@ -265,7 +261,7 @@ const Header = (
 };
 
 const mapStateToProps = (state) => ({
-  myOrgId: get(state, "auth.organizationId"),
+  myOrganization: get(state, "profile.organization"),
 });
 
 export default connect(

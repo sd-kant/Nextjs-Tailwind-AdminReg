@@ -1,13 +1,15 @@
 import React, {useEffect} from 'react';
 import {
   getTokenFromUrl,
-  getDeviceId
+  getDeviceId, getParamFromUrl
 } from "../../../utils";
 import {useNavigate} from "react-router-dom";
 import {apiBaseUrl} from "../../../config";
 import {bindActionCreators} from "redux";
 import {setLoadingAction} from "../../../redux/action/ui";
 import {connect} from "react-redux";
+
+const pwMinLength = getParamFromUrl("minPasswordLength") ?? 10;
 
 const FormSSOAuth = (
   {
@@ -21,7 +23,8 @@ const FormSSOAuth = (
     } else {
       // sso flow
       const deviceId = `web:${getDeviceId()}`;
-      window.location.href = `${apiBaseUrl}/master/token?token=${tokenFromUrl}&deviceId=${deviceId}&source=create-account`;
+      alert(`${apiBaseUrl}/master/token?token=${tokenFromUrl}&deviceId=${deviceId}&source=create-account&minPasswordLength=${pwMinLength}`);
+      window.location.href = `${apiBaseUrl}/master/token?token=${tokenFromUrl}&deviceId=${deviceId}&source=create-account&minPasswordLength=${pwMinLength}`;
       setLoading(true);
     }
 

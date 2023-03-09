@@ -21,6 +21,7 @@ import {instance} from "../../../http";
 import PasswordInput from "../../components/PasswordInput";
 
 export const formSchema = (t) => {
+  const pwMinLength = getParamFromUrl("minPasswordLength") ?? 10;
   return Yup.object().shape({
     username: Yup.string()
       .required(t('username required'))
@@ -42,13 +43,13 @@ export const formSchema = (t) => {
       ),
     password: Yup.string()
       .required(t('your password required'))
-      .min(10, t('password min error'))
+      .min(pwMinLength, t('n password min error', {n: pwMinLength}))
       .max(1024, t('password max error'))
       .test(
         'is-valid',
         t('password invalid'),
         function (value) {
-          return checkPasswordValidation(value);
+          return checkPasswordValidation(value, pwMinLength);
         }
       )
   });
@@ -70,6 +71,7 @@ const FormSULogin = (props) => {
     const source = getParamFromUrl(("source"));
     const username = getParamFromUrl('username');
     const deviceId = getParamFromUrl('deviceId');
+    const pwMinLength = getParamFromUrl('minPasswordLength') ?? 10;
     if (username) setFieldValue("username", username);
 
     if (source === "create-account") {
@@ -79,9 +81,9 @@ const FormSULogin = (props) => {
       // set api base url
       instance.defaults.baseURL = baseUri;
 
-      navigate(`/create-account/password-v2?token=${token}`);
+      navigate(`/create-account/password-v2?token=${token}&minPasswordLength=${pwMinLength}`);
     } else if (source === "mobile") {
-      navigate(`/mobile-auth?username=${username}&deviceId=${deviceId}`);
+      navigate(`/mobile-auth?username=${username}&deviceId=${deviceId}&minPasswordLength=${pwMinLength}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
