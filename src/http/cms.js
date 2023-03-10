@@ -52,7 +52,7 @@ function get(url, token, customHeaders) {
  * @returns {Promise<unknown>}
  */
 export const queryNewsBlog = (keyword, page, pageSize, categoryId) => {
-  return get(`api/posts?sort[0]=date%3Adesc&sort[1]=title&_q=${keyword ?? ''}&filters[categories][id][${categoryId ? '$in' : '$containsi'}]=${categoryId ?? ''}&pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize ?? 10}&populate=*`);
+  return get(`api/posts?sort[0]=date%3Adesc&sort[1]=title&_q=${keyword ?? ''}&filters[$and][0][show_type][$ne]=cms&filters[categories][id][${categoryId ? '$in' : '$containsi'}]=${categoryId ?? ''}&pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize ?? 10}&populate=*`);
 };
 
 /**
@@ -61,7 +61,7 @@ export const queryNewsBlog = (keyword, page, pageSize, categoryId) => {
  * @param newsId
  */
 export const queryNewsBlogDetail = (newsId) => {
-  return get(`api/posts?filters[id][$eq]=${newsId ?? ''}&populate=*`);
+  return get(`api/posts?filters[id][$eq]=${newsId ?? ''}&filters[$and][0][show_type][$ne]=cms&populate=*`);
 };
 
 /**
@@ -77,5 +77,5 @@ export const queryCategories = () => {
  * @returns {Promise<unknown>}
  */
 export const queryNewsBlogPerAuthor = (page, pageSize, authorId) => {
-  return get(`api/posts?sort[0]=date%3Adesc&sort[1]=title&filters[admin_user][id][${authorId ? '$in' : '$containsi'}]=${authorId ?? ''}&pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize ?? 5}&populate=*`);
+  return get(`api/posts?sort[0]=date%3Adesc&sort[1]=title&filters[$and][0][show_type][$ne]=cms&filters[admin_user][id][${authorId ? '$in' : '$containsi'}]=${authorId ?? ''}&pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize ?? 5}&populate=*`);
 };
