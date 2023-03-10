@@ -181,11 +181,9 @@ const Router = (
               element={
                 <RequireAuth requireLoggedIn={true}>
                   <RequirePasswordValid>
-                    <RequireAdminRole>
-                      <MainLayoutV2>
-                        <News/>
-                      </MainLayoutV2>
-                    </RequireAdminRole>
+                    <MainLayoutV2>
+                      <News/>
+                    </MainLayoutV2>
                   </RequirePasswordValid>
                 </RequireAuth>
               }
@@ -196,11 +194,9 @@ const Router = (
               element={
                 <RequireAuth requireLoggedIn={true}>
                   <RequirePasswordValid>
-                    <RequireAdminRole>
-                      <MainLayoutV2>
-                        <NewsDetail/>
-                      </MainLayoutV2>
-                    </RequireAdminRole>
+                    <MainLayoutV2>
+                      <NewsDetail/>
+                    </MainLayoutV2>
                   </RequirePasswordValid>
                 </RequireAuth>
               }
@@ -211,11 +207,9 @@ const Router = (
               element={
                 <RequireAuth requireLoggedIn={true}>
                   <RequirePasswordValid>
-                    <RequireAdminRole>
-                      <MainLayoutV2>
-                        <AuthorDetail/>
-                      </MainLayoutV2>
-                    </RequireAdminRole>
+                    <MainLayoutV2>
+                      <AuthorDetail/>
+                    </MainLayoutV2>
                   </RequirePasswordValid>
                 </RequireAuth>
               }

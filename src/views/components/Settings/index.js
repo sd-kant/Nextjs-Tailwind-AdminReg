@@ -129,7 +129,6 @@ const Settings = (
     ];
 
     if (!isEntry && ableToLogin(userType)) {
-      console.log(mode, !isEntry && ableToLogin(userType));
       let newItems = [];
       if (mode === "dashboard") {
         newItems = [
