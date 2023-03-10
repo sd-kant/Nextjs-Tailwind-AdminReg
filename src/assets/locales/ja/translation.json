@@ -669,5 +669,9 @@
   "change saved": "変更が保存されました",
   "permission level required": "許可レベルを選択してください",
   "team country required": "国を選択してください",
-  "alert metrics": "アラート指標"
+  "alert metrics": "アラート指標",
+  "news": "ニュース",
+  "recent": "最近",
+  "subject": "件名",
+  "select category": "カテゴリーを選択"
 }

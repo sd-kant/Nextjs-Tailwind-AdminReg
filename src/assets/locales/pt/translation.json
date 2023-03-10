@@ -669,5 +669,9 @@
   "change saved": "As alterações foram salvas",
   "permission level required": "Selecione o nível de permissão",
   "team country required": "Por favor, selecione um País: Brasil",
-  "alert metrics": "Métricas de alerta"
+  "alert metrics": "Métricas de alerta",
+  "news": "Notícia",
+  "recent": "recente",
+  "subject": "Assunto",
+  "select category": "Selecionar Categoria"
 }

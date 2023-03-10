@@ -119,9 +119,17 @@ const Settings = (
             rel="noreferrer"
             className="text-black no-underline no-outline"
           >{t('privacy policy')}</a>,
+      },{
+        title: t("news"),
+        handleClick: () => {
+          ref.current.close();
+          navigate("/news");
+        },
       },
     ];
+
     if (!isEntry && ableToLogin(userType)) {
+      console.log(mode, !isEntry && ableToLogin(userType));
       let newItems = [];
       if (mode === "dashboard") {
         newItems = [

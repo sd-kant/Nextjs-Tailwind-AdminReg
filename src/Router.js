@@ -30,6 +30,9 @@ const CreateAccount = lazy(() => import("./views/pages/CreateAccount"));
 const LoginEntry = lazy(() => import("./views/pages/LoginEntry"));
 const Analytics = lazy(() => import("./views/pages/Analytics"));
 import Loader from "./views/components/Loader";
+import News from "./views/pages/News/News";
+import NewsDetail from "./views/pages/News/NewsDetail";
+import AuthorDetail from "./views/pages/News/AuthorDetail";
 
 const Router = (
   {
@@ -171,6 +174,51 @@ const Router = (
                 </RequirePasswordValid>
               </RequireAuth>
             }
+          />
+
+          <Route
+              path="/news"
+              element={
+                <RequireAuth requireLoggedIn={true}>
+                  <RequirePasswordValid>
+                    <RequireAdminRole>
+                      <MainLayoutV2>
+                        <News/>
+                      </MainLayoutV2>
+                    </RequireAdminRole>
+                  </RequirePasswordValid>
+                </RequireAuth>
+              }
+          />
+
+          <Route
+              path="/news/detail"
+              element={
+                <RequireAuth requireLoggedIn={true}>
+                  <RequirePasswordValid>
+                    <RequireAdminRole>
+                      <MainLayoutV2>
+                        <NewsDetail/>
+                      </MainLayoutV2>
+                    </RequireAdminRole>
+                  </RequirePasswordValid>
+                </RequireAuth>
+              }
+          />
+
+          <Route
+              path="/news/author"
+              element={
+                <RequireAuth requireLoggedIn={true}>
+                  <RequirePasswordValid>
+                    <RequireAdminRole>
+                      <MainLayoutV2>
+                        <AuthorDetail/>
+                      </MainLayoutV2>
+                    </RequireAdminRole>
+                  </RequirePasswordValid>
+                </RequireAuth>
+              }
           />
 
           <Route

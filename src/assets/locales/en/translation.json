@@ -669,5 +669,9 @@
   "change saved": "Changes have been saved",
   "permission level required": "Please select the permission level",
   "team country required": "Please select a country",
-  "alert metrics": "Alert Metrics"
+  "alert metrics": "Alert Metrics",
+  "news": "News",
+  "recent": "recent",
+  "subject": "subject",
+  "select category": "Select Category"
 }
