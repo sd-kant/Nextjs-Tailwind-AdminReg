@@ -15,6 +15,8 @@ const MenuContent = () => {
       return "analytics";
     } else if (location.pathname.includes("dashboard")) {
       return "dashboard";
+    } else {
+      return "admin";
     }
   }, [location.pathname]);
   return (
