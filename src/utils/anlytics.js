@@ -45,7 +45,7 @@ export const getTeamNameFromTeamId = (formattedTeams, teamId) => {
 export const getTimeSpentFromUserId = (data, str) => {
   let findIndex = data.findIndex(a => a.temperatureCategory === str);
   if (findIndex > -1) {
-    return Math.ceil((data[findIndex]?.count ?? 0) / 240)
+    return Math.round((data[findIndex]?.count ?? 0) / 240)
   } else {
     return 0;
   }
