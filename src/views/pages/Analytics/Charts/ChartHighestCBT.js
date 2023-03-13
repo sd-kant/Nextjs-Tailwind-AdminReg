@@ -9,7 +9,6 @@ import {
 } from "react-i18next";
 import {useAnalyticsContext} from "../../../../providers/AnalyticsProvider";
 import {
-  METRIC_USER_TABLE_VALUES,
   TIME_LIST
 } from "../../../../constant";
 import {get} from "lodash";
@@ -23,11 +22,7 @@ const ChartHighestCBT = (
     maxCBTTileData: chartData,
     setDetailCbt,
     selectedTeams,
-    selectedMetric,
-    selectedMembers,
     timeZone,
-    teamLabel,
-    userLabel,
     chartRef,
     setIsEnablePrint
   } = useAnalyticsContext();
@@ -42,13 +37,6 @@ const ChartHighestCBT = (
       <div className={clsx(style.HighestCbtBody)}>
         <h1 className={clsx(style.TxtCenter)}>
           {t(`highest cbt by time of day and day of week`)}
-          {
-            selectedMetric?.value === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT && (
-                <div className={clsx(style.ChartLabel)}>
-                  {t('past 7 days of m in n', {m: selectedMembers?.length > 0 ? userLabel : t("n user", {n: 0}), n: selectedTeams?.length > 0 ? teamLabel : t("n user", {n: 0})})}
-                </div>
-            )
-          }
         </h1>
 
         <div className={clsx(style.FlexSpace)}>
