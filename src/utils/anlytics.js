@@ -472,6 +472,8 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('os version'),
         i18n.t('app version'),
         i18n.t('platform'),
+        i18n.t('max cbt'),
+        i18n.t('max hr'),
         i18n.t('date')
       ];
       break;

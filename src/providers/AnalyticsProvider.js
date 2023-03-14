@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx/xlsx.mjs';
 import {
   queryTeamMembers,
   getRiskLevels,
+  queryOrganizationMaxCbt,
 } from "../http";
 import {
   celsiusToFahrenheit,
@@ -248,7 +249,9 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'string']]], [SORT_TITLES[3], [[3, 'desc', 'string']]]]),
           makeSort('Sort', [[SORT_TITLES[0], [[4, 'asc', 'string']]], [SORT_TITLES[1], [[4, 'desc', 'string']]]]),
           makeSort('Sort', [[SORT_TITLES[0], [[5, 'asc', 'string']]], [SORT_TITLES[1], [[5, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[4], [[6, 'asc', 'date']]], [SORT_TITLES[5], [[6, 'desc', 'date']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[6, 'asc', 'number']]], [SORT_TITLES[3], [[6, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[7, 'asc', 'number']]], [SORT_TITLES[3], [[7, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[4], [[8, 'asc', 'date']]], [SORT_TITLES[5], [[8, 'desc', 'date']]]]),
         ];
         break;
       case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
@@ -377,28 +380,70 @@ export const AnalyticsProvider = (
             let startD = new Date(startDate); // e.g. 2022-04-05
             let endD = new Date(endDate); // e.g. 2022-11-24
 
-            if (checkMetric(METRIC_TEAM_CHART_VALUES, metric)) { // team chart only
+            if (
+                checkMetric(METRIC_TEAM_CHART_VALUES, metric) || // team chart only
+                metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA  // user Device_Data
+            ) {
               startD.setDate(startD.getDate() - 2); // e.g. 2022-04-03
               endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
             }
             setLoading(true);
-            apiCall(organization, {
-              teamIds: pickedTeams,
-              startDate: dateFormat(new Date(startD)),
-              endDate: dateFormat(new Date(endD)),
-            })
-              .then(response => {
-                setAnalytics({
-                  ...analytics,
-                  [organization]: {
-                    ...organizationAnalytics,
-                    [key]: response.data
-                  },
-                });
-              })
-              .finally(() => {
-                setLoading(false);
+            if (metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA) { // only Device_Data
+              const apiCalls = [apiCall, queryOrganizationMaxCbt];
+              const keys = [key, ANALYTICS_API_KEYS.MAX_CBT];
+              const deviceDataPromises = [];
+              apiCalls.forEach(api => {
+                deviceDataPromises.push(api(organization, {
+                  teamIds: pickedTeams,
+                  startDate: dateFormat(new Date(startD)),
+                  endDate: dateFormat(new Date(endD)),
+                }));
               });
+
+              let list = {};
+              const a = () => new Promise(resolve => {
+                Promise.allSettled(deviceDataPromises)
+                    .then(response => {
+                      response?.forEach((result, index) => {
+                        if (result.status === `fulfilled`) {
+                          if (result.value?.data?.length > 0) {
+                            list = {...list, [keys[index]]: result.value.data};
+                          }
+                        }
+                      })
+                    })
+                    .finally(() => {
+                      setAnalytics({
+                        ...analytics,
+                        [organization]: {
+                          ...organizationAnalytics,
+                          ...list
+                        },
+                      });
+                      setLoading(false);
+                      resolve();
+                    });
+              });
+              Promise.allSettled([a()]).then();
+            } else {
+              apiCall(organization, {
+                teamIds: pickedTeams,
+                startDate: dateFormat(new Date(startD)),
+                endDate: dateFormat(new Date(endD)),
+              })
+                  .then(response => {
+                    setAnalytics({
+                      ...analytics,
+                      [organization]: {
+                        ...organizationAnalytics,
+                        [key]: response.data
+                      },
+                    });
+                  })
+                  .finally(() => {
+                    setLoading(false);
+                  });
+            }
           }
         }
       }
@@ -763,6 +808,8 @@ export const AnalyticsProvider = (
         it.type === `kenzen` ? `` : (it.osVersion ?? ``),
         it.type === `kenzen` ? `` : (it.version ?? ``),
         it.type ?? ``,
+        organizationAnalytics?.maxCbt?.find(maxCbt => maxCbt?.userId === it.userId)?.maxCbt ?? ``,
+        organizationAnalytics?.maxCbt?.find(maxCbt => maxCbt?.userId === it.userId)?.maxHrAvg ?? ``,
         it.ts ?? ``,
       ]));
     } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) { // 8
