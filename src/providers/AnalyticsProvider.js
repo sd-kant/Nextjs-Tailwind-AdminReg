@@ -749,7 +749,14 @@ export const AnalyticsProvider = (
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Moderate Hyperthermia > 38.5C`),
       ]));
     } else if (metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA) { // 7
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.DEVICE_DATA, pickedMembers, members)?.map(it => ([
+      let tempRet = [];
+      let filterData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.DEVICE_DATA, pickedMembers, members);
+      pickedMembers?.forEach(it => {
+        let recentItem = filterData?.filter(a => a?.userId === it)?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+        if (recentItem) tempRet.push(recentItem);
+      });
+
+      ret = tempRet?.map(it => ([
         it.fullname ?? ``,
         getTeamNameFromTeamId(formattedTeams, it.teamId),
         it.type === `kenzen` ? (it?.version || ``) : ``,
