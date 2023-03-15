@@ -44,6 +44,7 @@ import {
   SWEAT_LOW_MEDIUM_HIGH,
   LABELS_HEAT_DOUGHNUT,
   LABELS_SWEAT_DOUGHNUT,
+  INVALID_VALUES2,
 } from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {
@@ -727,7 +728,7 @@ export const AnalyticsProvider = (
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.sweatRateCategory ?? ``,
-        unitMetric ? it.sweatRate ?? `` : literToQuart(it.sweatRate) ?? ``,
+        unitMetric ? ((!INVALID_VALUES2.includes(it.sweatRate) && it.sweatRate >= 0) ? it.sweatRate : ``) : literToQuart((!INVALID_VALUES2.includes(it.sweatRate) && it.sweatRate >= 0) ? it.sweatRate : ``),
         unitMetric ? it.fluidRecommendationL ?? `` : literToQuart(it.fluidRecommendationL) ?? ``,
         it.previousIllness ?? ``,
         it.acclimatizationStatus ?? ``,
