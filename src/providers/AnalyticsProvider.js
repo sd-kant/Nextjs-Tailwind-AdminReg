@@ -211,7 +211,6 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[SORT_TITLES[2], [[8, 'asc', 'number']]], [SORT_TITLES[3], [[8, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
       case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
         ret = [
           makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
@@ -624,10 +623,7 @@ export const AnalyticsProvider = (
         labels: xLabel,
         datasets: dataSet,
       };
-    } else if (
-        metric === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT ||
-        metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK
-    ) { // 3, 32
+    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) { // 32
       while (startD.isBefore(endD)) {
         const subList = [];
         const endDByOneDay = startD.add(1, `day`);
@@ -720,10 +716,7 @@ export const AnalyticsProvider = (
         it.humidity ?? '',
         it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``,
       ]))
-    } else if (
-        (metric === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT ||
-        metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) && !detailCbt
-    ) { // 3, 32
+    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && !detailCbt) { // 32
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
@@ -876,12 +869,7 @@ export const AnalyticsProvider = (
         it.previousIllness,
         it.noPreviousIllness ?? ``,
       ]));
-    } else if (
-        (
-            metric === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT ||
-            metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK
-        ) && detailCbt
-    ) { // detail table of highest CBT chart
+    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && detailCbt) { // detail table of highest CBT chart
       ret = maxCBTTileData?.list?.length > 0 ? maxCBTTileData.list[detailCbt.dayIndex][detailCbt.timeIndex]?.details || [] : [];
     }
 
