@@ -349,7 +349,6 @@ export const getKeyApiCall = (value) => {
       apiCall = queryOrganizationAlertMetrics;
       key = ANALYTICS_API_KEYS.ALERT_METRICS;
       break;
-    case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
     case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
       apiCall = queryOrganizationMaxCbt;
       key = ANALYTICS_API_KEYS.MAX_CBT;
@@ -431,7 +430,6 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('humidity'),
         i18n.t('heart rate avg')];
       break;
-    case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
     case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
       ret = [
         i18n.t('name'),
