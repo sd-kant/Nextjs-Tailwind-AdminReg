@@ -51,11 +51,11 @@ export const getTimeSpentFromUserId = (data, str) => {
   }
 };
 
-export const onCalc = (key, tempRet, totalSweat, totalHeat) => {
+export const onCalc = (key, tempRet, total) => {
   if (key !== 2 && key !== 5)
-    return Math.floor(tempRet[key] * 100 / ((key >= 3 ? totalSweat : totalHeat) ?? 1));
+    return Math.floor(tempRet[key] * 1000 / (total ?? 1)) / 10;
   else {
-    return 100 - Math.floor(tempRet[key === 2 ? 0 : 3] * 100 / ((key >= 3 ? totalSweat : totalHeat) ?? 1)) - Math.floor(tempRet[key === 2 ? 1 : 4] * 100 / ((key >= 3 ? totalSweat : totalHeat) ?? 1))
+    return 100 - (Math.floor((tempRet[key === 2 ? 0 : 3] + tempRet[key === 2 ? 1 : 4]) * 1000 / (total ?? 1)) / 10);
   }
 };
 
