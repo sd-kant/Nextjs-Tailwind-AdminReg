@@ -328,7 +328,6 @@ export const ANALYTICS_API_KEYS = {
 export const METRIC_USER_TABLE_VALUES = {
   WEAR_TIME:  1,
   ALERTS: 2,
-  MAX_HEART_CBT: 3,
   SWR_ACCLIM: 5,
   TIME_SPENT_IN_CBT_ZONES: 6,
   DEVICE_DATA: 7,
@@ -401,10 +400,6 @@ export const USER_STATUS_METRICS = [
   {
     label: `${i18n.t('table')} - ${i18n.t('alerts')}`,
     value: METRIC_USER_TABLE_VALUES.ALERTS, // 2
-  },
-  {
-    label: `${i18n.t('table')} - ${i18n.t('max heart cbt')}`,
-    value: METRIC_USER_TABLE_VALUES.MAX_HEART_CBT, // 3
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('swr & acclim')}`,

@@ -51,11 +51,11 @@ export const getTimeSpentFromUserId = (data, str) => {
   }
 };
 
-export const onCalc = (key, tempRet, totalSweat, totalHeat) => {
+export const onCalc = (key, tempRet, total) => {
   if (key !== 2 && key !== 5)
-    return Math.floor(tempRet[key] * 100 / ((key >= 3 ? totalSweat : totalHeat) ?? 1));
+    return Math.floor(tempRet[key] * 1000 / (total ?? 1)) / 10;
   else {
-    return 100 - Math.floor(tempRet[key === 2 ? 0 : 3] * 100 / ((key >= 3 ? totalSweat : totalHeat) ?? 1)) - Math.floor(tempRet[key === 2 ? 1 : 4] * 100 / ((key >= 3 ? totalSweat : totalHeat) ?? 1))
+    return 100 - (Math.floor((tempRet[key === 2 ? 0 : 3] + tempRet[key === 2 ? 1 : 4]) * 1000 / (total ?? 1)) / 10);
   }
 };
 
@@ -349,7 +349,6 @@ export const getKeyApiCall = (value) => {
       apiCall = queryOrganizationAlertMetrics;
       key = ANALYTICS_API_KEYS.ALERT_METRICS;
       break;
-    case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
     case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
       apiCall = queryOrganizationMaxCbt;
       key = ANALYTICS_API_KEYS.MAX_CBT;
@@ -431,7 +430,6 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('humidity'),
         i18n.t('heart rate avg')];
       break;
-    case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
     case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
       ret = [
         i18n.t('name'),

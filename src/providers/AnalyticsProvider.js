@@ -44,6 +44,7 @@ import {
   SWEAT_LOW_MEDIUM_HIGH,
   LABELS_HEAT_DOUGHNUT,
   LABELS_SWEAT_DOUGHNUT,
+  INVALID_VALUES2,
 } from "../constant";
 import {useBasicContext} from "./BasicProvider";
 import {
@@ -119,7 +120,7 @@ export const AnalyticsProvider = (
             results?.forEach((result, index) => {
               if (result.status === `fulfilled`) {
                 if (result.value?.data?.members?.length > 0) {
-                  const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString()) ?? [];
+                  const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString() && it.orgId?.toString() === organization?.toString()) ?? [];
                   setMembers([...membersRef.current, ...operators]);
                 }
               }
@@ -129,6 +130,7 @@ export const AnalyticsProvider = (
       });
       Promise.allSettled([a()]).then();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickedTeams]);
 
   const metrics = React.useMemo(() => {
@@ -210,7 +212,6 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[SORT_TITLES[2], [[8, 'asc', 'number']]], [SORT_TITLES[3], [[8, 'desc', 'number']]]]),
         ];
         break;
-      case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
       case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
         ret = [
           makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
@@ -486,23 +487,21 @@ export const AnalyticsProvider = (
 
       const dataChart = (mode) => {
         if (['heat', 'sweat'].includes(mode)) {
-          let label = null;
+          let label = '  # of Users';
           let data = null;
           switch (mode) {
             case 'heat':
-              label = '# of Heat';
               data = [
-                onCalc(0, tempRet, totalSweat, totalHeat), // Low Data
-                onCalc(1, tempRet, totalSweat, totalHeat), // Medium Data
-                onCalc(2, tempRet, totalSweat, totalHeat), // High Data
+                onCalc(0, tempRet, totalHeat), // Low Data
+                onCalc(1, tempRet, totalHeat), // Medium Data
+                onCalc(2, tempRet, totalHeat), // High Data
               ];
               break;
             case 'sweat':
-              label = '# of Sweat';
               data = [
-                onCalc(3, tempRet, totalSweat, totalHeat), // Low Data
-                onCalc(4, tempRet, totalSweat, totalHeat), // Medium Data
-                onCalc(5, tempRet, totalSweat, totalHeat), // High Data
+                onCalc(3, tempRet, totalSweat), // Low Data
+                onCalc(4, tempRet, totalSweat), // Medium Data
+                onCalc(5, tempRet, totalSweat), // High Data
               ];
               break;
             default:
@@ -531,6 +530,7 @@ export const AnalyticsProvider = (
       return {
         dataHeat: dataChart('heat'),
         dataSweat: dataChart('sweat'),
+        counts: tempRet,
       };
     } else if (checkMetric(METRIC_USER_CHART_VALUES, metric)) { // 40, 41
       return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEAM_MEMBER_ALERTS, null, null).sort((a, b) => {
@@ -623,10 +623,7 @@ export const AnalyticsProvider = (
         labels: xLabel,
         datasets: dataSet,
       };
-    } else if (
-        metric === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT ||
-        metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK
-    ) { // 3, 32
+    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) { // 32
       while (startD.isBefore(endD)) {
         const subList = [];
         const endDByOneDay = startD.add(1, `day`);
@@ -719,10 +716,7 @@ export const AnalyticsProvider = (
         it.humidity ?? '',
         it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``,
       ]))
-    } else if (
-        (metric === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT ||
-        metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) && !detailCbt
-    ) { // 3, 32
+    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && !detailCbt) { // 32
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
@@ -734,7 +728,7 @@ export const AnalyticsProvider = (
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.sweatRateCategory ?? ``,
-        unitMetric ? it.sweatRate ?? `` : literToQuart(it.sweatRate) ?? ``,
+        unitMetric ? ((!INVALID_VALUES2.includes(it.sweatRate) && it.sweatRate >= 0) ? it.sweatRate : ``) : literToQuart((!INVALID_VALUES2.includes(it.sweatRate) && it.sweatRate >= 0) ? it.sweatRate : ``),
         unitMetric ? it.fluidRecommendationL ?? `` : literToQuart(it.fluidRecommendationL) ?? ``,
         it.previousIllness ?? ``,
         it.acclimatizationStatus ?? ``,
@@ -875,12 +869,7 @@ export const AnalyticsProvider = (
         it.previousIllness,
         it.noPreviousIllness ?? ``,
       ]));
-    } else if (
-        (
-            metric === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT ||
-            metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK
-        ) && detailCbt
-    ) { // detail table of highest CBT chart
+    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && detailCbt) { // detail table of highest CBT chart
       ret = maxCBTTileData?.list?.length > 0 ? maxCBTTileData.list[detailCbt.dayIndex][detailCbt.timeIndex]?.details || [] : [];
     }
 

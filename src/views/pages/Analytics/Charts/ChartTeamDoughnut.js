@@ -60,6 +60,17 @@ const ChartTeamDoughnut = () => {
             <Doughnut
                 data={chartData?.dataHeat}
                 plugins={chartPlugins(`doughnut1`, t(`no data to display`))}
+                options={{
+                  plugins: {
+                    tooltip: {
+                      callbacks: {
+                        label: function(context) {
+                          return (context.dataset.label || '') + ': ' + chartData?.counts[context?.dataIndex];
+                        }
+                      }
+                    }
+                  }
+                }}
             />
 
             <div className={clsx(style.LegendBoxBody)}>
@@ -85,6 +96,17 @@ const ChartTeamDoughnut = () => {
             <Doughnut
                 data={chartData?.dataSweat}
                 plugins={chartPlugins(`doughnut2`, t(`no data to display`))}
+                options={{
+                  plugins: {
+                    tooltip: {
+                      callbacks: {
+                        label: function(context) {
+                          return (context.dataset.label || '') + ': ' + chartData?.counts[context?.dataIndex + 3];
+                        }
+                      }
+                    }
+                  }
+                }}
             />
 
             <div className={clsx(style.LegendBoxBody)}>
