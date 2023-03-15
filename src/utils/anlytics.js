@@ -511,7 +511,7 @@ export const getHeaderMetrics = (metric, unitMetric) => {
     case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
       ret = [
         i18n.t('team'),
-        i18n.t("n swr", {n: i18n.t('upper low')}),
+        i18n.t("n swr", {n: i18n.t('low %')}),
         i18n.t("n swr", {n: i18n.t('moderate')}),
         i18n.t("n swr", {n: i18n.t('high')})
       ];
