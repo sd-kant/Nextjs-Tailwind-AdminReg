@@ -120,7 +120,7 @@ export const AnalyticsProvider = (
             results?.forEach((result, index) => {
               if (result.status === `fulfilled`) {
                 if (result.value?.data?.members?.length > 0) {
-                  const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString()) ?? [];
+                  const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString() && it.orgId?.toString() === organization?.toString()) ?? [];
                   setMembers([...membersRef.current, ...operators]);
                 }
               }
@@ -130,6 +130,7 @@ export const AnalyticsProvider = (
       });
       Promise.allSettled([a()]).then();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickedTeams]);
 
   const metrics = React.useMemo(() => {
@@ -486,23 +487,21 @@ export const AnalyticsProvider = (
 
       const dataChart = (mode) => {
         if (['heat', 'sweat'].includes(mode)) {
-          let label = null;
+          let label = '  # of Users';
           let data = null;
           switch (mode) {
             case 'heat':
-              label = '# of Heat';
               data = [
-                onCalc(0, tempRet, totalSweat, totalHeat), // Low Data
-                onCalc(1, tempRet, totalSweat, totalHeat), // Medium Data
-                onCalc(2, tempRet, totalSweat, totalHeat), // High Data
+                onCalc(0, tempRet, totalHeat), // Low Data
+                onCalc(1, tempRet, totalHeat), // Medium Data
+                onCalc(2, tempRet, totalHeat), // High Data
               ];
               break;
             case 'sweat':
-              label = '# of Sweat';
               data = [
-                onCalc(3, tempRet, totalSweat, totalHeat), // Low Data
-                onCalc(4, tempRet, totalSweat, totalHeat), // Medium Data
-                onCalc(5, tempRet, totalSweat, totalHeat), // High Data
+                onCalc(3, tempRet, totalSweat), // Low Data
+                onCalc(4, tempRet, totalSweat), // Medium Data
+                onCalc(5, tempRet, totalSweat), // High Data
               ];
               break;
             default:
@@ -531,6 +530,7 @@ export const AnalyticsProvider = (
       return {
         dataHeat: dataChart('heat'),
         dataSweat: dataChart('sweat'),
+        counts: tempRet,
       };
     } else if (checkMetric(METRIC_USER_CHART_VALUES, metric)) { // 40, 41
       return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEAM_MEMBER_ALERTS, null, null).sort((a, b) => {
