@@ -583,11 +583,11 @@
   "date": "Date",
   "temperature categories": "Temperature Categories",
   "user %": "User %",
-  "swr category": "SWR Category",
-  "fluid recmdt n": "Fluid Recmdt {{n}}",
-  "previous illness": "Previous illness",
-  "acclim status": "Acclim Status",
-  "heat sus": "Heat Sus",
+  "swr category": "Sweat Rate Category",
+  "fluid recmdt n": "Fluid Recommendation {{n}}",
+  "previous illness": "Previous Heat Illness",
+  "acclim status": "Acclimatization",
+  "heat sus": "Heat Susceptibility",
   "max temp": "Max Temp",
   "min temp": "Min Temp",
   "avg temp": "Avg Temp",
@@ -673,5 +673,8 @@
   "news": "News",
   "recent": "recent",
   "subject": "subject",
-  "select category": "Select Category"
+  "select category": "Select Category",
+  "in swr categories": "in SWR Categories",
+  "in heat susceptibility categories": "in Heat Susceptibility Categories",
+  "swr": "Sweat Rate"
 }

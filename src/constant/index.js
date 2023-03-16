@@ -329,7 +329,8 @@ export const METRIC_USER_TABLE_VALUES = {
   WEAR_TIME:  1,
   ALERTS: 2,
   MAX_HEART_CBT: 3,
-  SWR_ACCLIM: 5,
+  SWR_ACCLIM_SWEAT: 4,
+  SWR_ACCLIM_HEAT: 5,
   TIME_SPENT_IN_CBT_ZONES: 6,
   DEVICE_DATA: 7,
   USERS_IN_VARIOUS_CBT_ZONES: 8,
@@ -407,8 +408,12 @@ export const USER_STATUS_METRICS = [
     value: METRIC_USER_TABLE_VALUES.MAX_HEART_CBT, // 3
   },
   {
-    label: `${i18n.t('table')} - ${i18n.t('swr & acclim')}`,
-    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM, // 5
+    label: `${i18n.t('table')} - ${i18n.t('swr & acclim')} ${i18n.t('in swr categories')}`,
+    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT, // 4
+  },
+  {
+    label: `${i18n.t('table')} - ${i18n.t('swr & acclim')} ${i18n.t('in heat susceptibility categories')}`,
+    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT, // 5
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('time spent in cbt zones')}`,

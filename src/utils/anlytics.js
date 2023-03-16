@@ -370,7 +370,8 @@ export const getKeyApiCall = (value) => {
       apiCall = queryAmbientTempHumidity;
       key = ANALYTICS_API_KEYS.TEMP_HUMIDITY;
       break;
-    case METRIC_USER_TABLE_VALUES.SWR_ACCLIM: // 5
+    case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT: // 4
+    case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT: // 5
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
     case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
@@ -440,20 +441,23 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('max cbt')
       ];
       break;
-    case 4:
-      // ret = [i18n.t('name'), i18n.t('team')];
-      break;
-    case METRIC_USER_TABLE_VALUES.SWR_ACCLIM: // 5
+    case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT: // 4
       ret = [
         i18n.t('name'),
         i18n.t('team'),
         i18n.t('swr category'),
-        unitMetric ? 'SWR (l/h)' : 'SWR (qt/h)',
+        `${i18n.t('swr')} ${unitMetric ? '(l/h)' : '(qt/h)'}`,
         unitMetric ? i18n.t("fluid recmdt n", {n: i18n.t('(l/h)')}) : i18n.t("fluid recmdt n", {n: i18n.t('(qt/h)')}),
+      ];
+      break;
+    case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT: // 5
+      ret = [
+        i18n.t('name'),
+        i18n.t('team'),
+        i18n.t('heat sus'),
         i18n.t('previous illness'),
         i18n.t('acclim status'),
-        i18n.t('heat sus')
-      ]; // fixme
+      ];
       break;
     case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
       ret = [

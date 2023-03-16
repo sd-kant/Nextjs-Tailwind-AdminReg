@@ -120,7 +120,8 @@ const FilterBoard = () => {
     else {
       return (
           [
-            METRIC_USER_TABLE_VALUES.SWR_ACCLIM,
+            METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT,
+            METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT,
             METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
             METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
             METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE,
@@ -137,11 +138,12 @@ const FilterBoard = () => {
 
   const fileName = React.useMemo(() => {
     if (
-        selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM ||
+        selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT ||
+        selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT ||
         selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE ||
         selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE ||
         selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
-    ) // 5, 23, 24, 30
+    ) // 4, 5, 23, 24, 30
       return "Heat-Sweat-Chart";
     else if (
         selectedMetric?.value === METRIC_USER_TABLE_VALUES.ALERTS ||
