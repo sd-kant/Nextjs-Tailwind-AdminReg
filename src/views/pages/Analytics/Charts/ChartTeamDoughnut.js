@@ -14,6 +14,7 @@ import {
   HEAT_SWEAT_CHART_COLORS,
   LABELS_HEAT_DOUGHNUT,
   LABELS_SWEAT_DOUGHNUT,
+  METRIC_TEAM_TABLE_VALUES,
   METRIC_USER_TABLE_VALUES
 } from "../../../../constant";
 import {
@@ -45,81 +46,90 @@ const ChartTeamDoughnut = () => {
   return (
       <div ref={chartRef} className={clsx(style.ChartBody)}>
         <div className={clsx(style.DoughnutGrid2)}>
-          <div>
-            <h1 className={clsx(style.TxtCenter)}>
-              {t(`heat susceptibility`)}
-              {
-                selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM && (
-                    <div className={clsx(style.ChartLabel)}>
-                      {t('for n', {n: selectedTeams?.length > 0 ? teamLabel : t("n team", {n: 0})})}
-                    </div>
-                )
-              }
-            </h1>
-
-            <Doughnut
-                data={chartData?.dataHeat}
-                plugins={chartPlugins(`doughnut1`, t(`no data to display`))}
-                options={{
-                  plugins: {
-                    tooltip: {
-                      callbacks: {
-                        label: function(context) {
-                          return (context.dataset.label || '') + ': ' + chartData?.counts[context?.dataIndex];
-                        }
-                      }
+          {
+            selectedMetric?.value !== METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE && (
+                <div>
+                  <h1 className={clsx(style.TxtCenter)}>
+                    {t(`heat susceptibility`)}
+                    {
+                      selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM && (
+                          <div className={clsx(style.ChartLabel)}>
+                            {t('for n', {n: selectedTeams?.length > 0 ? teamLabel : t("n team", {n: 0})})}
+                          </div>
+                      )
                     }
-                  }
-                }}
-            />
+                  </h1>
 
-            <div className={clsx(style.LegendBoxBody)}>
-              {HEAT_SWEAT_CHART_COLORS.map((item, key) => {
-                return (
-                    <div key={key} className={clsx(style.LegendFlex)}>
-                      <div className={clsx(style.LegendBoxItem)} style={{backgroundColor: item}} />
-                      <div className={clsx(style.LegendBoxTxt)}>{LABELS_HEAT_DOUGHNUT[key]}</div>
-                    </div>
-                )
-              })}
-            </div>
-          </div>
-          <div>
-            <h1 className={clsx(style.TxtCenter)}>
-              {t(`sweat rate`)}
-              {
-                selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM && teamLabel && (
-                    <div className={style.ChartLabel}>{t('for n', {n: selectedTeams?.length > 0 ? teamLabel : t("n team", {n: 0})})}</div>
-                )
-              }
-            </h1>
-            <Doughnut
-                data={chartData?.dataSweat}
-                plugins={chartPlugins(`doughnut2`, t(`no data to display`))}
-                options={{
-                  plugins: {
-                    tooltip: {
-                      callbacks: {
-                        label: function(context) {
-                          return (context.dataset.label || '') + ': ' + chartData?.counts[context?.dataIndex + 3];
+                  <Doughnut
+                      data={chartData?.dataHeat}
+                      plugins={chartPlugins(`doughnut1`, t(`no data to display`))}
+                      options={{
+                        plugins: {
+                          tooltip: {
+                            callbacks: {
+                              label: function(context) {
+                                return (context.dataset.label || '') + ': ' + chartData?.counts[context?.dataIndex];
+                              }
+                            }
+                          }
                         }
-                      }
-                    }
-                  }
-                }}
-            />
+                      }}
+                  />
 
-            <div className={clsx(style.LegendBoxBody)}>
-              {HEAT_SWEAT_CHART_COLORS.map((item, key) => {
-                return (
-                    <div key={key} className={clsx(style.LegendFlex)}>
-                      <div className={clsx(style.LegendBoxItem)} style={{backgroundColor: item}} />
-                      <div className={clsx(style.LegendBoxTxt)}>{LABELS_SWEAT_DOUGHNUT[key]}</div>
-                    </div>
-                )
-              })}
-            </div>
-          </div>
+                  <div className={clsx(style.LegendBoxBody)}>
+                    {HEAT_SWEAT_CHART_COLORS.map((item, key) => {
+                      return (
+                          <div key={key} className={clsx(style.LegendFlex)}>
+                            <div className={clsx(style.LegendBoxItem)} style={{backgroundColor: item}} />
+                            <div className={clsx(style.LegendBoxTxt)}>{LABELS_HEAT_DOUGHNUT[key]}</div>
+                          </div>
+                      )
+                    })}
+                  </div>
+                </div>
+            )
+          }
+
+          {
+            selectedMetric?.value !== METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE && (
+                <div>
+                  <h1 className={clsx(style.TxtCenter)}>
+                    {t(`sweat rate`)}
+                    {
+                      selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM && teamLabel && (
+                          <div className={style.ChartLabel}>{t('for n', {n: selectedTeams?.length > 0 ? teamLabel : t("n team", {n: 0})})}</div>
+                      )
+                    }
+                  </h1>
+                  <Doughnut
+                      data={chartData?.dataSweat}
+                      plugins={chartPlugins(`doughnut2`, t(`no data to display`))}
+                      options={{
+                        plugins: {
+                          tooltip: {
+                            callbacks: {
+                              label: function(context) {
+                                return (context.dataset.label || '') + ': ' + chartData?.counts[context?.dataIndex + 3];
+                              }
+                            }
+                          }
+                        }
+                      }}
+                  />
+
+                  <div className={clsx(style.LegendBoxBody)}>
+                    {HEAT_SWEAT_CHART_COLORS.map((item, key) => {
+                      return (
+                          <div key={key} className={clsx(style.LegendFlex)}>
+                            <div className={clsx(style.LegendBoxItem)} style={{backgroundColor: item}} />
+                            <div className={clsx(style.LegendBoxTxt)}>{LABELS_SWEAT_DOUGHNUT[key]}</div>
+                          </div>
+                      )
+                    })}
+                  </div>
+                </div>
+            )
+          }
         </div>
       </div>
   )
