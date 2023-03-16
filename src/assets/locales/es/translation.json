@@ -583,11 +583,11 @@
   "date": "Dátil",
   "temperature categories": "Categorías de Temperatura",
   "user %": "Usuario %",
-  "swr category": "SWR Categorías",
-  "fluid recmdt n": "Fluido Recmdt {{n}}",
-  "previous illness": "Enfermedad Previa",
-  "acclim status": "Estado de Acclim",
-  "heat sus": "Calor Sus",
+  "swr category": "Categoría de tasa de sudoración",
+  "fluid recmdt n": "Fluido Recomendación {{n}}",
+  "previous illness": "Enfermedad por Calor Anterior",
+  "acclim status": "Aclimatación",
+  "heat sus": "Susceptibilidad al Calor",
   "max temp": "Max Temp",
   "min temp": "Min Temp",
   "avg temp": "Avg Temp",
@@ -672,5 +672,6 @@
   "recent": "reciente",
   "subject": "Asunto",
   "select category": "Seleccionar categoría",
-  "max hr": "Máximo HR"
+  "max hr": "Máximo HR",
+  "swr": "Tasa de sudoración"
 }

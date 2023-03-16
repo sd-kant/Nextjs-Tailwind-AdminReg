@@ -49,7 +49,7 @@ const ChartTeamDoughnut = () => {
           <h1 className={clsx(style.TxtCenter)}>
             {title}
             {
-              selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM && (
+              [METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT, METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT].includes(selectedMetric?.value) && (
                   <div className={clsx(style.ChartLabel)}>
                     {t('for n', {n: selectedTeams?.length > 0 ? teamLabel : t("n team", {n: 0})})}
                   </div>
@@ -91,7 +91,7 @@ const ChartTeamDoughnut = () => {
         <div className={clsx(style.DoughnutGrid2)}>
           {
             [
-              METRIC_USER_TABLE_VALUES.SWR_ACCLIM,
+              METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT,
               METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
               METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
             ].includes(selectedMetric?.value) && (
@@ -101,7 +101,7 @@ const ChartTeamDoughnut = () => {
 
           {
             [
-              METRIC_USER_TABLE_VALUES.SWR_ACCLIM,
+              METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT,
               METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
               METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
             ].includes(selectedMetric?.value) && (
