@@ -3,7 +3,6 @@ import * as XLSX from 'xlsx/xlsx.mjs';
 import {
   queryTeamMembers,
   getRiskLevels,
-  queryOrganizationMaxCbt,
 } from "../http";
 import {
   celsiusToFahrenheit,
@@ -330,20 +329,20 @@ export const AnalyticsProvider = (
     if (pickedTeams?.length > 0) {
       if (startDate && endDate && metric) {
         let keyApiCall = getKeyApiCall(metric);
-        let key = keyApiCall.key;
-        let apiCall = keyApiCall.apiCall;
+        let keys = keyApiCall.keys;
+        let apiCalls = keyApiCall.apiCalls;
 
-        if (apiCall && key) {
+        if (apiCalls?.length && keys?.length) {
           if (checkMetric(METRIC_USER_CHART_VALUES, metric)) {
             let userFilter = members?.filter(it => users.includes(it.userId));
 
-            const userPromises = [];
+            const promises = [];
             if (userFilter?.length > 0) {
               let startD = new Date(startDate); // e.g. 2022-10-24
               startD.setDate(startD.getDate() - 2); // e.g. 2022-10-22
 
               userFilter.forEach(user => {
-                userPromises.push(apiCall({
+                promises.push(apiCalls[0]({
                   teamId: user.teamId,
                   userId: user.userId,
                   since: new Date(startD).toISOString()
@@ -352,27 +351,27 @@ export const AnalyticsProvider = (
               setLoading(true);
               let list = [];
               const a = () => new Promise(resolve => {
-                Promise.allSettled(userPromises)
-                  .then(response => {
-                    response?.forEach((result) => {
-                      if (result.status === `fulfilled`) {
-                        if (result.value?.data?.length > 0) {
-                          list = list.concat(result.value.data);
+                Promise.allSettled(promises)
+                    .then(response => {
+                      response?.forEach((result) => {
+                        if (result.status === `fulfilled`) {
+                          if (result.value?.data?.length > 0) {
+                            list = list.concat(result.value.data);
+                          }
                         }
-                      }
+                      })
                     })
-                  })
-                  .finally(() => {
-                    setAnalytics({
-                      ...analytics,
-                      [organization]: {
-                        ...organizationAnalytics,
-                        [key]: list
-                      },
+                    .finally(() => {
+                      setAnalytics({
+                        ...analytics,
+                        [organization]: {
+                          ...organizationAnalytics,
+                          [keys[0]]: list
+                        },
+                      });
+                      setLoading(false);
+                      resolve();
                     });
-                    setLoading(false);
-                    resolve();
-                  });
               });
               Promise.allSettled([a()]).then();
             }
@@ -387,63 +386,42 @@ export const AnalyticsProvider = (
               startD.setDate(startD.getDate() - 2); // e.g. 2022-04-03
               endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
             }
-            setLoading(true);
-            if (metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA) { // only Device_Data
-              const apiCalls = [apiCall, queryOrganizationMaxCbt];
-              const keys = [key, ANALYTICS_API_KEYS.MAX_CBT];
-              const deviceDataPromises = [];
-              apiCalls.forEach(api => {
-                deviceDataPromises.push(api(organization, {
-                  teamIds: pickedTeams,
-                  startDate: dateFormat(new Date(startD)),
-                  endDate: dateFormat(new Date(endD)),
-                }));
-              });
 
-              let list = {};
-              const a = () => new Promise(resolve => {
-                Promise.allSettled(deviceDataPromises)
-                    .then(response => {
-                      response?.forEach((result, index) => {
-                        if (result.status === `fulfilled`) {
-                          if (result.value?.data?.length > 0) {
-                            list = {...list, [keys[index]]: result.value.data};
-                          }
-                        }
-                      })
-                    })
-                    .finally(() => {
-                      setAnalytics({
-                        ...analytics,
-                        [organization]: {
-                          ...organizationAnalytics,
-                          ...list
-                        },
-                      });
-                      setLoading(false);
-                      resolve();
-                    });
-              });
-              Promise.allSettled([a()]).then();
-            } else {
-              apiCall(organization, {
+            setLoading(true);
+            const promises = [];
+            apiCalls.forEach(api => {
+              promises.push(api(organization, {
                 teamIds: pickedTeams,
                 startDate: dateFormat(new Date(startD)),
                 endDate: dateFormat(new Date(endD)),
-              })
+              }));
+            });
+
+            let list = {};
+            const a = () => new Promise(resolve => {
+              Promise.allSettled(promises)
                   .then(response => {
+                    response?.forEach((result, index) => {
+                      if (result.status === `fulfilled`) {
+                        if (result.value?.data?.length > 0) {
+                          list = {...list, [keys[index]]: result.value.data};
+                        }
+                      }
+                    })
+                  })
+                  .finally(() => {
                     setAnalytics({
                       ...analytics,
                       [organization]: {
                         ...organizationAnalytics,
-                        [key]: response.data
+                        ...list
                       },
                     });
-                  })
-                  .finally(() => {
                     setLoading(false);
+                    resolve();
                   });
-            }
+            });
+            Promise.allSettled([a()]).then();
           }
         }
       }

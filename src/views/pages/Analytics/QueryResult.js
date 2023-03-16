@@ -91,7 +91,7 @@ const QueryResult = (
       <div className={clsx(style.Wrapper)}>
         <div className={clsx(checkTableChartTogether() ? style.WrapperTableChart : style.WrapperTbl)}>
           {
-            Object.keys(organizationAnalytics).includes(getKeyApiCall(selectedMetric?.value).key) && (
+            selectedMetric?.value && Object.keys(organizationAnalytics).includes(getKeyApiCall(selectedMetric?.value).keys[0]) && (
                 <>
                   {
                     !checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) && (

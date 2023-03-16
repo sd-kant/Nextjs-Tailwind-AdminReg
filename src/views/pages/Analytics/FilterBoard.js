@@ -216,7 +216,7 @@ const FilterBoard = () => {
     return (
         <button
             className={
-              `${showChart() && Object.keys(organizationAnalytics).includes(getKeyApiCall(selectedMetric?.value).key) ? 
+              `${showChart() && selectedMetric?.value && Object.keys(organizationAnalytics).includes(getKeyApiCall(selectedMetric?.value).keys[0]) ? 
                 'active cursor-pointer' 
                 : 
                 'inactive cursor-default'} button`
