@@ -55,7 +55,7 @@ export const onCalc = (key, tempRet, total) => {
   if (key !== 2 && key !== 5)
     return Math.floor(tempRet[key] * 1000 / (total ?? 1)) / 10;
   else {
-    return 100 - (Math.floor((tempRet[key === 2 ? 0 : 3] + tempRet[key === 2 ? 1 : 4]) * 1000 / (total ?? 1)) / 10);
+    return (1000 - Math.floor((tempRet[key === 2 ? 0 : 3] + tempRet[key === 2 ? 1 : 4]) * 1000 / (total ?? 1))) / 10;
   }
 };
 

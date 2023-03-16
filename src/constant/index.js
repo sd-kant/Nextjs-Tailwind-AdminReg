@@ -404,11 +404,11 @@ export const USER_STATUS_METRICS = [
     value: METRIC_USER_TABLE_VALUES.ALERTS, // 2
   },
   {
-    label: `${i18n.t('table')} - ${i18n.t('swr & acclim')} ${i18n.t('in swr categories')}`,
+    label: `${i18n.t('table')} - ${i18n.t('swr')}`,
     value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT, // 4
   },
   {
-    label: `${i18n.t('table')} - ${i18n.t('swr & acclim')} ${i18n.t('in heat susceptibility categories')}`,
+    label: `${i18n.t('table')} - ${i18n.t('heat susceptibility')}`,
     value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT, // 5
   },
   {
