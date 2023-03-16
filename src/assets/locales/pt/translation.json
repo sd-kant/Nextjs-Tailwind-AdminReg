@@ -605,7 +605,6 @@
   "heat unacclimatized users": "Usuários não Climatizados",
   "no previous illness": "Nenhuma Doença Anterior",
   "wear time": "Tempo de Desgaste",
-  "max heart cbt": "Max Heart CBT",
   "swr & acclim": "SWR & Aclim",
   "time spent in cbt zones": "Tempo gasto em zonas de TCC",
   "device data": "Dados do Dispositivo",
@@ -650,7 +649,6 @@
   "sat": "Sáb",
   "n user": "{{n}} usuário",
   "n team": "{{n}} equipe",
-  "past 7 days of m in n": "Últimos 7 dias de {{m}} em {{n}}",
   "past 7 days of n": "Últimos 7 dias de {{n}}",
   "for n": "Durante {{n}}",
   "alert total": "Total de Alertas",
@@ -674,5 +672,6 @@
   "recent": "recente",
   "subject": "Assunto",
   "select category": "Selecionar Categoria",
+  "max hr": "Max HR",
   "swr": "Taxa de suor"
 }

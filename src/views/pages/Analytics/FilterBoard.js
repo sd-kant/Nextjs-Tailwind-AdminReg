@@ -127,7 +127,6 @@ const FilterBoard = () => {
             METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE,
             METRIC_USER_TABLE_VALUES.ALERTS,
             METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK,
-            METRIC_USER_TABLE_VALUES.MAX_HEART_CBT,
             METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK,
             METRIC_USER_CHART_VALUES.CBT,
             METRIC_USER_CHART_VALUES.HR,
@@ -150,10 +149,7 @@ const FilterBoard = () => {
         selectedMetric?.value === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
     ) // 2, 31
       return "Alert-Chart";
-    else if (
-        selectedMetric?.value === METRIC_USER_TABLE_VALUES.MAX_HEART_CBT ||
-        selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK
-    ) // 3, 32
+    else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) // 32
       return "Max-Cbt-Chart";
     else if (selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT) // 40
       return "Cbt-Chart";
@@ -218,7 +214,7 @@ const FilterBoard = () => {
     return (
         <button
             className={
-              `${showChart() && Object.keys(organizationAnalytics).includes(getKeyApiCall(selectedMetric?.value).key) ? 
+              `${showChart() && selectedMetric?.value && Object.keys(organizationAnalytics).includes(getKeyApiCall(selectedMetric?.value).keys[0]) ? 
                 'active cursor-pointer' 
                 : 
                 'inactive cursor-default'} button`

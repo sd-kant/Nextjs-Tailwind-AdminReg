@@ -605,7 +605,6 @@
   "heat unacclimatized users": "Utilisateurs non Acclimatés à la Chaleur",
   "no previous illness": "Aucune Maladie Antérieure",
   "wear time": "Temps de Port",
-  "max heart cbt": "Max Cœur CBT",
   "swr & acclim": "SWR & Acclim",
   "time spent in cbt zones": "Temps passé dans les zones TCC",
   "device data": "Données de l’appareil",
@@ -650,7 +649,6 @@
   "sat": "Sam",
   "n user": "{{n}} utilisateur",
   "n team": "{{n}} équipe",
-  "past 7 days of m in n": "7 derniers jours de {{m}} en {{n}}",
   "past 7 days of n": "7 derniers jours de {{n}}",
   "for n": "Pour {{n}}",
   "alert total": "Total des alertes",
@@ -674,5 +672,6 @@
   "recent": "récent",
   "subject": "Objet",
   "select category": "Sélectionner une catégorie",
+  "max hr": "Max HR",
   "swr": "Taux de transpiration"
 }

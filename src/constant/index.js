@@ -404,6 +404,10 @@ export const USER_STATUS_METRICS = [
     value: METRIC_USER_TABLE_VALUES.ALERTS, // 2
   },
   {
+    label: `${i18n.t('table')} - ${i18n.t('swr & acclim')}`,
+    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM, // 5
+  },
+  {
     label: `${i18n.t('table')} - ${i18n.t('max heart cbt')}`,
     value: METRIC_USER_TABLE_VALUES.MAX_HEART_CBT, // 3
   },

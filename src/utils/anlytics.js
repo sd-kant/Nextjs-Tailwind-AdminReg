@@ -45,7 +45,7 @@ export const getTeamNameFromTeamId = (formattedTeams, teamId) => {
 export const getTimeSpentFromUserId = (data, str) => {
   let findIndex = data.findIndex(a => a.temperatureCategory === str);
   if (findIndex > -1) {
-    return Math.ceil((data[findIndex]?.count ?? 0) / 240)
+    return Math.round((data[findIndex]?.count ?? 0) * 100 / 240) / 100;
   } else {
     return 0;
   }
@@ -337,74 +337,73 @@ export const checkMetric = (data, metric) => {
  * @returns {{apiCall: null, key: null}}
  */
 export const getKeyApiCall = (value) => {
-  let key = null;
-  let apiCall = null;
+  let keys = null;
+  let apiCalls = null;
   switch (value) {
     case METRIC_USER_TABLE_VALUES.WEAR_TIME: // 1, wear time
-      apiCall = queryOrganizationWearTime;
-      key = ANALYTICS_API_KEYS.WEAR_TIME;
+      apiCalls = [queryOrganizationWearTime];
+      keys = [ANALYTICS_API_KEYS.WEAR_TIME];
       break;
     case METRIC_USER_TABLE_VALUES.ALERTS: // 2, alerts
     case METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK: // 31
-      apiCall = queryOrganizationAlertMetrics;
-      key = ANALYTICS_API_KEYS.ALERT_METRICS;
+      apiCalls = [queryOrganizationAlertMetrics];
+      keys = [ANALYTICS_API_KEYS.ALERT_METRICS];
       break;
-    case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
     case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
-      apiCall = queryOrganizationMaxCbt;
-      key = ANALYTICS_API_KEYS.MAX_CBT;
+      apiCalls = [queryOrganizationMaxCbt];
+      keys = [ANALYTICS_API_KEYS.MAX_CBT];
       break;
     case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
-      apiCall = queryOrganizationTempCateData;
-      key = ANALYTICS_API_KEYS.TEMP_CATE_DATA;
+      apiCalls = [queryOrganizationTempCateData];
+      keys = [ANALYTICS_API_KEYS.TEMP_CATE_DATA];
       break;
     case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
-      apiCall = queryOrganizationDeviceData;
-      key = ANALYTICS_API_KEYS.DEVICE_DATA;
+      apiCalls = [queryOrganizationDeviceData, queryOrganizationMaxCbt];
+      keys = [ANALYTICS_API_KEYS.DEVICE_DATA, ANALYTICS_API_KEYS.MAX_CBT];
       break;
     case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
-      apiCall = queryOrganizationUsersInCBTZones;
-      key = ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES;
+      apiCalls = [queryOrganizationUsersInCBTZones];
+      keys = [ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES];
       break;
     case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
-      apiCall = queryAmbientTempHumidity;
-      key = ANALYTICS_API_KEYS.TEMP_HUMIDITY;
+      apiCalls = [queryAmbientTempHumidity];
+      keys = [ANALYTICS_API_KEYS.TEMP_HUMIDITY];
       break;
     case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT: // 4
     case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT: // 5
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
     case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
-      apiCall = queryOrganizationSWRFluid;
-      key = ANALYTICS_API_KEYS.SWR_FLUID;
+      apiCalls = [queryOrganizationSWRFluid];
+      keys = [ANALYTICS_API_KEYS.SWR_FLUID];
       break;
     case METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS: // 21
-      apiCall = queryOrganizationAlertedUserCount;
-      key = ANALYTICS_API_KEYS.ALERT_USER_COUNT;
+      apiCalls = [queryOrganizationAlertedUserCount];
+      keys = [ANALYTICS_API_KEYS.ALERT_USER_COUNT];
       break;
     case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
-      apiCall = queryOrganizationActiveUsers;
-      key = ANALYTICS_API_KEYS.ACTIVE_USERS;
+      apiCalls = [queryOrganizationActiveUsers];
+      keys = [ANALYTICS_API_KEYS.ACTIVE_USERS];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
-      apiCall = queryOrganizationCategoriesUsersInCBTZones;
-      key = ANALYTICS_API_KEYS.TEMP_CATE_IN_CBT_ZONES;
+      apiCalls = [queryOrganizationCategoriesUsersInCBTZones];
+      keys = [ANALYTICS_API_KEYS.TEMP_CATE_IN_CBT_ZONES];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
-      apiCall = queryOrganizationFluidMetricsByTeam;
-      key = ANALYTICS_API_KEYS.FLUID_METRICS_BY_TEAM;
+      apiCalls = [queryOrganizationFluidMetricsByTeam];
+      keys = [ANALYTICS_API_KEYS.FLUID_METRICS_BY_TEAM];
       break;
     case METRIC_USER_CHART_VALUES.CBT: // 40
     case METRIC_USER_CHART_VALUES.HR: // 41
-      apiCall = getTeamMemberAlerts;
-      key = ANALYTICS_API_KEYS.TEAM_MEMBER_ALERTS;
+      apiCalls = [getTeamMemberAlerts];
+      keys = [ANALYTICS_API_KEYS.TEAM_MEMBER_ALERTS];
       break;
     default:
       console.log("metric is not available");
   }
   return {
-    key: key,
-    apiCall: apiCall,
+    keys: keys,
+    apiCalls: apiCalls,
   }
 };
 
@@ -432,7 +431,6 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('humidity'),
         i18n.t('heart rate avg')];
       break;
-    case METRIC_USER_TABLE_VALUES.MAX_HEART_CBT: // 3
     case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
       ret = [
         i18n.t('name'),
@@ -476,6 +474,8 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('os version'),
         i18n.t('app version'),
         i18n.t('platform'),
+        i18n.t('max cbt'),
+        i18n.t('max hr'),
         i18n.t('date')
       ];
       break;
