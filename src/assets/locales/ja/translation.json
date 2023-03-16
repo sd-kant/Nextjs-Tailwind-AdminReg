@@ -583,11 +583,11 @@
   "date": "日付",
   "temperature categories": "温度カテゴリ",
   "user %": "利用者 %",
-  "swr category": "SWR カテゴリ",
-  "fluid recmdt n": "流体レムド {{n}}",
-  "previous illness": "以前の病気",
-  "acclim status": "順応ステータス",
-  "heat sus": "ヒートサス",
+  "swr category": "発汗率カテゴリー",
+  "fluid recmdt n": "流体の推奨 {{n}}",
+  "previous illness": "以前の熱中症",
+  "acclim status": "順化",
+  "heat sus": "熱感受性",
   "max temp": "最大温度",
   "min temp": "最小温度",
   "avg temp": "平均温度",
@@ -672,5 +672,6 @@
   "recent": "最近",
   "subject": "件名",
   "select category": "カテゴリーを選択",
-  "max hr": "マックス HR"
+  "max hr": "マックス HR",
+  "swr": "発汗率"
 }
