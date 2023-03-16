@@ -14,6 +14,7 @@ import {
   HEAT_SWEAT_CHART_COLORS,
   LABELS_HEAT_DOUGHNUT,
   LABELS_SWEAT_DOUGHNUT,
+  METRIC_TEAM_TABLE_VALUES,
   METRIC_USER_TABLE_VALUES
 } from "../../../../constant";
 import {
@@ -46,7 +47,7 @@ const ChartTeamDoughnut = () => {
       <div ref={chartRef} className={clsx(style.ChartBody)}>
         <div className={clsx(style.DoughnutGrid2)}>
           {
-            selectedMetric?.value !== 23 && (
+            selectedMetric?.value !== METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE && (
                 <div>
                   <h1 className={clsx(style.TxtCenter)}>
                     {t(`heat susceptibility`)}
@@ -90,7 +91,7 @@ const ChartTeamDoughnut = () => {
           }
 
           {
-            selectedMetric?.value !== 24 && (
+            selectedMetric?.value !== METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE && (
                 <div>
                   <h1 className={clsx(style.TxtCenter)}>
                     {t(`sweat rate`)}
