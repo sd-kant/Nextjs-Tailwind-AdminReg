@@ -66,7 +66,7 @@ const ChartHighestCBT = (
                                   `rgb(
                                     255, 
                                     ${(chartData?.list?.length === 7 && chartData?.list[key][index] !== null) 
-                                    ? chartData?.list[key][index].maxCbtColor : 255}, 
+                                    ? chartData?.list[key][index]?.maxCbtColor : 255}, 
                                     ${(chartData?.list?.length === 7 && chartData?.list[key][index] !== null)
                                     ? 0 : 255}
                                   )`
