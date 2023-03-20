@@ -94,12 +94,14 @@ const MembersProvider = (
     initializeMembers().then();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teamId, page]);
+  React.useEffect(() => {
+    updateUrlParam({param: {key: 'keyword', value: keyword}});
+  }, [keyword]);
   const trimmedKeyword = React.useMemo(() => keyword.trim().toLowerCase(), [keyword]);
   React.useEffect(() => {
     if (page === "search") {
       if (searchTimeout)
         clearTimeout(searchTimeout);
-      updateUrlParam({param: {key: 'keyword', value: trimmedKeyword}});
       searchTimeout = setTimeout(() => {
         initializeMembers().then();
       }, 700);

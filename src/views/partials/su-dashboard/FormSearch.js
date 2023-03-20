@@ -114,7 +114,10 @@ const FormSearch = (props) => {
     setRestBarClass("progress-72 medical");
     countChanges();
     setPage("search");
-    const keyword = getParamFromUrl('keyword');
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const param = urlParams.get('keyword');
+    const keyword = param ? decodeURIComponent(param) : undefined;
     if (keyword) {
       setKeyword(keyword);
     }
