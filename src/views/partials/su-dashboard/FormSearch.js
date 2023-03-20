@@ -23,7 +23,6 @@ import {
 import {get} from "lodash";
 import SearchUserItem from "./SearchUserItem";
 import ConfirmModal from "../../components/ConfirmModal";
-import {getParamFromUrl} from "../../../utils";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import {useNavigate} from "react-router-dom";
 import {
