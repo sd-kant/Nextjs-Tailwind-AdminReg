@@ -66,6 +66,7 @@ const MembersProvider = (
   const [confirmModal, setConfirmModal] = React.useState({
     title: null,
     visible: false,
+    mode: null,
   });
   const [warningModal, setWarningModal] = React.useState({
     title: null,
@@ -526,7 +527,7 @@ const MembersProvider = (
           remove: [selectedUser.userId],
         });
         handleWarningHide();
-        setConfirmModal({visible: true, title: t("remove user confirmation title")});
+        setConfirmModal({visible: true, title: t("remove user confirmation title"), mode: 'remove'});
         showSuccessNotification(t('msg user removed success', {
           user: `${selectedUser?.firstName} ${selectedUser?.firstName}`,
         }));
@@ -909,7 +910,12 @@ const MembersProvider = (
       <ConfirmModal
         show={confirmModal?.visible}
         header={confirmModal?.title}
-        onOk={() => setConfirmModal({title: null, visible: false})}
+        onOk={() => {
+          setConfirmModal({title: null, visible: false});
+          if (confirmModal?.mode === 'remove') {
+            window.location.reload();
+          }
+        }}
       />
       {children}
     </MembersContext.Provider>
