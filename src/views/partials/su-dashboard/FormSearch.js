@@ -115,7 +115,7 @@ const FormSearch = (props) => {
     setPage("search");
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const param = urlParams.get('keyword');
+    const param = urlParams.get('keyword')?.replace(/ /g, '+');
     const keyword = param ? decodeURIComponent(param) : undefined;
     if (keyword) {
       setKeyword(keyword);
