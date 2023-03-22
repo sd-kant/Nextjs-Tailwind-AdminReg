@@ -673,5 +673,6 @@
   "subject": "件名",
   "select category": "カテゴリーを選択",
   "max hr": "マックス HR",
-  "swr": "発汗率"
+  "swr": "発汗率",
+  "no matches found": "一致するものが見つかりませんでした"
 }
