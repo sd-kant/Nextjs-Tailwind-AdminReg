@@ -673,5 +673,6 @@
   "subject": "Asunto",
   "select category": "Seleccionar categoría",
   "max hr": "Máximo HR",
-  "swr": "Tasa de sudoración"
+  "swr": "Tasa de sudoración",
+  "no matches found": "No se encontraron coincidencias"
 }

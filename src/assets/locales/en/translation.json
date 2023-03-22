@@ -673,5 +673,6 @@
   "subject": "subject",
   "select category": "Select Category",
   "max hr": "Max HR",
-  "swr": "Sweat Rate"
+  "swr": "Sweat Rate",
+  "no matches found": "No matches found"
 }

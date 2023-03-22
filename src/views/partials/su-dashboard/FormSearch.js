@@ -105,7 +105,7 @@ const FormSearch = (props) => {
     organizationId,
   } = props;
   const [newChanges, setNewChanges] = useState(0);
-  const {users, setPage, keyword, setKeyword} = useMembersContext();
+  const {users, setPage, keyword, setKeyword, apiLoading} = useMembersContext();
   const navigate = useNavigate();
   const { submitForm } = useFormikContext();
 
@@ -217,6 +217,7 @@ const FormSearch = (props) => {
 
           <div className={clsx(style.FormBody, "mt-40 d-flex flex-column")}>
             {
+              values?.users?.length > 0 ?
               values?.users?.map((user, index) => (
                 <SearchUserItem
                   user={user}
@@ -226,7 +227,15 @@ const FormSearch = (props) => {
                   errorField={errors?.users}
                   touchField={touched?.users}
                 />
-              ))
+              )) : (
+                <div className={clsx(style.Info)}>
+                  {
+                    apiLoading ?
+                      <span>{t('loading')}</span> :
+                      <span>{t('no matches found')}</span>
+                  }
+                </div>
+                )
             }
           </div>
         </div>

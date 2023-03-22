@@ -77,6 +77,7 @@ const MembersProvider = (
   const [selectedUser, setSelectedUser] = React.useState(null);
   const [page, setPage] = React.useState('');
   const [teamId, setTeamId] = React.useState(id);
+  const [apiLoading, setApiLoading] = React.useState(false);
 
   React.useEffect(() => {
     loadAllTeams();
@@ -245,6 +246,7 @@ const MembersProvider = (
 
   const initializeMembers = async () => {
     try {
+      setApiLoading(true);
       let teamMembers = [];
       if (page === "search") {
         if (trimmedKeyword) {
@@ -337,6 +339,8 @@ const MembersProvider = (
       setTempMembers(teamMembers);
     } catch (e) {
       showErrorNotification(e.response?.data?.message);
+    } finally {
+      setApiLoading(false);
     }
   };
 
@@ -870,6 +874,7 @@ const MembersProvider = (
   }, [searchedUsers, users, admins]);
 
   const providerValue = {
+    apiLoading,
     userType,
     users,
     admins,

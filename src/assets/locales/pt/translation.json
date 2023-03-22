@@ -673,5 +673,6 @@
   "subject": "Assunto",
   "select category": "Selecionar Categoria",
   "max hr": "Max HR",
-  "swr": "Taxa de suor"
+  "swr": "Taxa de suor",
+  "no matches found": "Nenhuma equivalência encontrada"
 }

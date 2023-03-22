@@ -673,5 +673,6 @@
   "subject": "Objet",
   "select category": "Sélectionner une catégorie",
   "max hr": "Max HR",
-  "swr": "Taux de transpiration"
+  "swr": "Taux de transpiration",
+  "no matches found": "Aucune correspondance trouvée"
 }
