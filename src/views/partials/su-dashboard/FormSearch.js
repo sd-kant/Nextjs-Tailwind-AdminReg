@@ -23,7 +23,6 @@ import {
 import {get} from "lodash";
 import SearchUserItem from "./SearchUserItem";
 import ConfirmModal from "../../components/ConfirmModal";
-import {getParamFromUrl} from "../../../utils";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import {useNavigate} from "react-router-dom";
 import {
@@ -33,6 +32,7 @@ import {
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 import style from "./FormSearch.module.scss";
 import clsx from "clsx";
+import {getParamFromUrl} from "../../../utils";
 
 export const defaultTeamMember = {
   email: '',
@@ -106,7 +106,7 @@ const FormSearch = (props) => {
     organizationId,
   } = props;
   const [newChanges, setNewChanges] = useState(0);
-  const {users, setPage, keyword, setKeyword} = useMembersContext();
+  const {users, setPage, keyword, setKeyword, apiLoading} = useMembersContext();
   const navigate = useNavigate();
   const { submitForm } = useFormikContext();
 
@@ -215,6 +215,7 @@ const FormSearch = (props) => {
 
           <div className={clsx(style.FormBody, "mt-40 d-flex flex-column")}>
             {
+              values?.users?.length > 0 ?
               values?.users?.map((user, index) => (
                 <SearchUserItem
                   user={user}
@@ -224,7 +225,15 @@ const FormSearch = (props) => {
                   errorField={errors?.users}
                   touchField={touched?.users}
                 />
-              ))
+              )) : (
+                <div className={clsx(style.Info)}>
+                  {
+                    apiLoading ?
+                      <span>{t('loading')}</span> :
+                      <span>{t('no matches found')}</span>
+                  }
+                </div>
+                )
             }
           </div>
         </div>

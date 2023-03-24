@@ -329,7 +329,8 @@ export const METRIC_USER_TABLE_VALUES = {
   WEAR_TIME:  1,
   ALERTS: 2,
   MAX_HEART_CBT: 3,
-  SWR_ACCLIM: 5,
+  SWR_ACCLIM_SWEAT: 4,
+  SWR_ACCLIM_HEAT: 5,
   TIME_SPENT_IN_CBT_ZONES: 6,
   DEVICE_DATA: 7,
   USERS_IN_VARIOUS_CBT_ZONES: 8,
@@ -403,12 +404,12 @@ export const USER_STATUS_METRICS = [
     value: METRIC_USER_TABLE_VALUES.ALERTS, // 2
   },
   {
-    label: `${i18n.t('table')} - ${i18n.t('max heart cbt')}`,
-    value: METRIC_USER_TABLE_VALUES.MAX_HEART_CBT, // 3
+    label: `${i18n.t('table')} - ${i18n.t('swr')}`,
+    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT, // 4
   },
   {
-    label: `${i18n.t('table')} - ${i18n.t('swr & acclim')}`,
-    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM, // 5
+    label: `${i18n.t('table')} - ${i18n.t('heat susceptibility')}`,
+    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT, // 5
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('time spent in cbt zones')}`,
@@ -588,3 +589,5 @@ export const MONTHS = [
 
 export const FT_OPTIONS = [1, 2, 3, 4, 5, 6, 7];
 export const IN_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+export const NEWS_PAGINATION = 10;
+export const NEWS_RECENT_PAGINATION = 5;

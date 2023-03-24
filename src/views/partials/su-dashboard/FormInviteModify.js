@@ -77,10 +77,20 @@ const FormInviteModify = (props) => {
   const [newChanges, setNewChanges] = useState(0);
   const [visibleAddModal, setVisibleAddModal] = useState(false);
   const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
-  const {setPage, users, admins, keyword, setKeyword, members, initializeMembers, teams} = useMembersContext();
+  const {
+    apiLoading,
+    setPage,
+    users,
+    admins,
+    keyword,
+    setKeyword,
+    members,
+    initializeMembers,
+    teams
+  } = useMembersContext();
   const navigate = useNavigate();
   const [visibleInviteModal, setVisibleInviteModal] = React.useState(false);
-  const { submitForm } = useFormikContext();
+  const {submitForm} = useFormikContext();
 
   useEffect(() => {
     setRestBarClass("progress-72 medical");
@@ -209,9 +219,11 @@ const FormInviteModify = (props) => {
       <Form className='form-group mt-57'>
         <div>
           <div className="d-flex align-center">
-            <img src={backIcon} alt="back" className={"cursor-pointer"} onClick={() => navigate(`/invite/${organizationId}/team-modify`)}/>
+            <img src={backIcon} alt="back" className={"cursor-pointer"}
+                 onClick={() => navigate(`/invite/${organizationId}/team-modify`)}/>
             &nbsp;&nbsp;
-            <span className='font-button-label text-orange cursor-pointer' onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
+            <span className='font-button-label text-orange cursor-pointer'
+                  onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
               {t("previous")}
             </span>
           </div>
@@ -231,7 +243,8 @@ const FormInviteModify = (props) => {
                 {
                   visibleSubmitBtn &&
                   <div className={clsx(style.SaveIconWrapper)}>
-                    <span className="text-orange font-input-label text-uppercase" onClick={submitForm}>{t('save')}</span>
+                    <span className="text-orange font-input-label text-uppercase"
+                          onClick={submitForm}>{t('save')}</span>
                   </div>
                 }
               </div>
@@ -263,33 +276,33 @@ const FormInviteModify = (props) => {
 
               {
                 visibleSubmitBtn &&
-                  <div className={clsx(style.SubmitWrapper)}>
-                    <button
-                      className={`button active cursor-pointer`}
-                      type={"submit"}
-                    ><span className='font-button-label text-white'>{t("save & update")}</span>
-                    </button>
-                  </div>
+                <div className={clsx(style.SubmitWrapper)}>
+                  <button
+                    className={`button active cursor-pointer`}
+                    type={"submit"}
+                  ><span className='font-button-label text-white'>{t("save & update")}</span>
+                  </button>
+                </div>
               }
             </div>
 
             {
               visibleAddBtn &&
-                <div className={clsx(style.AddButton_Space, "mt-15")}>
-                  <div className={clsx(style.AddButton)} onClick={addAnother}>
-                    <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
-                    <span className="font-heading-small text-capitalize">
+              <div className={clsx(style.AddButton_Space, "mt-15")}>
+                <div className={clsx(style.AddButton)} onClick={addAnother}>
+                  <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>
+                  <span className="font-heading-small text-capitalize">
                       {t("add a team member")}
                     </span>
-                  </div>
-
-                  {/*<div className={clsx(style.AddButton)} onClick={() => null}>*/}
-                  {/*  <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>*/}
-                  {/*  <span className="font-heading-small text-capitalize">*/}
-                  {/*  {t("bulk add team members")}*/}
-                  {/*</span>*/}
-                  {/*</div>*/}
                 </div>
+
+                {/*<div className={clsx(style.AddButton)} onClick={() => null}>*/}
+                {/*  <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>*/}
+                {/*  <span className="font-heading-small text-capitalize">*/}
+                {/*  {t("bulk add team members")}*/}
+                {/*</span>*/}
+                {/*</div>*/}
+              </div>
             }
 
           </div>
@@ -337,6 +350,18 @@ const FormInviteModify = (props) => {
                   touchField={touched?.admins}
                 />
               ))
+            }
+
+            {
+              values?.users?.length === 0 && values?.admins?.length === 0 && (
+                apiLoading ?
+                  <div className={clsx(style.Info)}>
+                    <span>{t('loading')}</span>
+                  </div> :
+                  <div className={clsx(style.Info)}>
+                    <span>{t('no matches found')}</span>
+                  </div>
+              )
             }
 
           </div>

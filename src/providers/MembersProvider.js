@@ -66,6 +66,7 @@ const MembersProvider = (
   const [confirmModal, setConfirmModal] = React.useState({
     title: null,
     visible: false,
+    mode: null,
   });
   const [warningModal, setWarningModal] = React.useState({
     title: null,
@@ -76,6 +77,7 @@ const MembersProvider = (
   const [selectedUser, setSelectedUser] = React.useState(null);
   const [page, setPage] = React.useState('');
   const [teamId, setTeamId] = React.useState(id);
+  const [apiLoading, setApiLoading] = React.useState(false);
 
   React.useEffect(() => {
     loadAllTeams();
@@ -94,12 +96,14 @@ const MembersProvider = (
     initializeMembers().then();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teamId, page]);
+  React.useEffect(() => {
+    updateUrlParam({param: {key: 'keyword', value: keyword}});
+  }, [keyword]);
   const trimmedKeyword = React.useMemo(() => keyword.trim().toLowerCase(), [keyword]);
   React.useEffect(() => {
     if (page === "search") {
       if (searchTimeout)
         clearTimeout(searchTimeout);
-      updateUrlParam({param: {key: 'keyword', value: trimmedKeyword}});
       searchTimeout = setTimeout(() => {
         initializeMembers().then();
       }, 700);
@@ -242,6 +246,7 @@ const MembersProvider = (
 
   const initializeMembers = async () => {
     try {
+      setApiLoading(true);
       let teamMembers = [];
       if (page === "search") {
         if (trimmedKeyword) {
@@ -334,6 +339,8 @@ const MembersProvider = (
       setTempMembers(teamMembers);
     } catch (e) {
       showErrorNotification(e.response?.data?.message);
+    } finally {
+      setApiLoading(false);
     }
   };
 
@@ -524,7 +531,7 @@ const MembersProvider = (
           remove: [selectedUser.userId],
         });
         handleWarningHide();
-        setConfirmModal({visible: true, title: t("remove user confirmation title")});
+        setConfirmModal({visible: true, title: t("remove user confirmation title"), mode: 'remove'});
         showSuccessNotification(t('msg user removed success', {
           user: `${selectedUser?.firstName} ${selectedUser?.firstName}`,
         }));
@@ -867,6 +874,7 @@ const MembersProvider = (
   }, [searchedUsers, users, admins]);
 
   const providerValue = {
+    apiLoading,
     userType,
     users,
     admins,
@@ -907,7 +915,12 @@ const MembersProvider = (
       <ConfirmModal
         show={confirmModal?.visible}
         header={confirmModal?.title}
-        onOk={() => setConfirmModal({title: null, visible: false})}
+        onOk={() => {
+          setConfirmModal({title: null, visible: false});
+          if (confirmModal?.mode === 'remove') {
+            window.location.reload();
+          }
+        }}
       />
       {children}
     </MembersContext.Provider>
