@@ -23,7 +23,6 @@ const FormSSOAuth = (
     } else {
       // sso flow
       const deviceId = `web:${getDeviceId()}`;
-      alert(`${apiBaseUrl}/master/token?token=${tokenFromUrl}&deviceId=${deviceId}&source=create-account&minPasswordLength=${pwMinLength}`);
       window.location.href = `${apiBaseUrl}/master/token?token=${tokenFromUrl}&deviceId=${deviceId}&source=create-account&minPasswordLength=${pwMinLength}`;
       setLoading(true);
     }

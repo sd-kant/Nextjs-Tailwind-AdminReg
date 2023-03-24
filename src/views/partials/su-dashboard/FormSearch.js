@@ -32,6 +32,7 @@ import {
 import {ScrollToFieldError} from "../../components/ScrollToFieldError";
 import style from "./FormSearch.module.scss";
 import clsx from "clsx";
+import {getParamFromUrl} from "../../../utils";
 
 export const defaultTeamMember = {
   email: '',
@@ -113,10 +114,7 @@ const FormSearch = (props) => {
     setRestBarClass("progress-72 medical");
     countChanges();
     setPage("search");
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const param = urlParams.get('keyword')?.replace(/ /g, '+');
-    const keyword = param ? decodeURIComponent(param) : undefined;
+    const keyword = getParamFromUrl('keyword');
     if (keyword) {
       setKeyword(keyword);
     }

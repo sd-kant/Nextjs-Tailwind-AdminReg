@@ -16,8 +16,8 @@ import spacetime from "spacetime";
 export const getTokenFromUrl = () => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  // replace space because + was replaced with space
-  return urlParams.get('token')?.replace(/ /g, '+');
+  const param = urlParams.get('token');
+  return param ? decodeURIComponent(param) : undefined;
 };
 
 export const checkAlphaNumeric = str => {
@@ -56,7 +56,7 @@ export const checkUsernameValidation2 = str => {
 export const getParamFromUrl = key => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const param = urlParams.get(key)?.replace(/ /g, '+');
+  const param = urlParams.get(key);
   return param ? decodeURIComponent(param) : undefined;
 };
 
@@ -254,7 +254,7 @@ export const getUrlParamAsJson = () => {
 export const concatAsUrlParam = q => {
   let str = '';
   Object.keys(q)?.forEach((it, index) => {
-    str += index !== 0 ? `&${it}=${q[it]}` : `${it}=${q[it]}`;
+    str += index !== 0 ? `&${it}=${encodeURIComponent(q[it])}` : `${it}=${encodeURIComponent(q[it])}`;
   });
 
   return str;
