@@ -92,9 +92,9 @@ const formSchema = (t) => {
             })
         .test(
         'is-valid',
-        t('up to n countries', {n: 3}),
+        t('up to n countries', {n: 10}),
         function (value) {
-          return value?.length <= 3;
+          return value?.length <= 10;
         }),
     // regions: Yup.array().required(t('company region required')),
     twoFA: Yup.boolean(),
