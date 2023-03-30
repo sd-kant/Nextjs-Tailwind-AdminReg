@@ -73,6 +73,13 @@ const Settings = (
       return userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
     }
   }, [userType]);
+  const hasAccessToNews = React.useMemo(() => {
+    if (process.env.REACT_APP_ENV === 'PRODUCTION') {
+      return false;
+    } else {
+      return userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
+    }
+  }, [userType]);
 
   const role = React.useMemo(() => {
     if (userType?.includes(USER_TYPE_ADMIN)) {
@@ -119,14 +126,20 @@ const Settings = (
             rel="noreferrer"
             className="text-black no-underline no-outline"
           >{t('privacy policy')}</a>,
-      },{
-        title: t("news"),
-        handleClick: () => {
-          ref.current.close();
-          navigate("/news");
-        },
       },
     ];
+
+    if (hasAccessToNews) {
+      ret.push(
+        {
+          title: t("news"),
+          handleClick: () => {
+            ref.current.close();
+            navigate("/news");
+          },
+        }
+      );
+    }
 
     if (!isEntry && ableToLogin(userType)) {
       let newItems = [];
@@ -198,7 +211,7 @@ const Settings = (
     }
 
     return ret;
-  }, [mode, isEntry, t, userType, navigate, hasAccessToAnalytics]);
+  }, [mode, isEntry, t, userType, navigate, hasAccessToAnalytics, hasAccessToNews]);
 
   const direction = React.useMemo(() => {
     return "bottom right";
@@ -268,7 +281,7 @@ const Settings = (
             </div>
           </div>
 
-          <div className={clsx(style.Divider)} />
+          <div className={clsx(style.Divider)}/>
 
           {
             items.map((it, index) => (
