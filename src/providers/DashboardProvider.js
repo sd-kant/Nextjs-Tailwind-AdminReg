@@ -45,6 +45,7 @@ const DashboardProviderDraft = (
     setLoading,
     userType,
     t,
+    myOrganization,
   }) => {
   const [isAdmin, setIsAdmin] = React.useState(false);
 
@@ -134,6 +135,12 @@ const DashboardProviderDraft = (
         });
     }
   }, [isAdmin]);
+
+  React.useEffect(() => {
+    if (!isAdmin && myOrganization?.id) {
+      setOrganization(myOrganization?.id);
+    }
+  }, [myOrganization?.id, isAdmin]);
 
   React.useEffect(() => {
     updateUrlParam({param: {key: 'organization', value: organization}});
@@ -818,6 +825,7 @@ const DashboardProviderDraft = (
 
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
+  myOrganization: get(state, "profile.organization"),
 });
 
 const mapDispatchToProps = (dispatch) =>
