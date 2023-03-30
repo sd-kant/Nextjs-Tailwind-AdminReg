@@ -103,6 +103,7 @@ const FormLoginEntry = (props) => {
               token: accessToken,
               baseUrl: baseUri,
             });
+            // todo encodeURIComponent
             navigate(`/create-account/username?token=${token}`);
           } else if (source === "mobile") {
             // deliver token to app
@@ -228,6 +229,7 @@ const EnhancedForm = withFormik({
     if ([null, undefined, "null", "undefined", ""].includes(deviceId)) {
       deviceId = `web:${getDeviceId()}`;
     }
+    // todo encodeURIComponent
     window.location.href = `${apiBaseUrl}/master/login?username=${username}&deviceId=${deviceId}&source=${fromMobile ? 'mobile' : 'web'}`;
   }
 })(FormLoginEntry);
