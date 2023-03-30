@@ -140,7 +140,7 @@ const EnhancedForm = withFormik({
           },
         });
         const deviceId = getParamFromUrl("deviceId");
-        navigate(`/mobile-phone-verification/0?phoneNumber=${phoneNumber}&deviceId=${deviceId}`);
+        navigate(`/mobile-phone-verification/0?phoneNumber=${encodeURIComponent(phoneNumber)}&deviceId=${deviceId}`);
       } catch (e) {
         showErrorNotification(e.response?.data?.message);
       } finally {

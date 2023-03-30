@@ -172,7 +172,7 @@ const EnhancedForm = withFormik({
       } else {
         setBaseUri(baseUri);
         setMobileToken(accessToken);
-
+        // todo encodeURIComponent
         if (havePhone) {
           navigate(`/mobile-phone-verification/1?deviceId=${values?.deviceId}`);
         } else {

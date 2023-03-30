@@ -22,8 +22,10 @@ export const QueryResult = () => {
 
   const onPageLink = (page) => {
     if (page === 1) {
+      // todo encodeURIComponent
       navigate(`/news/author?id=${id}`);
     } else {
+      // todo encodeURIComponent
       navigate(`/news/author?id=${id}&page=${page}`);
     }
 
