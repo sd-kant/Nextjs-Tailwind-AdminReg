@@ -19,12 +19,19 @@ const BasicProviderDraft = (
   {
     children,
     userType,
+    myOrganization,
   }) => {
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [organizations, setOrganizations] = React.useState([]);
   const [organization, setOrganization] = React.useState(null);
   const [teams, setTeams] = React.useState([]);
   const [pickedTeams, setPickedTeams] = React.useState([]);
+
+  React.useEffect(() => {
+    if (!isAdmin && myOrganization?.id) {
+      setOrganization(myOrganization?.id);
+    }
+  }, [myOrganization?.id, isAdmin]);
 
   React.useEffect(() => {
     queryTeams()
@@ -122,6 +129,7 @@ const BasicProviderDraft = (
 
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
+  myOrganization: get(state, "profile.organization"),
 });
 
 const mapDispatchToProps = (dispatch) =>
