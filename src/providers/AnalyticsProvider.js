@@ -209,7 +209,6 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[SORT_TITLES[2], [[5, 'asc', 'number']]], [SORT_TITLES[3], [[5, 'desc', 'number']]]]),
           makeSort('Sort', [[SORT_TITLES[2], [[6, 'asc', 'number']]], [SORT_TITLES[3], [[6, 'desc', 'number']]]]),
           makeSort('Sort', [[SORT_TITLES[2], [[7, 'asc', 'number']]], [SORT_TITLES[3], [[7, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[8, 'asc', 'number']]], [SORT_TITLES[3], [[8, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
@@ -740,7 +739,6 @@ export const AnalyticsProvider = (
         it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
         it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
         it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
-        it.temperature ? formatHeartCbt(it.temperature) : ``,
         it.humidity ?? '',
         it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``,
       ]))
