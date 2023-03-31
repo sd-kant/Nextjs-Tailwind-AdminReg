@@ -43,9 +43,9 @@ export const getTeamNameFromTeamId = (formattedTeams, teamId) => {
 };
 
 export const getTimeSpentFromUserId = (data, str) => {
-  let findIndex = data.findIndex(a => a.temperatureCategory === str);
+  let findIndex = data.findIndex(a => a.temperatureCategory?.toLowerCase()?.includes(str?.toLowerCase()));
   if (findIndex > -1) {
-    return Math.round((data[findIndex]?.count ?? 0) * 100 / 240) / 100;
+    return Math.ceil((data[findIndex]?.count ?? 0)/ 240 * 10) / 10;
   } else {
     return 0;
   }
@@ -460,9 +460,9 @@ export const getHeaderMetrics = (metric, unitMetric) => {
       ret = [
         i18n.t('name'),
         i18n.t('team'),
-        i18n.t('time spent in safe to work'),
-        i18n.t('time spent in mild heat exhaustion'),
-        i18n.t('time spent in moderate hyperthermia')
+        i18n.t(`time spent in safe to work ${unitMetric ? 'metric' : 'imperial'}`),
+        i18n.t(`time spent in mild heat exhaustion ${unitMetric ? 'metric' : 'imperial'}`),
+        i18n.t(`time spent in moderate hyperthermia ${unitMetric ? 'metric' : 'imperial'}`)
       ];
       break;
     case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
@@ -528,9 +528,9 @@ export const getHeaderMetrics = (metric, unitMetric) => {
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
       ret = [
         i18n.t('team'),
-        unitMetric ? '<38' : '<100.4',
-        unitMetric ? '38-38.5' : '100.4-101.3',
-        unitMetric ? '>38.5' : '>101.3',
+        unitMetric ? '< 38°C' : '< 100.4°F',
+        unitMetric ? '38°C - 38.4°C' : '100.4°F - 101.2°F',
+        unitMetric ? '>= 38.5°C' : '>= 101.3°F',
         i18n.t('total alerts'),
         i18n.t('% of team with alerts'),
         i18n.t('% of team without alerts')
