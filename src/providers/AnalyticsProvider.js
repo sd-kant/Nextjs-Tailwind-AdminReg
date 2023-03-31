@@ -771,9 +771,9 @@ export const AnalyticsProvider = (
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_CATE_DATA, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
-        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Safe to Work 38C`),
-        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Mild Heat Exhaustion 38C – 38.49C`),
-        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `Moderate Hyperthermia > 38.5C`),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `safe to work`),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `mild heat`),
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `hyperthermia`),
       ]));
     } else if (metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA) { // 7
       let tempRet = [];
