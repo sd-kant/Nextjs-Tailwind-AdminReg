@@ -229,7 +229,7 @@ export const chartPlugins = (idStr, noDataStr) => {
       const {ctx} = chart;
       ctx.save();
 
-      if ([`doughnut1`, `doughnut2`].includes(idStr)) {
+      if ([`doughnut-sweat`, `doughnut-heat`].includes(idStr)) {
         chart.data.datasets.forEach((dataset, i) => {
           chart.getDatasetMeta(i).data.forEach((dataPoint, index) => {
             const {x, y} = dataPoint.tooltipPosition();
@@ -373,7 +373,6 @@ export const getKeyApiCall = (value) => {
     case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT: // 5
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
-    case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
       apiCalls = [queryOrganizationSWRFluid];
       keys = [ANALYTICS_API_KEYS.SWR_FLUID];
       break;
@@ -512,7 +511,6 @@ export const getHeaderMetrics = (metric, unitMetric) => {
       ];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
-    case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
       ret = [
         i18n.t('team'),
         i18n.t("n swr", {n: i18n.t('low %')}),

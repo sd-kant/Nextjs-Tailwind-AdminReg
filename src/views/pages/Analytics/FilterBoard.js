@@ -129,7 +129,6 @@ const FilterBoard = ({
             METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT,
             METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
             METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
-            METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE,
             METRIC_USER_TABLE_VALUES.ALERTS,
             METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK,
             METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK,
@@ -145,9 +144,8 @@ const FilterBoard = ({
         selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT ||
         selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT ||
         selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE ||
-        selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE ||
-        selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
-    ) // 4, 5, 23, 24, 30
+        selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE
+    )
       return "Heat-Sweat-Chart";
     else if (
         selectedMetric?.value === METRIC_USER_TABLE_VALUES.ALERTS ||
@@ -252,7 +250,7 @@ const FilterBoard = ({
                 styles={customStyles()}
                 placeholder={t("select company")}
                 onChange={v => setOrganization(v?.value)}
-              /> : 
+              /> :
               <div className={clsx(style.OrganizationLabel)}>
                 <span className='font-heading-small'>{myOrganization?.name}</span>
               </div>
