@@ -572,7 +572,7 @@
   "total wear time": "Temps de Port Total",
   "alert time": "Heure de l’alerte",
   "alert": "Alerte",
-  "temp": "Temp",
+  "temp": "Température",
   "humidity": "Humidité",
   "max cbt": "Max CBT",
   "worker name": "Nom du Travailleur",
@@ -674,5 +674,6 @@
   "select category": "Sélectionner une catégorie",
   "max hr": "Max HR",
   "swr": "Taux de transpiration",
-  "no matches found": "Aucune correspondance trouvée"
+  "no matches found": "Aucune correspondance trouvée",
+  "cbt full": "Température corporelle centrale"
 }

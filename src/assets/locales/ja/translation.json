@@ -572,7 +572,7 @@
   "total wear time": "総摩耗時間",
   "alert time": "アラート時間",
   "alert": "アラート",
-  "temp": "一時",
+  "temp": "温度",
   "humidity": "湿度",
   "max cbt": "マックス CBT",
   "worker name": "作業者名",
@@ -674,5 +674,6 @@
   "select category": "カテゴリーを選択",
   "max hr": "マックス HR",
   "swr": "発汗率",
-  "no matches found": "一致するものが見つかりませんでした"
+  "no matches found": "一致するものが見つかりませんでした",
+  "cbt full": "中核体温"
 }
