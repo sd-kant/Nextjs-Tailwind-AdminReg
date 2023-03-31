@@ -426,7 +426,6 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('alert'),
         i18n.t('heat risk'),
         `${i18n.t('cbt full')} ${unitMetric ? '˚C' : '˚F'}`,
-        i18n.t('temp'),
         i18n.t('humidity'),
         i18n.t('heart rate avg')];
       break;
