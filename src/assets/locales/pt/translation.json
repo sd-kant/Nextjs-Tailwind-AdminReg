@@ -572,7 +572,7 @@
   "total wear time": "Tempo total de desgaste",
   "alert time": "Tempo de alerta",
   "alert": "Alerta",
-  "temp": "Temp",
+  "temp": "Temperatura",
   "humidity": "Humidade",
   "max cbt": "Max CBT",
   "worker name": "Nome do Trabalhador",
@@ -674,5 +674,6 @@
   "select category": "Selecionar Categoria",
   "max hr": "Max HR",
   "swr": "Taxa de suor",
-  "no matches found": "Nenhuma equivalência encontrada"
+  "no matches found": "Nenhuma equivalência encontrada",
+  "cbt full": "Temperatura Corporal Central"
 }

@@ -572,7 +572,7 @@
   "total wear time": "Total Wear Time",
   "alert time": "Alert time",
   "alert": "Alert",
-  "temp": "Temp",
+  "temp": "Temperature",
   "humidity": "Humidity",
   "max cbt": "Max CBT",
   "worker name": "Worker Name",
@@ -674,5 +674,6 @@
   "select category": "Select Category",
   "max hr": "Max HR",
   "swr": "Sweat Rate",
-  "no matches found": "No matches found"
+  "no matches found": "No matches found",
+  "cbt full": "Core Body Temperature"
 }
