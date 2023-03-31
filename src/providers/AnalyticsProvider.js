@@ -296,7 +296,6 @@ export const AnalyticsProvider = (
         break;
       case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
       case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
-      case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
         ret = [
           makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
           makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
@@ -495,9 +494,8 @@ export const AnalyticsProvider = (
           METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT,
           METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
           METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
-          METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
         ].includes(metric)
-    ) { // 4, 5, 23, 24, 30
+    ) {
       let tempRet = [0, 0, 0, 0, 0, 0];
       let totalHeat = 0, totalSweat = 0;
 
@@ -845,9 +843,8 @@ export const AnalyticsProvider = (
         it.cnt,
       ]));
     } else if (
-        metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE ||
-        metric === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
-    ) { // 23, 30
+        metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE
+    ) {
       let tempRet = [];
       onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
@@ -871,7 +868,9 @@ export const AnalyticsProvider = (
         it[`moderate`],
         it[`high`],
       ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE) { // 24 only, 30
+    } else if (
+      metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE
+    ) { // 24
       let tempRet = [];
       onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);

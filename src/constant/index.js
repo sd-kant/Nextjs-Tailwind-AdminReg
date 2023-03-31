@@ -349,7 +349,6 @@ export const METRIC_USER_CHART_VALUES = {
   HR: 41,
 };
 export const METRIC_TEAM_CHART_VALUES = {
-  HEAT_SUSCEPTIBILITY_SWEAT_RATE: 30,
   NUMBER_ALERTS_WEEK: 31,
   HIGHEST_CBT_TIME_DAY_WEEK: 32,
 };
@@ -461,10 +460,6 @@ export const TEAM_STATUS_METRICS = [
   {
     label: `${i18n.t('table')} - ${i18n.t('no. of users unacclimated, acclimated and persis previous illness')}`,
     value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED, // 26
-  },
-  {
-    label: `${i18n.t('chart')} - ${i18n.t('heat susceptibility and sweat rate')}`,
-    value: METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE, // 30
   },
   {
     label: `${i18n.t('chart')} - ${i18n.t('number of alerts by week')}`,

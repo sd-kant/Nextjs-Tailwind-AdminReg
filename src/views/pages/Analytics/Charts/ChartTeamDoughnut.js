@@ -43,7 +43,7 @@ const ChartTeamDoughnut = () => {
     );
   }, [chartData, setIsEnablePrint]);
 
-  const ChartComponent = (title, data, isFirst, labels) => {
+  const ChartComponent = (title, data, mode, labels) => {
     return (
         <div>
           <h1 className={clsx(style.TxtCenter)}>
@@ -58,13 +58,13 @@ const ChartTeamDoughnut = () => {
           </h1>
           <Doughnut
               data={data}
-              plugins={chartPlugins(`doughnut${isFirst? '1' : '2'}`, t(`no data to display`))}
+              plugins={chartPlugins(`doughnut-${mode}`, t(`no data to display`))}
               options={{
                 plugins: {
                   tooltip: {
                     callbacks: {
                       label: function(context) {
-                        return (context.dataset.label || '') + ': ' + chartData?.counts[context?.dataIndex + (isFirst ? 0 : 3)];
+                        return (context.dataset.label || '') + ': ' + chartData?.counts[context?.dataIndex + (mode === 'heat' ? 0 : 3)];
                       }
                     }
                   }
@@ -93,9 +93,8 @@ const ChartTeamDoughnut = () => {
             [
               METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT,
               METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
-              METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
             ].includes(selectedMetric?.value) && (
-                ChartComponent(t(`heat susceptibility`), chartData?.dataHeat, true, LABELS_HEAT_DOUGHNUT)
+                ChartComponent(t(`heat susceptibility`), chartData?.dataHeat, 'heat', LABELS_HEAT_DOUGHNUT)
             )
           }
 
@@ -103,9 +102,8 @@ const ChartTeamDoughnut = () => {
             [
               METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT,
               METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
-              METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
             ].includes(selectedMetric?.value) && (
-                ChartComponent(t(`sweat rate`), chartData?.dataSweat, false, LABELS_SWEAT_DOUGHNUT)
+                ChartComponent(t(`sweat rate`), chartData?.dataSweat, 'sweat', LABELS_SWEAT_DOUGHNUT)
             )
           }
         </div>
