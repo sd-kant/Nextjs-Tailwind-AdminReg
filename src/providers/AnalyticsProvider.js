@@ -1039,9 +1039,9 @@ export const AnalyticsProvider = (
           skipHeader: true
         });
         XLSX.utils.sheet_add_aoa(ws, [headers]);
-        const sheetLabel = metrics?.find(it => it.value === metric)?.label ?? `Sheet`;
-        XLSX.utils.book_append_sheet(wb, ws, sheetLabel);
-        XLSX.writeFile(wb, `kenzen-analytics-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`, {
+        const sheetLabel = (metrics?.findIndex(it => it.value === metric) ?? 0).toString();
+        XLSX.utils.book_append_sheet(wb, ws, sheetLabel + 1);
+        XLSX.writeFile(wb, `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`, {
           bookType: exportOption.value,
         });
       }
