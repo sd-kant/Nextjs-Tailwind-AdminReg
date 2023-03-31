@@ -178,7 +178,7 @@ export const onFilterData = (data, key, userIds, members) => {
       ?
       data[[key]]?.filter(it => ids.includes(it.userId?.toString()))
       :
-      data[[key]] || [];
+      (data[[key]] ?? []);
   return userIds?.length > 0
       ?
       list?.filter(it => userIds.includes(it.userId))

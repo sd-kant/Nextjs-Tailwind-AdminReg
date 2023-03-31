@@ -501,7 +501,7 @@ export const AnalyticsProvider = (
       let tempRet = [0, 0, 0, 0, 0, 0];
       let totalHeat = 0, totalSweat = 0;
 
-      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, null)?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(it => {
         let findHeatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.heatSusceptibility?.toLowerCase());
         let findSweatIndex = SWEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.sweatRateCategory?.toLowerCase());
 
@@ -849,7 +849,7 @@ export const AnalyticsProvider = (
         metric === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
     ) { // 23, 30
       let tempRet = [];
-      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, null)?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
         if ([`low`, `moderate`, `high`].includes(it.sweatRateCategory?.toLowerCase())) {
           if (index !== -1) {
@@ -864,7 +864,7 @@ export const AnalyticsProvider = (
             })
           }
         }
-      });
+      });                                                                             ``
       ret = tempRet?.map(it => ([
         getTeamNameFromTeamId(formattedTeams, it.teamId),
         it[`low`],
@@ -873,7 +873,7 @@ export const AnalyticsProvider = (
       ]));
     } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE) { // 24 only, 30
       let tempRet = [];
-      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, null)?.forEach(it => {
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(it => {
         const index = tempRet?.findIndex(e => e.teamId === it.teamId);
         if (HEAT_LOW_MEDIUM_HIGH.includes(it.heatSusceptibility?.toLowerCase())) {
           if (index !== -1) {
