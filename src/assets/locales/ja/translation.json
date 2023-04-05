@@ -678,5 +678,6 @@
   "max hr": "マックス HR",
   "swr": "発汗率",
   "no matches found": "一致するものが見つかりませんでした",
-  "cbt full": "中核体温"
+  "cbt full": "中核体温",
+  "password invalid 2": "無効なパスワード。 以下のパスワード規則を確認してください。"
 }
