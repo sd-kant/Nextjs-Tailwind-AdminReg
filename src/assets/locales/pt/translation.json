@@ -678,5 +678,6 @@
   "max hr": "Max HR",
   "swr": "Taxa de suor",
   "no matches found": "Nenhuma equivalência encontrada",
-  "cbt full": "Temperatura Corporal Central"
+  "cbt full": "Temperatura Corporal Central",
+  "password invalid 2": "Senha inválida. Verifique as regras de senha abaixo."
 }

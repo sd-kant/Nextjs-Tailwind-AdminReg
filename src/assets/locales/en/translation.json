@@ -678,5 +678,6 @@
   "max hr": "Max HR",
   "swr": "Sweat Rate",
   "no matches found": "No matches found",
-  "cbt full": "Core Body Temperature"
+  "cbt full": "Core Body Temperature",
+  "password invalid 2": "Invalid Password. Check password rules below."
 }

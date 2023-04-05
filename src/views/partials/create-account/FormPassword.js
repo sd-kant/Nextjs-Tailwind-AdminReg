@@ -44,12 +44,12 @@ const formSchema = (t) => {
         }
       ),
     password: Yup.string()
-      .required(t('your password required'))
-      .min(pwMinLength, t('n password min error', {n: pwMinLength}))
-      .max(1024, t('password max error'))
+      .required(t('password invalid 2'))
+      .min(pwMinLength, t('password invalid 2', {n: pwMinLength}))
+      .max(1024, t('password invalid 2'))
       .test(
         'is-valid',
-        t('password invalid'),
+        t('password invalid 2'),
         function (value) {
           return checkPasswordValidation(value, pwMinLength);
         }

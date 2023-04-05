@@ -678,5 +678,6 @@
   "max hr": "Máximo HR",
   "swr": "Tasa de sudoración",
   "no matches found": "No se encontraron coincidencias",
-  "cbt full": "Temperatura corporal central"
+  "cbt full": "Temperatura corporal central",
+  "password invalid 2": "Contraseña invalida. Verifique las reglas de contraseña a continuación."
 }
