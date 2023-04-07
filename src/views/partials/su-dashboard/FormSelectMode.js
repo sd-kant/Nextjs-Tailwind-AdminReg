@@ -59,6 +59,7 @@ const FormSelectMode = (props) => {
 
           <div
             className={clsx(style.OptionWrapper)}
+            // todo encodeURIComponent
             onClick={() => navigate(`/dashboard/multi?${flattened}`)}
           >
             <div>

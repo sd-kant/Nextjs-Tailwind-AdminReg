@@ -73,7 +73,7 @@ const FormSULogin = (props) => {
     const deviceId = getParamFromUrl('deviceId');
     const pwMinLength = getParamFromUrl('minPasswordLength') ?? 10;
     if (username) setFieldValue("username", username);
-
+    // todo encodeURIComponent
     if (source === "create-account") {
       const token = getParamFromUrl("token");
       const baseUri = getParamFromUrl("baseUri");

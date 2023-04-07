@@ -47,6 +47,7 @@ const QueryResult = () => {
     if (page === 1) {
       navigate(location?.pathname);
     } else {
+      // todo encodeURIComponent
       navigate(`${location?.pathname}?page=${page}`);
     }
   };

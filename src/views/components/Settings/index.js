@@ -67,11 +67,7 @@ const Settings = (
     visible: false, title: '',
   });
   const hasAccessToAnalytics = React.useMemo(() => {
-    if (process.env.REACT_APP_ENV === 'PRODUCTION') {
-      return userType?.some(it => [USER_TYPE_ADMIN].includes(it));
-    } else {
-      return userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
-    }
+    return userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
   }, [userType]);
   const hasAccessToNews = React.useMemo(() => {
     if (process.env.REACT_APP_ENV === 'PRODUCTION') {

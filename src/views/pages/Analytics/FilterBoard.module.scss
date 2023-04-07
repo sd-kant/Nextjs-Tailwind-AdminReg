@@ -1,3 +1,5 @@
+@import "src/assets/scss/colors";
+
 .InputField {
   width: calc(100% - 44px);
 }
@@ -76,6 +78,22 @@
           height: 46px;
         }
       }
+    }
+
+    .OrganizationLabel {
+      display: flex;
+      align-items: center;
+      border-radius: 4px;
+      padding: 0 10px;
+      height: 45px;
+      background-color: $app-ts;
+      z-index: 5;
+      margin-top: 10px;
+
+      // fixme ellipsis not working
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 }

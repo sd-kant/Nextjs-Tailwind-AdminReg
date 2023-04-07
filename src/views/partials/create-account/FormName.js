@@ -12,22 +12,22 @@ export const formShape = t => ({
   firstName: Yup.string()
     .test(
         'is-valid',
-        t('your firstName required'),
+        t('firstName required'),
         function (value) {
           return !checkIfSpacesOnly(value);
         }
     )
-    .required(t('your firstName required'))
+    .required(t('firstName required'))
     .max(50, t('firstName max error')),
   lastName: Yup.string()
     .test(
         'is-valid',
-        t('your lastName required'),
+        t('lastName required'),
         function (value) {
           return !checkIfSpacesOnly(value);
         }
     )
-    .required(t('your lastName required'))
+    .required(t('lastName required'))
     .max(50, t('lastName max error')),
 });
 

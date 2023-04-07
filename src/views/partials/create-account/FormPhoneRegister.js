@@ -120,7 +120,7 @@ const EnhancedForm = withFormik({
           phoneNumber,
         },
         navigate,
-        nextPath: `/create-account/phone-verification?phoneNumber=${phoneNumber}`,
+        nextPath: `/create-account/phone-verification?phoneNumber=${encodeURIComponent(phoneNumber)}`,
       });
     } catch (e) {
       console.log("storing values error", e);

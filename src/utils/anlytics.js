@@ -43,9 +43,9 @@ export const getTeamNameFromTeamId = (formattedTeams, teamId) => {
 };
 
 export const getTimeSpentFromUserId = (data, str) => {
-  let findIndex = data.findIndex(a => a.temperatureCategory === str);
+  let findIndex = data.findIndex(a => a.temperatureCategory?.toLowerCase()?.includes(str?.toLowerCase()));
   if (findIndex > -1) {
-    return Math.round((data[findIndex]?.count ?? 0) * 100 / 240) / 100;
+    return Math.ceil((data[findIndex]?.count ?? 0)/ 240 * 10) / 10;
   } else {
     return 0;
   }
@@ -178,7 +178,7 @@ export const onFilterData = (data, key, userIds, members) => {
       ?
       data[[key]]?.filter(it => ids.includes(it.userId?.toString()))
       :
-      data[[key]] || [];
+      (data[[key]] ?? []);
   return userIds?.length > 0
       ?
       list?.filter(it => userIds.includes(it.userId))
@@ -229,7 +229,7 @@ export const chartPlugins = (idStr, noDataStr) => {
       const {ctx} = chart;
       ctx.save();
 
-      if ([`doughnut1`, `doughnut2`].includes(idStr)) {
+      if ([`doughnut-sweat`, `doughnut-heat`].includes(idStr)) {
         chart.data.datasets.forEach((dataset, i) => {
           chart.getDatasetMeta(i).data.forEach((dataPoint, index) => {
             const {x, y} = dataPoint.tooltipPosition();
@@ -373,7 +373,6 @@ export const getKeyApiCall = (value) => {
     case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT: // 5
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
-    case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
       apiCalls = [queryOrganizationSWRFluid];
       keys = [ANALYTICS_API_KEYS.SWR_FLUID];
       break;
@@ -426,8 +425,7 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('alert time'),
         i18n.t('alert'),
         i18n.t('heat risk'),
-        i18n.t('cbt'),
-        i18n.t('temp'),
+        `${i18n.t('cbt full')} ${unitMetric ? '˚C' : '˚F'}`,
         i18n.t('humidity'),
         i18n.t('heart rate avg')];
       break;
@@ -461,9 +459,9 @@ export const getHeaderMetrics = (metric, unitMetric) => {
       ret = [
         i18n.t('name'),
         i18n.t('team'),
-        i18n.t('time spent in safe to work'),
-        i18n.t('time spent in mild heat exhaustion'),
-        i18n.t('time spent in moderate hyperthermia')
+        i18n.t(`time spent in safe to work ${unitMetric ? 'metric' : 'imperial'}`),
+        i18n.t(`time spent in mild heat exhaustion ${unitMetric ? 'metric' : 'imperial'}`),
+        i18n.t(`time spent in moderate hyperthermia ${unitMetric ? 'metric' : 'imperial'}`)
       ];
       break;
     case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
@@ -512,7 +510,6 @@ export const getHeaderMetrics = (metric, unitMetric) => {
       ];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
-    case METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE: // 30
       ret = [
         i18n.t('team'),
         i18n.t("n swr", {n: i18n.t('low %')}),
@@ -530,9 +527,9 @@ export const getHeaderMetrics = (metric, unitMetric) => {
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
       ret = [
         i18n.t('team'),
-        unitMetric ? '<38' : '<100.4',
-        unitMetric ? '38-38.5' : '100.4-101.3',
-        unitMetric ? '>38.5' : '>101.3',
+        unitMetric ? '< 38°C' : '< 100.4°F',
+        unitMetric ? '38°C - 38.4°C' : '100.4°F - 101.2°F',
+        unitMetric ? '>= 38.5°C' : '>= 101.3°F',
         i18n.t('total alerts'),
         i18n.t('% of team with alerts'),
         i18n.t('% of team without alerts')

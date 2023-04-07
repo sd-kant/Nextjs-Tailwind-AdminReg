@@ -133,7 +133,8 @@ const EnhancedForm = withFormik({
         await setMyProfileWithToken({
           phoneNumber,
         }, props.token);
-        navigate(`/phone-verification/0?phoneNumber=${phoneNumber}`);
+        // todo encodeURIComponent
+        navigate(`/phone-verification/0?phoneNumber=${encodeURIComponent(phoneNumber)}`);
       } catch (e) {
         props.showErrorNotification(e.response?.data?.message);
       }

@@ -1,4 +1,5 @@
 import * as React from "react";
+import {connect} from "react-redux";
 import clsx from "clsx";
 import ReactToPrint from "react-to-print";
 import {useTranslation} from "react-i18next";
@@ -11,6 +12,7 @@ import {useBasicContext} from "../../../providers/BasicProvider";
 import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
 import CustomDatePicker from "../../components/CustomDatePicker";
 import calendarIcon from "../../../assets/images/calendar.png";
+import {get} from "lodash";
 
 import {
   METRIC_USER_TABLE_VALUES,
@@ -40,7 +42,10 @@ const CustomInput = React.forwardRef(({value, onClick}, ref) => (
 
 CustomInput.displayName = 'CustomInput';
 
-const FilterBoard = () => {
+const FilterBoard = ({
+  isAdmin,
+  myOrganization,
+}) => {
   const {t} = useTranslation();
   const {
     formattedOrganizations: organizations,
@@ -124,7 +129,6 @@ const FilterBoard = () => {
             METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT,
             METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
             METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
-            METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE,
             METRIC_USER_TABLE_VALUES.ALERTS,
             METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK,
             METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK,
@@ -140,9 +144,8 @@ const FilterBoard = () => {
         selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT ||
         selectedMetric?.value === METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT ||
         selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE ||
-        selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE ||
-        selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HEAT_SUSCEPTIBILITY_SWEAT_RATE
-    ) // 4, 5, 23, 24, 30
+        selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE
+    )
       return "Heat-Sweat-Chart";
     else if (
         selectedMetric?.value === METRIC_USER_TABLE_VALUES.ALERTS ||
@@ -237,8 +240,9 @@ const FilterBoard = () => {
             <label className='font-input-label'>
               {t("company name")}
             </label>
-
-            <ResponsiveSelect
+            {
+              isAdmin ?
+              <ResponsiveSelect
                 className='mt-10 font-heading-small text-black'
                 isClearable
                 options={organizations}
@@ -246,7 +250,11 @@ const FilterBoard = () => {
                 styles={customStyles()}
                 placeholder={t("select company")}
                 onChange={v => setOrganization(v?.value)}
-            />
+              /> :
+              <div className={clsx(style.OrganizationLabel)}>
+                <span className='font-heading-small'>{myOrganization?.name}</span>
+              </div>
+            }
           </div>
 
           {
@@ -364,4 +372,12 @@ const FilterBoard = () => {
   )
 };
 
-export default FilterBoard;
+const mapStateToProps = (state) => ({
+  isAdmin: get(state, 'auth.isAdmin'),
+  myOrganization: get(state, "profile.organization"),
+});
+
+export default connect(
+  mapStateToProps,
+  null,
+)(FilterBoard);
