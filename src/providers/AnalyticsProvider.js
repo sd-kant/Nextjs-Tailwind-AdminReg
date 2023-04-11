@@ -196,6 +196,7 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
           makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
           makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_USER_TABLE_VALUES.ALERTS: // 2
@@ -323,6 +324,17 @@ export const AnalyticsProvider = (
     });
 
     return ret;
+  }, [members]);
+
+  React.useEffect(() => {
+    const ret = [];
+    pickedMembers?.forEach((it) => {
+      if (members?.some(ele => ele.userId?.toString() === it?.toString())) {
+        ret.push(it);
+      }
+    });
+    setPickedMembers(ret);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [members]);
 
   const organizationAnalytics = React.useMemo(
@@ -722,12 +734,18 @@ export const AnalyticsProvider = (
     let ret = [];
 
     if (metric === METRIC_USER_TABLE_VALUES.WEAR_TIME) { // 1, wear time
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.WEAR_TIME, pickedMembers, members)?.map(it => ([
-        getUserNameFromUserId(members, it.userId),
-        getTeamNameFromUserId(members, formattedTeams, it.userId),
-        it.avgWearTime ?? ``,
-        it.wearTime ?? ``,
-      ]))
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.WEAR_TIME, pickedMembers, members)?.map(it => {
+        const daysWorn = it.avgWearTime ? Math.round(it.wearTime / it.avgWearTime) : ``;
+        const total = (Math.round(it.wearTime * 10 / 240) / 10)?.toFixed(1) ?? ``;
+        const avg = daysWorn && total ? (Math.round(total * 10 / daysWorn) / 10)?.toFixed(1) : '';
+        return [
+          getUserNameFromUserId(members, it.userId),
+          getTeamNameFromUserId(members, formattedTeams, it.userId),
+          avg,
+          total,
+          daysWorn,
+        ];
+      })
     } else if (
         metric === METRIC_USER_TABLE_VALUES.ALERTS ||
         metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
