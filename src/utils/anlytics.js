@@ -438,7 +438,8 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('name'),
         i18n.t('team'),
         i18n.t('date'),
-        i18n.t('max cbt')
+        "Max Core Body Temperature",
+        // i18n.t('max cbt'),
       ];
       break;
     case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT: // 4
@@ -476,8 +477,10 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('os version'),
         i18n.t('app version'),
         i18n.t('platform'),
-        i18n.t('max cbt'),
-        i18n.t('max hr'),
+        "Max Core Body Temperature",
+        // i18n.t('max cbt'),
+        "Max Heart Rate",
+        // i18n.t('max hr'),
         i18n.t('date')
       ];
       break;
