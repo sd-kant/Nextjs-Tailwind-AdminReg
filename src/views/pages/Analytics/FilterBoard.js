@@ -26,19 +26,21 @@ import {
   getThisWeek
 } from "../../../utils/anlytics";
 
-const CustomInput = React.forwardRef(({value, onClick}, ref) => (
+const CustomInput = React.forwardRef(({value, onClick, readOnly}, ref) => {
+  return (
     <div className={clsx(style.CustomInputWrapper)} onClick={onClick}>
       <input
-          className={clsx('input mt-10 font-heading-small text-white', style.InputField)}
-          type='text'
-          ref={ref}
-          placeholder={'mm/dd/yyyy'}
-          value={value}
-          readOnly
+        className={clsx('input mt-10 font-heading-small text-white', readOnly ? style.ReadOnlyInputField : style.InputField)}
+        type='text'
+        ref={ref}
+        placeholder={'mm/dd/yyyy'}
+        value={value}
+        readOnly
       />
       <img src={calendarIcon} className={clsx(style.CalendarIcon)} alt="calendar"/>
     </div>
-));
+  )
+});
 
 CustomInput.displayName = 'CustomInput';
 
@@ -232,6 +234,12 @@ const FilterBoard = ({
   const endDateMax = new Date();
   endDateMax.setDate(endDateMax.getDate() + 1);
 
+  const datePickerReadOnly = React.useMemo(() => {
+    return (selectedMetric?.value && checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) ||
+    METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
+    METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK === selectedMetric?.value;
+  }, [selectedMetric]);
+
   return (
       <div>
         <div className={clsx(style.FilterDiv, "d-flex justify-start")}>
@@ -304,6 +312,7 @@ const FilterBoard = ({
                   CustomInput={CustomInput}
                   maxDate={startDateMax}
                   selectedMetric={selectedMetric}
+                  readOnly={datePickerReadOnly}
               />
             </div>
             {
@@ -324,6 +333,7 @@ const FilterBoard = ({
                   CustomInput={CustomInput}
                   maxDate={endDateMax}
                   selectedMetric={selectedMetric}
+                  readOnly={datePickerReadOnly}
               />
             </div>
           </div>

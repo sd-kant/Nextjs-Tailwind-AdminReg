@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {get} from "lodash";
 import {connect} from "react-redux";
 import {Line} from 'react-chartjs-2';
 import spacetime from "spacetime";
@@ -45,7 +46,10 @@ ChartJS.register(
     Tooltip,
 );
 
-const ChartUserAlert = () => {
+const ChartUserAlert = (
+  {
+    metric: unit,
+  }) => {
   const {
     selectedMetric,
     selectedTeams,
@@ -122,6 +126,12 @@ const ChartUserAlert = () => {
    */
   const [data, setData] = React.useState(INIT_USER_CHART_ALERT_DATA);
 
+  const xLabel = React.useMemo(() => {
+    const tz = selectedTeams?.length === 1 ?
+      (timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : '') : 'UTC'
+    return `Time of Day (${tz})`;
+  }, [selectedTeams, timeZone]);
+
   React.useEffect(() => {
     if (selectedDate) {
       let labels = [], tempData = [], datasets = [];
@@ -174,15 +184,39 @@ const ChartUserAlert = () => {
     }
   }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone, formatHeartCbt]);
 
+  const isCbt = React.useMemo(() => {
+    return selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT;
+  }, [selectedMetric]);
+
   React.useEffect(() => {
     setIsEnablePrint(!checkEmptyData(data?.datasets, 1));
   }, [data, setIsEnablePrint]);
+
+  const chartTitle = React.useMemo(() => {
+    return isCbt ? 'Core Body Temperature' : 'Heart Rate';
+  }, [isCbt]);
+
+  const yAxisLabel = React.useMemo(() => {
+    return isCbt ? `Core Body Temperature ${unit ? "˚C": "˚F"}` : 'Heart Rate (BPM)';
+  }, [isCbt, unit]);
+
+  const yAxisMin = React.useMemo(() => {
+    return isCbt ? (unit ? 36.4 : 97.5) : 40;
+  }, [unit, isCbt]);
+
+  const yAxisMax = React.useMemo(() => {
+    return isCbt ? (unit ? 39.4 : 103.0) : 200;
+  }, [isCbt, unit]);
+
+  const yAxisStepSize = React.useMemo(() => {
+    return isCbt ? (unit ? 0.25 : 0.5) : 15;
+  }, [isCbt, unit]);
 
   return (
       <div ref={chartRef} className={clsx(style.ChartBody)}>
         <div className={clsx(style.LineBody)}>
           <h1 className={clsx(style.TxtCenter)}>
-            {t(`${selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT ? 'cbt' : 'hr'}`)}
+            {chartTitle}
           </h1>
           <div className={clsx(style.LineFlex, `mb-15`)}>
             {
@@ -238,25 +272,40 @@ const ChartUserAlert = () => {
 
           <div className={clsx(style.FlexSpace)}>
             <Line
-                options={{radius: 0}}
-                data={data}
-                plugins={chartPlugins(`line`, t(`no data to display`))}
+              options={{
+                pointRadius: 5,
+                scales: {
+                  x: {
+                    title: {
+                      display: true,
+                      text: xLabel,
+                    }
+                  },
+                  y: {
+                    title: {
+                      display: true,
+                      text: yAxisLabel,
+                    },
+                    min: yAxisMin,
+                    max: yAxisMax,
+                    ticks: {
+                      stepSize: yAxisStepSize,
+                    }
+                  }
+                }
+              }}
+              data={data}
+              plugins={chartPlugins(`line`, t(`no data to display`))}
             />
-          </div>
-
-          <div className={clsx(style.TxtCenter, `mt-40`)}>
-            {selectedTeams?.length === 1 ?
-                timeZone ? timeZone?.displayName + ` - ` + timeZone?.name : ``
-                :
-                `UTC`
-            }
           </div>
         </div>
       </div>
   )
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  metric: get(state, 'ui.metric'),
+});
 
 export default connect(
     mapStateToProps,
