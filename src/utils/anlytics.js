@@ -45,7 +45,7 @@ export const getTeamNameFromTeamId = (formattedTeams, teamId) => {
 export const getTimeSpentFromUserId = (data, str) => {
   let findIndex = data.findIndex(a => a.temperatureCategory?.toLowerCase()?.includes(str?.toLowerCase()));
   if (findIndex > -1) {
-    return Math.ceil((data[findIndex]?.count ?? 0)/ 240 * 10) / 10;
+    return Math.ceil((data[findIndex]?.count ?? 0) / 240 * 10) / 10;
   } else {
     return 0;
   }
@@ -106,8 +106,8 @@ export const getWeeksInMonth = (timezone) => {
 
   // 2022-10-24 00:00:00
   startMonthD = startMonthD
-      .subtract(1, `month`)
-      .time('12:00am');
+    .subtract(1, `month`)
+    .time('12:00am');
 
   // day list of month
   let endMonthD = endD;
@@ -125,8 +125,8 @@ export const getWeeksInMonth = (timezone) => {
 
   // 2022-11-24 00:00:00, Thur -> 2022-11-20 00:00:00, Sun
   let endWeekD = endD
-      .subtract(endD.day(), `day`)
-      .time('12:00am');
+    .subtract(endD.day(), `day`)
+    .time('12:00am');
 
   while (endWeekD.isAfter(startMonthD)) {
     weeks.push({
@@ -147,19 +147,19 @@ export const getWeeksInMonth = (timezone) => {
 
   /**
    dates = [
-     {value: 0, label: 2022-11-24},
-     {value: 1, label: 2022-11-23},
-     {value: 2, label: 2022-11-22},
-     ... ,
-     {value: 21, label: 2022-10-24}
+   {value: 0, label: 2022-11-24},
+   {value: 1, label: 2022-11-23},
+   {value: 2, label: 2022-11-22},
+   ... ,
+   {value: 21, label: 2022-10-24}
    ]
 
    weeks = [
-     {value: 0, label: 2022-11-20},
-     {value: 1, label: 2022-11-13},
-     {value: 2, label: 2022-11-06},
-     {value: 3, label: 2022-10-30},
-     {value: 4, label: 2022-10-24},
+   {value: 0, label: 2022-11-20},
+   {value: 1, label: 2022-11-13},
+   {value: 2, label: 2022-11-06},
+   {value: 3, label: 2022-10-30},
+   {value: 4, label: 2022-10-24},
    ]
    */
   return {
@@ -175,15 +175,16 @@ export const onFilterData = (data, key, userIds, members) => {
 
   let ids = members?.map(it => it.userId.toString());
   let list = members?.length > 0
-      ?
-      data[[key]]?.filter(it => ids.includes(it.userId?.toString()))
-      :
-      (data[[key]] ?? []);
+    ?
+    data[[key]]?.filter(it => ids.includes(it.userId?.toString()))
+    :
+    (data[[key]] ?? []);
   return userIds?.length > 0
-      ?
-      list?.filter(it => userIds.includes(it.userId))
-      :
-      list;
+    ?
+    list?.filter(it => userIds.includes(it.userId))
+    : (
+      members?.length > 0 ? list : []
+    );
 };
 
 /**
@@ -194,10 +195,10 @@ export const onFilterData = (data, key, userIds, members) => {
  */
 export const onFilterDataByOrganization = (data, orgId) => {
   return (data && orgId && Object.keys(data).includes(orgId.toString()))
-      ?
-      JSON.parse(JSON.stringify(data[[orgId]]))
-      :
-      {};
+    ?
+    JSON.parse(JSON.stringify(data[[orgId]]))
+    :
+    {};
 };
 
 /**
@@ -301,8 +302,8 @@ export const getThisWeekByTeam = (timeZone) => {
   startD = startD.time('12:00am');
 
   /**
-    startD = 2022-11-18 00:00:00
-    endD = 2022-11-24 05:40:00 -> current date
+   startD = 2022-11-18 00:00:00
+   endD = 2022-11-24 05:40:00 -> current date
    */
   return {
     startDate: startD,
@@ -413,8 +414,11 @@ export const getHeaderMetrics = (metric, unitMetric) => {
       ret = [
         i18n.t('name'),
         i18n.t('team'),
-        i18n.t('avg wear time'),
-        i18n.t('total wear time')
+        "Average Wear Time Per Day (hours)",
+        "Total Wear Time (hours)",
+        "Number of Days Device Worn",
+        // i18n.t('avg wear time'),
+        // i18n.t('total wear time')
       ];
       break;
     case METRIC_USER_TABLE_VALUES.ALERTS: // 2
