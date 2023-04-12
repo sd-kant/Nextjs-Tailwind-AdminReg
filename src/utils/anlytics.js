@@ -465,7 +465,7 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('name'),
         i18n.t('team'),
         i18n.t(`time spent in safe to work ${unitMetric ? 'metric' : 'imperial'}`),
-        i18n.t(`time spent in mild heat exhaustion ${unitMetric ? 'metric' : 'imperial'}`),
+        i18n.t(`time spent in mild hyperthermia ${unitMetric ? 'metric' : 'imperial'}`),
         i18n.t(`time spent in moderate hyperthermia ${unitMetric ? 'metric' : 'imperial'}`)
       ];
       break;
@@ -486,8 +486,10 @@ export const getHeaderMetrics = (metric, unitMetric) => {
       break;
     case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
       ret = [
-        i18n.t('temperature categories'),
-        i18n.t('user %')
+        // i18n.t('temperature categories'),
+        // i18n.t('user %')
+        "Core Body Temperature Zones",
+        "Percent of Time",
       ];
       break;
     case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
@@ -534,9 +536,9 @@ export const getHeaderMetrics = (metric, unitMetric) => {
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
       ret = [
         i18n.t('team'),
-        unitMetric ? '< 38°C' : '< 100.4°F',
-        unitMetric ? '38°C - 38.4°C' : '100.4°F - 101.2°F',
-        unitMetric ? '>= 38.5°C' : '>= 101.3°F',
+        unitMetric ? 'Safe to Work < 38.0˚C' : 'Safe to Work < 100.4 ˚F',
+        unitMetric ? 'Mild Hyperthermia 38.0˚C - 38.4˚C' : 'Mild Hyperthermia 100.4˚F - 101.2˚F',
+        unitMetric ? 'Moderate Hyperthermia >= 38.5˚C' : 'Moderate Hyperthermia >= 101.3˚F',
         i18n.t('total alerts'),
         i18n.t('% of team with alerts'),
         i18n.t('% of team without alerts')
