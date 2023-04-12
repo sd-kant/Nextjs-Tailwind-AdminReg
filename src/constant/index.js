@@ -454,10 +454,10 @@ export const TEAM_STATUS_METRICS = [
     label: `${i18n.t('table')} - ${i18n.t('no. of users in heat susceptibility categories')}`,
     value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE, // 24
   },
-  {
-    label: `${i18n.t('table')} - ${i18n.t('no. of users in cbt zones')}`,
-    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES, // 25
-  },
+  // {
+  //   label: `${i18n.t('table')} - ${i18n.t('no. of users in cbt zones')}`,
+  //   value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES, // 25
+  // },
   {
     label: `${i18n.t('table')} - ${i18n.t('no. of users unacclimated, acclimated and previous illness')}`,
     value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED, // 26
