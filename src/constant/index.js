@@ -419,7 +419,8 @@ export const USER_STATUS_METRICS = [
     value: METRIC_USER_TABLE_VALUES.DEVICE_DATA, // 7
   },
   {
-    label: `${i18n.t('table')} - ${i18n.t('users in various cbt zones')}`,
+    // label: `${i18n.t('table')} - ${i18n.t('users in various cbt zones')}`,
+    label: `${i18n.t('table')} - Percent of Time in CBT Zones`,
     value: METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES, // 8
   },
   {
@@ -453,12 +454,12 @@ export const TEAM_STATUS_METRICS = [
     label: `${i18n.t('table')} - ${i18n.t('no. of users in heat susceptibility categories')}`,
     value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE, // 24
   },
+  // {
+  //   label: `${i18n.t('table')} - ${i18n.t('no. of users in cbt zones')}`,
+  //   value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES, // 25
+  // },
   {
-    label: `${i18n.t('table')} - ${i18n.t('no. of users in cbt zones')}`,
-    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES, // 25
-  },
-  {
-    label: `${i18n.t('table')} - ${i18n.t('no. of users unacclimated, acclimated and persis previous illness')}`,
+    label: `${i18n.t('table')} - ${i18n.t('no. of users unacclimated, acclimated and previous illness')}`,
     value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED, // 26
   },
   {

@@ -4,6 +4,11 @@
   width: calc(100% - 44px);
 }
 
+.ReadOnlyInputField {
+  width: calc(100% - 44px);
+  background: $app-ns;
+}
+
 .CustomInputWrapper {
   position: relative;
 

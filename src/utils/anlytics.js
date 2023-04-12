@@ -45,7 +45,7 @@ export const getTeamNameFromTeamId = (formattedTeams, teamId) => {
 export const getTimeSpentFromUserId = (data, str) => {
   let findIndex = data.findIndex(a => a.temperatureCategory?.toLowerCase()?.includes(str?.toLowerCase()));
   if (findIndex > -1) {
-    return Math.ceil((data[findIndex]?.count ?? 0)/ 240 * 10) / 10;
+    return Math.ceil((data[findIndex]?.count ?? 0) / 240 * 10) / 10;
   } else {
     return 0;
   }
@@ -106,8 +106,8 @@ export const getWeeksInMonth = (timezone) => {
 
   // 2022-10-24 00:00:00
   startMonthD = startMonthD
-      .subtract(1, `month`)
-      .time('12:00am');
+    .subtract(1, `month`)
+    .time('12:00am');
 
   // day list of month
   let endMonthD = endD;
@@ -125,8 +125,8 @@ export const getWeeksInMonth = (timezone) => {
 
   // 2022-11-24 00:00:00, Thur -> 2022-11-20 00:00:00, Sun
   let endWeekD = endD
-      .subtract(endD.day(), `day`)
-      .time('12:00am');
+    .subtract(endD.day(), `day`)
+    .time('12:00am');
 
   while (endWeekD.isAfter(startMonthD)) {
     weeks.push({
@@ -147,19 +147,19 @@ export const getWeeksInMonth = (timezone) => {
 
   /**
    dates = [
-     {value: 0, label: 2022-11-24},
-     {value: 1, label: 2022-11-23},
-     {value: 2, label: 2022-11-22},
-     ... ,
-     {value: 21, label: 2022-10-24}
+   {value: 0, label: 2022-11-24},
+   {value: 1, label: 2022-11-23},
+   {value: 2, label: 2022-11-22},
+   ... ,
+   {value: 21, label: 2022-10-24}
    ]
 
    weeks = [
-     {value: 0, label: 2022-11-20},
-     {value: 1, label: 2022-11-13},
-     {value: 2, label: 2022-11-06},
-     {value: 3, label: 2022-10-30},
-     {value: 4, label: 2022-10-24},
+   {value: 0, label: 2022-11-20},
+   {value: 1, label: 2022-11-13},
+   {value: 2, label: 2022-11-06},
+   {value: 3, label: 2022-10-30},
+   {value: 4, label: 2022-10-24},
    ]
    */
   return {
@@ -175,15 +175,16 @@ export const onFilterData = (data, key, userIds, members) => {
 
   let ids = members?.map(it => it.userId.toString());
   let list = members?.length > 0
-      ?
-      data[[key]]?.filter(it => ids.includes(it.userId?.toString()))
-      :
-      (data[[key]] ?? []);
+    ?
+    data[[key]]?.filter(it => ids.includes(it.userId?.toString()))
+    :
+    (data[[key]] ?? []);
   return userIds?.length > 0
-      ?
-      list?.filter(it => userIds.includes(it.userId))
-      :
-      list;
+    ?
+    list?.filter(it => userIds.includes(it.userId))
+    : (
+      members?.length > 0 ? list : []
+    );
 };
 
 /**
@@ -194,10 +195,10 @@ export const onFilterData = (data, key, userIds, members) => {
  */
 export const onFilterDataByOrganization = (data, orgId) => {
   return (data && orgId && Object.keys(data).includes(orgId.toString()))
-      ?
-      JSON.parse(JSON.stringify(data[[orgId]]))
-      :
-      {};
+    ?
+    JSON.parse(JSON.stringify(data[[orgId]]))
+    :
+    {};
 };
 
 /**
@@ -301,8 +302,8 @@ export const getThisWeekByTeam = (timeZone) => {
   startD = startD.time('12:00am');
 
   /**
-    startD = 2022-11-18 00:00:00
-    endD = 2022-11-24 05:40:00 -> current date
+   startD = 2022-11-18 00:00:00
+   endD = 2022-11-24 05:40:00 -> current date
    */
   return {
     startDate: startD,
@@ -413,8 +414,11 @@ export const getHeaderMetrics = (metric, unitMetric) => {
       ret = [
         i18n.t('name'),
         i18n.t('team'),
-        i18n.t('avg wear time'),
-        i18n.t('total wear time')
+        "Average Wear Time Per Day (hours)",
+        "Total Wear Time (hours)",
+        "Number of Days Device Worn",
+        // i18n.t('avg wear time'),
+        // i18n.t('total wear time')
       ];
       break;
     case METRIC_USER_TABLE_VALUES.ALERTS: // 2
@@ -434,7 +438,8 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('name'),
         i18n.t('team'),
         i18n.t('date'),
-        i18n.t('max cbt')
+        "Max Core Body Temperature",
+        // i18n.t('max cbt'),
       ];
       break;
     case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT: // 4
@@ -460,7 +465,7 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('name'),
         i18n.t('team'),
         i18n.t(`time spent in safe to work ${unitMetric ? 'metric' : 'imperial'}`),
-        i18n.t(`time spent in mild heat exhaustion ${unitMetric ? 'metric' : 'imperial'}`),
+        i18n.t(`time spent in mild hyperthermia ${unitMetric ? 'metric' : 'imperial'}`),
         i18n.t(`time spent in moderate hyperthermia ${unitMetric ? 'metric' : 'imperial'}`)
       ];
       break;
@@ -472,15 +477,19 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('os version'),
         i18n.t('app version'),
         i18n.t('platform'),
-        i18n.t('max cbt'),
-        i18n.t('max hr'),
+        "Max Core Body Temperature",
+        // i18n.t('max cbt'),
+        "Max Heart Rate",
+        // i18n.t('max hr'),
         i18n.t('date')
       ];
       break;
     case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
       ret = [
-        i18n.t('temperature categories'),
-        i18n.t('user %')
+        // i18n.t('temperature categories'),
+        // i18n.t('user %')
+        "Core Body Temperature Zones",
+        "Percent of Time",
       ];
       break;
     case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
@@ -527,9 +536,9 @@ export const getHeaderMetrics = (metric, unitMetric) => {
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
       ret = [
         i18n.t('team'),
-        unitMetric ? '< 38°C' : '< 100.4°F',
-        unitMetric ? '38°C - 38.4°C' : '100.4°F - 101.2°F',
-        unitMetric ? '>= 38.5°C' : '>= 101.3°F',
+        unitMetric ? 'Safe to Work < 38.0˚C' : 'Safe to Work < 100.4 ˚F',
+        unitMetric ? 'Mild Hyperthermia 38.0˚C - 38.4˚C' : 'Mild Hyperthermia 100.4˚F - 101.2˚F',
+        unitMetric ? 'Moderate Hyperthermia >= 38.5˚C' : 'Moderate Hyperthermia >= 101.3˚F',
         i18n.t('total alerts'),
         i18n.t('% of team with alerts'),
         i18n.t('% of team without alerts')

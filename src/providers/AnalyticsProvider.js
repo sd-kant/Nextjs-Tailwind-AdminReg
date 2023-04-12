@@ -107,6 +107,11 @@ export const AnalyticsProvider = (
 
   const [isEnablePrint, setIsEnablePrint] = React.useState(false);
 
+  const formatNumber = (n) => {
+    if (!n) return '';
+    return (Math.round(n * 10) / 10)?.toFixed(1);
+  };
+
   React.useEffect(() => {
     const membersPromises = [];
     setMembers([]);
@@ -196,6 +201,7 @@ export const AnalyticsProvider = (
           makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
           makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
           makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
         ];
         break;
       case METRIC_USER_TABLE_VALUES.ALERTS: // 2
@@ -323,6 +329,17 @@ export const AnalyticsProvider = (
     });
 
     return ret;
+  }, [members]);
+
+  React.useEffect(() => {
+    const ret = [];
+    pickedMembers?.forEach((it) => {
+      if (members?.some(ele => ele.userId?.toString() === it?.toString())) {
+        ret.push(it);
+      }
+    });
+    setPickedMembers(ret);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [members]);
 
   const organizationAnalytics = React.useMemo(
@@ -722,12 +739,18 @@ export const AnalyticsProvider = (
     let ret = [];
 
     if (metric === METRIC_USER_TABLE_VALUES.WEAR_TIME) { // 1, wear time
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.WEAR_TIME, pickedMembers, members)?.map(it => ([
-        getUserNameFromUserId(members, it.userId),
-        getTeamNameFromUserId(members, formattedTeams, it.userId),
-        it.avgWearTime ?? ``,
-        it.wearTime ?? ``,
-      ]))
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.WEAR_TIME, pickedMembers, members)?.map(it => {
+        const daysWorn = it.avgWearTime ? Math.round(it.wearTime / it.avgWearTime) : ``;
+        const total = formatNumber(it.wearTime / 240) ?? '';
+        const avg = daysWorn && total ? formatNumber(total / daysWorn) : '';
+        return [
+          getUserNameFromUserId(members, it.userId),
+          getTeamNameFromUserId(members, formattedTeams, it.userId),
+          avg,
+          total,
+          daysWorn,
+        ];
+      })
     } else if (
         metric === METRIC_USER_TABLE_VALUES.ALERTS ||
         metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
@@ -739,7 +762,7 @@ export const AnalyticsProvider = (
         it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
         it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
         it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
-        it.humidity ?? '',
+        formatNumber(it.humidity) ?? '',
         it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``,
       ]))
     } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && !detailCbt) { // 32
@@ -750,13 +773,21 @@ export const AnalyticsProvider = (
         it.maxCbt ? formatHeartCbt(it.maxCbt) : ``,
       ]));
     } else if (METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT === metric) { // 4
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, pickedMembers, members)?.map(it => ([
-        getUserNameFromUserId(members, it.userId),
-        getTeamNameFromUserId(members, formattedTeams, it.userId),
-        it.sweatRateCategory ?? ``,
-        unitMetric ? ((!INVALID_VALUES2.includes(it.sweatRate) && it.sweatRate >= 0) ? it.sweatRate : ``) : literToQuart((!INVALID_VALUES2.includes(it.sweatRate) && it.sweatRate >= 0) ? it.sweatRate : ``),
-        unitMetric ? it.fluidRecommendationL ?? `` : literToQuart(it.fluidRecommendationL) ?? ``,
-      ]));
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, pickedMembers, members)?.map(it => {
+        let sweatRate = (INVALID_VALUES2.includes(it.sweatRate) || it.sweatRate <= 0) ? '' : it.sweatRate;
+        sweatRate = unitMetric ? sweatRate : literToQuart(sweatRate);
+        sweatRate = formatNumber(sweatRate);
+        let fluidR = it.fluidRecommendationL ?? '';
+        fluidR = unitMetric ? fluidR : literToQuart(fluidR);
+        fluidR = formatNumber(fluidR);
+        return ([
+          getUserNameFromUserId(members, it.userId),
+          getTeamNameFromUserId(members, formattedTeams, it.userId),
+          it.sweatRateCategory ?? ``,
+          sweatRate,
+          fluidR,
+        ])
+      });
     } else if (METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT === metric) { // 5
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, pickedMembers, members)?.map(it => ([
         getUserNameFromUserId(members, it.userId),
@@ -776,26 +807,34 @@ export const AnalyticsProvider = (
     } else if (metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA) { // 7
       let tempRet = [];
       let filterData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.DEVICE_DATA, pickedMembers, members);
-      pickedMembers?.forEach(it => {
-        let recentItem = filterData?.filter(a => a?.userId === it)?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+      const teamMemberIdList = pickedMembers?.length> 0 ? pickedMembers : members?.map(it => it.userId);
+      teamMemberIdList?.forEach(it => {
+        let recentItem = filterData?.filter(a => a?.userId?.toString() === it?.toString())?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
         if (recentItem) tempRet.push(recentItem);
       });
 
-      ret = tempRet?.map(it => ([
-        it.fullname ?? ``,
-        getTeamNameFromTeamId(formattedTeams, it.teamId),
-        it.type === `kenzen` ? (it?.version || ``) : ``,
-        it.type === `kenzen` ? `` : (it.osVersion ?? ``),
-        it.type === `kenzen` ? `` : (it.version ?? ``),
-        it.type ?? ``,
-        organizationAnalytics?.maxCbt?.find(maxCbt => maxCbt?.userId === it.userId)?.maxCbt ?? ``,
-        organizationAnalytics?.maxCbt?.find(maxCbt => maxCbt?.userId === it.userId)?.maxHrAvg ?? ``,
-        it.ts ?? ``,
-      ]));
+      ret = tempRet?.map(it => {
+        let a = organizationAnalytics?.maxCbt?.find(maxCbt => maxCbt?.userId === it.userId)?.maxCbt;
+        a = formatNumber(a);
+        let b = organizationAnalytics?.maxCbt?.find(maxCbt => maxCbt?.userId === it.userId)?.maxHrAvg;
+        b = formatNumber(b);
+
+        return ([
+          it.fullname ?? ``,
+          getTeamNameFromTeamId(formattedTeams, it.teamId),
+          it.type === `kenzen` ? (it?.version || ``) : ``,
+          it.type === `kenzen` ? `` : (it.osVersion ?? ``),
+          it.type === `kenzen` ? `` : (it.version ?? ``),
+          it.type ?? ``,
+          a,
+          b,
+          new Date(it.ts).toLocaleString() ?? ``,
+        ])
+      });
     } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) { // 8
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES, null, null)?.map(it => ([
         it.temperatureCategory,
-        it.percentage,
+        formatNumber(it.percentage),
       ]));
     } else if (metric === METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY) { // 20
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_HUMIDITY, null, null)?.map(it => ([
@@ -803,9 +842,9 @@ export const AnalyticsProvider = (
         it.maxTemp ? formatHeartCbt(it.maxTemp) : ``,
         it.minTemp ? formatHeartCbt(it.minTemp) : ``,
         it.avgTemp ? formatHeartCbt(it.avgTemp) : ``,
-        it.maxHumidity ?? ``,
-        it.minHumidity ?? ``,
-        it.avgHumidity ?? ``,
+        formatNumber(it.maxHumidity),
+        formatNumber(it.minHumidity),
+        formatNumber(it.avgHumidity),
       ]));
     } else if (metric === METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS) { // 21
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ALERT_USER_COUNT, null, null)?.map(it => ([

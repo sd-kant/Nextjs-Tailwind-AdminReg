@@ -3,12 +3,7 @@ import DatePicker from "react-datepicker";
 import {range} from "lodash";
 
 import "./react-datepicker.css";
-import {
-  METRIC_TEAM_CHART_VALUES,
-  METRIC_USER_CHART_VALUES,
-  MONTHS,
-} from "../../../constant";
-import {checkMetric} from "../../../utils/anlytics";
+import {MONTHS} from "../../../constant";
 
 const years = range(1900, new Date().getFullYear() + 1, 1);
 
@@ -64,7 +59,7 @@ const CustomHeader = (
 
 const CustomDatePicker = (
   {
-    selectedMetric,
+    readOnly,
     date,
     setDate,
     maxDate,
@@ -73,15 +68,11 @@ const CustomDatePicker = (
   return (
     <DatePicker
       renderCustomHeader={CustomHeader}
-      customInput={<CustomInput/>}
+      customInput={<CustomInput readOnly/>}
       selected={date}
       maxDate={maxDate}
+      readOnly={readOnly}
       onChange={v => setDate(v)}
-      readOnly={
-        (selectedMetric?.value && checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) ||
-        METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
-        METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK === selectedMetric?.value
-      }
     />
   );
 };
