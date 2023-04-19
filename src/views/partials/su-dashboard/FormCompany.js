@@ -67,6 +67,20 @@ const formSchema = (t) => {
     companyName: Yup.object()
       .shape({
         label: Yup.string()
+          .test(
+            'is-valid',
+            t('company name required'),
+            function (value) {
+              return !checkIfSpacesOnly(value);
+            }
+          )
+          .test(
+            'is-valid',
+            t('company name min error'),
+            function (value) {
+              return value?.trim()?.length >= 6;
+            }
+          )
           .required(t('company name required'))
           .min(6, t('company name min error'))
           .max(1024, t('company name max error')),
@@ -78,7 +92,14 @@ const formSchema = (t) => {
         'is-valid',
         t('company name required'),
         function (value) {
-          return this.parent.isEditing ? !!value : true;
+          return this.parent.isEditing ? !checkIfSpacesOnly(value) : true;
+        }
+      )
+      .test(
+        'is-valid',
+        t('company name min error'),
+        function (value) {
+          return value?.trim()?.length >= 6;
         }
       )
       .min(6, t('company name min error'))
