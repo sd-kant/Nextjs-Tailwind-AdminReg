@@ -1,0 +1,25 @@
+@import "../../assets/scss/colors";
+
+.Banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  .Wrapper {
+    background: $app-orange;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+
+    .Header {
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .Description {
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+  }
+}

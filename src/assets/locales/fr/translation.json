@@ -679,5 +679,7 @@
   "swr": "Taux de transpiration",
   "no matches found": "Aucune correspondance trouvée",
   "cbt full": "Température corporelle centrale",
-  "password invalid 2": "Mot de passe incorrect. Vérifiez les règles de mot de passe ci-dessous."
+  "password invalid 2": "Mot de passe incorrect. Vérifiez les règles de mot de passe ci-dessous.",
+  "attention customers": "attention clients kenzen",
+  "attention guide": "Veuillez utiliser <a1>{{link}}</a1> pour vous connecter à notre site client"
 }
