@@ -99,7 +99,7 @@ const formSchema = (t) => {
         'is-valid',
         t('company name min error'),
         function (value) {
-          return value?.trim()?.length >= 6;
+          return this.parent.isEditing ? value?.trim()?.length >= 6 : true;
         }
       )
       .min(6, t('company name min error'))
