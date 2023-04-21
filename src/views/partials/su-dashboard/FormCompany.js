@@ -157,7 +157,8 @@ const formSchema = (t) => {
         'is-valid',
         t('saml url invalid'),
         function (value) {
-          return this.parent.isEditing && this.parent.sso ? !!value : true;
+          const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
+          return isEditing ? (this.parent.sso ? !!value : true) : true;
         }
       ),
     samlLogoutUrl: Yup.string()
@@ -166,7 +167,8 @@ const formSchema = (t) => {
         'is-valid',
         t('saml logout url invalid'),
         function (value) {
-          return this.parent.isEditing && this.parent.sso ? !!value : true;
+          const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
+          return isEditing ? (this.parent.sso ? !!value : true) : true;
         }
       ),
     samlIssuer: Yup.string()
@@ -174,7 +176,8 @@ const formSchema = (t) => {
         'is-valid',
         t('saml issuer invalid'),
         function (value) {
-          return this.parent.isEditing && this.parent.sso ? !!value : true;
+          const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
+          return isEditing ? (this.parent.sso ? !!value : true) : true;
         }
       ),
     idp: Yup.string()
@@ -183,7 +186,8 @@ const formSchema = (t) => {
         t('idp invalid'),
         function (value) {
           const validList = ['aad'];
-          return this.parent.isEditing && this.parent.sso ? validList.includes(value) : true;
+          const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
+          return isEditing ? (this.parent.sso ? validList.includes(value) : true) : true;
         }
       ),
   });
