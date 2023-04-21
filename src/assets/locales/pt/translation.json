@@ -679,5 +679,7 @@
   "swr": "Taxa de suor",
   "no matches found": "Nenhuma equivalência encontrada",
   "cbt full": "Temperatura Corporal Central",
-  "password invalid 2": "Senha inválida. Verifique as regras de senha abaixo."
+  "password invalid 2": "Senha inválida. Verifique as regras de senha abaixo.",
+  "attention customers": "atenção clientes kenzen",
+  "attention guide": "Use <a1>{{link}}</a1> para fazer login no site do cliente"
 }
