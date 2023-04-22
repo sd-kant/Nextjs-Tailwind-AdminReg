@@ -679,5 +679,7 @@
   "swr": "Tasa de sudoración",
   "no matches found": "No se encontraron coincidencias",
   "cbt full": "Temperatura corporal central",
-  "password invalid 2": "Contraseña invalida. Verifique las reglas de contraseña a continuación."
+  "password invalid 2": "Contraseña invalida. Verifique las reglas de contraseña a continuación.",
+  "attention customers": "atencion clientes kenzen",
+  "attention guide": "Utilice <a1>{{link}}</a1> para iniciar sesión en nuestro sitio de clientes"
 }

@@ -12,7 +12,6 @@ const CustomPhoneInput = (
   }) => {
   return (
     <PhoneInput
-      country={'us'}
       value={value}
       disabled={disabled}
       preferredCountries={PREFERRED_COUNTRIES}

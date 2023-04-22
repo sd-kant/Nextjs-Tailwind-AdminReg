@@ -21,7 +21,7 @@ import {
 } from "../../../redux/action/ui";
 import {
   AVAILABLE_JOBS,
-  INVALID_VALUES1,
+  INVALID_VALUES1, INVALID_VALUES3,
   permissionLevels
 } from "../../../constant";
 import ConfirmModal from "../../components/ConfirmModal";
@@ -178,11 +178,17 @@ const FormInvite = (props) => {
       const job = it.jobRole?.toLowerCase()?.trim();
       const selectedLevel = permissionLevels.find(ele => parseInt(ele.value) === parseInt(level));
       const selectedJob = AVAILABLE_JOBS.find(ele => ele.value === job);
-      const phoneNumber = `${it.countryCode ?? ""}${it.phoneNumber ?? ""}`;
-      const phoneNumberWithPlus = `+${it.countryCode ?? ""}${it.phoneNumber ?? ""}`;
-      const asYouType = new AsYouType();
-      asYouType.input(phoneNumberWithPlus);
-      const country = asYouType?.getCountry();
+      const phoneNumber =
+        !INVALID_VALUES3.includes(it.countryCode) && INVALID_VALUES3.includes(it.phoneNumber) ?
+         `${it.countryCode}${it.phoneNumber}` : null;
+      const phoneNumberWithPlus = phoneNumber ? `+${phoneNumber}` : null;
+      let country = null;
+
+      if (phoneNumberWithPlus) {
+        const asYouType = new AsYouType();
+        asYouType.input(phoneNumberWithPlus);
+        country = asYouType?.getCountry();
+      }
 
       return {
         email: it.email,

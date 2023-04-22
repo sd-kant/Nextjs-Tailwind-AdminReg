@@ -67,6 +67,20 @@ const formSchema = (t) => {
     companyName: Yup.object()
       .shape({
         label: Yup.string()
+          .test(
+            'is-valid',
+            t('company name required'),
+            function (value) {
+              return !checkIfSpacesOnly(value);
+            }
+          )
+          .test(
+            'is-valid',
+            t('company name min error'),
+            function (value) {
+              return value?.trim()?.length >= 6;
+            }
+          )
           .required(t('company name required'))
           .min(6, t('company name min error'))
           .max(1024, t('company name max error')),
@@ -78,7 +92,14 @@ const formSchema = (t) => {
         'is-valid',
         t('company name required'),
         function (value) {
-          return this.parent.isEditing ? !!value : true;
+          return this.parent.isEditing ? !checkIfSpacesOnly(value) : true;
+        }
+      )
+      .test(
+        'is-valid',
+        t('company name min error'),
+        function (value) {
+          return this.parent.isEditing ? value?.trim()?.length >= 6 : true;
         }
       )
       .min(6, t('company name min error'))
@@ -136,7 +157,8 @@ const formSchema = (t) => {
         'is-valid',
         t('saml url invalid'),
         function (value) {
-          return this.parent.isEditing && this.parent.sso ? !!value : true;
+          const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
+          return isEditing ? (this.parent.sso ? !!value : true) : true;
         }
       ),
     samlLogoutUrl: Yup.string()
@@ -145,7 +167,8 @@ const formSchema = (t) => {
         'is-valid',
         t('saml logout url invalid'),
         function (value) {
-          return this.parent.isEditing && this.parent.sso ? !!value : true;
+          const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
+          return isEditing ? (this.parent.sso ? !!value : true) : true;
         }
       ),
     samlIssuer: Yup.string()
@@ -153,7 +176,8 @@ const formSchema = (t) => {
         'is-valid',
         t('saml issuer invalid'),
         function (value) {
-          return this.parent.isEditing && this.parent.sso ? !!value : true;
+          const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
+          return isEditing ? (this.parent.sso ? !!value : true) : true;
         }
       ),
     idp: Yup.string()
@@ -162,7 +186,8 @@ const formSchema = (t) => {
         t('idp invalid'),
         function (value) {
           const validList = ['aad'];
-          return this.parent.isEditing && this.parent.sso ? validList.includes(value) : true;
+          const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
+          return isEditing ? (this.parent.sso ? validList.includes(value) : true) : true;
         }
       ),
   });

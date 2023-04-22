@@ -26,6 +26,7 @@ import LanguageModal from "../LanguageModal";
 import closeIconV2 from '../../../assets/images/close-white.svg';
 import menuIcon from '../../../assets/images/menu.svg';
 import pjson from '../../../../package.json';
+import {isProductionMode} from "../../../App";
 
 const popupContentStyle = {
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
@@ -70,7 +71,7 @@ const Settings = (
     return userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
   }, [userType]);
   const hasAccessToNews = React.useMemo(() => {
-    if (process.env.REACT_APP_ENV === 'PRODUCTION') {
+    if (isProductionMode) {
       return false;
     } else {
       return userType?.some(it => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));

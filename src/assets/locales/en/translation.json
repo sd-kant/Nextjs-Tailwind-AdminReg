@@ -679,5 +679,7 @@
   "swr": "Sweat Rate",
   "no matches found": "No matches found",
   "cbt full": "Core Body Temperature",
-  "password invalid 2": "Invalid Password. Check password rules below."
+  "password invalid 2": "Invalid Password. Check password rules below.",
+  "attention customers": "attention kenzen customers",
+  "attention guide": "Please use <a1>{{link}}</a1> to log into our customer site"
 }
