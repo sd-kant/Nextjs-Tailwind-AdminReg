@@ -286,10 +286,10 @@ export const TYPES = [
     value: 1,
     label: i18n.t('day')
   },
-  {
+  /*{
     value: 2,
     label: i18n.t('week')
-  },
+  },*/
 ];
 export const LABELS_HEAT_DOUGHNUT = [
   i18n.t('low %'),
@@ -323,6 +323,7 @@ export const ANALYTICS_API_KEYS = {
   FLUID_METRICS_BY_TEAM: 'fluidMetricsByTeam',
   CHART_CBT: 'chartCbt',
   TEAM_MEMBER_ALERTS: 'teamMemberAlerts',
+  HEART_RATE: 'heartRate',
 };
 
 export const METRIC_USER_TABLE_VALUES = {
