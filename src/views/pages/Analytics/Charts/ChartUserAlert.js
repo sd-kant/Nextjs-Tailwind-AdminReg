@@ -153,7 +153,7 @@ const ChartUserAlert = (
         labels.push(countTime.unixFmt('hh:mm'));
         countTime = countTime.add(1, "minute");
       }
-      const filteredUsers = users?.filter(it => selectedMembers?.findIndex(a => a?.value?.toString() === it.toString()) > -1)?.sort((a, b) => a > b ? 1 : -1);
+      const filteredUsers = users?.filter((it) => selectedMembers?.findIndex(a => a?.value?.toString() === it.toString()) > -1)?.sort((a, b) => a > b ? 1 : -1);
 
       filteredUsers?.forEach(userId => {
         let tempData = new Array(timestamps?.length || 0).fill('');
@@ -166,7 +166,7 @@ const ChartUserAlert = (
 
         userChartData?.forEach((u) => {
           const st = spacetime(u.utcTs);
-          const i = timestamps.findIndex(e => e === new Date(st.epoch).getTime());
+          const i = timestamps.findIndex((e) => e === new Date(st.epoch).getTime());
           if (i !== -1) {
             tempData[i] = isCbt ? (u.cbt ? formatHeartCbt(u.cbt) : '') : (u.hr ? formatHeartRate(u.hr) : '');
           }
