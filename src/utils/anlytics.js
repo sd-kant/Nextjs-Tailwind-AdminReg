@@ -8,14 +8,13 @@ import {
 } from "../constant";
 import spacetime from "spacetime";
 import {
-  getTeamMemberAlerts,
   queryAmbientTempHumidity,
   queryOrganizationActiveUsers,
   queryOrganizationAlertedUserCount,
   queryOrganizationAlertMetrics,
   queryOrganizationCategoriesUsersInCBTZones,
   queryOrganizationDeviceData,
-  queryOrganizationFluidMetricsByTeam,
+  queryOrganizationFluidMetricsByTeam, queryOrganizationHeartRate,
   queryOrganizationMaxCbt,
   queryOrganizationSWRFluid,
   queryOrganizationTempCateData,
@@ -395,8 +394,8 @@ export const getKeyApiCall = (value) => {
       break;
     case METRIC_USER_CHART_VALUES.CBT: // 40
     case METRIC_USER_CHART_VALUES.HR: // 41
-      apiCalls = [getTeamMemberAlerts];
-      keys = [ANALYTICS_API_KEYS.TEAM_MEMBER_ALERTS];
+      apiCalls = [queryOrganizationHeartRate];
+      keys = [ANALYTICS_API_KEYS.HEART_RATE];
       break;
     default:
       console.log("metric is not available");

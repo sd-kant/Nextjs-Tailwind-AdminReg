@@ -64,7 +64,7 @@ const ChartUserAlert = (
   } = useAnalyticsContext();
   const {t} = useTranslation();
   const {formatHeartCbt} = useUtilsContext();
-  const [type, setType] = React.useState(2); // 1 | 2 // 1: day, 2: week
+  const [type, setType] = React.useState(1); // 1 | 2 // 1: day, 2: week
 
   /**
    List of dates split into week and month ranges ->
@@ -125,6 +125,9 @@ const ChartUserAlert = (
    datasets -> data: [ 0, 36.8, 36.5, ... , 38.5, 37.7 ]
    */
   const [data, setData] = React.useState(INIT_USER_CHART_ALERT_DATA);
+  const isCbt = React.useMemo(() => {
+    return selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT;
+  }, [selectedMetric]);
 
   const xLabel = React.useMemo(() => {
     const tz = selectedTeams?.length === 1 ?
@@ -133,60 +136,56 @@ const ChartUserAlert = (
   }, [selectedTeams, timeZone]);
 
   React.useEffect(() => {
+    const tz = timeZone?.name ?? "UTC";
+
     if (selectedDate) {
-      let labels = [], tempData = [], datasets = [];
-      let dateList = getWeeksInMonth(timeZone);
+      let startTime = spacetime(selectedDate.label, tz);
+      startTime = startTime.time("9:00am");
+      let countTime = startTime;
+      let endTime = spacetime(selectedDate.label, tz);
+      endTime = endTime.time("11:59pm");
+      let timestamps = [];
+      let labels = [];
+      let datasets = [];
 
-      let start = selectedDate.label;
-      dateList = selectedType.value === 1 ? dateList.dates : dateList.weeks;
+      while (countTime.isBefore(endTime)) {
+        timestamps.push(countTime.epoch);
+        labels.push(countTime.unixFmt('hh:mm'));
+        countTime = countTime.add(1, "minute");
+      }
+      const filteredUsers = users?.filter(it => selectedMembers?.findIndex(a => a?.value?.toString() === it.toString()) > -1)?.sort((a, b) => a > b ? 1 : -1);
 
-      let findIndex = dateList.findIndex(it => it.value === selectedDate.value);
-      let end = findIndex === 0 ? spacetime(new Date(), timeZone.name) : dateList[findIndex - 1].label;
+      filteredUsers?.forEach(userId => {
+        let tempData = new Array(timestamps?.length || 0).fill('');
+        const userChartData =
+          (chartData?.find((it) => userId.toString() === it.userId.toString())?.data
+            ?.filter((a) => {
+              const st = spacetime(a.utcTs);
+              return st.isAfter(startTime) && st.isBefore(endTime);
+            })) ?? [];
 
-      let filterUsers = users?.filter(it => selectedMembers?.findIndex(a => a?.value?.toString() === it.toString()) > -1)?.sort((a, b) => a > b ? 1 : -1);
-
-      chartData?.filter(it => filterUsers.includes(it.userId))?.forEach(it => {
-        if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
-          labels.push(spacetime(it.ts, timeZone.name).unixFmt('dd hh:mm:ss'));
-        }
-      });
-      labels.reverse();
-
-      filterUsers?.forEach(userId => {
-        tempData = new Array(labels?.length || 0).fill('');
-        let emptyFlag = false;
-        chartData?.filter(it => userId.toString() === it.userId.toString())?.forEach(it => {
-          if (spacetime(it.ts, timeZone.name).isAfter(start) && spacetime(it.ts, timeZone.name).isBefore(end)) {
-            let findIndex = labels?.findIndex(label => label === (spacetime(it.ts, timeZone.name).unixFmt('dd hh:mm:ss')));
-            if (findIndex > -1) {
-              tempData[findIndex] = selectedMetric.value === METRIC_USER_CHART_VALUES.CBT ?
-                  (it?.heartCbtAvg ? formatHeartCbt(it?.heartCbtAvg) : 0)
-                  :
-                  (it?.heartRateAvg ? formatHeartRate(it?.heartRateAvg) : 0);
-              emptyFlag = true;
-            }
+        userChartData?.forEach((u) => {
+          const st = spacetime(u.utcTs);
+          const i = timestamps.findIndex(e => e === new Date(st.epoch).getTime());
+          if (i !== -1) {
+            tempData[i] = isCbt ? (u.cbt ? formatHeartCbt(u.cbt) : '') : (u.hr ? formatHeartRate(u.hr) : '');
           }
         });
 
-        if (emptyFlag) {
-          let color = randomHexColorCode();
-          datasets.push({
-            label: `${selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT ? `CBT: userId-${userId}` : `Hr: userId-${userId}`}`,
-            data: tempData,
-            borderWidth: 3,
-            borderColor: color,
-            backgroundColor: color
-          });
-        }
+        let color = randomHexColorCode();
+        const label = selectedMembers?.find((it) => it.value === userId)?.label;
+        datasets.push({
+          label: `${isCbt ? "CBT" : "HR"} : ${label}`,
+          data: tempData,
+          borderWidth: 1,
+          borderColor: color,
+          backgroundColor: color
+        });
       });
 
       setData(labels?.length > 0 ? { labels, datasets } : INIT_USER_CHART_ALERT_DATA);
     }
-  }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone, formatHeartCbt]);
-
-  const isCbt = React.useMemo(() => {
-    return selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT;
-  }, [selectedMetric]);
+  }, [chartData, selectedMetric, selectedType, selectedDate, users, selectedMembers, selectedTeams, timeZone, formatHeartCbt, isCbt]);
 
   React.useEffect(() => {
     setIsEnablePrint(!checkEmptyData(data?.datasets, 1));
@@ -273,7 +272,7 @@ const ChartUserAlert = (
           <div className={clsx(style.FlexSpace)}>
             <Line
               options={{
-                pointRadius: 5,
+                pointRadius: 1,
                 scales: {
                   x: {
                     title: {
