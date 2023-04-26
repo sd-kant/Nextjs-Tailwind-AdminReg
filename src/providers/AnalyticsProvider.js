@@ -355,96 +355,52 @@ export const AnalyticsProvider = (
         let apiCalls = keyApiCall.apiCalls;
 
         if (apiCalls?.length && keys?.length) {
-          if (checkMetric(METRIC_USER_CHART_VALUES, metric)) {
-            let userFilter = members?.filter(it => users.includes(it.userId));
+          let startD = new Date(startDate); // e.g. 2022-04-05
+          let endD = new Date(endDate); // e.g. 2022-11-24
 
-            const promises = [];
-            if (userFilter?.length > 0) {
-              let startD = new Date(startDate); // e.g. 2022-10-24
-              startD.setDate(startD.getDate() - 2); // e.g. 2022-10-22
-
-              userFilter.forEach(user => {
-                promises.push(apiCalls[0]({
-                  teamId: user.teamId,
-                  userId: user.userId,
-                  since: new Date(startD).toISOString()
-                }));
-              });
-              setLoading(true);
-              let list = [];
-              const a = () => new Promise(resolve => {
-                Promise.allSettled(promises)
-                    .then(response => {
-                      response?.forEach((result) => {
-                        if (result.status === `fulfilled`) {
-                          if (result.value?.data?.length > 0) {
-                            list = list.concat(result.value.data);
-                          }
-                        }
-                      })
-                    })
-                    .finally(() => {
-                      setAnalytics({
-                        ...analytics,
-                        [organization]: {
-                          ...organizationAnalytics,
-                          [keys[0]]: list
-                        },
-                      });
-                      setLoading(false);
-                      resolve();
-                    });
-              });
-              Promise.allSettled([a()]).then();
-            }
-          } else {
-            let startD = new Date(startDate); // e.g. 2022-04-05
-            let endD = new Date(endDate); // e.g. 2022-11-24
-
-            if (
-                checkMetric(METRIC_TEAM_CHART_VALUES, metric) || // team chart only
-                metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA  // user Device_Data
-            ) {
-              startD.setDate(startD.getDate() - 2); // e.g. 2022-04-03
-              endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
-            }
-
-            setLoading(true);
-            const promises = [];
-            apiCalls.forEach(api => {
-              promises.push(api(organization, {
-                teamIds: pickedTeams,
-                startDate: dateFormat(new Date(startD)),
-                endDate: dateFormat(new Date(endD)),
-              }));
-            });
-
-            let list = {};
-            const a = () => new Promise(resolve => {
-              Promise.allSettled(promises)
-                  .then(response => {
-                    response?.forEach((result, index) => {
-                      if (result.status === `fulfilled`) {
-                        if (result.value?.data?.length > 0) {
-                          list = {...list, [keys[index]]: result.value.data};
-                        }
-                      }
-                    })
-                  })
-                  .finally(() => {
-                    setAnalytics({
-                      ...analytics,
-                      [organization]: {
-                        ...organizationAnalytics,
-                        ...list
-                      },
-                    });
-                    setLoading(false);
-                    resolve();
-                  });
-            });
-            Promise.allSettled([a()]).then();
+          if (
+            checkMetric(METRIC_TEAM_CHART_VALUES, metric) || // team chart only
+            metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA  // user Device_Data
+          ) {
+            startD.setDate(startD.getDate() - 2); // e.g. 2022-04-03
+            endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
           }
+
+          setLoading(true);
+          const promises = [];
+          apiCalls.forEach(api => {
+            promises.push(api(organization, {
+              teamIds: pickedTeams,
+              startDate: dateFormat(new Date(startD)),
+              endDate: dateFormat(new Date(endD)),
+            }));
+          });
+
+          let list = {};
+          const a = () => new Promise(resolve => {
+            Promise.allSettled(promises)
+              .then(response => {
+                response?.forEach((result, index) => {
+                  if (result.status === `fulfilled`) {
+                    if (result.value?.data?.length > 0) {
+                      list = {...list, [keys[index]]: result.value.data};
+                    }
+                  }
+                })
+              })
+              .finally(() => {
+                setAnalytics({
+                  ...analytics,
+                  [organization]: {
+                    ...organizationAnalytics,
+                    ...list
+                  },
+                });
+                setLoading(false);
+                resolve();
+              });
+          });
+          Promise.allSettled([a()]).then();
         }
       }
     }
@@ -577,9 +533,7 @@ export const AnalyticsProvider = (
         counts: tempRet,
       };
     } else if (checkMetric(METRIC_USER_CHART_VALUES, metric)) { // 40, 41
-      return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEAM_MEMBER_ALERTS, null, null).sort((a, b) => {
-        return new Date(a?.ts).getTime() > new Date(b.ts).getTime() ? -1 : 1;
-      });
+      return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.HEART_RATE, null, null);
     } else {
       return null;
     }

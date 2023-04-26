@@ -443,3 +443,7 @@ export const queryOrganizationTempCateData = (orgId, data) => {
 export const queryOrganizationCategoriesUsersInCBTZones = (orgId, data) => {
   return post(`/organization/${orgId}/data/temperatureCategoriesAndAlerts`, data);
 };
+
+export const queryOrganizationHeartRate = (orgId, data) => {
+  return post(`/organization/${orgId}/data/heartRate`, data);
+};
