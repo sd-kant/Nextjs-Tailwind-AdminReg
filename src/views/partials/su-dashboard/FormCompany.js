@@ -158,7 +158,10 @@ const formSchema = (t) => {
         t('saml url invalid'),
         function (value) {
           const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
-          return isEditing ? (this.parent.sso ? !!value : true) : true;
+          if (isEditing && this.parent.sso) {
+            return !!value;
+          }
+          return true;
         }
       ),
     samlLogoutUrl: Yup.string()
@@ -168,7 +171,10 @@ const formSchema = (t) => {
         t('saml logout url invalid'),
         function (value) {
           const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
-          return isEditing ? (this.parent.sso ? !!value : true) : true;
+          if (isEditing && this.parent.sso) {
+            return !!value;
+          }
+          return true;
         }
       ),
     samlIssuer: Yup.string()
@@ -177,7 +183,10 @@ const formSchema = (t) => {
         t('saml issuer invalid'),
         function (value) {
           const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
-          return isEditing ? (this.parent.sso ? !!value : true) : true;
+          if (isEditing && this.parent.sso) {
+            return !checkIfSpacesOnly(value);
+          }
+          return true;
         }
       ),
     idp: Yup.string()
@@ -187,7 +196,10 @@ const formSchema = (t) => {
         function (value) {
           const validList = ['aad'];
           const isEditing = this.parent.companyName?.__isNew__ || this.parent.isEditing;
-          return isEditing ? (this.parent.sso ? validList.includes(value) : true) : true;
+          if (isEditing && this.parent.sso) {
+            return validList.includes(value);
+          }
+          return true;
         }
       ),
   });
