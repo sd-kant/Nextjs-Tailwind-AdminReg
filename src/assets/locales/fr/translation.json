@@ -295,7 +295,7 @@
   "medical question 10": "Prenez-vous actuellement des médicaments contre le TDAH ?",
   "medical question 11": "Prenez-vous actuellement des médicaments qui affectent ou traitent une maladie rénale, la sclérose en plaques ou la narcolepsie ?",
   "medical complete header": "Vous avez terminé !",
-  "medical complete description": "Merci d’avoir complété le processus d’inscription Kenzen.  Veuillez télécharger l’application mobile Kenzen pour iOS ou Android à partir des liens ci-dessous.  Utilisez votre adresse e-mail et votre mot de passe pour vous connecter à l’application mobile.",
+  "medical complete description": "Merci d’avoir complété le processus d’inscription Kenzen.  Veuillez télécharger l’application mobile Kenzen pour iOS ou Android à partir des liens ci-dessous. Utilisez votre nom d'utilisateur et votre mot de passe pour vous connecter à l'application mobile.",
   "medical complete support": "Vous avez une question ou une préoccupation ? Consultez notre page d’assistance <a1>ici</a1> ! Ou envoyez-nous un e-mail à l’adresse suivante<a2> {{supportEmail}}</a2>",
   "resend": "renvoyer",
   "resend invitation": "renvoyer l'invitation",
