@@ -447,3 +447,7 @@ export const queryOrganizationCategoriesUsersInCBTZones = (orgId, data) => {
 export const queryOrganizationHeartRate = (orgId, data) => {
   return post(`/organization/${orgId}/data/heartRate`, data);
 };
+
+export const linkKenzenDevice = (deviceId) => {
+  return patch(`/device/${deviceId}`);
+}

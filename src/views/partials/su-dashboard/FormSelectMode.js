@@ -9,6 +9,8 @@ import {
 import workerOrange from "../../../assets/images/worker-orange-2.svg";
 import workerOrange1 from "../../../assets/images/worker-orange.svg";
 import settings from "../../../assets/images/settings-orange.svg";
+import ArrowIcon from "../../../assets/images/arrow.svg";
+import KenzenDeviceImg from "../../../assets/images/kenzen-device.png";
 import clsx from "clsx";
 import style from "./FormSelectMode.module.scss";
 import {
@@ -76,6 +78,43 @@ const FormSelectMode = (props) => {
 
             <div className={clsx(style.DescriptionDiv)}>
               <span className={clsx('font-small')}>{t("monitor your team")}</span>
+            </div>
+          </div>
+
+          <div
+            className={clsx(style.OptionWrapper)}
+            onClick={() => navigate("/connect/device")}
+          >
+            <div>
+              <span className={clsx('font-button-label')}>{t("phone free hub")}</span>
+            </div>
+
+            <div className={clsx(style.ImageWrapper3)}>
+              <img src={workerOrange} alt="worker"/>
+              <img src={ArrowIcon} alt="arrow"/>
+              <img src={KenzenDeviceImg} alt="kenzen device"/>
+            </div>
+
+            <div className={clsx(style.DescriptionDiv)}>
+              <span className={clsx('font-small')}>{t("connect your device")}</span>
+            </div>
+          </div>
+
+          <div
+            className={clsx(style.OptionWrapper)}
+            onClick={() => navigate("/profile")}
+          >
+            <div>
+              <span className={clsx('font-button-label text-capitalize')}>{t("profile")}</span>
+            </div>
+
+            <div className={clsx(style.ImageWrapper)}>
+              <img src={workerOrange1} className={clsx(style.WorkerOrangeImage)} alt="worker orange"/>
+              <img src={settings} className={clsx(style.SettingsImage)} alt="settings"/>
+            </div>
+
+            <div className={clsx(style.DescriptionDiv)}>
+              <span className={clsx('font-small text-capitalize')}>{t("modify profile")}</span>
             </div>
           </div>
         </div>

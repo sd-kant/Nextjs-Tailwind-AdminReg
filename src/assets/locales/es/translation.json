@@ -681,5 +681,18 @@
   "cbt full": "Temperatura corporal central",
   "password invalid 2": "Contraseña invalida. Verifique las reglas de contraseña a continuación.",
   "attention customers": "atencion clientes kenzen",
-  "attention guide": "Utilice <a1>{{link}}</a1> para iniciar sesión en nuestro sitio de clientes"
+  "attention guide": "Utilice <a1>{{link}}</a1> para iniciar sesión en nuestro sitio de clientes",
+  "phone free hub": "Hub sin teléfono",
+  "connect your device": "Conéctese a su dispositivo",
+  "device id label": "ID del dispositivo: ingrese los últimos 4 dígitos",
+  "device id placeholder": "Ingrese el ID del dispositivo o los últimos 4 dígitos del ID del dispositivo",
+  "device id required": "Ingrese una ID de dispositivo",
+  "device id invalid": "Ingrese una ID de dispositivo válida",
+  "device id explanation": "Localice los 4 dígitos ubicados en la parte frontal de su dispositivo o la identificación completa del dispositivo en la parte posterior del dispositivo",
+  "connect device": "Conectar al dispositivo",
+  "connect": "Conectar",
+  "connect device success": "Dispositivo conectado",
+  "device connected description": "Te has conectado con éxito a Device ID: ",
+  "device connected support": "¿Tiene alguna pregunta o inquietud? ¡Consulte nuestra página de soporte <a1>aquí</a1>! O envíenos un correo electrónico a: <a2>{{supportEmail}}</a2>",
+  "close window": "Cerrar ventana"
 }

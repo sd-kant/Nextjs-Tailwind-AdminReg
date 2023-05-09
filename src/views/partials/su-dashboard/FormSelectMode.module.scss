@@ -14,6 +14,7 @@
     width: calc(200px - 56px);
     background: $app-tf;
     cursor: pointer;
+    margin-top: 30px;
 
     .ImageWrapper {
       position: relative;
@@ -58,8 +59,14 @@
       }
     }
 
-    &:nth-child(2) {
-      margin-top: 30px;
+    .ImageWrapper3 {
+      position: relative;
+      display: flex;
+      padding: 15px 0;
+    }
+
+    &:nth-child(1) {
+      margin-top: 0;
     }
 
     .DescriptionDiv {
@@ -77,13 +84,11 @@
     display: grid;
     grid-template-columns: 200px 200px;
     grid-column-gap: 54px;
+    grid-row-gap: 30px;
 
     .OptionWrapper {
       width: auto;
-
-      &:nth-child(2) {
-        margin-top: 0;
-      }
+      margin-top: 0;
     }
   }
 }
