@@ -2,11 +2,11 @@ import React from "react";
 import {connect} from "react-redux";
 import {get} from "lodash";
 import {useLocation, Navigate} from "react-router-dom";
-import {ableToLogin} from "../../utils";
+import {isAdmin} from "../../utils";
 
 function RequireAdminRole({children, userType}) {
   let location = useLocation();
-  if (!ableToLogin(userType)) {
+  if (!isAdmin(userType)) {
     return <Navigate to="/profile" state={{from: location}} replace/>;
   }
 

@@ -7,7 +7,6 @@ import {actionTypes} from '../type';
 import {instance, login, lookupByUsername} from "../../http";
 import i18n from '../../i18nextInit';
 import {
-  ableToLogin,
   getDeviceId,
   setStorageAfterLogin,
   setStorageAfterRegisterLogin
@@ -108,11 +107,7 @@ function* loginSaga({payload: {
           setStorageAfterLogin({
             token, refreshToken, userType, orgId, baseUrl: instance.defaults.baseURL,
           });
-          if (ableToLogin(userType)) {
-            navigate("/select-mode");
-          } else {
-            navigate("/profile");
-          }
+          navigate("/select-mode");
         } else {
           if (havePhone) {
             navigate('/phone-verification/1');

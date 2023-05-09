@@ -9,7 +9,7 @@ import {
   showErrorNotificationAction
 } from "../../../redux/action/ui";
 import {
-  ableToLogin,
+  isAdmin,
   checkUsernameValidation1,
   checkUsernameValidation2,
   getDeviceId,
@@ -134,7 +134,7 @@ const FormLoginEntry = (props) => {
               orgId,
               baseUrl: baseUri,
             });
-            if (ableToLogin(userType)) {
+            if (isAdmin(userType)) {
               navigate("/select-mode");
             } else {
               navigate("/profile");

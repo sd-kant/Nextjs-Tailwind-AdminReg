@@ -72,16 +72,9 @@ export const checkPhoneNumberValidation = (value, country) => {
   return isValidPhoneNumber(value, country?.toUpperCase() ?? 'US');
 };
 
-export const ableToLogin = userType => {
+export const isAdmin = userType => {
   const validRoles = [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN];
-  let ableToLogin = false;
-  validRoles.forEach(it => {
-    if (userType?.includes(it)) {
-      ableToLogin = true;
-    }
-  });
-
-  return ableToLogin;
+  return validRoles.some(it => userType?.includes(it));
 };
 
 export const uuidv4 = () => {

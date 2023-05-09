@@ -18,7 +18,7 @@ import {
 import {logout} from "../../layouts/MainLayout";
 import {useNavigate} from "react-router-dom";
 import {
-  ableToLogin,
+  isAdmin,
   concatAsUrlParam,
   getUrlParamAsJson
 } from "../../../utils";
@@ -138,7 +138,7 @@ const Settings = (
       );
     }
 
-    if (!isEntry && ableToLogin(userType)) {
+    if (!isEntry && isAdmin(userType)) {
       let newItems = [];
       if (mode === "dashboard") {
         newItems = [

@@ -85,14 +85,12 @@ const Router = (
             element={
               <RequireAuth requireLoggedIn={true}>
                 <RequirePasswordValid>
-                  <RequireAdminRole>
-                    <SignInLayout
-                      isEntry={true}
-                      loggedIn={true}
-                    >
-                      <SelectMode/>
-                    </SignInLayout>
-                  </RequireAdminRole>
+                  <SignInLayout
+                    isEntry={true}
+                    loggedIn={true}
+                  >
+                    <SelectMode/>
+                  </SignInLayout>
                 </RequirePasswordValid>
               </RequireAuth>
             }
