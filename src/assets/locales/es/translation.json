@@ -695,6 +695,6 @@
   "device connected description": "Te has conectado con éxito a Device ID: ",
   "device connected support": "¿Tiene alguna pregunta o inquietud? ¡Consulte nuestra página de soporte <a1>aquí</a1>! O envíenos un correo electrónico a: <a2>{{supportEmail}}</a2>",
   "close window": "Cerrar ventana",
-  "profile": "profile",
-  "modify profile": "modify your profile"
+  "profile": "perfil",
+  "modify profile": "modifica tu perfil"
 }
