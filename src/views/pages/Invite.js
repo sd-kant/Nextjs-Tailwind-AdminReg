@@ -150,8 +150,7 @@ const Invite = (
           <Route
             path='/:organizationId/edit/modify/:id'
             element={
-              <WrappedMembersProvider
-              >
+              <WrappedMembersProvider>
                 <ParamsWrapper>
                   <FormInviteModify/>
                 </ParamsWrapper>

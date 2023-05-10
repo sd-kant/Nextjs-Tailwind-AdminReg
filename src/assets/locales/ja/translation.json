@@ -681,5 +681,20 @@
   "cbt full": "中核体温",
   "password invalid 2": "無効なパスワード。 以下のパスワード規則を確認してください。",
   "attention customers": "ご注意 けんぜんのお客様",
-  "attention guide": "<a1>{{link}}</a1> を使用して、カスタマー サイトにログインしてください"
+  "attention guide": "<a1>{{link}}</a1> を使用して、カスタマー サイトにログインしてください",
+  "phone free hub": "電話不要のハブ",
+  "connect your device": "デバイスに接続する",
+  "device id label": "デバイス ID: 下 4 桁を入力してください",
+  "device id placeholder": "デバイス ID またはデバイス ID の下 4 桁を入力します",
+  "device id required": "デバイス ID を入力してください",
+  "device id invalid": "有効なデバイス ID を入力してください",
+  "device id explanation": "デバイスの前面にある 4 桁の数字、またはデバイスの背面にある完全なデバイス ID を見つけます",
+  "connect device": "デバイスに接続",
+  "connect": "接続",
+  "connect device success": "デバイスが接続されました",
+  "device connected description": "デバイス ID に正常に接続しました: ",
+  "device connected support": "質問や懸念がありますか? <a1>こちら</a1>のサポート ページをご覧ください! または、<a2>{{supportEmail}}</a2> までメールでお問い合わせください。",
+  "close window": "ウィンドウを閉じる",
+  "profile": "プロフィール",
+  "modify profile": "プロフィールを変更する"
 }

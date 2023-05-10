@@ -15,6 +15,8 @@ const MobileLogin = lazy(() => import("./views/pages/MobileLogin"));
 const MobilePhoneRegister = lazy(() => import("./views/pages/MobilePhoneRegister"));
 const MobilePhoneVerification = lazy(() => import("./views/pages/MobilePhoneVerification"));
 const SelectMode = lazy(() => import("./views/pages/SelectMode"));
+const ConnectDevice = lazy(() => import("./views/pages/ConnectDevice"));
+const ConnectDeviceSuccess = lazy(() => import("./views/pages/ConnectDeviceSuccess"));
 const ForgotUsername = lazy(() => import("./views/pages/ForgotUsername"));
 const PasswordExpired = lazy(() => import("./views/pages/PasswordExpired"));
 const Profile = lazy(() => import("./views/pages/Profile"));
@@ -83,14 +85,42 @@ const Router = (
             element={
               <RequireAuth requireLoggedIn={true}>
                 <RequirePasswordValid>
-                  <RequireAdminRole>
-                    <SignInLayout
-                      isEntry={true}
-                      loggedIn={true}
-                    >
-                      <SelectMode/>
-                    </SignInLayout>
-                  </RequireAdminRole>
+                  <SignInLayout
+                    isEntry={true}
+                    loggedIn={true}
+                  >
+                    <SelectMode/>
+                  </SignInLayout>
+                </RequirePasswordValid>
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/connect/device"
+            element={
+              <RequireAuth requireLoggedIn={true}>
+                <RequirePasswordValid>
+                  <SignInLayout
+                    loggedIn={true}
+                  >
+                    <ConnectDevice/>
+                  </SignInLayout>
+                </RequirePasswordValid>
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/connect/device/success"
+            element={
+              <RequireAuth requireLoggedIn={true}>
+                <RequirePasswordValid>
+                  <SignInLayout
+                    loggedIn={true}
+                  >
+                    <ConnectDeviceSuccess/>
+                  </SignInLayout>
                 </RequirePasswordValid>
               </RequireAuth>
             }
