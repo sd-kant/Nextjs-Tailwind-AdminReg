@@ -694,5 +694,7 @@
   "connect device success": "Dispositivo conectado",
   "device connected description": "Você se conectou com sucesso ao Device ID: ",
   "device connected support": "Tem uma pergunta ou preocupação? Confira nossa página de suporte <a1>aqui</a1>! Ou envie-nos um e-mail para: <a2>{{supportEmail}}</a2>",
-  "close window": "janela fechada"
+  "close window": "janela fechada",
+  "profile": "perfil",
+  "modify profile": "modifique seu perfil"
 }

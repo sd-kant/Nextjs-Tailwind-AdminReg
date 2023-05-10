@@ -694,5 +694,7 @@
   "connect device success": "デバイスが接続されました",
   "device connected description": "デバイス ID に正常に接続しました: ",
   "device connected support": "質問や懸念がありますか? <a1>こちら</a1>のサポート ページをご覧ください! または、<a2>{{supportEmail}}</a2> までメールでお問い合わせください。",
-  "close window": "ウィンドウを閉じる"
+  "close window": "ウィンドウを閉じる",
+  "profile": "プロフィール",
+  "modify profile": "プロフィールを変更する"
 }

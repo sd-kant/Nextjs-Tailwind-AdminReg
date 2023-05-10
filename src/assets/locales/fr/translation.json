@@ -694,5 +694,7 @@
   "connect device success": "Appareil connecté",
   "device connected description": "Vous avez réussi à vous connecter à Device ID :",
   "device connected support": "Vous avez une question ou un souci ? Consultez notre page d'assistance <a1>ici</a1>! Ou envoyez-nous un e-mail à : <a2>{{supportEmail}}</a2>",
-  "close window": "Fermer la fenêtre"
+  "close window": "Fermer la fenêtre",
+  "profile": "profil",
+  "modify profile": "modifier votre profil"
 }
