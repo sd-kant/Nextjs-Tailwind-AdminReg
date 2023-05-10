@@ -1,0 +1,14 @@
+.TopWrapper {
+}
+
+.CancelBtn {
+  margin-top: 15px;
+  margin-left: 0;
+}
+
+@media only screen and (min-width: 768px) {
+  .CancelBtn {
+    margin-top: 0;
+    margin-left: 15px;
+  }
+}
