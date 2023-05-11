@@ -49,8 +49,7 @@ const DropdownMenu = ({ icon, title = 'edit column', items = defaultItems }) => 
       position="bottom right"
       arrow={false}
       keepTooltipInside={true}
-      {...{ contentStyle: popupContentStyle }}
-    >
+      {...{ contentStyle: popupContentStyle }}>
       <div className={clsx(style.Popup)}>
         <div className={clsx(style.MenuHeaderItem)}>
           <span className={clsx('font-binary text-capitalize')}>{title}</span>
@@ -63,8 +62,7 @@ const DropdownMenu = ({ icon, title = 'edit column', items = defaultItems }) => 
                 it.highlight ? style.HighLight : null,
                 'cursor-pointer'
               )}
-              onClick={() => handleClick(it)}
-            >
+              onClick={() => handleClick(it)}>
               <span className={clsx('font-binary')}>{it.title}</span>
             </div>
             {index < items.length - 1 && <div className={clsx(style.Divider)} />}

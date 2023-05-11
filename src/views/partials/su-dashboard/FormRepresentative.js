@@ -87,8 +87,7 @@ const FormRepresentative = (props) => {
       <div style={{ padding: '0 10px' }}>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate('/invite/company')}
-        >
+          onClick={() => navigate('/invite/company')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -108,13 +107,11 @@ const FormRepresentative = (props) => {
 
         <div
           className="grouped-form mt-40"
-          style={{ maxWidth: '700px', minHeight: '300px', maxHeight: '400px', overFlowY: 'auto' }}
-        >
+          style={{ maxWidth: '700px', minHeight: '300px', maxHeight: '400px', overFlowY: 'auto' }}>
           {orgAdmins?.map((user, index) => (
             <div
               className={`team-representative-wrapper d-flex ${index !== 0 ? 'mt-25' : ''}`}
-              key={`already-registered-member-${index}`}
-            >
+              key={`already-registered-member-${index}`}>
               <div className="d-flex flex-column">
                 {index === 0 && (
                   <label className="font-input-label text-white">{t('firstName')}</label>
@@ -166,8 +163,7 @@ const FormRepresentative = (props) => {
                   className={`team-representative-wrapper d-flex ${
                     orgAdmins.length !== 0 || index !== 0 ? 'mt-25' : ''
                   }`}
-                  key={`member-${index}`}
-                >
+                  key={`member-${index}`}>
                   <div className="d-flex flex-column">
                     {orgAdmins?.length === 0 && index === 0 && (
                       <label className="font-input-label text-white">{t('firstName')}</label>
@@ -273,8 +269,7 @@ const FormRepresentative = (props) => {
 
         <div
           className="d-flex align-center mt-40 mb-15"
-          style={{ zIndex: 1, position: 'relative' }}
-        >
+          style={{ zIndex: 1, position: 'relative' }}>
           <img
             src={plusCircleFire}
             className="cursor-pointer"
@@ -294,8 +289,7 @@ const FormRepresentative = (props) => {
         {orgAdmins?.length > 0 && (
           <span
             className={clsx(style.Skip, 'font-binary')}
-            onClick={() => navigate(`/invite/${organizationId}/team-mode`)}
-          >
+            onClick={() => navigate(`/invite/${organizationId}/team-mode`)}>
             {t('skip')}
           </span>
         )}

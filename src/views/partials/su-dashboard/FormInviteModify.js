@@ -209,8 +209,7 @@ const FormInviteModify = (props) => {
             &nbsp;&nbsp;
             <span
               className="font-button-label text-orange cursor-pointer"
-              onClick={() => navigate(`/invite/${organizationId}/team-modify`)}
-            >
+              onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
               {t('previous')}
             </span>
           </div>
@@ -243,8 +242,7 @@ const FormInviteModify = (props) => {
                   <div className={clsx(style.SaveIconWrapper)}>
                     <span
                       className="text-orange font-input-label text-uppercase"
-                      onClick={submitForm}
-                    >
+                      onClick={submitForm}>
                       {t('save')}
                     </span>
                   </div>

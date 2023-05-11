@@ -24,8 +24,7 @@ const LogoutButton = ({ t }) => {
       />
       <label
         className={clsx(style.LogoutLabel, 'font-input-label d-flex cursor-pointer')}
-        onClick={() => setVisiblePopup(true)}
-      >
+        onClick={() => setVisiblePopup(true)}>
         <img src={logoutIcon} alt="upload icon" />
         &nbsp;&nbsp;&nbsp;
         <span className="capitalize">{t('logout')}</span>

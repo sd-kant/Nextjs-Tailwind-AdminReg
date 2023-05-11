@@ -108,8 +108,7 @@ const FormCompanySelect = (props) => {
           <button
             className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
             type={'button'}
-            onClick={handleCancel}
-          >
+            onClick={handleCancel}>
             <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
           </button>
         </div>

@@ -21,15 +21,13 @@ const CustomHeader = ({
       margin: 10,
       display: 'flex',
       justifyContent: 'center'
-    }}
-  >
+    }}>
     <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
       {'<'}
     </button>
     <select
       value={new Date(date).getFullYear()}
-      onChange={({ target: { value } }) => changeYear(value)}
-    >
+      onChange={({ target: { value } }) => changeYear(value)}>
       {years.map((option) => (
         <option key={option} value={option}>
           {option}
@@ -39,8 +37,7 @@ const CustomHeader = ({
 
     <select
       value={MONTHS[new Date(date).getMonth()]}
-      onChange={({ target: { value } }) => changeMonth(MONTHS.indexOf(value))}
-    >
+      onChange={({ target: { value } }) => changeMonth(MONTHS.indexOf(value))}>
       {MONTHS.map((option) => (
         <option key={option} value={option}>
           {option}

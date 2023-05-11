@@ -16,8 +16,7 @@ const ResultTableHeader = () => {
           return (
             <td
               className={clsx(style.HeaderCell, index === 0 ? style.FirstColumn : null)}
-              key={`header-${index}`}
-            >
+              key={`header-${index}`}>
               {it}
               {visibleSort && (
                 <DropdownMenu

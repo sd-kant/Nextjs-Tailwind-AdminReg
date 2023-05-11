@@ -226,8 +226,7 @@ const FormMedical = (props) => {
             answer !== null ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
           type={answer !== null ? 'submit' : 'button'}
-          onClick={answer !== null ? goToNext : null}
-        >
+          onClick={answer !== null ? goToNext : null}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

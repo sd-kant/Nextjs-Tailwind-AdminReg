@@ -12,8 +12,7 @@ const SuccessModal = (props) => {
     <div className={clsx(style.Overlay, show ? 'd-block' : 'd-none')}>
       <div
         className={`modal z-index-2 ${show ? 'd-block' : 'd-none'}`}
-        style={{ padding: '65px 65px 25px 65px' }}
-      >
+        style={{ padding: '65px 65px 25px 65px' }}>
         <div className="modal-header text-center">
           <span className="font-modal-header text-white">{t('team create success')}</span>
         </div>
@@ -33,8 +32,7 @@ const SuccessModal = (props) => {
             <label
               className="upload-photo-label font-button-label mt-25 cursor-pointer z-index-2"
               style={{ margin: 0 }}
-              onClick={props.onCancel}
-            >
+              onClick={props.onCancel}>
               <span style={{ textTransform: 'uppercase' }}>{t('create modify team')}</span>
             </label>
             <br />

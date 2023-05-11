@@ -18,8 +18,7 @@ const Notifications = ({ t }) => {
 
           <div
             className={clsx('cursor-pointer')}
-            onClick={() => removeNotification(notification.id)}
-          >
+            onClick={() => removeNotification(notification.id)}>
             <span className={clsx('text-orange font-input-label text-capitalize')}>
               {t('close')}
             </span>

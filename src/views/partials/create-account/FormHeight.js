@@ -96,8 +96,7 @@ const FormHeight = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate('/create-account/unit')}
-        >
+          onClick={() => navigate('/create-account/unit')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -118,8 +117,7 @@ const FormHeight = (props) => {
                 <select
                   className="font-input-label text-white"
                   value={values['feet']}
-                  onChange={(e) => onChangeFeetInch(e.target.value, values['inch'])}
-                >
+                  onChange={(e) => onChangeFeetInch(e.target.value, values['inch'])}>
                   {FT_OPTIONS.map((ftOption) => (
                     <option value={ftOption} key={`ft-${ftOption}`}>
                       {ftOption}
@@ -134,8 +132,7 @@ const FormHeight = (props) => {
                 <select
                   className="font-input-label text-white"
                   value={values['inch']}
-                  onChange={(e) => onChangeFeetInch(values['feet'], e.target.value)}
-                >
+                  onChange={(e) => onChangeFeetInch(values['feet'], e.target.value)}>
                   {IN_OPTIONS.map((inOption) => (
                     <option value={inOption} key={`ft-${inOption}`}>
                       {inOption}

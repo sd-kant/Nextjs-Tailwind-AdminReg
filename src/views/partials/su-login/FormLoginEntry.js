@@ -171,8 +171,7 @@ const FormLoginEntry = (props) => {
         <div className="mt-40 d-block">
           <Link
             to={`/forgot-username?from=${fromMobile ? 'mobile' : 'web'}`}
-            className="font-input-label text-orange no-underline"
-          >
+            className="font-input-label text-orange no-underline">
             {t('forgot your username')}
           </Link>
         </div>
@@ -184,8 +183,7 @@ const FormLoginEntry = (props) => {
             className={`button ${
               values['username'] ? 'active cursor-pointer' : 'inactive cursor-default'
             }`}
-            type={values['username'] ? 'submit' : 'button'}
-          >
+            type={values['username'] ? 'submit' : 'button'}>
             <span className="font-button-label text-white text-uppercase">{t('next')}</span>
           </button>
         </div>

@@ -43,8 +43,7 @@ const FormPhotoUpload = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate('/create-account/startWork')}
-        >
+          onClick={() => navigate('/create-account/startWork')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>

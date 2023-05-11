@@ -24,8 +24,7 @@ const TrueFalse = ({ answer, options, onChange, disabled = false }) => {
               onClick={() => {
                 if (!disabled) onChange(option.value);
               }}
-              key={`option-${index}`}
-            >
+              key={`option-${index}`}>
               <img src={icon} alt={`${option.title.toLowerCase()} icon`} />
 
               <span className={`font-binary mt-8 text-white`}>{option.title}</span>

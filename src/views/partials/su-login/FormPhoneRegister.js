@@ -46,8 +46,7 @@ const FormPhoneRegister = (props) => {
           onClick={() => {
             setToken(null);
             navigate('/login');
-          }}
-        >
+          }}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange text-uppercase">{t('back to login')}</span>
@@ -82,8 +81,7 @@ const FormPhoneRegister = (props) => {
           className={`button ${
             values?.['phoneNumber']?.value ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
-          type={values?.['phoneNumber']?.value ? 'submit' : 'button'}
-        >
+          type={values?.['phoneNumber']?.value ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

@@ -67,8 +67,7 @@ const FromConnectMemberDevice = (props) => {
             className={`button ${
               values['deviceId'] ? 'active cursor-pointer' : 'inactive cursor-default'
             }`}
-            type={values['deviceId'] ? 'submit' : 'button'}
-          >
+            type={values['deviceId'] ? 'submit' : 'button'}>
             <span className="font-button-label text-white">
               {isEditing ? t('next') : t('connect')}
             </span>
@@ -77,8 +76,7 @@ const FromConnectMemberDevice = (props) => {
             <button
               className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
               type={'button'}
-              onClick={() => setFieldValue('isEditing', true)}
-            >
+              onClick={() => setFieldValue('isEditing', true)}>
               <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
             </button>
           )}

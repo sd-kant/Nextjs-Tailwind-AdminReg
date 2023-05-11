@@ -39,8 +39,7 @@ const FormTeamMode = (props) => {
         {isAdmin && (
           <div
             className="d-flex align-center cursor-pointer"
-            onClick={() => navigate('/invite/company')}
-          >
+            onClick={() => navigate('/invite/company')}>
             <img src={backIcon} alt="back" />
             &nbsp;&nbsp;
             <span className="font-button-label text-orange">{t('previous')}</span>
@@ -60,8 +59,7 @@ const FormTeamMode = (props) => {
             className={`tap cursor-pointer`}
             onClick={() => {
               navigate(`/invite/${orgId}/team-create`);
-            }}
-          >
+            }}>
             <img src={plusIcon} alt="male icon" />
 
             <span className="font-binary mt-8">{t('create')}</span>
@@ -71,8 +69,7 @@ const FormTeamMode = (props) => {
             className={`ml-40 cursor-pointer tap`}
             onClick={() => {
               navigate(`/invite/${organizationId}/team-modify`);
-            }}
-          >
+            }}>
             <img src={editIcon} alt="female icon" />
 
             <span className="font-binary mt-8 capitalize">{t('modify')}</span>
@@ -82,8 +79,7 @@ const FormTeamMode = (props) => {
             className={`ml-40 tap cursor-pointer`}
             onClick={() => {
               navigate(`/invite/${organizationId}/search`);
-            }}
-          >
+            }}>
             <img src={searchIcon} alt="search icon" />
 
             <span className="font-binary mt-8 capitalize">{t('search')}</span>

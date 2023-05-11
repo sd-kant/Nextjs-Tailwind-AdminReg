@@ -8,8 +8,7 @@ const Radio = (props) => {
       <label
         className={`radio-container font-binary ${
           disabled ? 'text-gray cursor-default' : 'text-white'
-        }`}
-      >
+        }`}>
         {title}
         <input
           type="radio"

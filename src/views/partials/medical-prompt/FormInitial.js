@@ -106,8 +106,7 @@ const FormInitial = (props) => {
             agreeTerms && understandTerms ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
           type="button"
-          onClick={agreeTerms && understandTerms ? submit : null}
-        >
+          onClick={agreeTerms && understandTerms ? submit : null}>
           <span className="font-button-label text-white">{t('continue')}</span>
         </button>
       </div>

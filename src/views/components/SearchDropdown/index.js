@@ -14,8 +14,7 @@ const SearchDropdown = React.forwardRef((props, ref) => {
               <div
                 key={`async-dropdown-item-${index}`}
                 className={clsx(style.Item)}
-                onClick={() => onItemClick(item.value)}
-              >
+                onClick={() => onItemClick(item.value)}>
                 <div>
                   <span className="text-black font-binary">{item.title}</span>
                 </div>

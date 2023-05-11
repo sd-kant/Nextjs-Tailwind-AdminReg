@@ -477,16 +477,14 @@ const FormInvite = (props) => {
                   className={`button ${
                     ableToSubmit ? 'active cursor-pointer' : 'inactive cursor-default'
                   }`}
-                  type={values['users']?.length > 0 ? 'submit' : 'button'}
-                >
+                  type={values['users']?.length > 0 ? 'submit' : 'button'}>
                   <span className="font-button-label text-white text-uppercase">{t('save')}</span>
                 </button>
 
                 <button
                   className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
                   type={'button'}
-                  onClick={handleBack}
-                >
+                  onClick={handleBack}>
                   <span className="font-button-label text-orange text-uppercase">
                     {t('cancel')}
                   </span>
@@ -497,8 +495,7 @@ const FormInvite = (props) => {
                 <div>
                   <span
                     className="text-orange font-input-label text-uppercase"
-                    onClick={addAnother}
-                  >
+                    onClick={addAnother}>
                     {t('add')}
                   </span>
                 </div>
@@ -508,8 +505,7 @@ const FormInvite = (props) => {
                     className={`${
                       ableToSubmit ? `text-orange` : 'text-gray-2'
                     } font-input-label text-uppercase`}
-                    onClick={handleSubmit}
-                  >
+                    onClick={handleSubmit}>
                     {t('save')}
                   </span>
                 </div>
@@ -517,8 +513,7 @@ const FormInvite = (props) => {
                 <div>
                   <span
                     className="text-orange font-input-label text-uppercase"
-                    onClick={handleBack}
-                  >
+                    onClick={handleBack}>
                     {t('cancel')}
                   </span>
                 </div>

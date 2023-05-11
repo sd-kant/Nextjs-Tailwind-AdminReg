@@ -45,8 +45,7 @@ const RestBar = ({ t, boxShadow = false }) => {
             <div className={clsx(style.Setting)}>
               <span
                 className={clsx('font-heading-small text-capitalize')}
-                style={{ marginRight: '15px' }}
-              >
+                style={{ marginRight: '15px' }}>
                 {t('setting')}
               </span>
 

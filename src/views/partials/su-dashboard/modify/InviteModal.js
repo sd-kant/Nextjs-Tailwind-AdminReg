@@ -42,8 +42,7 @@ const InviteModal = ({ t, isOpen = false, onClose, onClickCreate }) => {
       appElement={document.getElementsByTagName('body')}
       onAfterOpen={disableScroll}
       onAfterClose={enableScroll}
-      preventScroll={true}
-    >
+      preventScroll={true}>
       <div className={clsx(style.Wrapper)}>
         <div className={clsx(style.RemoveIconWrapper)} onClick={onClose}>
           <img src={removeIcon} alt="remove icon" />
@@ -83,8 +82,7 @@ const InviteModal = ({ t, isOpen = false, onClose, onClickCreate }) => {
               <button
                 className="active cursor-pointer button"
                 type="button"
-                onClick={onClickCreate}
-              >
+                onClick={onClickCreate}>
                 <span className="font-button-label text-white text-uppercase">
                   {'create new team member'}
                 </span>

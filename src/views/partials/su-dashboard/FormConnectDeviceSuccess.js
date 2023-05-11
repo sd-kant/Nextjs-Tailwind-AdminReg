@@ -52,8 +52,7 @@ const FormConnectDeviceSuccess = () => {
         <button
           className="button active cursor-pointer text-uppercase"
           type="button"
-          onClick={() => navigate('/select-mode')}
-        >
+          onClick={() => navigate('/select-mode')}>
           <span className="font-button-label text-white">{t('close window')}</span>
         </button>
       </div>

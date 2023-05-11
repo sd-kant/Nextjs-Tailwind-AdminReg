@@ -42,8 +42,7 @@ const MultiSelectPopup = ({ label, options, value, onChange }) => {
           value?.length === 0 ? style.No : style.Yes,
           'font-heading-small'
         )}
-        onClick={() => setOpen(true)}
-      >
+        onClick={() => setOpen(true)}>
         <span>{label}</span>
         {options?.length > 0 ? (
           <div className={clsx(style.Indicator)}>
@@ -64,8 +63,7 @@ const MultiSelectPopup = ({ label, options, value, onChange }) => {
         className={clsx(style.Modal)}
         overlayClassName={clsx(style.ModalOverlay)}
         onRequestClose={() => setOpen(false)}
-        appElement={document.getElementsByTagName('body')}
-      >
+        appElement={document.getElementsByTagName('body')}>
         <div className={clsx(style.Wrapper)}>
           <img
             className={clsx(style.CloseIcon)}

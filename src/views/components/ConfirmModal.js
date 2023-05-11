@@ -42,8 +42,7 @@ const ConfirmModal = ({
                 <label
                   className="upload-photo-label font-button-label mt-25 cursor-pointer z-index-2"
                   style={{ margin: 0 }}
-                  onClick={onCancel}
-                >
+                  onClick={onCancel}>
                   <span style={{ textTransform: 'uppercase' }}>
                     {cancelText ? cancelText : t('create another team')}
                   </span>

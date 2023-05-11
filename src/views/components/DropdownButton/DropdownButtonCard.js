@@ -16,8 +16,7 @@ const DropDownCard = ({ option, data = [], setOpen, onClickOption }) => (
           onClick={() => {
             setOpen(false);
             onClickOption(item.value);
-          }}
-        >
+          }}>
           {item.label}
         </li>
       ))}

@@ -89,8 +89,7 @@ const FormMobileLogin = (props) => {
         <div className="mt-40 d-block">
           <Link
             to={`/forgot-password?from=mobile`}
-            className="font-input-label text-orange no-underline"
-          >
+            className="font-input-label text-orange no-underline">
             {t('forgot password')}
           </Link>
         </div>
@@ -104,8 +103,7 @@ const FormMobileLogin = (props) => {
                 ? 'active cursor-pointer'
                 : 'inactive cursor-default'
             }`}
-            type={values['username'] && values['password'] ? 'submit' : 'button'}
-          >
+            type={values['username'] && values['password'] ? 'submit' : 'button'}>
             <span className="font-button-label text-white">{t('sign in')}</span>
           </button>
         </div>

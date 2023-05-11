@@ -42,8 +42,7 @@ const FormUpload = (props) => {
         className={clsx(style.DropZoneArea, hover ? style.Hover : '')}
         onClick={fileInputClicked}
         onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-      >
+        onMouseLeave={() => setHover(false)}>
         <img src={uploadIcon} alt="upload icon" />
 
         <span className={clsx(style.DropZoneLabel)}>{t('upload csv')}</span>
@@ -115,8 +114,7 @@ const FormUpload = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate(`/invite/${organizationId}/select/${id}`)}
-        >
+          onClick={() => navigate(`/invite/${organizationId}/select/${id}`)}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>

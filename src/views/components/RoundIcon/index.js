@@ -13,8 +13,7 @@ const RoundIcon = ({ selected = false, icon, customStyle, title }) => {
         </div>
         {!!title && (
           <span
-            className={clsx('font-search', style.Label, selected ? 'text-white' : 'text-gray-2')}
-          >
+            className={clsx('font-search', style.Label, selected ? 'text-white' : 'text-gray-2')}>
             {title}
           </span>
         )}

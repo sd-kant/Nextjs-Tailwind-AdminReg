@@ -40,8 +40,7 @@ const FormUnit = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate('/create-account/dob')}
-        >
+          onClick={() => navigate('/create-account/dob')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -54,8 +53,7 @@ const FormUnit = (props) => {
         <div className="mt-40 d-flex">
           <div
             className={`tap cursor-pointer ${values['measureType'] === IMPERIAL ? 'active' : ''}`}
-            onClick={() => setFieldValue('measureType', IMPERIAL)}
-          >
+            onClick={() => setFieldValue('measureType', IMPERIAL)}>
             <img src={imperialIcon} alt="imperial icon" />
 
             <span className="font-binary mt-8">{t('imperial')}</span>
@@ -65,8 +63,7 @@ const FormUnit = (props) => {
             className={`ml-40 cursor-pointer tap ${
               values['measureType'] === METRIC ? 'active' : ''
             }`}
-            onClick={() => setFieldValue('measureType', METRIC)}
-          >
+            onClick={() => setFieldValue('measureType', METRIC)}>
             <img src={metricIcon} alt="metric icon" />
 
             <span className="font-binary mt-8">{t('metric')}</span>
@@ -79,8 +76,7 @@ const FormUnit = (props) => {
           className={`button ${
             values['measureType'] ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
-          type={values['measureType'] ? 'submit' : 'button'}
-        >
+          type={values['measureType'] ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

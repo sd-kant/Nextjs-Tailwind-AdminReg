@@ -37,8 +37,7 @@ const FormWorkLength = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate('/create-account/timezone')}
-        >
+          onClick={() => navigate('/create-account/timezone')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -69,8 +68,7 @@ const FormWorkLength = (props) => {
           className={`button ${
             values['workLength'] ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
-          type={values['workLength'] ? 'submit' : 'button'}
-        >
+          type={values['workLength'] ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

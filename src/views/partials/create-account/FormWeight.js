@@ -54,8 +54,7 @@ const FormWeight = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate('/create-account/height')}
-        >
+          onClick={() => navigate('/create-account/height')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -91,8 +90,7 @@ const FormWeight = (props) => {
           className={`button ${
             values['weight'] ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
-          type={values['weight'] ? 'submit' : 'button'}
-        >
+          type={values['weight'] ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

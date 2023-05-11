@@ -82,8 +82,7 @@ const FormStartWork = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate('/create-account/workLength')}
-        >
+          onClick={() => navigate('/create-account/workLength')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -103,8 +102,7 @@ const FormStartWork = (props) => {
                 value={values['hour']}
                 onChange={(e) => {
                   setFieldValue('hour', e.target.value);
-                }}
-              >
+                }}>
                 {hourOptions &&
                   hourOptions.map((hourOption) => (
                     <option value={hourOption} key={`hour-${hourOption}`}>
@@ -120,8 +118,7 @@ const FormStartWork = (props) => {
                 value={values['minute']}
                 onChange={(e) => {
                   setFieldValue('minute', e.target.value);
-                }}
-              >
+                }}>
                 {minuteOptions &&
                   minuteOptions.map((minuteOption) => (
                     <option value={minuteOption} key={`minute-${minuteOption}`}>
@@ -137,8 +134,7 @@ const FormStartWork = (props) => {
                 value={values['startTimeOption']}
                 onChange={(e) => {
                   setFieldValue('startTimeOption', e.target.value);
-                }}
-              >
+                }}>
                 {options &&
                   options.map((option) => (
                     <option value={option.value} key={`option-${option.value}`}>

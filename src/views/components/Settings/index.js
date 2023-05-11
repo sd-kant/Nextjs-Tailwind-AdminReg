@@ -103,8 +103,7 @@ const Settings = ({
             href={'https://kenzen.com/support/'}
             target="_blank"
             rel="noreferrer"
-            className="text-black no-underline no-outline"
-          >
+            className="text-black no-underline no-outline">
             {t('support')}
           </a>
         )
@@ -115,8 +114,7 @@ const Settings = ({
             href={'https://kenzen.com/kenzen-solution-privacy-policy/'}
             target="_blank"
             rel="noreferrer"
-            className="text-black no-underline no-outline"
-          >
+            className="text-black no-underline no-outline">
             {t('privacy policy')}
           </a>
         )
@@ -244,8 +242,7 @@ const Settings = ({
         position={direction}
         arrow={false}
         closeOnEscape
-        {...{ contentStyle: popupContentStyle }}
-      >
+        {...{ contentStyle: popupContentStyle }}>
         <div className={clsx(style.Popup)}>
           <div className={clsx(style.UserInfo)}>
             <img className={clsx(style.Avatar)} src={defaultAvatar} alt="avatar" />
@@ -271,8 +268,7 @@ const Settings = ({
             <div
               key={`menu-item-${index}`}
               className={clsx(style.MenuItem, 'cursor-pointer')}
-              onClick={it.handleClick ? () => it.handleClick() : () => {}}
-            >
+              onClick={it.handleClick ? () => it.handleClick() : () => {}}>
               <span className={clsx('font-binary')}>{it.title}</span>
             </div>
           ))}
@@ -290,8 +286,7 @@ const Settings = ({
           ) : null}
           <div
             className={clsx(style.MenuItem, 'cursor-pointer')}
-            onClick={() => setVisiblePopup(true)}
-          >
+            onClick={() => setVisiblePopup(true)}>
             <span className={clsx('font-binary')}>{t('log out')}</span>
           </div>
 

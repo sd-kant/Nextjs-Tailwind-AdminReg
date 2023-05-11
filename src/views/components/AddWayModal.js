@@ -24,8 +24,7 @@ const AddWayModal = (props) => {
           <div
             className={`tap cursor-pointer`}
             style={{ background: '#212121' }}
-            onClick={props.onOk}
-          >
+            onClick={props.onOk}>
             <img src={editIcon} alt="edit icon" />
 
             <span className="font-binary mt-8">{t('manual')}</span>

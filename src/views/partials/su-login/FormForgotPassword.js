@@ -90,8 +90,7 @@ const FormForgotPassword = (props) => {
           className={`button ${
             values['username'] ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
-          type={values['username'] ? 'submit' : 'button'}
-        >
+          type={values['username'] ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('send')}</span>
         </button>
       </div>

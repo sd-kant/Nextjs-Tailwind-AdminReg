@@ -28,8 +28,7 @@ const TeamsPopup = ({ t, content }) => {
       position="top"
       arrow={false}
       ref={ref}
-      {...{ contentStyle: popupContentStyle }}
-    >
+      {...{ contentStyle: popupContentStyle }}>
       <div
         className={clsx(style.Wrapper)}
         /*onKeyDown={alert}*/
@@ -51,8 +50,7 @@ const TeamsPopup = ({ t, content }) => {
               onClick={() => {
                 handleMoveClick(team.value);
                 ref.current.close();
-              }}
-            >
+              }}>
               <span className={clsx('text-white')}>{team.label}</span>
               {/*&nbsp;&nbsp;&nbsp;
                 <span className={clsx('text-gray-2')}>

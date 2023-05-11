@@ -245,8 +245,7 @@ const Header = ({ t, myOrganization }) => {
                   <select
                     className={clsx(style.Selector, 'font-input-label text-white')}
                     value={sizePerPage}
-                    onChange={handleChangePageSize}
-                  >
+                    onChange={handleChangePageSize}>
                     <option value={10}>10</option>
                     <option value={25}>25</option>
                     <option value={50}>50</option>

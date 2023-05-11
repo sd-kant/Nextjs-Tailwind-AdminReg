@@ -130,8 +130,7 @@ const FormPassword = (props) => {
               ? 'active cursor-pointer'
               : 'inactive cursor-default'
           }`}
-          type={values['password'] && values['confirmPassword'] ? 'submit' : 'button'}
-        >
+          type={values['password'] && values['confirmPassword'] ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

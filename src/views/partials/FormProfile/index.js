@@ -335,8 +335,7 @@ const FormProfile = (props) => {
           <div className={clsx('form-header-medium', style.HeadLeft)}>
             <span
               className="font-button-label d-block text-orange"
-              onClick={() => setStatus({ edit: true, confirmedCnt, visibleModal })}
-            >
+              onClick={() => setStatus({ edit: true, confirmedCnt, visibleModal })}>
               Edit
             </span>
           </div>
@@ -346,8 +345,7 @@ const FormProfile = (props) => {
             style.ContentWrapper,
             visibleModal ? style.OverflowYHidden : style.OverflowYAuto,
             'form-header-medium'
-          )}
-        >
+          )}>
           <ScrollToFieldError />
           {/*name section*/}
           <div className="mt-10 form-header-medium">
@@ -456,8 +454,7 @@ const FormProfile = (props) => {
                     value={values['feet']}
                     name="feet"
                     disabled={!edit}
-                    onChange={changeFormField}
-                  >
+                    onChange={changeFormField}>
                     {FT_OPTIONS.map((ftOption) => (
                       <option value={ftOption} key={`ft-${ftOption}`}>
                         {ftOption}
@@ -474,8 +471,7 @@ const FormProfile = (props) => {
                     value={values['inch']}
                     name="inch"
                     disabled={!edit}
-                    onChange={changeFormField}
-                  >
+                    onChange={changeFormField}>
                     {IN_OPTIONS.map((inOption) => (
                       <option value={inOption} key={`ft-${inOption}`}>
                         {inOption}
@@ -589,8 +585,7 @@ const FormProfile = (props) => {
                   value={values['hour']}
                   name="hour"
                   disabled={!edit}
-                  onChange={changeFormField}
-                >
+                  onChange={changeFormField}>
                   {hourOptions &&
                     hourOptions.map((hourOption) => (
                       <option value={hourOption} key={`hour-${hourOption}`}>
@@ -606,8 +601,7 @@ const FormProfile = (props) => {
                   value={values['minute']}
                   name="minute"
                   disabled={!edit}
-                  onChange={changeFormField}
-                >
+                  onChange={changeFormField}>
                   {minuteOptions &&
                     minuteOptions.map((minuteOption) => (
                       <option value={minuteOption} key={`minute-${minuteOption}`}>
@@ -623,8 +617,7 @@ const FormProfile = (props) => {
                   value={values['startTimeOption']}
                   name="startTimeOption"
                   disabled={!edit}
-                  onChange={changeFormField}
-                >
+                  onChange={changeFormField}>
                   {mOptions?.map((option) => (
                     <option value={option.value} key={`option-${option.value}`}>
                       {option.title}
@@ -665,8 +658,7 @@ const FormProfile = (props) => {
                 className={`button ${
                   changes.length > 0 ? 'active cursor-pointer' : 'inactive cursor-default'
                 }`}
-                type={changes?.length > 0 ? 'submit' : 'button'}
-              >
+                type={changes?.length > 0 ? 'submit' : 'button'}>
                 <span className="font-button-label text-white text-uppercase">
                   {t('save & close')}
                 </span>
@@ -677,8 +669,7 @@ const FormProfile = (props) => {
                 type={'button'}
                 onClick={() => {
                   setStatus({ edit, confirmedCnt: confirmedCnt + 1, visibleModal });
-                }}
-              >
+                }}>
                 <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
               </button>
             </div>

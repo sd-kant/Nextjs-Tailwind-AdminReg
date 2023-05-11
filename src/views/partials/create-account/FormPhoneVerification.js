@@ -66,8 +66,7 @@ const FormPhoneVerification = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate('/create-account/phone-register')}
-        >
+          onClick={() => navigate('/create-account/phone-register')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>

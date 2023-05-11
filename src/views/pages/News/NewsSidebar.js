@@ -29,8 +29,7 @@ const NewsSidebar = () => {
         />
         <div
           className={clsx(style.SearchBtn, 'capitalize')}
-          onClick={() => setKeyword(keywordTmp ?? '')}
-        >
+          onClick={() => setKeyword(keywordTmp ?? '')}>
           {t('search')}
         </div>
       </div>
@@ -44,8 +43,7 @@ const NewsSidebar = () => {
             <div key={key} className={clsx(style.BlogLink)}>
               <Link
                 to={`/news/detail?id=${item?.id}`}
-                className={id && Number(id) === item?.id ? clsx(style.Active) : ''}
-              >
+                className={id && Number(id) === item?.id ? clsx(style.Active) : ''}>
                 {item?.title ?? ''}
               </Link>
             </div>

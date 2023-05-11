@@ -20,8 +20,7 @@ const LanguagePicker = () => {
       <select
         className={clsx('font-input-label text-white')}
         onChange={(e) => changeLanguageHandler(e.target.value)}
-        value={lang}
-      >
+        value={lang}>
         <option value="en">English</option>
         <option value="ja">日本語</option>
         <option value="fr">Français</option>

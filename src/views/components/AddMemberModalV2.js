@@ -54,8 +54,7 @@ const AddMemberModalV2 = ({
       isOpen={isOpen}
       className={clsx(style.Modal)}
       overlayClassName={clsx(style.ModalOverlay)}
-      appElement={document.getElementsByTagName('body')}
-    >
+      appElement={document.getElementsByTagName('body')}>
       <Form>
         <div className={clsx(style.Wrapper)}>
           <div className={clsx(style.RemoveIconWrapper)} onClick={onClose}>

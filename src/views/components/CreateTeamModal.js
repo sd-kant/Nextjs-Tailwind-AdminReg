@@ -49,8 +49,7 @@ const CreateTeamModal = (props) => {
       <div className="modal-footer mt-119 d-flex justify-end">
         <button
           className={`button ${isValid() ? 'active cursor-pointer' : 'inactive cursor-default'}`}
-          onClick={isValid() ? props.onOk : null}
-        >
+          onClick={isValid() ? props.onOk : null}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

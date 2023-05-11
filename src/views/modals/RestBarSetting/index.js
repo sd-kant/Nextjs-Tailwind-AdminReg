@@ -23,8 +23,7 @@ const RestBarSetting = ({ t, open = false, closeModal = () => {} }) => {
       className={clsx(style.Modal)}
       overlayClassName={clsx(style.ModalOverlay)}
       onRequestClose={closeModal}
-      appElement={document.getElementsByTagName('body')}
-    >
+      appElement={document.getElementsByTagName('body')}>
       <div className={clsx(style.Wrapper)}>
         <div>
           <span className={clsx('font-header-medium')}>Work Rest Bar Settings</span>
@@ -53,8 +52,7 @@ const RestBarSetting = ({ t, open = false, closeModal = () => {} }) => {
                   bgColor={'green'}
                   title={'low'}
                   rounded={true}
-                  onClick={() => {}}
-                >
+                  onClick={() => {}}>
                   Low
                 </Button>
               </div>

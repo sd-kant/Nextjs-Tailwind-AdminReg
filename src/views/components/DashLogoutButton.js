@@ -9,8 +9,7 @@ const DashLogoutButton = ({ t }) => {
       <label
         className="dash-logout-label font-input-label d-flex cursor-pointer"
         onClick={logout}
-        style={{ width: '103px' }}
-      >
+        style={{ width: '103px' }}>
         <img src={logoutIcon} alt="upload icon" />
         &nbsp;&nbsp;&nbsp;
         <span className="capitalize">{t('logout')}</span>

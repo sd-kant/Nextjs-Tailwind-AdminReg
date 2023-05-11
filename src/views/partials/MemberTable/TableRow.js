@@ -48,8 +48,7 @@ const TableRow = ({ member, visibleColumns, columnsMap }) => {
       onClick={() => {
         setVisibleMemberModal(true);
         setMember(member);
-      }}
-    >
+      }}>
       <td className={clsx(style.TableCell, userNameGray)}>
         <div className={clsx(style.InnerWrapper)}>
           <div className={clsx(style.Badge, badgeColorStyle)} />

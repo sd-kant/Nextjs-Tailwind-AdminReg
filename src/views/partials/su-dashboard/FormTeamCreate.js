@@ -106,8 +106,7 @@ const FormTeamCreate = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}
-        >
+          onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>

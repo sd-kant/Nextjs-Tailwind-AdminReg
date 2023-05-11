@@ -13,8 +13,7 @@ const Tap = (props) => {
               activeOption === option.value ? 'active' : ''
             }`}
             key={`custom-radio-option-${index}`}
-            onClick={() => props.setActiveOption(option.value)}
-          >
+            onClick={() => props.setActiveOption(option.value)}>
             <span className="font-button-label">{option.title}</span>
           </div>
         ))}

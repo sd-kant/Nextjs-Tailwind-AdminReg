@@ -47,8 +47,7 @@ const FormTimezone = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate('/create-account/weight')}
-        >
+          onClick={() => navigate('/create-account/weight')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -77,8 +76,7 @@ const FormTimezone = (props) => {
           className={`button ${
             values['timezone'] ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
-          type={values['timezone'] ? 'submit' : 'button'}
-        >
+          type={values['timezone'] ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

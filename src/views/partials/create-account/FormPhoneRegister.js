@@ -39,8 +39,7 @@ const FormPhoneRegister = (props) => {
           className="d-flex align-center cursor-pointer"
           onClick={() => {
             navigate(-1);
-          }}
-        >
+          }}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -75,8 +74,7 @@ const FormPhoneRegister = (props) => {
           className={`button ${
             values['phoneNumber']?.value ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
-          type={values['phoneNumber']?.value ? 'submit' : 'button'}
-        >
+          type={values['phoneNumber']?.value ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

@@ -231,8 +231,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
           Object.keys(organizationAnalytics).includes(getKeyApiCall(selectedMetric?.value).keys[0])
             ? 'active cursor-pointer'
             : 'inactive cursor-default'
-        } button`}
-      >
+        } button`}>
         <span className="font-button-label text-white text-uppercase">{t('print')}</span>
       </button>
     );
@@ -358,8 +357,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
                 ? 'active cursor-pointer'
                 : 'inactive cursor-default'
             } button`}
-            onClick={submit}
-          >
+            onClick={submit}>
             <span className="font-button-label text-white text-uppercase">{t('process')}</span>
           </button>
         </span>

@@ -43,8 +43,7 @@ const FormGender = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/name')}
-        >
+          onClick={() => navigateTo('/create-account/name')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -59,8 +58,7 @@ const FormGender = (props) => {
             className={`tap cursor-pointer ${
               values['gender']?.toString() === MALE ? 'active' : ''
             }`}
-            onClick={() => setFieldValue('gender', MALE)}
-          >
+            onClick={() => setFieldValue('gender', MALE)}>
             <img src={maleIcon} alt="male icon" />
 
             <span className="font-binary mt-8">{t('male')}</span>
@@ -70,8 +68,7 @@ const FormGender = (props) => {
             className={`ml-40 cursor-pointer tap ${
               values['gender']?.toString() === FEMALE ? 'active' : ''
             }`}
-            onClick={() => setFieldValue('gender', FEMALE)}
-          >
+            onClick={() => setFieldValue('gender', FEMALE)}>
             <img src={femaleIcon} alt="female icon" />
 
             <span className="font-binary mt-8">{t('female')}</span>
@@ -86,8 +83,7 @@ const FormGender = (props) => {
               ? 'active cursor-pointer'
               : 'inactive cursor-default'
           }`}
-          type={[MALE, FEMALE].includes(values['gender']?.toString()) ? 'submit' : 'button'}
-        >
+          type={[MALE, FEMALE].includes(values['gender']?.toString()) ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

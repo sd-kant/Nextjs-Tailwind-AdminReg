@@ -90,8 +90,7 @@ const QueryResult = ({ metric }) => {
                 <div
                   className={clsx(
                     checkTableChartTogether() ? style.InnerWrapper : style.CenterWrapper
-                  )}
-                >
+                  )}>
                   <Toolbar />
                   <div className={clsx(style.TableWrapper)}>
                     <table className={clsx(style.Table)}>

@@ -61,8 +61,7 @@ const FormSelectMode = (props) => {
               <div
                 className={clsx(style.OptionWrapper)}
                 // todo encodeURIComponent
-                onClick={() => navigate(`/dashboard/multi?${flattened}`)}
-              >
+                onClick={() => navigate(`/dashboard/multi?${flattened}`)}>
                 <div>
                   <span className={clsx('font-button-label')}>{t('dashboard')}</span>
                 </div>
@@ -94,8 +93,7 @@ const FormSelectMode = (props) => {
 
               <div
                 className={clsx(style.OptionWrapper)}
-                onClick={() => navigate('/connect/member/company')}
-              >
+                onClick={() => navigate('/connect/member/company')}>
                 <div>
                   <span className={clsx('font-button-label')}>{t('phone free hub')}</span>
                 </div>

@@ -28,8 +28,7 @@ const FormUploadSelect = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate(`/invite/${organizationId}/team-create`)}
-        >
+          onClick={() => navigate(`/invite/${organizationId}/team-create`)}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -44,8 +43,7 @@ const FormUploadSelect = (props) => {
             className={`tap cursor-pointer`}
             onClick={() => {
               navigate(`/invite/${organizationId}/edit/manual/${id}`);
-            }}
-          >
+            }}>
             <img src={editIcon} alt="male icon" />
 
             <span className="font-binary mt-8">{t('manual')}</span>
@@ -53,8 +51,7 @@ const FormUploadSelect = (props) => {
 
           <div
             className={`ml-40 cursor-pointer tap`}
-            onClick={() => navigate(`/invite/${organizationId}/upload/${id}`)}
-          >
+            onClick={() => navigate(`/invite/${organizationId}/upload/${id}`)}>
             <img src={uploadIcon} alt="female icon" />
 
             <span className="font-binary mt-8 capitalize">{t('upload')}</span>

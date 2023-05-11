@@ -455,8 +455,7 @@ const FormCompany = (props) => {
             <div className="d-flex flex-column mt-25">
               <label
                 className={`font-binary d-block mt-8 text-capitalize text-orange cursor-pointer`}
-                onClick={enableEditing}
-              >
+                onClick={enableEditing}>
                 {t('edit')}
               </label>
             </div>
@@ -490,8 +489,7 @@ const FormCompany = (props) => {
                 {orgAdmins?.map((user, index) => (
                   <div
                     className={`team-representative-wrapper d-flex ${index !== 0 ? 'mt-25' : ''}`}
-                    key={`already-registered-member-${index}`}
-                  >
+                    key={`already-registered-member-${index}`}>
                     <div className="d-flex flex-column">
                       {index === 0 && (
                         <label className="font-input-label text-white">{t('firstName')}</label>
@@ -556,8 +554,7 @@ const FormCompany = (props) => {
                         className={`team-representative-wrapper d-flex ${
                           orgAdmins.length !== 0 || index !== 0 ? 'mt-25' : ''
                         }`}
-                        key={`member-${index}`}
-                      >
+                        key={`member-${index}`}>
                         <div className="d-flex flex-column">
                           {orgAdmins?.length === 0 && index === 0 && (
                             <label className="font-input-label text-white">{t('firstName')}</label>
@@ -664,8 +661,7 @@ const FormCompany = (props) => {
 
               <div
                 className={`d-flex align-center mt-15 mb-15`}
-                style={{ zIndex: 1, position: 'relative' }}
-              >
+                style={{ zIndex: 1, position: 'relative' }}>
                 <img
                   src={plusCircleFire}
                   className="cursor-pointer"
@@ -850,8 +846,7 @@ const FormCompany = (props) => {
               className={`${
                 changes?.length > 0 ? ' active cursor-pointer' : 'inactive cursor-default'
               } button`}
-              type={changes?.length > 0 ? 'submit' : 'button'}
-            >
+              type={changes?.length > 0 ? 'submit' : 'button'}>
               <span className="font-button-label text-white text-uppercase">{t('save')}</span>
             </button>
           ) : (
@@ -862,8 +857,7 @@ const FormCompany = (props) => {
           <button
             className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
             type={'button'}
-            onClick={handleCancel}
-          >
+            onClick={handleCancel}>
             <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
           </button>
         </div>

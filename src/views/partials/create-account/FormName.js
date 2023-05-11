@@ -103,8 +103,7 @@ const FormName = (props) => {
               ? 'active cursor-pointer'
               : 'inactive cursor-default'
           }`}
-          type={values['firstName'] && values['lastName'] ? 'submit' : 'button'}
-        >
+          type={values['firstName'] && values['lastName'] ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

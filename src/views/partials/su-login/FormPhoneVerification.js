@@ -104,8 +104,7 @@ const FormPhoneVerification = (props) => {
           onClick={() => {
             setToken(null);
             navigate('/login');
-          }}
-        >
+          }}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange text-uppercase">{t('back to login')}</span>

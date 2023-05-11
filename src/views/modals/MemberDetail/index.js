@@ -255,8 +255,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
         overlayClassName={clsx(style.ModalOverlay)}
         onRequestClose={closeModal}
         preventScroll={true}
-        appElement={document.getElementsByTagName('body')}
-      >
+        appElement={document.getElementsByTagName('body')}>
         <div className={clsx(style.Wrapper)}>
           <img
             className={clsx(style.CloseIcon)}
@@ -287,8 +286,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                   <div className={clsx(style.NameDevice)}>
                     <div
                       title={data?.firstName + ' ' + data?.lastName}
-                      className={clsx(style.NameDeviceElement)}
-                    >
+                      className={clsx(style.NameDeviceElement)}>
                       <span className={clsx('font-heading-small')}>
                         {`${data?.firstName}  ${data?.lastName}`}
                       </span>
@@ -354,8 +352,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                       <div
                         className={clsx(style.StatusCell)}
                         title={invisibleHeatRisk ? null : alertObj?.label}
-                        style={{ height: '18.38px' }}
-                      >
+                        style={{ height: '18.38px' }}>
                         <div className={clsx(style.BadgeWrapper)}>
                           <div className={clsx(style.StatusBadge, badgeColorStyle)} />
                         </div>
@@ -381,8 +378,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                     <div className={clsx(style.InformationEntity)}>
                       <div>
                         <span
-                          className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}
-                        >
+                          className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}>
                           {t('connection status')}
                         </span>
                       </div>
@@ -407,8 +403,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                     flexDirection: 'column',
                     alignItems: 'center',
                     textAlign: 'center'
-                  }}
-                >
+                  }}>
                   <span className={clsx('font-input-label')}>{t('cbt avg')}</span>
                   <span className={'font-input-label text-uppercase'}>
                     {metric ? '(°C)' : '(°F)'}
@@ -417,8 +412,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
 
                 <div
                   className={clsx(style.InformationContent)}
-                  style={{ display: 'flex', justifyContent: 'center', height: '55px' }}
-                >
+                  style={{ display: 'flex', justifyContent: 'center', height: '55px' }}>
                   <img src={thermometer} alt="thermometer" width={15} />
                   {hideCbtHR ? (
                     <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon" />
@@ -443,8 +437,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                     flexDirection: 'column',
                     alignItems: 'center',
                     textAlign: 'center'
-                  }}
-                >
+                  }}>
                   <span className={clsx('font-input-label text-capitalize')}>
                     {t('heart rate avg')}
                   </span>
@@ -453,8 +446,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
 
                 <div
                   className={clsx(style.InformationContent)}
-                  style={{ display: 'flex', justifyContent: 'center', height: '55px' }}
-                >
+                  style={{ display: 'flex', justifyContent: 'center', height: '55px' }}>
                   <img src={heart} alt="heart" width={30} />
                   {hideCbtHR ? (
                     <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon" />
@@ -472,8 +464,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                       className={clsx(
                         'font-binary',
                         heartRateZoneStyles[heartRateZone?.value?.toString()]
-                      )}
-                    >
+                      )}>
                       {heartRateZone?.label}
                     </span>
                   </div>
@@ -529,8 +520,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
             </div>
 
             <div
-              className={clsx(style.AlertsCard, style.MetricsCard, style.Card, style.CardMetric)}
-            >
+              className={clsx(style.AlertsCard, style.MetricsCard, style.Card, style.CardMetric)}>
               <div className={clsx(style.CardTop)}>
                 <div className={clsx(style.CardHeader, 'font-heading-small')}>
                   <img src={alertsIcon} alt="alerts icon" />

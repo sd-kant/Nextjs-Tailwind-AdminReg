@@ -277,8 +277,7 @@ const FormTeamModify = (props) => {
         <div>
           <div
             className="d-inline-flex align-center cursor-pointer"
-            onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}
-          >
+            onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
             <img src={backIcon} alt="back" />
             &nbsp;&nbsp;
             <span className="font-button-label text-orange">{t('previous')}</span>
@@ -380,15 +379,13 @@ const FormTeamModify = (props) => {
               <div className="d-flex mt-25">
                 <label
                   className="text-capitalize text-orange cursor-pointer"
-                  onClick={() => setFieldValue('editing', true)}
-                >
+                  onClick={() => setFieldValue('editing', true)}>
                   {t('edit')}
                 </label>
                 {isAdmin && (
                   <label
                     className="text-capitalize text-orange cursor-pointer ml-20"
-                    onClick={() => setVisibleDeleteTeamModal(true)}
-                  >
+                    onClick={() => setVisibleDeleteTeamModal(true)}>
                     {t('delete')}
                   </label>
                 )}
@@ -405,8 +402,7 @@ const FormTeamModify = (props) => {
                   ? 'active cursor-pointer'
                   : 'inactive cursor-default'
               }`}
-              type={values['name'] && changes?.length > 0 ? 'submit' : 'button'}
-            >
+              type={values['name'] && changes?.length > 0 ? 'submit' : 'button'}>
               <span className="font-button-label text-white text-uppercase">{t('save')}</span>
             </button>
           ) : (
@@ -414,8 +410,7 @@ const FormTeamModify = (props) => {
               className={`button ${
                 values['name'] ? 'active cursor-pointer' : 'inactive cursor-default'
               }`}
-              type={values['name'] ? 'submit' : 'button'}
-            >
+              type={values['name'] ? 'submit' : 'button'}>
               <span className="font-button-label text-white text-uppercase">{t('next')}</span>
             </button>
           )}
@@ -423,8 +418,7 @@ const FormTeamModify = (props) => {
             <button
               className={`button cursor-pointer cancel ml-15`}
               type={'button'}
-              onClick={handleCancel}
-            >
+              onClick={handleCancel}>
               <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
             </button>
           )}

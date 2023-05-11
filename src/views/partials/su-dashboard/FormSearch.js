@@ -147,8 +147,7 @@ const FormSearch = (props) => {
             &nbsp;&nbsp;
             <span
               className="font-button-label text-orange cursor-pointer"
-              onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}
-            >
+              onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
               {t('previous')}
             </span>
           </div>
@@ -179,8 +178,7 @@ const FormSearch = (props) => {
                   <div className={clsx(style.SaveIconWrapper)}>
                     <span
                       className="text-orange font-input-label text-uppercase"
-                      onClick={submitForm}
-                    >
+                      onClick={submitForm}>
                       {t('save')}
                     </span>
                   </div>

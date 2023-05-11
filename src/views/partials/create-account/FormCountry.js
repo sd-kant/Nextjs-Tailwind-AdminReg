@@ -63,8 +63,7 @@ const FormCountry = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/weight')}
-        >
+          onClick={() => navigateTo('/create-account/weight')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -93,8 +92,7 @@ const FormCountry = (props) => {
           className={`button ${
             values['country'] ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
-          type={values['country'] ? 'submit' : 'button'}
-        >
+          type={values['country'] ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

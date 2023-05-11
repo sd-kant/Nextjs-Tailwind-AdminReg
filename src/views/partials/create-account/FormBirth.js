@@ -84,8 +84,7 @@ const FormBirth = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigateTo('/create-account/gender')}
-        >
+          onClick={() => navigateTo('/create-account/gender')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
@@ -117,8 +116,7 @@ const FormBirth = (props) => {
           className={`button ${
             values['dob'] ? 'active cursor-pointer' : 'inactive cursor-default'
           }`}
-          type={values['dob'] ? 'submit' : 'button'}
-        >
+          type={values['dob'] ? 'submit' : 'button'}>
           <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>

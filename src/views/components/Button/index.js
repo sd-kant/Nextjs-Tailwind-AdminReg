@@ -98,8 +98,7 @@ const Button = ({
         dropdown ? style.Dropdown : null
       )}
       style={{ color: calcColor(), backgroundColor: calcBgColor(), borderColor: calcBorderColor() }}
-      onClick={() => (disabled ? () => {} : onClick())}
-    >
+      onClick={() => (disabled ? () => {} : onClick())}>
       <div className={clsx(style.InnerWrapper)}>
         <span className={clsx(calcTxtSizeStyle())}>{title}</span>
       </div>
@@ -111,8 +110,7 @@ const Button = ({
             onClickArrow();
             e.preventDefault();
             e.stopPropagation();
-          }}
-        >
+          }}>
           {icon}
         </div>
       ) : null}

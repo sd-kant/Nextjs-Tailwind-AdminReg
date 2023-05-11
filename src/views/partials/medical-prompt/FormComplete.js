@@ -29,8 +29,7 @@ const FormComplete = (props) => {
           <a
             href="https://play.google.com/store/apps/details?id=com.kenzen.v2"
             target="_blank"
-            rel="noreferrer"
-          >
+            rel="noreferrer">
             <img className="cursor-pointer" src={googlePlay} alt="google play button" />
           </a>
         </div>
