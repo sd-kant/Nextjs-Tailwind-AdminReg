@@ -5,33 +5,35 @@ import {withTranslation} from "react-i18next";
 import {useMembersContext} from "../../../providers/MembersProvider";
 import SearchDropdown from "../../components/SearchDropdown";
 import useClickOutSide from "../../../hooks/useClickOutSide";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 const FormConnectMemberSearch = (
   {
     t,
   }) => {
   const {
-    dropdownItems,
+    searchedOperators,
     keywordOnInvite,
     setKeywordOnInvite,
   } = useMembersContext();
   const navigate = useNavigate();
+  const {organizationId} = useParams();
 
   const [visible, setVisible] = React.useState(false);
   const dropdownRef = React.useRef(null);
   useClickOutSide(dropdownRef, () => setVisible(false));
 
   const visibleDropdown = React.useMemo(() => {
-    return visible && dropdownItems?.length > 0;
-  }, [visible, dropdownItems?.length]);
+    return visible && searchedOperators?.length > 0;
+  }, [visible, searchedOperators?.length]);
 
   const handleItemClick = (id) => {
-
+    const item = searchedOperators?.find((it) => it.value === id);
+    navigate(`/connect/member/${organizationId}/device/${item.teamId}/${id}`);
   };
 
   const handleCancel = () => {
-    navigate("/connect/member/company");
+    navigate("/select-mode");
   }
 
   return (
@@ -53,7 +55,7 @@ const FormConnectMemberSearch = (
                     onClick={() => setVisible(true)}
                   />
                 )}
-                items={dropdownItems}
+                items={searchedOperators}
                 visibleDropdown={visibleDropdown}
                 onItemClick={handleItemClick}
               />

@@ -451,3 +451,7 @@ export const queryOrganizationHeartRate = (orgId, data) => {
 export const linkKenzenDevice = (deviceId) => {
   return patch(`/device/${deviceId}`);
 }
+
+export const linkMemberKenzenDevice = (teamId, userId, deviceId) => {
+  return patch(`/device/${deviceId}`);
+}

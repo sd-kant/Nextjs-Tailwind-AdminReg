@@ -1,9 +1,11 @@
 import React, {lazy, Suspense} from "react";
 import {connect} from "react-redux";
 import {
+  Navigate,
   Route,
   Routes,
-  useNavigate
+  useNavigate,
+  useParams,
 } from "react-router-dom";
 import logo from "../../assets/images/logo_light.svg";
 import {
@@ -15,17 +17,19 @@ import Loader from "../components/Loader";
 const WrappedMembersProvider = lazy(() => import("../../providers/MembersProvider").then(module => ({default: module.WrappedMembersProvider})));
 const ParamsWrapper = lazy(() => import("../partials/su-dashboard/ParamsWrapper"));
 const FormConnectMemberSearch = lazy(() => import("../partials/su-dashboard/FormConnectMemberSearch"));
+const FormConnectMemberDevice = lazy(() => import("../partials/su-dashboard/FormConnectMemberDevice"));
+const FormConnectDeviceSuccess = lazy(() => import("../partials/su-dashboard/FormConnectDeviceSuccess"));
 const FormCompanySelect = lazy(() => import("../partials/su-dashboard/FormCompanySelect"));
 
-const Invite = (
+const ConnectMember = (
   {
     userType,
   }) => {
   const isSuperAdmin = userType?.includes(USER_TYPE_ADMIN);
   const isOrgAdmin = userType?.includes(USER_TYPE_ORG_ADMIN);
-  // fixme orgAdmin will be redirected to organization modify page
-  // let redirectPath = (isSuperAdmin || isOrgAdmin) ? "/connect/member/company" : "/invite/-1/team-mode";
+  let redirectPath = (isSuperAdmin || isOrgAdmin) ? "/connect/member/company" : "/connect/member/-1/search";
   const navigate = useNavigate();
+  const params = useParams();
 
   return (
     <div className='form-main'>
@@ -60,10 +64,37 @@ const Invite = (
             }
           />
 
-          {/*<Route
+          <Route
+            path='/:organizationId/device/:teamId/:userId'
+            element={
+              <WrappedMembersProvider>
+                <ParamsWrapper>
+                  <FormConnectMemberDevice
+                    navigate={navigate}
+                    {...params}
+                  />
+                </ParamsWrapper>
+              </WrappedMembersProvider>
+            }
+          />
+
+          <Route
+            path='/device/success'
+            element={
+              <WrappedMembersProvider>
+                <ParamsWrapper>
+                  <FormConnectDeviceSuccess
+                    navigate={navigate}
+                  />
+                </ParamsWrapper>
+              </WrappedMembersProvider>
+            }
+          />
+
+          <Route
             path='/*'
             element={<Navigate to={redirectPath} replace/>}
-          />*/}
+          />
         </Routes>
 
       </Suspense>
@@ -75,4 +106,4 @@ const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
 });
 
-export default connect(mapStateToProps, null)(Invite);
+export default connect(mapStateToProps, null)(ConnectMember);
