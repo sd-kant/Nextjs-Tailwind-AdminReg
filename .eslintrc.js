@@ -42,10 +42,16 @@ module.exports = {
     'jsx-a11y/no-static-element-interactions': 0,
     'no-console': 0,
     'no-empty-pattern': 'warn',
-    'no-mixed-operators': 'warn',
+    'no-mixed-operators': 0,
     'no-unsafe-optional-chaining': 0,
     'no-unused-vars': 'warn',
     'no-unreachable': 'warn',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto'
+      }
+    ],
     'react/jsx-filename-extension': [
       'error',
       {
