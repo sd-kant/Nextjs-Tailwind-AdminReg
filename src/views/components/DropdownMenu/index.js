@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Popup from 'reactjs-popup';
-import {withTranslation} from "react-i18next";
+import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import style from './DropdownMenu.module.scss';
 
@@ -10,33 +10,28 @@ const popupContentStyle = {
   padding: '16px 10px',
   width: '160px',
   boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.5)',
-  background: 'white',
+  background: 'white'
 };
 
 const defaultItems = [
   {
     highlight: false,
     title: 'Sort (Max - Low)',
-    action: () => {},
+    action: () => {}
   },
   {
     highlight: false,
     title: 'Sort (Low - Max)',
-    action: () => {},
+    action: () => {}
   },
   {
     highlight: false,
     title: 'Remove',
-    action: () => {},
-  },
+    action: () => {}
+  }
 ];
 
-const DropdownMenu = (
-  {
-    icon,
-    title = 'edit column',
-    items = defaultItems,
-  }) => {
+const DropdownMenu = ({ icon, title = 'edit column', items = defaultItems }) => {
   const ref = React.useRef(null);
   const closeTooltip = () => ref?.current?.close();
   document?.addEventListener('scroll', () => {
@@ -54,35 +49,28 @@ const DropdownMenu = (
       position="bottom right"
       arrow={false}
       keepTooltipInside={true}
-      {...{ contentStyle: popupContentStyle }}
-    >
+      {...{ contentStyle: popupContentStyle }}>
       <div className={clsx(style.Popup)}>
         <div className={clsx(style.MenuHeaderItem)}>
-          <span className={clsx('font-binary text-capitalize')}>
-            {title}
-          </span>
+          <span className={clsx('font-binary text-capitalize')}>{title}</span>
         </div>
-        {
-          items.map((it, index) => (
-            <div key={`menu-item-${index}-${Date.now()}`} className={clsx(style.MenuItemWrapper)}>
-              <div
-                className={clsx(style.MenuItem, it.highlight ? style.HighLight : null, 'cursor-pointer')}
-                onClick={() => handleClick(it)}
-              >
-                <span className={clsx('font-binary')}>
-                  {it.title}
-                </span>
-              </div>
-              {
-                index < (items.length - 1) &&
-                <div className={clsx(style.Divider)}/>
-              }
+        {items.map((it, index) => (
+          <div key={`menu-item-${index}-${Date.now()}`} className={clsx(style.MenuItemWrapper)}>
+            <div
+              className={clsx(
+                style.MenuItem,
+                it.highlight ? style.HighLight : null,
+                'cursor-pointer'
+              )}
+              onClick={() => handleClick(it)}>
+              <span className={clsx('font-binary')}>{it.title}</span>
             </div>
-          ))
-        }
+            {index < items.length - 1 && <div className={clsx(style.Divider)} />}
+          </div>
+        ))}
       </div>
     </Popup>
-  )
+  );
 };
 
 export default withTranslation()(React.memo(DropdownMenu));

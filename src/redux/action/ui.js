@@ -1,45 +1,45 @@
-import {actionTypes} from "../type";
+import { actionTypes } from '../type';
 
 export const setRestBarClassAction = (restBarClass) => ({
   type: actionTypes.SET_REST_BAR_CLASS,
   payload: {
-    restBarClass,
+    restBarClass
   }
 });
 
 export const setLoadingAction = (loading) => ({
   type: actionTypes.LOADING,
   payload: {
-    loading,
+    loading
   }
 });
 
-export const showSuccessNotificationAction = (msg, title = "") => ({
+export const showSuccessNotificationAction = (msg, title = '') => ({
   type: actionTypes.SUCCESS_NOTIFICATION,
   payload: {
     msg,
-    title,
+    title
   }
 });
 
-export const showErrorNotificationAction = (msg, title = "") => ({
+export const showErrorNotificationAction = (msg, title = '') => ({
   type: actionTypes.ERROR_NOTIFICATION,
   payload: {
     msg,
-    title,
+    title
   }
 });
 
 export const setVisibleSuccessModalAction = (visible) => ({
   type: actionTypes.SET_VISIBLE_SUCCESS_MODAL,
   payload: {
-    visible,
+    visible
   }
 });
 
-export const setMetricAction = metric => ({
+export const setMetricAction = (metric) => ({
   type: actionTypes.SET_METRIC,
   payload: {
-    metric,
+    metric
   }
 });

@@ -1,38 +1,38 @@
-import {actionTypes} from "../type";
+import { actionTypes } from '../type';
 
 export const setMedicalQuestionsAction = (medicalQuestions) => ({
   type: actionTypes.SET_MEDICAL_QUESTIONS,
   payload: {
-    medicalQuestions,
-  },
+    medicalQuestions
+  }
 });
 
 export const getMedicalQuestionsAction = () => ({
   type: actionTypes.GET_MEDICAL_QUESTIONS,
-  payload: {},
+  payload: {}
 });
 
 export const getMedicalResponsesAction = () => ({
   type: actionTypes.GET_MEDICAL_RESPONSES,
-  payload: {},
+  payload: {}
 });
 
-export const updateMyProfileAction = ({body, nextPath, apiCall = true, navigate}) => ({
+export const updateMyProfileAction = ({ body, nextPath, apiCall = true, navigate }) => ({
   type: actionTypes.UPDATE_PROFILE,
   payload: {
     body,
     nextPath,
     apiCall,
-    navigate,
-  },
+    navigate
+  }
 });
 
 export const getMyProfileAction = () => ({
   type: actionTypes.GET_PROFILE,
-  payload: {},
+  payload: {}
 });
 
 export const getMyOrganizationAction = () => ({
   type: actionTypes.GET_MY_ORGANIZATION,
-  payload: {},
+  payload: {}
 });

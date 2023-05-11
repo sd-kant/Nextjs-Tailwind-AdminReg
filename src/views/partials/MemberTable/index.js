@@ -1,44 +1,35 @@
 import * as React from 'react';
-import {connect} from "react-redux";
-import {withTranslation} from "react-i18next";
+import { connect } from 'react-redux';
+import { withTranslation } from 'react-i18next';
 
 import clsx from 'clsx';
 import style from './MemberTable.module.scss';
-import {useDashboardContext} from "../../../providers/DashboardProvider";
-import TableRow from "./TableRow";
-import TableHeader from "./TableHeader";
-import MemberDetail from "../../modals/MemberDetail";
-import {UserSubscriptionProvider} from "../../../providers/UserSubscriptionProvider";
+import { useDashboardContext } from '../../../providers/DashboardProvider';
+import TableRow from './TableRow';
+import TableHeader from './TableHeader';
+import MemberDetail from '../../modals/MemberDetail';
+import { UserSubscriptionProvider } from '../../../providers/UserSubscriptionProvider';
 
-const MemberTable = (
-  {
-    t,
-    forceWidthUpdate,
-  }) => {
+const MemberTable = ({ t, forceWidthUpdate }) => {
   const {
     paginatedMembers: members,
     member,
     visibleMemberModal,
-    setVisibleMemberModal,
+    setVisibleMemberModal
   } = useDashboardContext();
-  const storedVisibleColumns = localStorage.getItem("visibleColumns");
+  const storedVisibleColumns = localStorage.getItem('visibleColumns');
   const parsedVisibleColumns = storedVisibleColumns ? JSON.parse(storedVisibleColumns) : null;
-  const validVisibleColumns = parsedVisibleColumns ?? [
-    "name",
-    "connection",
-    "heatRisk",
-    "alerts",
-  ];
+  const validVisibleColumns = parsedVisibleColumns ?? ['name', 'connection', 'heatRisk', 'alerts'];
   const [visibleColumns, setVisibleColumns] = React.useState(validVisibleColumns);
   React.useEffect(() => {
-    localStorage.setItem("visibleColumns", JSON.stringify(visibleColumns));
+    localStorage.setItem('visibleColumns', JSON.stringify(visibleColumns));
   }, [visibleColumns]);
   const columnsMap = {
-    'connection': t("connection"),
-    "heatRisk": t("heat risk"),
-    "alerts": t('alerts'),
-    "heatSusceptibility": t("heat susceptibility"),
-    "lastDataSync": t("last data sync"),
+    connection: t('connection'),
+    heatRisk: t('heat risk'),
+    alerts: t('alerts'),
+    heatSusceptibility: t('heat susceptibility'),
+    lastDataSync: t('last data sync')
   };
 
   return (
@@ -52,35 +43,29 @@ const MemberTable = (
         />
 
         <tbody>
-        {
-          members?.map((member, key) => (
+          {members?.map((member, key) => (
             <TableRow
               member={member}
               key={`member-${key}-${member.userId}`}
               visibleColumns={visibleColumns}
               columnsMap={columnsMap}
             />
-          ))
-        }
+          ))}
         </tbody>
       </table>
-      {
-        visibleMemberModal &&
-          <UserSubscriptionProvider>
-            <MemberDetail
-              data={member}
-              open={visibleMemberModal}
-              closeModal={() => setVisibleMemberModal(false)}
-            />
-          </UserSubscriptionProvider>
-      }
+      {visibleMemberModal && (
+        <UserSubscriptionProvider>
+          <MemberDetail
+            data={member}
+            open={visibleMemberModal}
+            closeModal={() => setVisibleMemberModal(false)}
+          />
+        </UserSubscriptionProvider>
+      )}
     </>
-  )
+  );
 };
 
 const mapStateToProps = () => ({});
 
-export default connect(
-  mapStateToProps,
-  null,
-)(withTranslation()(React.memo(MemberTable)));
+export default connect(mapStateToProps, null)(withTranslation()(React.memo(MemberTable)));

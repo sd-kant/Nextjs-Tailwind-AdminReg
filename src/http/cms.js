@@ -1,23 +1,24 @@
-import axios from "axios";
-import {apiBaseCmsUrl as baseUrl, apiCMSToken} from "../config";
+import axios from 'axios';
+import { apiBaseCmsUrl as baseUrl, apiCMSToken } from '../config';
 
 export const instance = axios.create({
   baseURL: baseUrl,
-  timeout: 20000,
+  timeout: 20000
 });
 
 // Request interceptor for API calls
 instance.interceptors.request.use(
-    async config => {
-      config.headers = {
-        ...config.headers,
-        'Authorization': `Bearer ${apiCMSToken}`,
-      };
-      return config;
-    },
-    error => {
-      return Promise.reject(error);
-    });
+  async (config) => {
+    config.headers = {
+      ...config.headers,
+      Authorization: `Bearer ${apiCMSToken}`
+    };
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 function get(url, token, customHeaders) {
   let headers = {};
@@ -27,19 +28,20 @@ function get(url, token, customHeaders) {
   if (token) {
     headers = {
       ...headers,
-      "Authorization": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`
     };
   }
   return new Promise((resolve, reject) => {
-    instance.get(url, {
-      headers: headers,
-    })
-        .then(res => {
-          resolve(res);
-        })
-        .catch(e => {
-          reject(e);
-        })
+    instance
+      .get(url, {
+        headers: headers
+      })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((e) => {
+        reject(e);
+      });
   });
 }
 
@@ -52,7 +54,15 @@ function get(url, token, customHeaders) {
  * @returns {Promise<unknown>}
  */
 export const queryNewsBlog = (keyword, page, pageSize, categoryId) => {
-  return get(`api/posts?sort[0]=date%3Adesc&sort[1]=title&_q=${keyword ?? ''}&filters[$and][0][show_type][$ne]=cms&filters[categories][id][${categoryId ? '$in' : '$containsi'}]=${categoryId ?? ''}&pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize ?? 10}&populate=*`);
+  return get(
+    `api/posts?sort[0]=date%3Adesc&sort[1]=title&_q=${
+      keyword ?? ''
+    }&filters[$and][0][show_type][$ne]=cms&filters[categories][id][${
+      categoryId ? '$in' : '$containsi'
+    }]=${categoryId ?? ''}&pagination[page]=${page ?? 1}&pagination[pageSize]=${
+      pageSize ?? 10
+    }&populate=*`
+  );
 };
 
 /**
@@ -61,7 +71,9 @@ export const queryNewsBlog = (keyword, page, pageSize, categoryId) => {
  * @param newsId
  */
 export const queryNewsBlogDetail = (newsId) => {
-  return get(`api/posts?filters[id][$eq]=${newsId ?? ''}&filters[$and][0][show_type][$ne]=cms&populate=*`);
+  return get(
+    `api/posts?filters[id][$eq]=${newsId ?? ''}&filters[$and][0][show_type][$ne]=cms&populate=*`
+  );
 };
 
 /**
@@ -77,5 +89,11 @@ export const queryCategories = () => {
  * @returns {Promise<unknown>}
  */
 export const queryNewsBlogPerAuthor = (page, pageSize, authorId) => {
-  return get(`api/posts?sort[0]=date%3Adesc&sort[1]=title&filters[$and][0][show_type][$ne]=cms&filters[admin_user][id][${authorId ? '$in' : '$containsi'}]=${authorId ?? ''}&pagination[page]=${page ?? 1}&pagination[pageSize]=${pageSize ?? 5}&populate=*`);
+  return get(
+    `api/posts?sort[0]=date%3Adesc&sort[1]=title&filters[$and][0][show_type][$ne]=cms&filters[admin_user][id][${
+      authorId ? '$in' : '$containsi'
+    }]=${authorId ?? ''}&pagination[page]=${page ?? 1}&pagination[pageSize]=${
+      pageSize ?? 5
+    }&populate=*`
+  );
 };

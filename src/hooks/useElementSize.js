@@ -1,12 +1,8 @@
-import {
-  useCallback,
-  useLayoutEffect,
-  useState
-} from 'react'
+import { useCallback, useLayoutEffect, useState } from 'react';
 
 import useEventListener from './useEventListener';
 
-function useElementSize(){
+function useElementSize() {
   // Mutable values like 'ref.current' aren't valid dependencies
   // because mutating them doesn't re-render the component.
   // Instead, we use a state as a ref to be reactive.
@@ -14,29 +10,29 @@ function useElementSize(){
   const [ref, setRef] = useState(null);
   const [size, setSize] = useState({
     width: 0,
-    height: 0,
+    height: 0
   });
 
   // Prevent too many rendering using useCallback
   const handleSize = useCallback(() => {
     setSize({
       width: ref?.offsetWidth || 0,
-      height: ref?.offsetHeight || 0,
-    })
+      height: ref?.offsetHeight || 0
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref?.offsetHeight, ref?.offsetWidth]);
 
   const forceUpdate = () => {
     setTimeout(() => {
-      setCount(prev => prev + 1);
+      setCount((prev) => prev + 1);
     }, 10);
   };
 
   useEventListener('resize', handleSize);
 
   useLayoutEffect(() => {
-    handleSize()
+    handleSize();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref?.offsetHeight, ref?.offsetWidth, count]);
 

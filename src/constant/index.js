@@ -1,270 +1,277 @@
 import i18n from '../i18nextInit';
 
-export const USER_TYPE_ADMIN = "Admin";
-export const USER_TYPE_ORG_ADMIN = "OrgAdmin";
-export const USER_TYPE_TEAM_ADMIN = "TeamAdmin";
-export const USER_TYPE_OPERATOR = "Operator";
+export const USER_TYPE_ADMIN = 'Admin';
+export const USER_TYPE_ORG_ADMIN = 'OrgAdmin';
+export const USER_TYPE_TEAM_ADMIN = 'TeamAdmin';
+export const USER_TYPE_OPERATOR = 'Operator';
 
 export const EXPORT_OPTIONS = [
   {
     label: 'CSV',
-    value: 'csv',
+    value: 'csv'
   },
   {
     label: 'XLSX',
-    value: 'xlsx',
-  }];
+    value: 'xlsx'
+  }
+];
 export const AVAILABLE_COUNTRIES = [
   {
-    value: "AU",
-    label: i18n.t("australia"),
+    value: 'AU',
+    label: i18n.t('australia')
   },
   {
-    value: "CA",
-    label: i18n.t("canada"),
+    value: 'CA',
+    label: i18n.t('canada')
   },
   {
-    value: "FR",
-    label: i18n.t("france"),
+    value: 'FR',
+    label: i18n.t('france')
   },
   {
-    value: "IN",
-    label: i18n.t("india"),
+    value: 'IN',
+    label: i18n.t('india')
   },
   {
-    value: "JP",
-    label: i18n.t("japan"),
+    value: 'JP',
+    label: i18n.t('japan')
   },
   {
-    value: "QA",
-    label: i18n.t("qatar"),
+    value: 'QA',
+    label: i18n.t('qatar')
   },
   {
-    value: "SA",
-    label: i18n.t("saudi arabia"),
+    value: 'SA',
+    label: i18n.t('saudi arabia')
   },
   {
-    value: "ZA",
-    label: i18n.t("south africa"),
+    value: 'ZA',
+    label: i18n.t('south africa')
   },
   {
-    value: "CH",
-    label: i18n.t("switzerland"),
+    value: 'CH',
+    label: i18n.t('switzerland')
   },
   {
-    value: "GB",
-    label: i18n.t("united kingdom"),
+    value: 'GB',
+    label: i18n.t('united kingdom')
   },
   {
-    value: "US",
-    label: i18n.t("usa"),
-  },
+    value: 'US',
+    label: i18n.t('usa')
+  }
 ];
 export const AVAILABLE_JOBS = [
   {
-    value: "agriculture",
-    label: i18n.t("job agriculture"),
+    value: 'agriculture',
+    label: i18n.t('job agriculture')
   },
   {
-    value: "carpenter",
-    label: i18n.t("job carpenter"),
+    value: 'carpenter',
+    label: i18n.t('job carpenter')
   },
   {
-    value: "driver",
-    label: i18n.t("job driver"),
+    value: 'driver',
+    label: i18n.t('job driver')
   },
   {
-    value: "electrician",
-    label: i18n.t("job electrician"),
+    value: 'electrician',
+    label: i18n.t('job electrician')
   },
   {
-    value: "emergency-worker",
-    label: i18n.t("job emergency worker"),
+    value: 'emergency-worker',
+    label: i18n.t('job emergency worker')
   },
   {
-    value: "engineer",
-    label: i18n.t("job engineer"),
+    value: 'engineer',
+    label: i18n.t('job engineer')
   },
   {
-    value: "government-employee",
-    label: i18n.t("job government employee"),
+    value: 'government-employee',
+    label: i18n.t('job government employee')
   },
   {
-    value: "health-safety",
-    label: i18n.t("job health safety"),
+    value: 'health-safety',
+    label: i18n.t('job health safety')
   },
   {
-    value: "laborer-lineman",
-    label: i18n.t("job laborer lineman"),
+    value: 'laborer-lineman',
+    label: i18n.t('job laborer lineman')
   },
   {
-    value: "machine-operator",
-    label: i18n.t("job machine operator"),
+    value: 'machine-operator',
+    label: i18n.t('job machine operator')
   },
   {
-    value: "maintenance-mechanic",
-    label: i18n.t("job maintenance mechanic"),
+    value: 'maintenance-mechanic',
+    label: i18n.t('job maintenance mechanic')
   },
   {
-    value: "marine-worker",
-    label: i18n.t("job marine worker"),
+    value: 'marine-worker',
+    label: i18n.t('job marine worker')
   },
   {
-    value: "metallurgy",
-    label: i18n.t("job metallurgy"),
+    value: 'metallurgy',
+    label: i18n.t('job metallurgy')
   },
   {
-    value: "miner",
-    label: i18n.t("job miner"),
+    value: 'miner',
+    label: i18n.t('job miner')
   },
   {
-    value: "no-role",
-    label: i18n.t("job no role defined"),
+    value: 'no-role',
+    label: i18n.t('job no role defined')
   },
   {
-    value: "other",
-    label: i18n.t("job other"),
+    value: 'other',
+    label: i18n.t('job other')
   },
   {
-    value: "pipeline",
-    label: i18n.t("job pipeline"),
+    value: 'pipeline',
+    label: i18n.t('job pipeline')
   },
   {
-    value: "production",
-    label: i18n.t("job production"),
+    value: 'production',
+    label: i18n.t('job production')
   },
   {
-    value: "supervisor-foreman",
-    label: i18n.t("job supervisor foreman"),
+    value: 'supervisor-foreman',
+    label: i18n.t('job supervisor foreman')
   },
   {
-    value: "surveyor",
-    label: i18n.t("job surveyor"),
+    value: 'surveyor',
+    label: i18n.t('job surveyor')
   },
   {
-    value: "welder",
-    label: i18n.t("job welder"),
-  },
+    value: 'welder',
+    label: i18n.t('job welder')
+  }
 ];
 export const permissionLevels = [
   {
     value: 3,
-    label: i18n.t('super admin'),
+    label: i18n.t('super admin')
   },
   {
     value: 4,
-    label: i18n.t('org admin'),
+    label: i18n.t('org admin')
   },
   {
     value: 1,
-    label: i18n.t('administrator'),
+    label: i18n.t('administrator')
   },
   {
     value: 2,
-    label: i18n.t('operator'),
-  },
+    label: i18n.t('operator')
+  }
 ];
 export const RISK_PRIORITIES = {
-  "low": 1,
-  "medium": 2,
-  "high": 3,
-  "extreme": 4,
+  low: 1,
+  medium: 2,
+  high: 3,
+  extreme: 4
 };
 export const PRIORITIES = {
-  "1": 6,
-  "2": 5,
-  "3": 1,
-  "4": 2,
-  "7": 3,
-  "8": 4,
+  1: 6,
+  2: 5,
+  3: 1,
+  4: 2,
+  7: 3,
+  8: 4
 };
 export const actions = [
   {
     value: 1,
-    label: i18n.t('re-invite user'),
+    label: i18n.t('re-invite user')
   },
   {
     value: 2,
-    label: i18n.t('remove from team'),
+    label: i18n.t('remove from team')
   },
   {
     value: 3,
-    label: i18n.t('delete user'),
-  },
+    label: i18n.t('delete user')
+  }
 ];
 export const yesNoOptions = [
   {
     value: true,
-    label: i18n.t('yes'),
+    label: i18n.t('yes')
   },
   {
     value: false,
-    label: i18n.t('no'),
-  },
+    label: i18n.t('no')
+  }
 ];
 export const twoFAOptions = [
   {
     title: i18n.t('on'),
-    value: true,
-  }, {
-    title: i18n.t('off'),
-    value: false,
+    value: true
   },
+  {
+    title: i18n.t('off'),
+    value: false
+  }
 ];
 export const passwordMinLengthOptions = [
   {
     title: 6,
-    value: 6,
-  }, {
-    title: 8,
-    value: 8,
-  }, {
-    title: 10,
-    value: 10,
+    value: 6
   },
+  {
+    title: 8,
+    value: 8
+  },
+  {
+    title: 10,
+    value: 10
+  }
 ];
 export const passwordExpirationDaysOptions = [
   {
     title: 60,
-    value: 60,
-  }, {
-    title: 90,
-    value: 90,
-  }, {
-    title: 180,
-    value: 180,
-  }, {
-    title: i18n.t('off'),
-    value: 0,
+    value: 60
   },
+  {
+    title: 90,
+    value: 90
+  },
+  {
+    title: 180,
+    value: 180
+  },
+  {
+    title: i18n.t('off'),
+    value: 0
+  }
 ];
 export const hideCbtHROptions = [
   {
     value: true,
-    title: i18n.t('yes'),
+    title: i18n.t('yes')
   },
   {
     value: false,
-    title: i18n.t('no'),
-  },
+    title: i18n.t('no')
+  }
 ];
 
-export const IMPERIAL = "imperial";
-export const METRIC = "metric";
-export const MALE = "male";
-export const FEMALE = "female";
-export const QUESTION_TYPE_RADIO = "radio";
-export const QUESTION_TYPE_BOOLEAN = "boolean";
+export const IMPERIAL = 'imperial';
+export const METRIC = 'metric';
+export const MALE = 'male';
+export const FEMALE = 'female';
+export const QUESTION_TYPE_RADIO = 'radio';
+export const QUESTION_TYPE_BOOLEAN = 'boolean';
 
-export const HEAT_SUSCEPTIBILITY_HIGH = "High";
-export const HEAT_SUSCEPTIBILITY_MEDIUM = "Medium";
-export const HEAT_SUSCEPTIBILITY_LOW = "Low";
-export const ALERT_STAGE_ID_LIST = ["1", "2", "3", "4"];
+export const HEAT_SUSCEPTIBILITY_HIGH = 'High';
+export const HEAT_SUSCEPTIBILITY_MEDIUM = 'Medium';
+export const HEAT_SUSCEPTIBILITY_LOW = 'Low';
+export const ALERT_STAGE_ID_LIST = ['1', '2', '3', '4'];
 
 export const HEAT_SUSCEPTIBILITY_PRIORITIES = {
   [HEAT_SUSCEPTIBILITY_HIGH.toLowerCase()]: 1,
   [HEAT_SUSCEPTIBILITY_MEDIUM.toLowerCase()]: 2,
-  [HEAT_SUSCEPTIBILITY_LOW.toLowerCase()]: 3,
+  [HEAT_SUSCEPTIBILITY_LOW.toLowerCase()]: 3
 };
 
 export const HEAT_SWEAT_CHART_COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
@@ -277,36 +284,24 @@ export const INIT_USER_CHART_ALERT_DATA = {
       data: [],
       borderWidth: 3,
       borderColor: ``,
-      backgroundColor: ``,
-    },
-  ],
+      backgroundColor: ``
+    }
+  ]
 };
 export const TYPES = [
   {
     value: 1,
     label: i18n.t('day')
-  },
+  }
   /*{
     value: 2,
     label: i18n.t('week')
   },*/
 ];
-export const LABELS_HEAT_DOUGHNUT = [
-  i18n.t('low %'),
-  i18n.t('medium'),
-  i18n.t('high')
-];
-export const LABELS_SWEAT_DOUGHNUT = [
-  i18n.t('low %'),
-  i18n.t('moderate'),
-  i18n.t('high')
-];
-export const HEAT_LOW_MEDIUM_HIGH = [
-  "low", "medium", "high"
-];
-export const SWEAT_LOW_MEDIUM_HIGH = [
-  "low", "moderate", "high"
-];
+export const LABELS_HEAT_DOUGHNUT = [i18n.t('low %'), i18n.t('medium'), i18n.t('high')];
+export const LABELS_SWEAT_DOUGHNUT = [i18n.t('low %'), i18n.t('moderate'), i18n.t('high')];
+export const HEAT_LOW_MEDIUM_HIGH = ['low', 'medium', 'high'];
+export const SWEAT_LOW_MEDIUM_HIGH = ['low', 'moderate', 'high'];
 
 export const ANALYTICS_API_KEYS = {
   WEAR_TIME: 'wearTime',
@@ -323,18 +318,18 @@ export const ANALYTICS_API_KEYS = {
   FLUID_METRICS_BY_TEAM: 'fluidMetricsByTeam',
   CHART_CBT: 'chartCbt',
   TEAM_MEMBER_ALERTS: 'teamMemberAlerts',
-  HEART_RATE: 'heartRate',
+  HEART_RATE: 'heartRate'
 };
 
 export const METRIC_USER_TABLE_VALUES = {
-  WEAR_TIME:  1,
+  WEAR_TIME: 1,
   ALERTS: 2,
   MAX_HEART_CBT: 3,
   SWR_ACCLIM_SWEAT: 4,
   SWR_ACCLIM_HEAT: 5,
   TIME_SPENT_IN_CBT_ZONES: 6,
   DEVICE_DATA: 7,
-  USERS_IN_VARIOUS_CBT_ZONES: 8,
+  USERS_IN_VARIOUS_CBT_ZONES: 8
 };
 export const METRIC_TEAM_TABLE_VALUES = {
   AMBIENT_TEMP_HUMIDITY: 20,
@@ -343,15 +338,15 @@ export const METRIC_TEAM_TABLE_VALUES = {
   NO_USERS_IN_SWR_CATE: 23,
   NO_USERS_IN_HEAT_CATE: 24,
   NO_USERS_IN_CBT_ZONES: 25,
-  NO_USERS_UNACCLIMATED_ACCLIMATED: 26,
+  NO_USERS_UNACCLIMATED_ACCLIMATED: 26
 };
 export const METRIC_USER_CHART_VALUES = {
   CBT: 40,
-  HR: 41,
+  HR: 41
 };
 export const METRIC_TEAM_CHART_VALUES = {
   NUMBER_ALERTS_WEEK: 31,
-  HIGHEST_CBT_TIME_DAY_WEEK: 32,
+  HIGHEST_CBT_TIME_DAY_WEEK: 32
 };
 
 export const DAY_LIST = [
@@ -361,7 +356,7 @@ export const DAY_LIST = [
   i18n.t('wed'),
   i18n.t('thurs'),
   i18n.t('fri'),
-  i18n.t('sat'),
+  i18n.t('sat')
 ];
 
 export const TIME_LIST = [
@@ -397,80 +392,82 @@ export const HIGHEST_CHART_CELSIUS_MIN = 98.5;
 export const USER_STATUS_METRICS = [
   {
     label: `${i18n.t('table')} - ${i18n.t('wear time')}`,
-    value: METRIC_USER_TABLE_VALUES.WEAR_TIME, // 1
+    value: METRIC_USER_TABLE_VALUES.WEAR_TIME // 1
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('alerts')}`,
-    value: METRIC_USER_TABLE_VALUES.ALERTS, // 2
+    value: METRIC_USER_TABLE_VALUES.ALERTS // 2
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('swr')}`,
-    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT, // 4
+    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT // 4
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('heat susceptibility')}`,
-    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT, // 5
+    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT // 5
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('time spent in cbt zones')}`,
-    value: METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES, // 6
+    value: METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES // 6
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('device data')}`,
-    value: METRIC_USER_TABLE_VALUES.DEVICE_DATA, // 7
+    value: METRIC_USER_TABLE_VALUES.DEVICE_DATA // 7
   },
   {
     // label: `${i18n.t('table')} - ${i18n.t('users in various cbt zones')}`,
     label: `${i18n.t('table')} - Percent of Time in CBT Zones`,
-    value: METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES, // 8
+    value: METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES // 8
   },
   {
     label: `${i18n.t('chart')} - ${i18n.t('cbt')}`,
-    value: METRIC_USER_CHART_VALUES.CBT, // 40
+    value: METRIC_USER_CHART_VALUES.CBT // 40
   },
   {
     label: `${i18n.t('chart')} - ${i18n.t('hr')}`,
-    value: METRIC_USER_CHART_VALUES.HR, // 41
-  },
+    value: METRIC_USER_CHART_VALUES.HR // 41
+  }
 ];
 
 export const TEAM_STATUS_METRICS = [
   {
     label: `${i18n.t('table')} - ${i18n.t('ambient temp/humidity')}`,
-    value: METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY, // 20
+    value: METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY // 20
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('% of workers with alerts')}`,
-    value: METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS, // 21
+    value: METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS // 21
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('active users')}`,
-    value: METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS, // 22
+    value: METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS // 22
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('no. of users in swr categories')}`,
-    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE, // 23
+    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE // 23
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('no. of users in heat susceptibility categories')}`,
-    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE, // 24
+    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE // 24
   },
   // {
   //   label: `${i18n.t('table')} - ${i18n.t('no. of users in cbt zones')}`,
   //   value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES, // 25
   // },
   {
-    label: `${i18n.t('table')} - ${i18n.t('no. of users unacclimated, acclimated and previous illness')}`,
-    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED, // 26
+    label: `${i18n.t('table')} - ${i18n.t(
+      'no. of users unacclimated, acclimated and previous illness'
+    )}`,
+    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED // 26
   },
   {
     label: `${i18n.t('chart')} - ${i18n.t('number of alerts by week')}`,
-    value: METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK, // 31
+    value: METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK // 31
   },
   {
     label: `${i18n.t('chart')} - ${i18n.t('highest cbt by time of day and day of week')}`,
-    value: METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK, // 32
-  },
+    value: METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK // 32
+  }
 ];
 
 export const SORT_TITLES = [
@@ -485,81 +482,95 @@ export const SORT_TITLES = [
   i18n.t('extreme to low'),
   i18n.t('low to extreme'),
   i18n.t('high to low'),
-  i18n.t('low to high'),
+  i18n.t('low to high')
 ];
 
 export const ACTIVITIES_FILTERS = [
   {
     value: 1,
-    label: i18n.t("24 hours"),
-    noText: i18n.t("no activity logs in 24 hours"),
+    label: i18n.t('24 hours'),
+    noText: i18n.t('no activity logs in 24 hours')
   },
   {
     value: 7,
-    label: i18n.t("week"),
-    noText: i18n.t("no activity logs in week"),
+    label: i18n.t('week'),
+    noText: i18n.t('no activity logs in week')
   },
   {
     value: 30,
-    label: i18n.t("month"),
-    noText: i18n.t("no activity logs in month"),
-  },
+    label: i18n.t('month'),
+    noText: i18n.t('no activity logs in month')
+  }
 ];
 
-export const INVALID_VALUES1 = ["-1", "", null, undefined];
-export const INVALID_VALUES2 = [null, undefined, "0", ""];
-export const INVALID_VALUES3 = [null, undefined, "null", "undefined", ""];
-export const INVALID_VALUES4 = ["", null, undefined];
-export const MINUTE_OPTIONS = ["00", "15", "30", "45"];
+export const INVALID_VALUES1 = ['-1', '', null, undefined];
+export const INVALID_VALUES2 = [null, undefined, '0', ''];
+export const INVALID_VALUES3 = [null, undefined, 'null', 'undefined', ''];
+export const INVALID_VALUES4 = ['', null, undefined];
+export const MINUTE_OPTIONS = ['00', '15', '30', '45'];
 export const STAGE_VALUES = [
   {
-    label: "N/A",
-    value: null,
+    label: 'N/A',
+    value: null
   },
   {
-    label: "At Risk",
-    value: 1,
+    label: 'At Risk',
+    value: 1
   },
   {
-    label: "Elevated Risk",
-    value: 2,
+    label: 'Elevated Risk',
+    value: 2
   },
   {
-    label: "Safe",
-    value: 3,
+    label: 'Safe',
+    value: 3
   },
   {
-    label: "Safe",
-    value: 4,
+    label: 'Safe',
+    value: 4
   },
   {
-    label: "Safe",
-    value: 5,
-  },
+    label: 'Safe',
+    value: 5
+  }
 ];
 export const HEART_RATE_VALUES = [
   {
     label: null,
-    value: null,
+    value: null
   },
   {
-    label: i18n.t("very light"),
-    value: 1,
+    label: i18n.t('very light'),
+    value: 1
   },
   {
     label: i18n.t('light'),
-    value: 2,
+    value: 2
   },
   {
-    label: i18n.t("moderate"),
-    value: 3,
+    label: i18n.t('moderate'),
+    value: 3
   },
   {
     label: i18n.t('high'),
-    value: 4,
+    value: 4
   }
 ];
-export const PREFERRED_COUNTRIES = ['us', 'ca', 'fr', 'de', 'jp', 'cn', 'au', 'za', 'in', 'qa', 'gb', 'sa', 'es'];
+export const PREFERRED_COUNTRIES = [
+  'us',
+  'ca',
+  'fr',
+  'de',
+  'jp',
+  'cn',
+  'au',
+  'za',
+  'in',
+  'qa',
+  'gb',
+  'sa',
+  'es'
+];
 
 export const TIME_FORMAT_YYYYMDHM = {
   year: 'numeric',
@@ -570,18 +581,18 @@ export const TIME_FORMAT_YYYYMDHM = {
 };
 
 export const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "June",
-  "July",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'June',
+  'July',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
 ];
 
 export const FT_OPTIONS = [1, 2, 3, 4, 5, 6, 7];

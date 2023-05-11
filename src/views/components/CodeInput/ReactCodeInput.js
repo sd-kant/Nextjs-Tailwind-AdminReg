@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'clsx';
 import { uuidv4 } from '../../../utils';
-import {
-  getValueFromProps,
-  getInputArrayFromProps
-} from './utils';
-import customStyle from "./ReactCodeInput.module.scss";
+import { getValueFromProps, getInputArrayFromProps } from './utils';
+import customStyle from './ReactCodeInput.module.scss';
 
 const BACKSPACE_KEY = 8;
 const LEFT_ARROW_KEY = 37;
@@ -24,7 +21,7 @@ const defaultInputStyle = {
   boxShadow: '0px 0px 10px 0px rgba(0,0,0,.10)',
   boxSizing: 'border-box',
   fontFamily: 'monospace',
-  MozAppearance: 'textfield',
+  MozAppearance: 'textfield'
 };
 
 class ReactCodeInput extends Component {
@@ -33,7 +30,7 @@ class ReactCodeInput extends Component {
 
     this.state = {
       input: getInputArrayFromProps(props),
-      value: getValueFromProps(props),
+      value: getValueFromProps(props)
     };
 
     this.textInput = [];
@@ -48,11 +45,11 @@ class ReactCodeInput extends Component {
 
     this.setState({
       input: getInputArrayFromProps(this.props),
-      value: getValueFromProps(this.props),
+      value: getValueFromProps(this.props)
     });
 
     // set cursor at first
-    if (this.props.value === "") {
+    if (this.props.value === '') {
       this.textInput[0]?.focus();
     }
   }
@@ -86,12 +83,15 @@ class ReactCodeInput extends Component {
     }
 
     /** Filter Chars */
-    value = value.split('').filter(currChar => {
-      if (filterCharsIsWhitelist) {
-        return filterChars.includes(currChar);
-      }
-      return !filterChars.includes(currChar);
-    }).join('');
+    value = value
+      .split('')
+      .filter((currChar) => {
+        if (filterCharsIsWhitelist) {
+          return filterChars.includes(currChar);
+        }
+        return !filterChars.includes(currChar);
+      })
+      .join('');
 
     let fullValue = value;
 
@@ -141,8 +141,7 @@ class ReactCodeInput extends Component {
       nextTarget = this.textInput[target + 1],
       prevTarget = this.textInput[target - 1];
 
-    let input,
-      value;
+    let input, value;
 
     if (this.props.filterKeyCodes.length > 0) {
       this.props.filterKeyCodes.some((item) => {
@@ -215,7 +214,7 @@ class ReactCodeInput extends Component {
       { input } = this.state,
       styles = {
         container: { display: 'inline-block', ...style },
-        input: isValid ? inputStyle : inputStyleInvalid,
+        input: isValid ? inputStyle : inputStyleInvalid
       };
 
     if (!className && Object.keys(inputStyle).length === 0) {
@@ -223,7 +222,7 @@ class ReactCodeInput extends Component {
         ...defaultInputStyle,
         color: 'black',
         backgroundColor: 'white',
-        borderColor: 'lightgrey',
+        borderColor: 'lightgrey'
       });
     }
 
@@ -232,7 +231,7 @@ class ReactCodeInput extends Component {
         ...defaultInputStyle,
         color: '#b94a48',
         backgroundColor: '#f2dede',
-        borderColor: '#eed3d7',
+        borderColor: '#eed3d7'
       });
     }
 
@@ -241,7 +240,7 @@ class ReactCodeInput extends Component {
         cursor: 'not-allowed',
         color: 'lightgrey',
         borderColor: 'lightgrey',
-        backgroundColor: '#efeff1',
+        backgroundColor: '#efeff1'
       });
     }
 
@@ -255,7 +254,7 @@ class ReactCodeInput extends Component {
               }}
               id={`${this.uuid}-${i}`}
               data-id={i}
-              autoFocus={autoFocus && (i === 0)}
+              autoFocus={autoFocus && i === 0}
               value={value}
               key={`input_${i}`}
               type={type}
@@ -291,7 +290,7 @@ ReactCodeInput.defaultProps = {
   type: 'text',
   filterKeyCodes: [189, 190],
   filterChars: ['-', '.'],
-  filterCharsIsWhitelist: false,
+  filterCharsIsWhitelist: false
 };
 
 ReactCodeInput.propTypes = {
@@ -317,10 +316,19 @@ ReactCodeInput.propTypes = {
   filterCharsIsWhitelist: PropTypes.bool,
   pattern: PropTypes.string,
   inputMode: PropTypes.oneOf([
-    'verbatim', 'latin', 'latin-name', 'latin-prose',
-    'full-width-latin', 'kana', 'kana-name', 'katakana',
-    'numeric', 'tel', 'email', 'url',
-  ]),
+    'verbatim',
+    'latin',
+    'latin-name',
+    'latin-prose',
+    'full-width-latin',
+    'kana',
+    'kana-name',
+    'katakana',
+    'numeric',
+    'tel',
+    'email',
+    'url'
+  ])
 };
 
 export default ReactCodeInput;

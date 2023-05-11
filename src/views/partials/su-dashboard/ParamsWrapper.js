@@ -1,7 +1,7 @@
-import React from "react";
-import {useParams} from "react-router-dom";
+import React from 'react';
+import { useParams } from 'react-router-dom';
 
-function ParamsWrapper({children}) {
+function ParamsWrapper({ children }) {
   const params = useParams();
 
   if (React.isValidElement(children)) {

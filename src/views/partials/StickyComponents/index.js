@@ -1,35 +1,29 @@
 import * as React from 'react';
-import {withTranslation} from "react-i18next";
+import { withTranslation } from 'react-i18next';
 
 import clsx from 'clsx';
 import style from './StickyComponents.module.scss';
-import Statistics from "../Statistics";
-import {useStickyComponentsContext} from "../../../providers/StickyComponentsProvider";
-import RestBar from "../RestBar";
+import Statistics from '../Statistics';
+import { useStickyComponentsContext } from '../../../providers/StickyComponentsProvider';
+import RestBar from '../RestBar';
 
 const StickyComponents = () => {
-  const {visible} = useStickyComponentsContext();
+  const { visible } = useStickyComponentsContext();
   return (
     <>
-      {
-        visible.statistics &&
+      {visible.statistics && (
         <div className={clsx(style.Wrapper)}>
-          <Statistics
-            boxShadow={true}
-          />
+          <Statistics boxShadow={true} />
         </div>
-      }
+      )}
 
-      {
-        visible.workRestBar &&
+      {visible.workRestBar && (
         <div className={clsx(style.Wrapper)}>
-          <RestBar
-            boxShadow={true}
-          />
+          <RestBar boxShadow={true} />
         </div>
-      }
+      )}
     </>
-  )
+  );
 };
 
 export default withTranslation()(StickyComponents);

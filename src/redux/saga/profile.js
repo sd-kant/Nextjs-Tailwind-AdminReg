@@ -1,10 +1,5 @@
-import {
-  takeLatest,
-  put,
-  call,
-  select,
-} from 'redux-saga/effects';
-import {actionTypes} from '../type';
+import { takeLatest, put, call, select } from 'redux-saga/effects';
+import { actionTypes } from '../type';
 import i18n from '../../i18nextInit';
 import {
   getCompanyById,
@@ -12,8 +7,8 @@ import {
   getMedicalResponsesV2,
   getProfileV2,
   updateProfileV2
-} from "../../http";
-import {get} from "lodash";
+} from '../../http';
+import { get } from 'lodash';
 
 function* actionWatcher() {
   yield takeLatest(actionTypes.UPDATE_PROFILE, updateProfileSaga);
@@ -23,20 +18,12 @@ function* actionWatcher() {
   yield takeLatest(actionTypes.GET_MEDICAL_RESPONSES, getMedicalResponsesSaga);
 }
 
-function* updateProfileSaga(
-  {
-    payload: {
-      body,
-      nextPath,
-      apiCall,
-      navigate,
-    }
-  }) {
+function* updateProfileSaga({ payload: { body, nextPath, apiCall, navigate } }) {
   try {
     yield put({
       type: actionTypes.LOADING,
       payload: {
-        loading: true,
+        loading: true
       }
     });
     const state = yield select();
@@ -50,7 +37,7 @@ function* updateProfileSaga(
         yield put({
           type: actionTypes.PROFILE_UPDATED,
           payload: {
-            profile: responseData,
+            profile: responseData
           }
         });
       }
@@ -60,8 +47,8 @@ function* updateProfileSaga(
         payload: {
           profile: {
             ...profile,
-            ...body,
-          },
+            ...body
+          }
         }
       });
     }
@@ -69,18 +56,18 @@ function* updateProfileSaga(
       navigate(nextPath);
     }
   } catch (e) {
-    console.log("update profile error", e);
+    console.log('update profile error', e);
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message),
+        msg: i18n.t(e.response?.data?.message)
       }
     });
   } finally {
     yield put({
       type: actionTypes.LOADING,
       payload: {
-        loading: false,
+        loading: false
       }
     });
   }
@@ -91,7 +78,7 @@ function* getProfileSaga() {
     yield put({
       type: actionTypes.LOADING,
       payload: {
-        loading: true,
+        loading: true
       }
     });
     const state = yield select();
@@ -99,35 +86,35 @@ function* getProfileSaga() {
     if (token) {
       const apiRes = yield call(getProfileV2, token);
       const responseData = apiRes.data;
-      const {userTypes} = responseData;
-      localStorage.setItem("kop-v2-user-type", JSON.stringify(userTypes));
+      const { userTypes } = responseData;
+      localStorage.setItem('kop-v2-user-type', JSON.stringify(userTypes));
       yield put({
         type: actionTypes.SET_USER_TYPE,
         payload: {
-          userType: userTypes,
+          userType: userTypes
         }
       });
 
       yield put({
         type: actionTypes.PROFILE_UPDATED,
         payload: {
-          profile: responseData,
+          profile: responseData
         }
       });
     }
   } catch (e) {
-    console.log("get profile error", e);
+    console.log('get profile error', e);
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message),
+        msg: i18n.t(e.response?.data?.message)
       }
     });
   } finally {
     yield put({
       type: actionTypes.LOADING,
       payload: {
-        loading: false,
+        loading: false
       }
     });
   }
@@ -143,7 +130,7 @@ function* getMyOrganizationSaga() {
       yield put({
         type: actionTypes.SET_MY_ORGANIZATION,
         payload: {
-          orgData,
+          orgData
         }
       });
     }
@@ -151,7 +138,7 @@ function* getMyOrganizationSaga() {
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message),
+        msg: i18n.t(e.response?.data?.message)
       }
     });
   }
@@ -162,7 +149,7 @@ function* getMedicalQuestionsSaga() {
     yield put({
       type: actionTypes.LOADING,
       payload: {
-        loading: true,
+        loading: true
       }
     });
     const state = yield select();
@@ -173,23 +160,23 @@ function* getMedicalQuestionsSaga() {
       yield put({
         type: actionTypes.SET_MEDICAL_QUESTIONS,
         payload: {
-          medicalQuestions: responseData,
+          medicalQuestions: responseData
         }
       });
     }
   } catch (e) {
-    console.log("get medical questions error", e);
+    console.log('get medical questions error', e);
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message),
+        msg: i18n.t(e.response?.data?.message)
       }
     });
   } finally {
     yield put({
       type: actionTypes.LOADING,
       payload: {
-        loading: false,
+        loading: false
       }
     });
   }
@@ -200,7 +187,7 @@ function* getMedicalResponsesSaga() {
     yield put({
       type: actionTypes.LOADING,
       payload: {
-        loading: true,
+        loading: true
       }
     });
     const state = yield select();
@@ -211,23 +198,23 @@ function* getMedicalResponsesSaga() {
       yield put({
         type: actionTypes.SET_MEDICAL_RESPONSES,
         payload: {
-          medicalResponses: responseData,
+          medicalResponses: responseData
         }
       });
     }
   } catch (e) {
-    console.log("get medical responses error", e);
+    console.log('get medical responses error', e);
     yield put({
       type: actionTypes.ERROR_NOTIFICATION,
       payload: {
-        msg: i18n.t(e.response?.data?.message),
+        msg: i18n.t(e.response?.data?.message)
       }
     });
   } finally {
     yield put({
       type: actionTypes.LOADING,
       payload: {
-        loading: false,
+        loading: false
       }
     });
   }

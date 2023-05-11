@@ -1,15 +1,9 @@
-import * as React from "react";
-import PhoneInput from 'react-phone-input-2'
-import 'react-phone-input-2/lib/style.css'
-import {PREFERRED_COUNTRIES} from "../../../constant";
+import * as React from 'react';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import { PREFERRED_COUNTRIES } from '../../../constant';
 
-const CustomPhoneInput = (
-  {
-    value,
-    disabled = false,
-    onChange,
-    ...props
-  }) => {
+const CustomPhoneInput = ({ value, disabled = false, onChange, ...props }) => {
   return (
     <PhoneInput
       value={value}
@@ -20,7 +14,7 @@ const CustomPhoneInput = (
       }}
       {...props}
     />
-  )
+  );
 };
 
 export default CustomPhoneInput;

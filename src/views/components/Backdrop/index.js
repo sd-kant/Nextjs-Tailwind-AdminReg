@@ -1,11 +1,9 @@
-import React from "react";
+import React from 'react';
 import clsx from 'clsx';
 import style from './Backdrop.module.scss';
 
 const Backdrop = () => {
-  return (
-    <div className={clsx(style.Backdrop)} />
-  );
+  return <div className={clsx(style.Backdrop)} />;
 };
 
 export default Backdrop;
