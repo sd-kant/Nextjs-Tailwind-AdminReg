@@ -28,6 +28,7 @@ const RequireAdminRole = lazy(() => import("./views/wrappers/RequireAdminRole"))
 const RequirePasswordValid = lazy(() => import("./views/wrappers/RequirePasswordValid"));
 const DashboardV2Wrapper = lazy(() => import("./views/pages/DashboardV2Wrapper"));
 const Invite = lazy(() => import("./views/pages/Invite"));
+const ConnectMember = lazy(() => import("./views/pages/ConnectMember"));
 const CreateAccount = lazy(() => import("./views/pages/CreateAccount"));
 const LoginEntry = lazy(() => import("./views/pages/LoginEntry"));
 const Analytics = lazy(() => import("./views/pages/Analytics"));
@@ -121,6 +122,23 @@ const Router = (
                   >
                     <ConnectDeviceSuccess/>
                   </SignInLayout>
+                </RequirePasswordValid>
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/connect/member/*"
+            element={
+              <RequireAuth requireLoggedIn={true}>
+                <RequirePasswordValid>
+                  <RequireAdminRole>
+                    <SignInLayout
+                      loggedIn={true}
+                    >
+                      <ConnectMember/>
+                    </SignInLayout>
+                  </RequireAdminRole>
                 </RequirePasswordValid>
               </RequireAuth>
             }

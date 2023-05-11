@@ -1,0 +1,79 @@
+@import "src/assets/scss/colors";
+
+@mixin input-placeholder {
+  font-family: Ubuntu-Regular, sans-serif;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.Wrapper {
+  .FormRow {
+    & > input {
+      &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        @include input-placeholder;
+      }
+
+      &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        @include input-placeholder;
+      }
+
+      &::-ms-input-placeholder { /* Microsoft Edge */
+        @include input-placeholder;
+      }
+    }
+  }
+
+  .DeviceWrapper {
+    display: none;
+    position: absolute;
+    width: 312px;
+    text-align: center;
+
+    .DeviceImage {
+      width: 216px;
+      height: auto;
+    }
+
+    .DeviceIDExplanation {
+      font-family: Ubuntu-Medium, sans-serif;
+      font-size: 16px;
+      line-height: 18px;
+      letter-spacing: 1px;
+    }
+  }
+
+  .CancelBtn {
+    margin-top: 15px;
+    margin-left: 0;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .Wrapper {
+    .DeviceWrapper {
+      display: block;
+      left: 450px;
+    }
+
+    .CancelBtn {
+      margin-top: 0;
+      margin-left: 15px;
+    }
+  }
+}
+@media only screen and (min-width: 1024px) {
+  .Wrapper {
+    .DeviceWrapper {
+      left: 500px;
+    }
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .Wrapper {
+    .DeviceWrapper {
+      left: 550px;
+    }
+  }
+}

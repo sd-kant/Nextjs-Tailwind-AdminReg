@@ -5,10 +5,10 @@ import * as Yup from 'yup';
 import {Form, withFormik} from "formik";
 import {withTranslation} from "react-i18next";
 import clsx from "clsx";
-import style from "./FormConnectDevice.module.scss"
+import style from "./FormConnectMemberDevice.module.scss"
 import LKenzenDeviceImg from "../../../assets/images/kenzen-device-l.png";
 import {isValidMacAddress} from "../../../utils";
-import {linkKenzenDevice} from "../../../http";
+import {linkMemberKenzenDevice} from "../../../http";
 import {setLoadingAction, showErrorNotificationAction} from "../../../redux/action/ui";
 
 export const formSchema = (t) => {
@@ -26,7 +26,7 @@ export const formSchema = (t) => {
   });
 };
 
-const FormConnectDevice = (props) => {
+const FromConnectMemberDevice = (props) => {
   const {
     values,
     errors,
@@ -112,7 +112,7 @@ const EnhancedForm = withFormik({
   validationSchema: ((props) => formSchema(props.t)),
   handleSubmit: async (values, {props, setFieldValue}) => {
     const {isEditing} = values;
-    const {setLoading, showErrorNotification, navigate} = props;
+    const {setLoading, showErrorNotification, navigate, teamId, userId} = props;
     if (isEditing) {
       setFieldValue("isEditing", false);
     } else {
@@ -120,17 +120,17 @@ const EnhancedForm = withFormik({
         const {deviceId} = values;
         const tDeviceId = deviceId.trim();
         setLoading(true);
-        await linkKenzenDevice(tDeviceId);
-        navigate(`/connect/device/success?deviceId=${encodeURIComponent(tDeviceId)}`);
+        await linkMemberKenzenDevice(teamId, userId, tDeviceId);
+        navigate(`/connect/member/device/success?deviceId=${encodeURIComponent(tDeviceId)}`);
       } catch (e) {
-        console.error("[link] [device] [error]", e);
+        console.error("[link] [member] [device] [error]", e);
         showErrorNotification(e.response?.data?.message);
       } finally {
         setLoading(false);
       }
     }
   }
-})(FormConnectDevice);
+})(FromConnectMemberDevice);
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(

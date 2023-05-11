@@ -85,6 +85,25 @@ const FormSelectMode = (props) => {
                   <span className={clsx('font-small')}>{t("monitor your team")}</span>
                 </div>
               </div>
+
+              <div
+                className={clsx(style.OptionWrapper)}
+                onClick={() => navigate("/connect/member/company")}
+              >
+                <div>
+                  <span className={clsx('font-button-label')}>{t("phone free hub")}</span>
+                </div>
+
+                <div className={clsx(style.ImageWrapper3)}>
+                  <img src={workerOrange} alt="worker"/>
+                  <img src={ArrowIcon} alt="arrow"/>
+                  <img src={KenzenDeviceImg} alt="kenzen device"/>
+                </div>
+
+                <div className={clsx(style.DescriptionDiv)}>
+                  <span className={clsx('font-small')}>{t("connect team member")}</span>
+                </div>
+              </div>
             </>
           }
 

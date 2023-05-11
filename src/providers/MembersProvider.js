@@ -873,6 +873,20 @@ const MembersProvider = (
     })) ?? [];
   }, [searchedUsers, users, admins]);
 
+  const searchedOperators = React.useMemo(() => {
+    return searchedUsers?.filter(it =>
+      it.teamId
+      && users?.every(ele => ele.userId?.toString() !== it.userId?.toString())
+      && admins?.every(ele => ele.userId?.toString() !== it.userId?.toString())
+    )
+      ?.map(it => ({
+      value: it.userId,
+      title: `${it.firstName} ${it.lastName}`,
+      subtitle: it.email ?? it.phoneNumber,
+      teamId: it.teamId,
+    })) ?? [];
+  }, [searchedUsers, users, admins]);
+
   const providerValue = {
     apiLoading,
     userType,
@@ -892,6 +906,7 @@ const MembersProvider = (
     dropdownItems,
     keywordOnInvite,
     setKeywordOnInvite,
+    searchedOperators,
     initializeMembers,
     handleMemberInfoChange,
     handleMemberTeamUserTypeChange,
