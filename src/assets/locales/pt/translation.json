@@ -696,5 +696,6 @@
   "device connected support": "Tem uma pergunta ou preocupação? Confira nossa página de suporte <a1>aqui</a1>! Ou envie-nos um e-mail para: <a2>{{supportEmail}}</a2>",
   "close window": "janela fechada",
   "profile": "perfil",
-  "modify profile": "modifique seu perfil"
+  "modify profile": "modifique seu perfil",
+  "connect team member": "Conectar um membro da equipe"
 }
