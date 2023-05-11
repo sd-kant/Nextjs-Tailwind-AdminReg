@@ -1,16 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Provider } from "react-redux";
+import { Provider } from 'react-redux';
 import './index.css';
 import App from './App';
 import ReduxToastr from 'react-redux-toastr';
 import reportWebVitals from './reportWebVitals';
-import {store} from "./redux/store";
-import {NotificationProvider} from "./providers/NotificationProvider";
-import Notifications from "./views/partials/Notifications";
-const root = ReactDOM.createRoot(document.getElementById("root"));
+import { store } from './redux/store';
+import { NotificationProvider } from './providers/NotificationProvider';
+import Notifications from './views/partials/Notifications';
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.Suspense fallback={"loading..."}>
+  <React.Suspense fallback={'loading...'}>
     <Provider store={store}>
       <NotificationProvider>
         <React.StrictMode>
@@ -25,7 +25,7 @@ root.render(
             progressBar
             closeOnToastrClick
           />
-          <Notifications/>
+          <Notifications />
         </React.StrictMode>
       </NotificationProvider>
     </Provider>

@@ -1,28 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {connect} from "react-redux";
-import {withTranslation, Trans} from "react-i18next";
-import backIcon from "../../../assets/images/back.svg";
-import {bindActionCreators} from "redux";
-import {getParamFromUrl} from "../../../utils";
-import {
-  setLoadingAction,
-  showErrorNotificationAction
-} from "../../../redux/action/ui";
-import CodeInput from "../../components/CodeInput";
-import {loginWithCodeAction} from "../../../redux/action/auth";
-import {requestSmsCode} from "../../../http";
-import {get} from "lodash";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { withTranslation, Trans } from 'react-i18next';
+import backIcon from '../../../assets/images/back.svg';
+import { bindActionCreators } from 'redux';
+import { getParamFromUrl } from '../../../utils';
+import { setLoadingAction, showErrorNotificationAction } from '../../../redux/action/ui';
+import CodeInput from '../../components/CodeInput';
+import { loginWithCodeAction } from '../../../redux/action/auth';
+import { requestSmsCode } from '../../../http';
+import { get } from 'lodash';
+import { useNavigate } from 'react-router-dom';
 
 const FormPhoneVerification = (props) => {
-  const {
-    t,
-    setRestBarClass,
-    showErrorNotification,
-    setLoading,
-    login,
-    smsAuthFailedCount
-  } = props;
+  const { t, setRestBarClass, showErrorNotification, setLoading, login, smsAuthFailedCount } =
+    props;
   const [code, setCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState(null);
   const navigate = useNavigate();
@@ -39,7 +30,7 @@ const FormPhoneVerification = (props) => {
         phoneNumber,
         loginCode: code,
         fromRegister: true,
-        navigate,
+        navigate
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,7 +46,7 @@ const FormPhoneVerification = (props) => {
       try {
         setLoading(true);
         await requestSmsCode(phoneNumber);
-        setCode("");
+        setCode('');
       } catch (e) {
         showErrorNotification(e.response?.data?.message);
       } finally {
@@ -66,40 +57,36 @@ const FormPhoneVerification = (props) => {
 
   useEffect(() => {
     if (smsAuthFailedCount !== 0) {
-      setCode("");
+      setCode('');
     }
   }, [smsAuthFailedCount]);
 
   return (
-    <div className='form-group mt-57'>
+    <div className="form-group mt-57">
       <div>
         <div
           className="d-flex align-center cursor-pointer"
           onClick={() => navigate('/create-account/phone-register')}
         >
-          <img src={backIcon} alt="back"/>
+          <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
-          <span className='font-button-label text-orange'>
-            {t("previous")}
-          </span>
+          <span className="font-button-label text-orange">{t('previous')}</span>
         </div>
 
-        <div className='mt-25'>
-          <span className={"font-binary"}>
-            {t("auth code description")}
-          </span>
+        <div className="mt-25">
+          <span className={'font-binary'}>{t('auth code description')}</span>
           &nbsp;
-          <span className={"font-binary text-orange"}>
+          <span className={'font-binary text-orange'}>
             <Trans
-              i18nKey={"auth code number"}
+              i18nKey={'auth code number'}
               values={{
-                number: phoneNumber?.slice(-4),
+                number: phoneNumber?.slice(-4)
               }}
             />
           </span>
         </div>
 
-        <div className='mt-40 d-flex flex-column'>
+        <div className="mt-40 d-flex flex-column">
           <CodeInput
             value={code}
             onChange={(v) => {
@@ -108,27 +95,22 @@ const FormPhoneVerification = (props) => {
           />
         </div>
 
-        <div className='mt-40'>
-          <span className={"font-binary"}>
-            {t("auth code not receive")}
-          </span>
+        <div className="mt-40">
+          <span className={'font-binary'}>{t('auth code not receive')}</span>
           &nbsp;
-          <span
-            className={"font-binary text-orange cursor-pointer"}
-            onClick={resendCode}
-          >
-            {t("auth code resend")}
+          <span className={'font-binary text-orange cursor-pointer'} onClick={resendCode}>
+            {t('auth code resend')}
           </span>
         </div>
       </div>
 
-      <div className='mt-80'/>
+      <div className="mt-80" />
     </div>
-  )
+  );
 };
 
 const mapStateToProps = (state) => ({
-  smsAuthFailedCount: get(state, 'auth.smsAuthFailedCount'),
+  smsAuthFailedCount: get(state, 'auth.smsAuthFailedCount')
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -136,12 +118,12 @@ const mapDispatchToProps = (dispatch) =>
     {
       showErrorNotification: showErrorNotificationAction,
       setLoading: setLoadingAction,
-      login: loginWithCodeAction,
+      login: loginWithCodeAction
     },
     dispatch
   );
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(withTranslation()(FormPhoneVerification));

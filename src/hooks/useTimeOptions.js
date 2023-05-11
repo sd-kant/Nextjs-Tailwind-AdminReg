@@ -1,5 +1,5 @@
-import * as React from "react";
-import {MINUTE_OPTIONS} from "../constant";
+import * as React from 'react';
+import { MINUTE_OPTIONS } from '../constant';
 
 function useTimeOptions() {
   const hourOptions = React.useMemo(() => {

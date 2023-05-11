@@ -1,21 +1,20 @@
-import React from "react";
-import {withTranslation} from "react-i18next";
-import Button from "../Button";
-import DropDownCard from "./DropdownButtonCard";
-import chevronDown from "../../../assets/images/chevron-down.svg"
+import React from 'react';
+import { withTranslation } from 'react-i18next';
+import Button from '../Button';
+import DropDownCard from './DropdownButtonCard';
+import chevronDown from '../../../assets/images/chevron-down.svg';
 
-import style from "./DropdownButton.module.scss";
+import style from './DropdownButton.module.scss';
 import clsx from 'clsx';
 
-const DropdownButton = (
-  {
-    t,
-    placeholder,
-    option = null,
-    options = [],
-    onClick = () => {},
-    onClickOption = () => {},
-  }) => {
+const DropdownButton = ({
+  t,
+  placeholder,
+  option = null,
+  options = [],
+  onClick = () => {},
+  onClickOption = () => {}
+}) => {
   const [open, setOpen] = React.useState(false);
   const drop = React.useRef(null);
 
@@ -26,14 +25,18 @@ const DropdownButton = (
   }
 
   React.useEffect(() => {
-    document.addEventListener("click", handleClick);
+    document.addEventListener('click', handleClick);
     return () => {
-      document.removeEventListener("click", handleClick);
+      document.removeEventListener('click', handleClick);
     };
   });
 
   const title = React.useMemo(() => {
-    return options?.find(it => it.value?.toString() === option?.toString())?.label ?? (placeholder ?? t("select"));
+    return (
+      options?.find((it) => it.value?.toString() === option?.toString())?.label ??
+      placeholder ??
+      t('select')
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options, option]);
 
@@ -47,21 +50,20 @@ const DropdownButton = (
         borderColor={'gray'}
         dropdown={true}
         fullWidth={true}
-        icon={<img src={chevronDown} alt="down"/>}
+        icon={<img src={chevronDown} alt="down" />}
         title={title}
         onClick={onClick}
         drop={drop}
-        onClickArrow={() => setOpen(open => !open)}
+        onClickArrow={() => setOpen((open) => !open)}
       />
-      {
-        open &&
+      {open && (
         <DropDownCard
           option={option}
           data={options}
           setOpen={setOpen}
           onClickOption={onClickOption}
         />
-      }
+      )}
     </div>
   );
 };

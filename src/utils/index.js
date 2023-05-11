@@ -6,12 +6,10 @@ import {
   USER_TYPE_ADMIN,
   USER_TYPE_ORG_ADMIN,
   USER_TYPE_TEAM_ADMIN
-} from "../constant";
-import {
-  isValidPhoneNumber,
-} from 'libphonenumber-js';
-import queryString from "query-string";
-import spacetime from "spacetime";
+} from '../constant';
+import { isValidPhoneNumber } from 'libphonenumber-js';
+import queryString from 'query-string';
+import spacetime from 'spacetime';
 
 export const getTokenFromUrl = () => {
   const queryString = window.location.search;
@@ -20,8 +18,8 @@ export const getTokenFromUrl = () => {
   return param ? decodeURIComponent(param) : undefined;
 };
 
-export const checkAlphaNumeric = str => {
-  const regex=  /^[a-z0-9]+$/i;
+export const checkAlphaNumeric = (str) => {
+  const regex = /^[a-z0-9]+$/i;
   return str?.match(regex);
 };
 
@@ -30,7 +28,6 @@ export const countString = (str, letter) => {
 
   // looping through the items
   for (let i = 0; i < str?.length; i++) {
-
     // check if the character is at that position
     if (str.charAt(i) === letter) {
       count += 1;
@@ -39,7 +36,7 @@ export const countString = (str, letter) => {
   return count;
 };
 
-export const checkUsernameValidation1 = str => {
+export const checkUsernameValidation1 = (str) => {
   const dotCount = countString(str, '.');
   if (dotCount < 2) {
     const regex = /^(?!.*\\..*\\..*)[A-Za-z]([A-Za-z0-9.]*[A-Za-z0-9])?$/;
@@ -49,11 +46,11 @@ export const checkUsernameValidation1 = str => {
   return false;
 };
 
-export const checkUsernameValidation2 = str => {
+export const checkUsernameValidation2 = (str) => {
   return str?.charAt(str.length - 1) !== '.';
 };
 
-export const getParamFromUrl = key => {
+export const getParamFromUrl = (key) => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const param = urlParams.get(key);
@@ -61,7 +58,10 @@ export const getParamFromUrl = key => {
 };
 
 export const checkPasswordValidation = (password, minLength) => {
-  const regex = new RegExp(`^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{${minLength ?? 6},1024}$`, 'gi');
+  const regex = new RegExp(
+    `^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\\s).{${minLength ?? 6},1024}$`,
+    'gi'
+  );
   return password && password.match(regex);
 };
 
@@ -72,31 +72,32 @@ export const checkPhoneNumberValidation = (value, country) => {
   return isValidPhoneNumber(value, country?.toUpperCase() ?? 'US');
 };
 
-export const isAdmin = userType => {
+export const isAdmin = (userType) => {
   const validRoles = [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN];
-  return validRoles.some(it => userType?.includes(it));
+  return validRoles.some((it) => userType?.includes(it));
 };
 
 export const uuidv4 = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     // eslint-disable-next-line no-mixed-operators
-    let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    let r = (Math.random() * 16) | 0,
+      v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
 
 export const convertImperialToMetric = (imperial) => {
-  if (!(imperial && imperial.includes("ft"))) {
+  if (!(imperial && imperial.includes('ft'))) {
     return null;
   }
 
-  const strArr = imperial.split("ft");
+  const strArr = imperial.split('ft');
   if (strArr && strArr.length > 1) {
     const feet = strArr && strArr[0];
     const inchArr = strArr && strArr[1] && strArr[1].split('in');
     const inch = inchArr && inchArr[0];
 
-    const totalCm = (parseFloat(feet) * 30.48) + (parseFloat(inch) * 2.54);
+    const totalCm = parseFloat(feet) * 30.48 + parseFloat(inch) * 2.54;
 
     const m = Math.floor(totalCm / 100);
     const cm = Math.round(totalCm % 100);
@@ -109,17 +110,17 @@ export const convertImperialToMetric = (imperial) => {
   return null;
 };
 
-export const convertCmToImperial = value => {
+export const convertCmToImperial = (value) => {
   const numericValue = parseInt(value);
   if (!numericValue) {
     return {
       feet: 0,
-      inch: 0,
+      inch: 0
     };
   }
 
   let feet = Math.floor(numericValue / 30.48);
-  let inch = Math.round((numericValue - (feet * 30.48)) / 2.54);
+  let inch = Math.round((numericValue - feet * 30.48) / 2.54);
 
   if (inch === 12) {
     feet += 1;
@@ -128,30 +129,30 @@ export const convertCmToImperial = value => {
 
   return {
     feet,
-    inch,
+    inch
   };
 };
 
-export const convertCmToMetric = value => {
+export const convertCmToMetric = (value) => {
   const numericValue = parseInt(value);
   if (!numericValue) {
     return {
       m: 0,
-      cm: 0,
+      cm: 0
     };
   }
   return {
     m: Math.floor(numericValue / 100),
-    cm: (numericValue % 100),
-  }
+    cm: numericValue % 100
+  };
 };
 
-export const convertLbsToKilos = value => {
+export const convertLbsToKilos = (value) => {
   return Math.round(value * 45.359237) / 100;
 };
 
-export const convertKilosToLbs = value => {
-  return Math.round(100 * value / 0.45359237) / 100;
+export const convertKilosToLbs = (value) => {
+  return Math.round((100 * value) / 0.45359237) / 100;
 };
 
 export const format2Digits = (value) => {
@@ -161,37 +162,37 @@ export const format2Digits = (value) => {
 };
 
 export const numMinutesBetween = (d1 = new Date(), d2 = new Date(1900, 1, 1)) => {
-  const diff = (d1.getTime() - d2.getTime());
+  const diff = d1.getTime() - d2.getTime();
   // const diff = Math.abs(d1.getTime() - d2.getTime());
   return Math.ceil(diff / (1000 * 60));
 };
 
 export const numMinutesBetweenWithNow = (d1 = new Date(), d2 = new Date(1900, 1, 1)) => {
-  if (d2.getTime() > (d1.getTime() + (60 * 1000))) {
+  if (d2.getTime() > d1.getTime() + 60 * 1000) {
     return 100000;
   }
-  const diff = (d1.getTime() - d2.getTime());
+  const diff = d1.getTime() - d2.getTime();
   // const diff = Math.abs(d1.getTime() - d2.getTime());
   return Math.ceil(diff / (1000 * 60));
 };
 
-export const minutesToDaysHoursMinutes = minutes => {
+export const minutesToDaysHoursMinutes = (minutes) => {
   if (!minutes) {
     return {
       days: null,
       hours: null,
-      minutes: null,
+      minutes: null
     };
   }
   return {
-    days: Math.floor(minutes / 24 /60),
-    hours: Math.floor(minutes / 60 % 24),
-    minutes: Math.ceil(minutes % 60),
+    days: Math.floor(minutes / 24 / 60),
+    hours: Math.floor((minutes / 60) % 24),
+    minutes: Math.ceil(minutes % 60)
   };
 };
 
-export const celsiusToFahrenheit = t => {
-  const a = ((t * 9 / 5) + 32);
+export const celsiusToFahrenheit = (t) => {
+  const a = (t * 9) / 5 + 32;
   return Math.round(a * 10) / 10;
 };
 
@@ -228,39 +229,39 @@ export const getLatestDateBeforeNow = (d1, d2) => {
 };
 
 export const getUrlParamAsJson = () => {
-  const cachedSearchUrl = localStorage.getItem("kop-params");
+  const cachedSearchUrl = localStorage.getItem('kop-params');
   const q = queryString.parse(cachedSearchUrl);
 
   if (
-      INVALID_VALUES3.includes(q?.organization) &&
-      (
-          localStorage.getItem("kop-v2-user-type").includes(USER_TYPE_ORG_ADMIN) ||
-          localStorage.getItem("kop-v2-user-type").includes(USER_TYPE_TEAM_ADMIN)
-      )
+    INVALID_VALUES3.includes(q?.organization) &&
+    (localStorage.getItem('kop-v2-user-type').includes(USER_TYPE_ORG_ADMIN) ||
+      localStorage.getItem('kop-v2-user-type').includes(USER_TYPE_TEAM_ADMIN))
   ) {
-    q.organization = localStorage.getItem("kop-v2-picked-organization-id");
+    q.organization = localStorage.getItem('kop-v2-picked-organization-id');
   }
 
   return q;
 };
 
-export const concatAsUrlParam = q => {
+export const concatAsUrlParam = (q) => {
   let str = '';
   Object.keys(q)?.forEach((it, index) => {
-    str += index !== 0 ? `&${it}=${encodeURIComponent(q[it])}` : `${it}=${encodeURIComponent(q[it])}`;
+    str +=
+      index !== 0 ? `&${it}=${encodeURIComponent(q[it])}` : `${it}=${encodeURIComponent(q[it])}`;
   });
 
   return str;
 };
 
-export const updateUrlParam = ({param: {key, value}, reload = false}) => {
+export const updateUrlParam = ({ param: { key, value }, reload = false }) => {
   // parse the query string into an object
   const q = queryString.parse(location.search);
   q[key] = value;
   const str = concatAsUrlParam(q);
-  const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?${str}`;
+  const newUrl =
+    window.location.protocol + '//' + window.location.host + window.location.pathname + `?${str}`;
   if (!reload) {
-    window.history.pushState({path: newUrl},'', newUrl);
+    window.history.pushState({ path: newUrl }, '', newUrl);
   } else {
     window.location.href = newUrl;
   }
@@ -284,10 +285,10 @@ export const timeOnOtherZone = (time, timezone) => {
   if (!timezone.valid) {
     let gmt = timezone.name;
     if (gmt) {
-      const arr = gmt?.toLowerCase()?.replace("gmt", "")?.split(":");
+      const arr = gmt?.toLowerCase()?.replace('gmt', '')?.split(':');
       if (arr.length === 2) {
-        let offset = (parseInt(arr[0]) * 60) +  parseInt(arr[1]);
-        ret = new Date(new Date(time).getTime() + ((offset + os) * 60 * 1000));
+        let offset = parseInt(arr[0]) * 60 + parseInt(arr[1]);
+        ret = new Date(new Date(time).getTime() + (offset + os) * 60 * 1000);
       }
     }
 
@@ -297,32 +298,32 @@ export const timeOnOtherZone = (time, timezone) => {
   }
 };
 
-
 export const getDeviceId = () => {
-  let deviceId = localStorage.getItem("kop-v2-device-id");
+  let deviceId = localStorage.getItem('kop-v2-device-id');
   if (INVALID_VALUES3.includes(deviceId)) {
     deviceId = uuidv4();
-    localStorage.setItem("kop-v2-device-id", deviceId);
+    localStorage.setItem('kop-v2-device-id', deviceId);
   }
 
   return deviceId;
 };
 
-export const setStorageAfterLogin = ({token, refreshToken, userType, orgId, baseUrl}) => {
-  localStorage.setItem("kop-v2-token", token);
-  localStorage.setItem("kop-v2-refresh-token", refreshToken);
-  localStorage.setItem("kop-v2-register-token", token);
-  localStorage.setItem("kop-v2-user-type", JSON.stringify(userType));
-  localStorage.setItem("kop-v2-picked-organization-id", orgId);
-  localStorage.setItem("kop-v2-base-url", baseUrl);
+export const setStorageAfterLogin = ({ token, refreshToken, userType, orgId, baseUrl }) => {
+  localStorage.setItem('kop-v2-token', token);
+  localStorage.setItem('kop-v2-refresh-token', refreshToken);
+  localStorage.setItem('kop-v2-register-token', token);
+  localStorage.setItem('kop-v2-user-type', JSON.stringify(userType));
+  localStorage.setItem('kop-v2-picked-organization-id', orgId);
+  localStorage.setItem('kop-v2-base-url', baseUrl);
 };
 
-export const setStorageAfterRegisterLogin = ({token, baseUrl}) => {
-  localStorage.setItem("kop-v2-register-token", token);
-  localStorage.setItem("kop-v2-base-url", baseUrl);
+export const setStorageAfterRegisterLogin = ({ token, baseUrl }) => {
+  localStorage.setItem('kop-v2-register-token', token);
+  localStorage.setItem('kop-v2-base-url', baseUrl);
 };
 
-export const dateFormat = d => { // return 2022-07-02
+export const dateFormat = (d) => {
+  // return 2022-07-02
   const year = d.getFullYear();
   const month = d.getMonth() + 1;
   const formattedMonth = String(month).padStart(2, '0');
@@ -331,10 +332,10 @@ export const dateFormat = d => { // return 2022-07-02
   return `${year}-${formattedMonth}-${formattedDate}`;
 };
 
-export const getHeightAsMetric = ({measure, feet, inch, height}) => {
+export const getHeightAsMetric = ({ measure, feet, inch, height }) => {
   if (measure === IMPERIAL) {
-    const {m, cm} = convertImperialToMetric(`${feet}ft${inch}in`);
-    return (parseInt(m) * 100) + parseInt(cm);
+    const { m, cm } = convertImperialToMetric(`${feet}ft${inch}in`);
+    return parseInt(m) * 100 + parseInt(cm);
   } else {
     return height?.replaceAll('m', '').replaceAll('c', '');
   }

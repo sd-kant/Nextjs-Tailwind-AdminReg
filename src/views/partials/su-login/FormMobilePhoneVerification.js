@@ -1,32 +1,24 @@
-import React, {useEffect, useState} from 'react';
-import {connect} from "react-redux";
-import {withTranslation, Trans} from "react-i18next";
-import {bindActionCreators} from "redux";
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { withTranslation, Trans } from 'react-i18next';
+import { bindActionCreators } from 'redux';
 import {
   setLoadingAction,
   setRestBarClassAction,
   showErrorNotificationAction
-} from "../../../redux/action/ui";
-import {setMobileTokenAction} from "../../../redux/action/auth";
-import CodeInput from "../../components/CodeInput";
-import {get} from 'lodash';
-import {requestSmsCode} from "../../../http";
-import {getParamFromUrl} from "../../../utils";
-import backIcon from "../../../assets/images/back.svg";
-import axios from "axios";
-import {useNavigate} from "react-router-dom";
+} from '../../../redux/action/ui';
+import { setMobileTokenAction } from '../../../redux/action/auth';
+import CodeInput from '../../components/CodeInput';
+import { get } from 'lodash';
+import { requestSmsCode } from '../../../http';
+import { getParamFromUrl } from '../../../utils';
+import backIcon from '../../../assets/images/back.svg';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const FormMobilePhoneVerification = (props) => {
-  const {
-    token,
-    baseUri,
-    t,
-    setRestBarClass,
-    showErrorNotification,
-    setLoading,
-    mode,
-    setToken,
-  } = props;
+  const { token, baseUri, t, setRestBarClass, showErrorNotification, setLoading, mode, setToken } =
+    props;
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [code, setCode] = useState('');
   const navigate = useNavigate();
@@ -45,7 +37,7 @@ const FormMobilePhoneVerification = (props) => {
   }, [code]);
 
   const getMyPhoneNumber = async () => {
-    if (mode === "0") {
+    if (mode === '0') {
       const phone = getParamFromUrl('phoneNumber');
       setPhoneNumber(phone);
     } else {
@@ -54,12 +46,13 @@ const FormMobilePhoneVerification = (props) => {
           setLoading(true);
           const res = await axios.get(`${baseUri}/user`, {
             headers: {
-              Authorization: `Bearer ${token}`,
-            },
+              Authorization: `Bearer ${token}`
+            }
           });
-          const {phoneNumber} = res.data;
+          const { phoneNumber } = res.data;
           setPhoneNumber(phoneNumber);
-          if (mode?.toString() === "1") { // request sms code
+          if (mode?.toString() === '1') {
+            // request sms code
             await requestSmsCode(phoneNumber);
           }
         } catch (e) {
@@ -74,38 +67,38 @@ const FormMobilePhoneVerification = (props) => {
   const submitCode = async () => {
     try {
       setLoading(true);
-      const deviceId = getParamFromUrl("deviceId");
+      const deviceId = getParamFromUrl('deviceId');
       const loginRes = await axios.post(`${baseUri}/auth/login`, {
         phoneNumber,
         loginCode: code,
-        deviceId,
+        deviceId
       });
-      const {mfa, accessToken, refreshToken} = loginRes.data;
+      const { mfa, accessToken, refreshToken } = loginRes.data;
       if (!mfa) {
         // deliver token to app
         const payload = {
-          command: "login",
+          command: 'login',
           baseUri: baseUri,
           accessToken: accessToken,
-          refreshToken: refreshToken,
+          refreshToken: refreshToken
         };
-        console.log("mobile login success!");
+        console.log('mobile login success!');
         // eslint-disable-next-line no-prototype-builtins
-        if (window.hasOwnProperty("kenzenAndroidClient")) {
+        if (window.hasOwnProperty('kenzenAndroidClient')) {
           window.kenzenAndroidClient.postMessage(JSON.stringify(payload));
           // eslint-disable-next-line no-prototype-builtins
-        } else if (window.hasOwnProperty("webkit")) {
+        } else if (window.hasOwnProperty('webkit')) {
           window.webkit.messageHandlers.kenzenIosClient.postMessage(payload);
         } else {
-          console.log("Oh shit. What do I do with the token");
+          console.log('Oh shit. What do I do with the token');
         }
       } else {
         // something went wrong
       }
     } catch (e) {
-      setCode("");
-      if (e.response?.data?.status?.toString() === "400") {
-        showErrorNotification(t("msg wrong code"));
+      setCode('');
+      if (e.response?.data?.status?.toString() === '400') {
+        showErrorNotification(t('msg wrong code'));
       }
     } finally {
       setLoading(false);
@@ -121,7 +114,7 @@ const FormMobilePhoneVerification = (props) => {
       try {
         setLoading(true);
         await requestSmsCode(phoneNumber);
-        setCode("");
+        setCode('');
       } catch (e) {
         showErrorNotification(e.response?.data?.message);
       } finally {
@@ -131,7 +124,7 @@ const FormMobilePhoneVerification = (props) => {
   };
 
   return (
-    <div className='form-group mt-57'>
+    <div className="form-group mt-57">
       <div>
         <div
           className="d-inline-flex align-center cursor-pointer"
@@ -140,41 +133,33 @@ const FormMobilePhoneVerification = (props) => {
             navigate('/mobile-login');
           }}
         >
-          <img src={backIcon} alt="back"/>
+          <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
-          <span className='font-button-label text-orange text-uppercase'>
-            {t("back to login")}
-          </span>
+          <span className="font-button-label text-orange text-uppercase">{t('back to login')}</span>
         </div>
 
-        <div className='d-flex mt-15 flex-column'>
-          <label className='font-heading-small text-capitalize'>
-            {t("2fa auth code")}
-          </label>
+        <div className="d-flex mt-15 flex-column">
+          <label className="font-heading-small text-capitalize">{t('2fa auth code')}</label>
         </div>
 
         <div className="mt-15">
-          <span className={"font-binary"}>
-            {t("2fa auth code description")}
-          </span>
+          <span className={'font-binary'}>{t('2fa auth code description')}</span>
         </div>
 
-        <div className='mt-15'>
-          <span className={"font-binary"}>
-            {t("auth code description")}
-          </span>
+        <div className="mt-15">
+          <span className={'font-binary'}>{t('auth code description')}</span>
           &nbsp;
-          <span className={"font-binary text-orange"}>
+          <span className={'font-binary text-orange'}>
             <Trans
-              i18nKey={"auth code number"}
+              i18nKey={'auth code number'}
               values={{
-                number: phoneNumber?.slice(-4),
+                number: phoneNumber?.slice(-4)
               }}
             />
           </span>
         </div>
 
-        <div className='mt-40 d-flex flex-column'>
+        <div className="mt-40 d-flex flex-column">
           {/*todo don't accept alphabets*/}
           <CodeInput
             value={code}
@@ -184,38 +169,29 @@ const FormMobilePhoneVerification = (props) => {
           />
         </div>
 
-        <div className='mt-40'>
+        <div className="mt-40">
           <div>
-            <span className={"font-binary"}>
-              {t("auth code not receive")}
-            </span>
+            <span className={'font-binary'}>{t('auth code not receive')}</span>
             &nbsp;
-            <span
-              className={"font-binary text-orange cursor-pointer"}
-              onClick={resendCode}
-            >
-              {t("auth code resend")}
+            <span className={'font-binary text-orange cursor-pointer'} onClick={resendCode}>
+              {t('auth code resend')}
             </span>
           </div>
 
           <div>
-            <span className={"font-binary"}>
-              {t("2fa auth code contact administrator")}
-            </span>
+            <span className={'font-binary'}>{t('2fa auth code contact administrator')}</span>
           </div>
         </div>
       </div>
 
-      <div className='mt-80'>
-
-      </div>
+      <div className="mt-80"></div>
     </div>
-  )
+  );
 };
 
 const mapStateToProps = (state) => ({
   token: get(state, 'auth.mobileToken'),
-  baseUri: get(state, 'auth.baseUri'),
+  baseUri: get(state, 'auth.baseUri')
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -224,12 +200,12 @@ const mapDispatchToProps = (dispatch) =>
       setRestBarClass: setRestBarClassAction,
       setLoading: setLoadingAction,
       showErrorNotification: showErrorNotificationAction,
-      setToken: setMobileTokenAction,
+      setToken: setMobileTokenAction
     },
     dispatch
   );
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(withTranslation()(FormMobilePhoneVerification));

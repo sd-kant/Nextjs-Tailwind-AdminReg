@@ -5,8 +5,8 @@ import {
   METRIC_TEAM_TABLE_VALUES,
   METRIC_USER_CHART_VALUES,
   METRIC_USER_TABLE_VALUES
-} from "../constant";
-import spacetime from "spacetime";
+} from '../constant';
+import spacetime from 'spacetime';
 import {
   queryAmbientTempHumidity,
   queryOrganizationActiveUsers,
@@ -14,47 +14,55 @@ import {
   queryOrganizationAlertMetrics,
   queryOrganizationCategoriesUsersInCBTZones,
   queryOrganizationDeviceData,
-  queryOrganizationFluidMetricsByTeam, queryOrganizationHeartRate,
+  queryOrganizationFluidMetricsByTeam,
+  queryOrganizationHeartRate,
   queryOrganizationMaxCbt,
   queryOrganizationSWRFluid,
   queryOrganizationTempCateData,
   queryOrganizationUsersInCBTZones,
   queryOrganizationWearTime
-} from "../http";
-import i18n from "../i18nextInit";
+} from '../http';
+import i18n from '../i18nextInit';
 
 export const getUserNameFromUserId = (members, id) => {
-  const user = members?.find(it => it.userId?.toString() === id?.toString());
+  const user = members?.find((it) => it.userId?.toString() === id?.toString());
   return user ? `${user?.firstName} ${user?.lastName}` : ``;
 };
 
 export const getTeamNameFromUserId = (members, formattedTeams, userId) => {
-  const user = members?.find(it => it.userId?.toString() === userId?.toString());
+  const user = members?.find((it) => it.userId?.toString() === userId?.toString());
   if (user?.teamId) {
-    const team = formattedTeams?.find(it => it.value?.toString() === user.teamId?.toString());
+    const team = formattedTeams?.find((it) => it.value?.toString() === user.teamId?.toString());
     return team ? team.label : ``;
   }
   return user ? `${user?.firstName} ${user?.lastName}` : ``;
 };
 
 export const getTeamNameFromTeamId = (formattedTeams, teamId) => {
-  return formattedTeams?.find(it => it.value?.toString() === teamId?.toString())?.label;
+  return formattedTeams?.find((it) => it.value?.toString() === teamId?.toString())?.label;
 };
 
 export const getTimeSpentFromUserId = (data, str) => {
-  let findIndex = data.findIndex(a => a.temperatureCategory?.toLowerCase()?.includes(str?.toLowerCase()));
+  let findIndex = data.findIndex((a) =>
+    a.temperatureCategory?.toLowerCase()?.includes(str?.toLowerCase())
+  );
   if (findIndex > -1) {
-    return Math.ceil((data[findIndex]?.count ?? 0) / 240 * 10) / 10;
+    return Math.ceil(((data[findIndex]?.count ?? 0) / 240) * 10) / 10;
   } else {
     return 0;
   }
 };
 
 export const onCalc = (key, tempRet, total) => {
-  if (key !== 2 && key !== 5)
-    return Math.floor(tempRet[key] * 1000 / (total ?? 1)) / 10;
+  if (key !== 2 && key !== 5) return Math.floor((tempRet[key] * 1000) / (total ?? 1)) / 10;
   else {
-    return (1000 - Math.floor((tempRet[key === 2 ? 0 : 3] + tempRet[key === 2 ? 1 : 4]) * 1000 / (total ?? 1))) / 10;
+    return (
+      (1000 -
+        Math.floor(
+          ((tempRet[key === 2 ? 0 : 3] + tempRet[key === 2 ? 1 : 4]) * 1000) / (total ?? 1)
+        )) /
+      10
+    );
   }
 };
 
@@ -69,21 +77,17 @@ export const getDateList = (startD, endD) => {
   return dates;
 };
 
-export const getListPerLabel = (
-  {
-    list,
-    timezone,
-    stageIds,
-    startD,
-    endD,
-  }) => {
-  let temp = list?.filter(a => stageIds.includes(a.alertStageId));
+export const getListPerLabel = ({ list, timezone, stageIds, startD, endD }) => {
+  let temp = list?.filter((a) => stageIds.includes(a.alertStageId));
   let array = [];
   let startDate = startD;
   while (startDate.isBefore(endD)) {
     let endDate = startDate.add(1, 'day');
-    let filterList = temp?.filter(it => {
-      return spacetime(it.ts, timezone.name).isBefore(endDate) && spacetime(it.ts, timezone.name).isAfter(startDate);
+    let filterList = temp?.filter((it) => {
+      return (
+        spacetime(it.ts, timezone.name).isBefore(endDate) &&
+        spacetime(it.ts, timezone.name).isAfter(startDate)
+      );
     });
     array.push(filterList?.length);
     startDate = endDate;
@@ -97,16 +101,16 @@ export const getListPerLabel = (
 };
 
 export const getWeeksInMonth = (timezone) => {
-  let weeks = [], dates = [], value = 0;
+  let weeks = [],
+    dates = [],
+    value = 0;
 
   let timeLocal = new Date(); // 2022-11-24 05:40:00
   let endD = spacetime(timeLocal, timezone.name);
   let startMonthD = endD; // 2022-11-24 05:40:00
 
   // 2022-10-24 00:00:00
-  startMonthD = startMonthD
-    .subtract(1, `month`)
-    .time('12:00am');
+  startMonthD = startMonthD.subtract(1, `month`).time('12:00am');
 
   // day list of month
   let endMonthD = endD;
@@ -123,9 +127,7 @@ export const getWeeksInMonth = (timezone) => {
   value = 0;
 
   // 2022-11-24 00:00:00, Thur -> 2022-11-20 00:00:00, Sun
-  let endWeekD = endD
-    .subtract(endD.day(), `day`)
-    .time('12:00am');
+  let endWeekD = endD.subtract(endD.day(), `day`).time('12:00am');
 
   while (endWeekD.isAfter(startMonthD)) {
     weeks.push({
@@ -163,7 +165,7 @@ export const getWeeksInMonth = (timezone) => {
    */
   return {
     dates: dates,
-    weeks: weeks,
+    weeks: weeks
   };
 };
 
@@ -172,18 +174,16 @@ export const onFilterData = (data, key, userIds, members) => {
   if (!Object.keys(data).includes(key)) return [];
   if (userIds === null && members === null) return data[[key]] || [];
 
-  let ids = members?.map(it => it.userId.toString());
-  let list = members?.length > 0
-    ?
-    data[[key]]?.filter(it => ids.includes(it.userId?.toString()))
-    :
-    (data[[key]] ?? []);
+  let ids = members?.map((it) => it.userId.toString());
+  let list =
+    members?.length > 0
+      ? data[[key]]?.filter((it) => ids.includes(it.userId?.toString()))
+      : data[[key]] ?? [];
   return userIds?.length > 0
-    ?
-    list?.filter(it => userIds.includes(it.userId))
-    : (
-      members?.length > 0 ? list : []
-    );
+    ? list?.filter((it) => userIds.includes(it.userId))
+    : members?.length > 0
+    ? list
+    : [];
 };
 
 /**
@@ -193,11 +193,9 @@ export const onFilterData = (data, key, userIds, members) => {
  * @returns {any}
  */
 export const onFilterDataByOrganization = (data, orgId) => {
-  return (data && orgId && Object.keys(data).includes(orgId.toString()))
-    ?
-    JSON.parse(JSON.stringify(data[[orgId]]))
-    :
-    {};
+  return data && orgId && Object.keys(data).includes(orgId.toString())
+    ? JSON.parse(JSON.stringify(data[[orgId]]))
+    : {};
 };
 
 /**
@@ -209,13 +207,13 @@ export const onFilterDataByOrganization = (data, orgId) => {
 export const checkEmptyData = (data, type) => {
   let flag = 0;
   if (type === 1) {
-    data?.forEach(it => {
-      flag += it.data.filter(it => !!it)?.length;
+    data?.forEach((it) => {
+      flag += it.data.filter((it) => !!it)?.length;
     });
   } else if (type === 2) {
     if (!data) return true;
-    data?.list?.forEach(it => {
-      flag += it.filter(a => !!a).length;
+    data?.list?.forEach((it) => {
+      flag += it.filter((a) => !!a).length;
     });
   }
 
@@ -223,53 +221,56 @@ export const checkEmptyData = (data, type) => {
 };
 
 export const chartPlugins = (idStr, noDataStr) => {
-  return [{
-    id: idStr,
-    afterDraw(chart) {
-      const {ctx} = chart;
-      ctx.save();
+  return [
+    {
+      id: idStr,
+      afterDraw(chart) {
+        const { ctx } = chart;
+        ctx.save();
 
-      if ([`doughnut-sweat`, `doughnut-heat`].includes(idStr)) {
-        chart.data.datasets.forEach((dataset, i) => {
-          chart.getDatasetMeta(i).data.forEach((dataPoint, index) => {
-            const {x, y} = dataPoint.tooltipPosition();
-            const text = chart.data.labels[index] + `: ` + chart.data.datasets[i].data[index] + `%`;
-            const textWidth = ctx.measureText(text).width;
+        if ([`doughnut-sweat`, `doughnut-heat`].includes(idStr)) {
+          chart.data.datasets.forEach((dataset, i) => {
+            chart.getDatasetMeta(i).data.forEach((dataPoint, index) => {
+              const { x, y } = dataPoint.tooltipPosition();
+              const text =
+                chart.data.labels[index] + `: ` + chart.data.datasets[i].data[index] + `%`;
+              const textWidth = ctx.measureText(text).width;
 
-            if (chart.data.datasets[i].data[index]) {
-              ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-              ctx.fillRect(x - ((textWidth + 10) / 2), y - 29, textWidth + 15, 24);
+              if (chart.data.datasets[i].data[index]) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(x - (textWidth + 10) / 2, y - 29, textWidth + 15, 24);
 
-              // triangle
-              ctx.beginPath();
-              ctx.moveTo(x, y);
-              ctx.lineTo(x - 5, y - 5);
-              ctx.lineTo(x + 5, y - 5);
-              ctx.fill();
-              ctx.restore();
+                // triangle
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x - 5, y - 5);
+                ctx.lineTo(x + 5, y - 5);
+                ctx.fill();
+                ctx.restore();
 
-              //text
-              ctx.font = `12px Arial`;
-              ctx.fillStyle = COLOR_WHITE;
-              ctx.fillText(text, x - (textWidth / 2), y - 13);
-              ctx.restore();
-            }
-          })
-        });
-      }
+                //text
+                ctx.font = `12px Arial`;
+                ctx.fillStyle = COLOR_WHITE;
+                ctx.fillText(text, x - textWidth / 2, y - 13);
+                ctx.restore();
+              }
+            });
+          });
+        }
 
-      if (checkEmptyData(chart?.data?.datasets, 1)) {
-        let width = chart.width;
-        let height = chart.height;
-        ctx.textAlign = `center`;
-        ctx.textBaseline = `middle`;
-        ctx.font = `20px Arial`;
-        ctx.fillStyle = COLOR_WHITE;
-        ctx.fillText(noDataStr, width / 2, height / 2);
-        ctx.restore();
+        if (checkEmptyData(chart?.data?.datasets, 1)) {
+          let width = chart.width;
+          let height = chart.height;
+          ctx.textAlign = `center`;
+          ctx.textBaseline = `middle`;
+          ctx.font = `20px Arial`;
+          ctx.fillStyle = COLOR_WHITE;
+          ctx.fillText(noDataStr, width / 2, height / 2);
+          ctx.restore();
+        }
       }
     }
-  }]
+  ];
 };
 
 export const getThisWeek = () => {
@@ -285,7 +286,7 @@ export const getThisWeek = () => {
   return {
     startDate: startDate,
     endDate: endDate
-  }
+  };
 };
 
 export const getThisWeekByTeam = (timeZone) => {
@@ -307,7 +308,7 @@ export const getThisWeekByTeam = (timeZone) => {
   return {
     startDate: startD,
     endDate: endD
-  }
+  };
 };
 
 /**
@@ -325,8 +326,8 @@ export const randomHexColorCode = () => {
 export const checkMetric = (data, metric) => {
   let keys = Object.keys(data);
   let flag = 0;
-  keys.forEach(it => {
-    flag += (Number(data[[it]]) === metric ? 1 : 0);
+  keys.forEach((it) => {
+    flag += Number(data[[it]]) === metric ? 1 : 0;
   });
   return flag > 0;
 };
@@ -398,12 +399,12 @@ export const getKeyApiCall = (value) => {
       keys = [ANALYTICS_API_KEYS.HEART_RATE];
       break;
     default:
-      console.log("metric is not available");
+      console.log('metric is not available');
   }
   return {
     keys: keys,
-    apiCalls: apiCalls,
-  }
+    apiCalls: apiCalls
+  };
 };
 
 export const getHeaderMetrics = (metric, unitMetric) => {
@@ -413,9 +414,9 @@ export const getHeaderMetrics = (metric, unitMetric) => {
       ret = [
         i18n.t('name'),
         i18n.t('team'),
-        "Average Wear Time Per Day (hours)",
-        "Total Wear Time (hours)",
-        "Number of Days Device Worn",
+        'Average Wear Time Per Day (hours)',
+        'Total Wear Time (hours)',
+        'Number of Days Device Worn'
         // i18n.t('avg wear time'),
         // i18n.t('total wear time')
       ];
@@ -430,14 +431,15 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('heat risk'),
         `${i18n.t('cbt full')} ${unitMetric ? '˚C' : '˚F'}`,
         i18n.t('humidity'),
-        i18n.t('heart rate avg')];
+        i18n.t('heart rate avg')
+      ];
       break;
     case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
       ret = [
         i18n.t('name'),
         i18n.t('team'),
         i18n.t('date'),
-        "Max Core Body Temperature",
+        'Max Core Body Temperature'
         // i18n.t('max cbt'),
       ];
       break;
@@ -447,7 +449,9 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('team'),
         i18n.t('swr category'),
         `${i18n.t('swr')} ${unitMetric ? '(l/h)' : '(qt/h)'}`,
-        unitMetric ? i18n.t("fluid recmdt n", {n: i18n.t('(l/h)')}) : i18n.t("fluid recmdt n", {n: i18n.t('(qt/h)')}),
+        unitMetric
+          ? i18n.t('fluid recmdt n', { n: i18n.t('(l/h)') })
+          : i18n.t('fluid recmdt n', { n: i18n.t('(qt/h)') })
       ];
       break;
     case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT: // 5
@@ -456,7 +460,7 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('team'),
         i18n.t('heat sus'),
         i18n.t('previous illness'),
-        i18n.t('acclim status'),
+        i18n.t('acclim status')
       ];
       break;
     case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
@@ -476,9 +480,9 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('os version'),
         i18n.t('app version'),
         i18n.t('platform'),
-        "Max Core Body Temperature",
+        'Max Core Body Temperature',
         // i18n.t('max cbt'),
-        "Max Heart Rate",
+        'Max Heart Rate',
         // i18n.t('max hr'),
         i18n.t('date')
       ];
@@ -487,8 +491,8 @@ export const getHeaderMetrics = (metric, unitMetric) => {
       ret = [
         // i18n.t('temperature categories'),
         // i18n.t('user %')
-        "Core Body Temperature Zones",
-        "Percent of Time",
+        'Core Body Temperature Zones',
+        'Percent of Time'
       ];
       break;
     case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
@@ -512,25 +516,23 @@ export const getHeaderMetrics = (metric, unitMetric) => {
       ];
       break;
     case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
-      ret = [
-        i18n.t('team'),
-        i18n.t('active users')
-      ];
+      ret = [i18n.t('team'), i18n.t('active users')];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
       ret = [
         i18n.t('team'),
-        i18n.t("n swr", {n: i18n.t('low %')}),
-        i18n.t("n swr", {n: i18n.t('moderate')}),
-        i18n.t("n swr", {n: i18n.t('high')})
+        i18n.t('n swr', { n: i18n.t('low %') }),
+        i18n.t('n swr', { n: i18n.t('moderate') }),
+        i18n.t('n swr', { n: i18n.t('high') })
       ];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
       ret = [
         i18n.t('team'),
-        i18n.t("n risk", {n: i18n.t('upper low')}),
-        i18n.t("n risk", {n: i18n.t('medium')}),
-        i18n.t("n risk", {n: i18n.t('high')})];
+        i18n.t('n risk', { n: i18n.t('upper low') }),
+        i18n.t('n risk', { n: i18n.t('medium') }),
+        i18n.t('n risk', { n: i18n.t('high') })
+      ];
       break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
       ret = [

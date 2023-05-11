@@ -1,27 +1,27 @@
-import React, {useEffect} from 'react';
-import {connect} from "react-redux";
-import {bindActionCreators} from "redux";
-import {withTranslation} from "react-i18next";
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { withTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import {Form, withFormik} from "formik";
+import { Form, withFormik } from 'formik';
 import {
   checkUsernameValidation2,
   checkUsernameValidation1,
   checkPasswordValidation,
   getTokenFromUrl,
   getParamFromUrl
-} from "../../../utils";
-import {resetPasswordV2} from "../../../http";
+} from '../../../utils';
+import { resetPasswordV2 } from '../../../http';
 import {
   setLoadingAction,
   showErrorNotificationAction,
   showSuccessNotificationAction
-} from "../../../redux/action/ui";
-import {loginAction} from "../../../redux/action/auth";
-import {useNavigate} from "react-router-dom";
-import PasswordInput from "../../components/PasswordInput";
+} from '../../../redux/action/ui';
+import { loginAction } from '../../../redux/action/auth';
+import { useNavigate } from 'react-router-dom';
+import PasswordInput from '../../components/PasswordInput';
 
-const pwMinLength = getParamFromUrl("minPasswordLength") ?? 10;
+const pwMinLength = getParamFromUrl('minPasswordLength') ?? 10;
 const formSchema = (t) => {
   return Yup.object().shape({
     token: Yup.string(),
@@ -29,155 +29,114 @@ const formSchema = (t) => {
       .required(t('username required'))
       .min(6, t('username min error'))
       .max(1024, t('username max error'))
-      .test(
-        'is-valid-2',
-        t('username invalid 2'),
-        function (value) {
-          return checkUsernameValidation2(value);
-        }
-      )
-      .test(
-        'is-valid-1',
-        t('username invalid 1'),
-        function (value) {
-          return checkUsernameValidation1(value);
-        }
-      ),
+      .test('is-valid-2', t('username invalid 2'), function (value) {
+        return checkUsernameValidation2(value);
+      })
+      .test('is-valid-1', t('username invalid 1'), function (value) {
+        return checkUsernameValidation1(value);
+      }),
     password: Yup.string()
       .required(t('password invalid 2'))
-      .min(pwMinLength, t('password invalid 2', {n: pwMinLength}))
+      .min(pwMinLength, t('password invalid 2', { n: pwMinLength }))
       .max(1024, t('password invalid 2'))
-      .test(
-        'is-valid',
-        t('password invalid 2'),
-        function (value) {
-          return checkPasswordValidation(value, pwMinLength);
-        }
-      ),
+      .test('is-valid', t('password invalid 2'), function (value) {
+        return checkPasswordValidation(value, pwMinLength);
+      }),
     confirmPassword: Yup.string()
       .required(t('confirm password required'))
-      .test(
-        'is-equal',
-        t('confirm password invalid'),
-        function (value) {
-          return (this.parent.password === value);
-        }
-      ),
+      .test('is-equal', t('confirm password invalid'), function (value) {
+        return this.parent.password === value;
+      })
   });
 };
 
 const FormPassword = (props) => {
-  const {
-    setFieldValue,
-    values,
-    errors,
-    touched,
-    setRestBarClass,
-    t,
-    token,
-  } = props;
+  const { setFieldValue, values, errors, touched, setRestBarClass, t, token } = props;
   const navigate = useNavigate();
   useEffect(() => {
     const tokenFromUrl = getTokenFromUrl();
     if (!tokenFromUrl) {
       if (token) {
-        navigate("/create-account/name");
+        navigate('/create-account/name');
       } else {
-        navigate("/");
+        navigate('/');
       }
     } else {
-      setFieldValue("token", tokenFromUrl);
+      setFieldValue('token', tokenFromUrl);
     }
 
-    setRestBarClass("progress-0");
+    setRestBarClass('progress-0');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   const changeFormField = (e) => {
-    const {value, name} = e.target;
+    const { value, name } = e.target;
 
     setFieldValue(name, value);
   };
 
   return (
-    <Form className='form-group mt-57'>
+    <Form className="form-group mt-57">
       <div>
-        <div className='mt-10 d-flex flex-column'>
-          <label className='font-input-label'>
-            {t("Username")}
-          </label>
+        <div className="mt-10 d-flex flex-column">
+          <label className="font-input-label">{t('Username')}</label>
 
           <input
-            className='input input-field mt-10 font-heading-small text-white'
+            className="input input-field mt-10 font-heading-small text-white"
             name="username"
-            value={values["username"]}
-            type='text'
+            value={values['username']}
+            type="text"
             onChange={changeFormField}
           />
-          <span className="font-helper-text mt-10 text-white">{t("username length")}</span>
-          {
-            errors.username && touched.username && (
-              <span className="font-helper-text text-error mt-10">{errors.username}</span>
-            )
-          }
+          <span className="font-helper-text mt-10 text-white">{t('username length')}</span>
+          {errors.username && touched.username && (
+            <span className="font-helper-text text-error mt-10">{errors.username}</span>
+          )}
         </div>
 
-        <div className='mt-40 d-flex flex-column'>
-          <label className='font-input-label'>
-            {t("create password")}
-          </label>
+        <div className="mt-40 d-flex flex-column">
+          <label className="font-input-label">{t('create password')}</label>
 
-          <PasswordInput
-            name="password"
-            value={values["password"]}
-            onChange={changeFormField}
-          />
+          <PasswordInput name="password" value={values['password']} onChange={changeFormField} />
 
-          {
-            errors.password && touched.password && (
-              <span className="font-helper-text text-error mt-10">{errors.password}</span>
-            )
-          }
+          {errors.password && touched.password && (
+            <span className="font-helper-text text-error mt-10">{errors.password}</span>
+          )}
         </div>
 
-        <div className='mt-40 d-flex flex-column'>
-          <label className='font-input-label'>
-            {t("confirm password")}
-          </label>
+        <div className="mt-40 d-flex flex-column">
+          <label className="font-input-label">{t('confirm password')}</label>
 
           <PasswordInput
             name="confirmPassword"
-            value={values["confirmPassword"]}
+            value={values['confirmPassword']}
             onChange={changeFormField}
           />
 
-          {
-            errors.confirmPassword && touched.confirmPassword && (
-              <span className="font-helper-text text-error mt-10">{errors.confirmPassword}</span>
-            )
-          }
+          {errors.confirmPassword && touched.confirmPassword && (
+            <span className="font-helper-text text-error mt-10">{errors.confirmPassword}</span>
+          )}
         </div>
 
-        <div className='mt-40'>
-          <span className='font-helper-text'>
-            {t('n password rule', {n: pwMinLength})}
-          </span>
+        <div className="mt-40">
+          <span className="font-helper-text">{t('n password rule', { n: pwMinLength })}</span>
         </div>
       </div>
 
-      <div className='mt-80'>
+      <div className="mt-80">
         <button
-          className={`button ${values['password'] && values['confirmPassword'] ? "active cursor-pointer" : "inactive cursor-default"}`}
-          type={values['password'] && values['confirmPassword'] ? "submit" : "button"}
+          className={`button ${
+            values['password'] && values['confirmPassword']
+              ? 'active cursor-pointer'
+              : 'inactive cursor-default'
+          }`}
+          type={values['password'] && values['confirmPassword'] ? 'submit' : 'button'}
         >
-          <span className='font-button-label text-white'>
-            {t("next")}
-          </span>
+          <span className="font-button-label text-white">{t('next')}</span>
         </button>
       </div>
     </Form>
-  )
+  );
 };
 
 const EnhancedForm = withFormik({
@@ -185,37 +144,31 @@ const EnhancedForm = withFormik({
     token: '',
     username: '',
     password: '',
-    confirmPassword: '',
+    confirmPassword: ''
   }),
-  validationSchema: ((props) => formSchema(props.t)),
-  handleSubmit: async (values, {props}) => {
+  validationSchema: (props) => formSchema(props.t),
+  handleSubmit: async (values, { props }) => {
     const data = {
-      token: values["token"],
-      password: values["password"],
-      username: values["username"],
+      token: values['token'],
+      password: values['password'],
+      username: values['username']
     };
-    const {
-      setLoading,
-      showSuccessNotification,
-      login,
-      t,
-      showErrorNotification,
-      navigate,
-    } = props;
+    const { setLoading, showSuccessNotification, login, t, showErrorNotification, navigate } =
+      props;
 
     try {
       setLoading(true);
       await resetPasswordV2(data);
-      showSuccessNotification(t("msg account registered"));
+      showSuccessNotification(t('msg account registered'));
       login({
-        username: values["username"],
-        password: values["password"],
+        username: values['username'],
+        password: values['password'],
         fromRegister: true,
-        navigate: navigate,
+        navigate: navigate
       });
     } catch (e) {
-      if (e?.response?.data?.status?.toString() === "404") {
-        showErrorNotification(t("msg token expired"));
+      if (e?.response?.data?.status?.toString() === '404') {
+        showErrorNotification(t('msg token expired'));
       } else {
         showErrorNotification(e.response?.data.message);
       }
@@ -231,12 +184,9 @@ const mapDispatchToProps = (dispatch) =>
       login: loginAction,
       setLoading: setLoadingAction,
       showErrorNotification: showErrorNotificationAction,
-      showSuccessNotification: showSuccessNotificationAction,
+      showSuccessNotification: showSuccessNotificationAction
     },
     dispatch
   );
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(withTranslation()(EnhancedForm));
+export default connect(null, mapDispatchToProps)(withTranslation()(EnhancedForm));

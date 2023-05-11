@@ -1,48 +1,40 @@
-import * as React from "react";
-import clsx from "clsx";
-import style from "./News.module.scss";
-import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
+import * as React from 'react';
+import clsx from 'clsx';
+import style from './News.module.scss';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import {
   setLoadingAction,
   showErrorNotificationAction,
   showSuccessNotificationAction
-} from "../../../redux/action/ui";
-import {get} from "lodash";
+} from '../../../redux/action/ui';
+import { get } from 'lodash';
 
-import QueryResult from "./QueryResult";
-import {NewsProvider} from "../../../providers/NewsProvider";
+import QueryResult from './QueryResult';
+import { NewsProvider } from '../../../providers/NewsProvider';
 
-const News = (
-    {
-      setLoading,
-    }) => {
+const News = ({ setLoading }) => {
   return (
-      <div className={clsx(style.Wrapper)}>
-        <NewsProvider
-            setLoading={setLoading}
-        >
-          <QueryResult/>
-        </NewsProvider>
-      </div>
-  )
+    <div className={clsx(style.Wrapper)}>
+      <NewsProvider setLoading={setLoading}>
+        <QueryResult />
+      </NewsProvider>
+    </div>
+  );
 };
 
 const mapStateToProps = (state) => ({
-  metric: get(state, 'ui.metric'),
+  metric: get(state, 'ui.metric')
 });
 
 const mapDispatchToProps = (dispatch) =>
-    bindActionCreators(
-        {
-          setLoading: setLoadingAction,
-          showErrorNotification: showErrorNotificationAction,
-          showSuccessNotification: showSuccessNotificationAction,
-        },
-        dispatch
-    );
+  bindActionCreators(
+    {
+      setLoading: setLoadingAction,
+      showErrorNotification: showErrorNotificationAction,
+      showSuccessNotification: showSuccessNotificationAction
+    },
+    dispatch
+  );
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(News);
+export default connect(mapStateToProps, mapDispatchToProps)(News);

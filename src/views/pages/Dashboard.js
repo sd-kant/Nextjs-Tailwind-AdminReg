@@ -1,18 +1,15 @@
-import React from "react";
-import {connect} from "react-redux";
-import {withTranslation} from "react-i18next";
-import {bindActionCreators} from "redux";
-import SuccessModal from "../components/SuccessModal";
-import {get} from 'lodash';
-import {setVisibleSuccessModalAction} from "../../redux/action/ui";
-import {logout} from "../layouts/MainLayout";
-import {useNavigate} from "react-router-dom";
+import React from 'react';
+import { connect } from 'react-redux';
+import { withTranslation } from 'react-i18next';
+import { bindActionCreators } from 'redux';
+import SuccessModal from '../components/SuccessModal';
+import { get } from 'lodash';
+import { setVisibleSuccessModalAction } from '../../redux/action/ui';
+import { logout } from '../layouts/MainLayout';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = (props) => {
-  const {
-    visibleSuccessModal,
-    setVisibleSuccessModal
-  } = props;
+  const { visibleSuccessModal, setVisibleSuccessModal } = props;
   const navigate = useNavigate();
 
   return (
@@ -21,7 +18,7 @@ const Dashboard = (props) => {
         show={visibleSuccessModal}
         onCancel={() => {
           setVisibleSuccessModal(false);
-          navigate("/invite/company");
+          navigate('/invite/company');
         }}
         onOk={() => {
           setVisibleSuccessModal(false);
@@ -33,18 +30,15 @@ const Dashboard = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  visibleSuccessModal: get(state, 'ui.visibleSuccessModal'),
+  visibleSuccessModal: get(state, 'ui.visibleSuccessModal')
 });
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      setVisibleSuccessModal: setVisibleSuccessModalAction,
+      setVisibleSuccessModal: setVisibleSuccessModalAction
     },
     dispatch
   );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(withTranslation()(Dashboard));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Dashboard));

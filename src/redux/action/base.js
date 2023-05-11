@@ -1,4 +1,4 @@
-import {actionTypes} from "../type";
+import { actionTypes } from '../type';
 
 export const queryAllOrganizationsAction = () => ({
   type: actionTypes.QUERY_ALL_ORGANIZATIONS,
@@ -13,13 +13,13 @@ export const queryAllTeamsAction = () => ({
 export const removeTeamMemberAction = (userId) => ({
   type: actionTypes.REMOVE_TEAM_MEMBER,
   payload: {
-    userId: userId,
+    userId: userId
   }
 });
 
 export const deleteUserAction = (userId) => ({
   type: actionTypes.DELETE_USER,
   payload: {
-    userId: userId,
+    userId: userId
   }
 });

@@ -1,17 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { default as ReactSelect } from "react-select";
-import {customStyles} from "../../pages/Dashboard";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { default as ReactSelect } from 'react-select';
+import { customStyles } from '../../pages/Dashboard';
 
-const MySelect = props => {
+const MySelect = (props) => {
   if (props.allowSelectAll) {
     return (
       <ReactSelect
         {...props}
         options={[props.allOption, ...props.options]}
-        className='font-heading-small text-black'
+        className="font-heading-small text-black"
         styles={customStyles()}
-        onChange={selected => {
+        onChange={(selected) => {
           if (
             selected !== null &&
             selected.length > 0 &&
@@ -25,11 +25,9 @@ const MySelect = props => {
     );
   }
 
-  return <ReactSelect
-    {...props}
-    className='font-heading-small text-black'
-    styles={customStyles()}
-  />;
+  return (
+    <ReactSelect {...props} className="font-heading-small text-black" styles={customStyles()} />
+  );
 };
 
 MySelect.propTypes = {
@@ -45,8 +43,8 @@ MySelect.propTypes = {
 
 MySelect.defaultProps = {
   allOption: {
-    label: "Select all",
-    value: "*"
+    label: 'Select all',
+    value: '*'
   }
 };
 

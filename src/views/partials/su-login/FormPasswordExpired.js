@@ -1,74 +1,47 @@
-import React, {useEffect} from 'react';
-import {connect} from "react-redux";
-import {withTranslation} from "react-i18next";
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { withTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import {
-  Form,
-  withFormik
-} from "formik";
-import {bindActionCreators} from "redux";
+import { Form, withFormik } from 'formik';
+import { bindActionCreators } from 'redux';
 import {
   setLoadingAction,
   setRestBarClassAction,
   showErrorNotificationAction,
   showSuccessNotificationAction
-} from "../../../redux/action/ui";
-import {
-  setPasswordExpiredAction,
-  setTokenAction
-} from "../../../redux/action/auth";
-import {
-  checkPasswordValidation,
-} from "../../../utils";
-import {resetPasswordWithToken} from "../../../http";
-import {get} from "lodash";
-import PasswordInput from "../../components/PasswordInput";
+} from '../../../redux/action/ui';
+import { setPasswordExpiredAction, setTokenAction } from '../../../redux/action/auth';
+import { checkPasswordValidation } from '../../../utils';
+import { resetPasswordWithToken } from '../../../http';
+import { get } from 'lodash';
+import PasswordInput from '../../components/PasswordInput';
 
 const formSchema = (t, pwMinLength) => {
   return Yup.object().shape({
     password: Yup.string()
       .required(t('your password required'))
-      .min(pwMinLength, t('n password min error', {n: pwMinLength}))
+      .min(pwMinLength, t('n password min error', { n: pwMinLength }))
       .max(1024, t('password max error'))
-      .test(
-        'is-valid',
-        t('password invalid'),
-        function (value) {
-          return checkPasswordValidation(value, pwMinLength);
-        },
-      ),
+      .test('is-valid', t('password invalid'), function (value) {
+        return checkPasswordValidation(value, pwMinLength);
+      }),
     newPassword: Yup.string()
       .required(t('your password required'))
-      .min(pwMinLength, t('n password min error', {n: pwMinLength}))
+      .min(pwMinLength, t('n password min error', { n: pwMinLength }))
       .max(1024, t('password max error'))
-      .test(
-        'is-valid',
-        t('password invalid'),
-        function (value) {
-          return checkPasswordValidation(value, pwMinLength);
-        },
-      ),
+      .test('is-valid', t('password invalid'), function (value) {
+        return checkPasswordValidation(value, pwMinLength);
+      }),
     confirmPassword: Yup.string()
       .required(t('confirm password required'))
-      .test(
-        'is-equal',
-        t('confirm password invalid'),
-        function (value) {
-          return (this.parent.newPassword === value);
-        },
-      ),
+      .test('is-equal', t('confirm password invalid'), function (value) {
+        return this.parent.newPassword === value;
+      })
   });
 };
 
 const FormPasswordExpired = (props) => {
-  const {
-    values,
-    errors,
-    touched,
-    t,
-    setFieldValue,
-    setRestBarClass,
-  } = props;
+  const { values, errors, touched, t, setFieldValue, setRestBarClass } = props;
 
   useEffect(() => {
     setClassName();
@@ -76,7 +49,7 @@ const FormPasswordExpired = (props) => {
   }, []);
 
   const changeFormField = (e) => {
-    const {value, name} = e.target;
+    const { value, name } = e.target;
     setFieldValue(name, value);
 
     setClassName();
@@ -84,9 +57,9 @@ const FormPasswordExpired = (props) => {
 
   const setClassName = () => {
     let sum = 0;
-    sum += values["password"] ? 1 : 0;
-    sum += values["newPassword"] ? 1 : 0;
-    sum += values["confirmPassword"] ? 1 : 0;
+    sum += values['password'] ? 1 : 0;
+    sum += values['newPassword'] ? 1 : 0;
+    sum += values['confirmPassword'] ? 1 : 0;
     setRestBarClass(`progress-${sum * 27}`);
   };
 
@@ -95,92 +68,72 @@ const FormPasswordExpired = (props) => {
   }, [values]);
 
   return (
-    <Form className='form-group mt-57'>
+    <Form className="form-group mt-57">
       <div>
-        <div className='grouped-form'>
-          <label className="font-binary d-block">
-            {t("password expired description")}
-          </label>
+        <div className="grouped-form">
+          <label className="font-binary d-block">{t('password expired description')}</label>
         </div>
 
-        <div className='d-flex flex-column mt-40'>
-          <label className='font-input-label'>
-            {t("password")}
-          </label>
+        <div className="d-flex flex-column mt-40">
+          <label className="font-input-label">{t('password')}</label>
 
-          <PasswordInput
-            name="password"
-            value={values["password"]}
-            onChange={changeFormField}
-          />
+          <PasswordInput name="password" value={values['password']} onChange={changeFormField} />
 
-          {
-            errors.password && touched.password && (
-              <span className="font-helper-text text-error mt-10">{errors.password}</span>
-            )
-          }
+          {errors.password && touched.password && (
+            <span className="font-helper-text text-error mt-10">{errors.password}</span>
+          )}
         </div>
 
-        <div className='mt-40 d-flex flex-column'>
-          <label className='font-input-label'>
-            {t("new password")}
-          </label>
+        <div className="mt-40 d-flex flex-column">
+          <label className="font-input-label">{t('new password')}</label>
 
           <PasswordInput
             name="newPassword"
-            value={values["newPassword"]}
+            value={values['newPassword']}
             onChange={changeFormField}
           />
 
-          {
-            errors.newPassword && touched.newPassword && (
-              <span className="font-helper-text text-error mt-10">{errors.newPassword}</span>
-            )
-          }
+          {errors.newPassword && touched.newPassword && (
+            <span className="font-helper-text text-error mt-10">{errors.newPassword}</span>
+          )}
         </div>
 
-        <div className='mt-40 d-flex flex-column'>
-          <label className='font-input-label'>
-            {t("confirm password")}
-          </label>
+        <div className="mt-40 d-flex flex-column">
+          <label className="font-input-label">{t('confirm password')}</label>
           <PasswordInput
             name="confirmPassword"
-            value={values["confirmPassword"]}
+            value={values['confirmPassword']}
             onChange={changeFormField}
           />
 
-          {
-            errors.confirmPassword && touched.confirmPassword && (
-              <span className="font-helper-text text-error mt-10">{errors.confirmPassword}</span>
-            )
-          }
+          {errors.confirmPassword && touched.confirmPassword && (
+            <span className="font-helper-text text-error mt-10">{errors.confirmPassword}</span>
+          )}
         </div>
       </div>
 
-      <div className='mt-80'>
+      <div className="mt-80">
         <div>
           <button
-            className={`button ${active ? "active cursor-pointer" : "inactive cursor-default"}`}
-            type={active ? "submit" : "button"}
+            className={`button ${active ? 'active cursor-pointer' : 'inactive cursor-default'}`}
+            type={active ? 'submit' : 'button'}
           >
-          <span className='font-button-label text-white'>
-            {t("reset")}
-          </span>
+            <span className="font-button-label text-white">{t('reset')}</span>
           </button>
         </div>
       </div>
     </Form>
-  )
+  );
 };
 
 const EnhancedForm = withFormik({
   mapPropsToValues: () => ({
     password: '',
     newPassword: '',
-    confirmPassword: '',
+    confirmPassword: ''
   }),
-  validationSchema: ((props) => formSchema(props.t, props.pwMinLength)),
-  handleSubmit: async (values, {props}) => {
+  validationSchema: (props) => formSchema(props.t, props.pwMinLength),
+  handleSubmit: async (values, { props }) => {
     const {
       t,
       setPasswordExpired,
@@ -189,19 +142,22 @@ const EnhancedForm = withFormik({
       setLoading,
       showSuccessNotification,
       showErrorNotification,
-      navigate,
+      navigate
     } = props;
     try {
       setLoading(true);
-      await resetPasswordWithToken({
-        password: values.password,
-        newPassword: values.newPassword,
-      }, token);
-      showSuccessNotification(t("msg password updated success"));
-      showSuccessNotification(t("msg login again"));
+      await resetPasswordWithToken(
+        {
+          password: values.password,
+          newPassword: values.newPassword
+        },
+        token
+      );
+      showSuccessNotification(t('msg password updated success'));
+      showSuccessNotification(t('msg login again'));
       setToken(null);
       setPasswordExpired(false);
-      navigate("/login");
+      navigate('/login');
     } catch (e) {
       showErrorNotification(e.response?.data.message);
     } finally {
@@ -211,7 +167,7 @@ const EnhancedForm = withFormik({
 })(FormPasswordExpired);
 
 const mapStateToProps = (state) => ({
-  token: get(state, 'auth.token'),
+  token: get(state, 'auth.token')
 });
 
 const mapDispatchToProps = (dispatch) =>
@@ -222,12 +178,9 @@ const mapDispatchToProps = (dispatch) =>
       showErrorNotification: showErrorNotificationAction,
       showSuccessNotification: showSuccessNotificationAction,
       setToken: setTokenAction,
-      setPasswordExpired: setPasswordExpiredAction,
+      setPasswordExpired: setPasswordExpiredAction
     },
     dispatch
   );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(withTranslation()(EnhancedForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(EnhancedForm));

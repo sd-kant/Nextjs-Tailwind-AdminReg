@@ -1,18 +1,17 @@
-import * as React from "react";
-import clsx from "clsx";
-import style from "./ResultTableHeader.module.scss";
-import {useAnalyticsContext} from "../../../providers/AnalyticsProvider";
-import DropdownMenu from "../../components/DropdownMenu";
+import * as React from 'react';
+import clsx from 'clsx';
+import style from './ResultTableHeader.module.scss';
+import { useAnalyticsContext } from '../../../providers/AnalyticsProvider';
+import DropdownMenu from '../../components/DropdownMenu';
 import chevronDown from '../../../assets/images/chevron-down.svg';
 
 const ResultTableHeader = () => {
-  const {headers, sortOptions} = useAnalyticsContext();
+  const { headers, sortOptions } = useAnalyticsContext();
 
   return (
     <thead className={clsx(style.Header)}>
-    <tr>
-      {
-        headers?.map((it, index) => {
+      <tr>
+        {headers?.map((it, index) => {
           const visibleSort = Boolean(sortOptions[index]);
           return (
             <td
@@ -20,25 +19,23 @@ const ResultTableHeader = () => {
               key={`header-${index}`}
             >
               {it}
-              {
-                visibleSort &&
+              {visibleSort && (
                 <DropdownMenu
                   icon={
                     <div className={clsx(style.ChevronWrapper)}>
-                      <img className={clsx(style.ChevronIcon)} src={chevronDown} alt="down"/>
+                      <img className={clsx(style.ChevronIcon)} src={chevronDown} alt="down" />
                     </div>
                   }
                   title={sortOptions[index]?.title}
                   items={sortOptions[index]?.options}
                 />
-              }
+              )}
             </td>
-          )
-        })
-      }
-    </tr>
+          );
+        })}
+      </tr>
     </thead>
-  )
+  );
 };
 
 export default ResultTableHeader;

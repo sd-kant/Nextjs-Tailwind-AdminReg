@@ -1,24 +1,15 @@
-import * as React from "react";
-import {connect} from "react-redux";
-import {get} from "lodash";
-import {useUtilsContext} from "../../../providers/UtilsProvider";
-import clsx from "clsx";
-import style from "./TableCell.module.scss";
-import {
-  formatDevice4Digits,
-  formatHeartRate
-} from "../../../utils/dashboard";
-import BatteryV3 from "../../components/BatteryV3";
-import {useTranslation} from "react-i18next";
-import {TIME_FORMAT_YYYYMDHM} from "../../../constant";
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { get } from 'lodash';
+import { useUtilsContext } from '../../../providers/UtilsProvider';
+import clsx from 'clsx';
+import style from './TableCell.module.scss';
+import { formatDevice4Digits, formatHeartRate } from '../../../utils/dashboard';
+import BatteryV3 from '../../components/BatteryV3';
+import { useTranslation } from 'react-i18next';
+import { TIME_FORMAT_YYYYMDHM } from '../../../constant';
 
-const TableCell = (
-  {
-    value,
-    member,
-    metric,
-    hideCbtHR,
-  }) => {
+const TableCell = ({ value, member, metric, hideCbtHR }) => {
   const {
     stat,
     alert,
@@ -31,86 +22,70 @@ const TableCell = (
     invisibleBattery,
     invisibleHeatRisk,
     invisibleLastSync,
-    heatSusceptibility,
+    heatSusceptibility
   } = member;
-  const {formatHeartCbt} = useUtilsContext();
-  const cellGray = ["1", "2", "8"].includes(connectionObj?.value?.toString()) ? style.NoConnection : null;
-  const {t} = useTranslation();
+  const { formatHeartCbt } = useUtilsContext();
+  const cellGray = ['1', '2', '8'].includes(connectionObj?.value?.toString())
+    ? style.NoConnection
+    : null;
+  const { t } = useTranslation();
 
   switch (value) {
-    case "connection":
+    case 'connection':
       return (
         <td className={clsx(style.TableCell, cellGray)}>
           <div className={clsx(style.Device)}>
-            {
-              !invisibleDeviceMac && formatDevice4Digits(stat?.deviceId) ?
-                <span>{formatDevice4Digits(stat?.deviceId)}</span>
-                  :
-                  null
-            }
+            {!invisibleDeviceMac && formatDevice4Digits(stat?.deviceId) ? (
+              <span>{formatDevice4Digits(stat?.deviceId)}</span>
+            ) : null}
             <span>{connectionObj?.label}</span>
-            {
-              !invisibleBattery ? (
-                      stat?.batteryPercent >= 20 ?
-                          <BatteryV3
-                              percent={stat?.batteryPercent}
-                              charging={stat?.chargingFlag}
-                          />
-                          :
-                          <span className={clsx('text-risk')}>{t('battery very low')}</span>
+            {!invisibleBattery ? (
+              stat?.batteryPercent >= 20 ? (
+                <BatteryV3 percent={stat?.batteryPercent} charging={stat?.chargingFlag} />
+              ) : (
+                <span className={clsx('text-risk')}>{t('battery very low')}</span>
               )
-                  :
-                  null
-            }
+            ) : null}
           </div>
         </td>
       );
-    case "heatRisk":
+    case 'heatRisk':
       return (
         <td className={clsx(style.TableCell)}>
-          {
-            !invisibleHeatRisk &&
+          {!invisibleHeatRisk && (
             <div className={clsx(style.Device, cellGray)}>
-              <span className={clsx('font-bold')}>
-                {alertObj?.label}
-              </span>
-              {
-                alertObj?.value?.toString() !== "5" &&
+              <span className={clsx('font-bold')}>{alertObj?.label}</span>
+              {alertObj?.value?.toString() !== '5' && (
                 <React.Fragment>
-                  {
-                    !hideCbtHR &&
+                  {!hideCbtHR && (
                     <span>
-                      {formatHeartCbt(alert?.heartCbtAvg)}{metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;{formatHeartRate(alert?.heartRateAvg)} BPM
+                      {formatHeartCbt(alert?.heartCbtAvg)}
+                      {metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;{formatHeartRate(alert?.heartRateAvg)}{' '}
+                      BPM
                     </span>
-                  }
+                  )}
                   <span>
-                    {alert?.utcTs ? new Date(alert?.utcTs).toLocaleString([], TIME_FORMAT_YYYYMDHM) : ''}
+                    {alert?.utcTs
+                      ? new Date(alert?.utcTs).toLocaleString([], TIME_FORMAT_YYYYMDHM)
+                      : ''}
                   </span>
                 </React.Fragment>
-              }
+              )}
             </div>
-          }
+          )}
         </td>
       );
-    case "alerts":
+    case 'alerts':
       return (
         <td className={clsx(style.TableCell, cellGray)}>
-          {invisibleAlerts ? "" : (numberOfAlerts > 0 ? `${numberOfAlerts} Alerts` : `No Alerts`)}
+          {invisibleAlerts ? '' : numberOfAlerts > 0 ? `${numberOfAlerts} Alerts` : `No Alerts`}
         </td>
       );
-    case "heatSusceptibility":
+    case 'heatSusceptibility':
+      return <td className={clsx(style.TableCell, cellGray)}>{heatSusceptibility ?? ''}</td>;
+    case 'lastDataSync':
       return (
-        <td className={clsx(style.TableCell, cellGray)}>
-          {heatSusceptibility ?? ""}
-        </td>
-      );
-    case "lastDataSync":
-      return (
-        <td className={clsx(style.TableCell, cellGray)}>
-          {
-            !invisibleLastSync ? lastSyncStr : ""
-          }
-        </td>
+        <td className={clsx(style.TableCell, cellGray)}>{!invisibleLastSync ? lastSyncStr : ''}</td>
       );
     default:
       return null;
@@ -118,10 +93,7 @@ const TableCell = (
 };
 
 const mapStateToProps = (state) => ({
-  metric: get(state, 'ui.metric'),
+  metric: get(state, 'ui.metric')
 });
 
-export default connect(
-  mapStateToProps,
-  null,
-)(React.memo(TableCell));
+export default connect(mapStateToProps, null)(React.memo(TableCell));

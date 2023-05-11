@@ -1,35 +1,19 @@
-import * as React from "react";
-import {connect} from "react-redux";
-import {customStyles} from "./FormInvite";
-import ResponsiveSelect from "../../components/ResponsiveSelect";
-import DropdownButton from "../../components/DropdownButton";
-import {withTranslation} from "react-i18next";
-import {
-  permissionLevels,
-  USER_TYPE_OPERATOR,
-  yesNoOptions,
-} from "../../../constant";
-import clsx from "clsx";
-import style from "./SearchUserItem.module.scss";
-import removeIcon from "../../../assets/images/remove.svg";
-import lockIcon from "../../../assets/images/lock.svg";
-import {get} from "lodash";
-import {useMembersContext} from "../../../providers/MembersProvider";
-import {
-  checkIfHigherThanMe,
-  getPermissionLevelFromUserTypes
-} from "../../../utils/members";
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { customStyles } from './FormInvite';
+import ResponsiveSelect from '../../components/ResponsiveSelect';
+import DropdownButton from '../../components/DropdownButton';
+import { withTranslation } from 'react-i18next';
+import { permissionLevels, USER_TYPE_OPERATOR, yesNoOptions } from '../../../constant';
+import clsx from 'clsx';
+import style from './SearchUserItem.module.scss';
+import removeIcon from '../../../assets/images/remove.svg';
+import lockIcon from '../../../assets/images/lock.svg';
+import { get } from 'lodash';
+import { useMembersContext } from '../../../providers/MembersProvider';
+import { checkIfHigherThanMe, getPermissionLevelFromUserTypes } from '../../../utils/members';
 
-const SearchUserItem = (
-  {
-    user,
-    index,
-    isAdmin,
-    id,
-    errorField,
-    touchField,
-    t,
-  }) => {
+const SearchUserItem = ({ user, index, isAdmin, id, errorField, touchField, t }) => {
   const {
     userType,
     teams,
@@ -42,33 +26,48 @@ const SearchUserItem = (
     handleResetUpdates,
     handlePhoneOptionClick,
     handleActionOptionClick,
-    handleUnlockUser,
+    handleUnlockUser
   } = useMembersContext();
 
   const approvalGreen = '#35EA6C';
   const userPermissionLevel = getPermissionLevelFromUserTypes(user?.userTypes);
   const hasRightToEdit = !checkIfHigherThanMe(userType, userPermissionLevel);
-  const selectedTeam = teams?.find(it => it.value?.toString() === user?.teamId?.toString());
+  const selectedTeam = teams?.find((it) => it.value?.toString() === user?.teamId?.toString());
   let selectedPermissionLevel = null;
-  const entity = user?.accessibleTeams?.find(ele => ele.teamId?.toString() === selectedTeam?.value?.toString());
-  if (["3"].includes(userPermissionLevel?.value?.toString())) { // if super admin
-    selectedPermissionLevel = permissionLevels?.find(it => it.value?.toString() === "3");
-  } else if (["4"].includes(userPermissionLevel?.value?.toString())) { // if org admin
-    selectedPermissionLevel = permissionLevels?.find(it => it.value?.toString() === "4");
+  const entity = user?.accessibleTeams?.find(
+    (ele) => ele.teamId?.toString() === selectedTeam?.value?.toString()
+  );
+  if (['3'].includes(userPermissionLevel?.value?.toString())) {
+    // if super admin
+    selectedPermissionLevel = permissionLevels?.find((it) => it.value?.toString() === '3');
+  } else if (['4'].includes(userPermissionLevel?.value?.toString())) {
+    // if org admin
+    selectedPermissionLevel = permissionLevels?.find((it) => it.value?.toString() === '4');
   } else {
     selectedPermissionLevel = getPermissionLevelFromUserTypes(entity?.userTypes);
   }
-  const wearingDeviceDisabled = selectedPermissionLevel?.value?.toString() === "2" || !isAdmin || !hasRightToEdit;
-  const newlyFormattedTeams = teams.map(it => {
+  const wearingDeviceDisabled =
+    selectedPermissionLevel?.value?.toString() === '2' || !isAdmin || !hasRightToEdit;
+  const newlyFormattedTeams = teams.map((it) => {
     let color;
-    if (!(["3", "4"].includes(selectedPermissionLevel?.value?.toString()))) {
-      color = user?.accessibleTeams?.some(ele => (ele.teamId?.toString() === it?.value?.toString()) && ele.userTypes?.length > 0) ? approvalGreen : 'white';
+    if (!['3', '4'].includes(selectedPermissionLevel?.value?.toString())) {
+      color = user?.accessibleTeams?.some(
+        (ele) => ele.teamId?.toString() === it?.value?.toString() && ele.userTypes?.length > 0
+      )
+        ? approvalGreen
+        : 'white';
     } else {
-      color = user?.accessibleTeams?.some(ele => (ele.teamId?.toString() === it?.value?.toString()) && ele.userTypes?.includes(USER_TYPE_OPERATOR)) ? approvalGreen : 'white';
+      color = user?.accessibleTeams?.some(
+        (ele) =>
+          ele.teamId?.toString() === it?.value?.toString() &&
+          ele.userTypes?.includes(USER_TYPE_OPERATOR)
+      )
+        ? approvalGreen
+        : 'white';
     }
     return {
       ...it,
-      color,
+      color
     };
   });
 
@@ -92,10 +91,12 @@ const SearchUserItem = (
   if (entity?.userTypes?.includes(USER_TYPE_OPERATOR)) {
     wearingDeviceSelected = yesNoOptions?.[0];
   }
-  const hiddenPhoneNumber = (user?.phoneNumber?.value) ? t('ends with', {number: user?.phoneNumber?.value?.slice(-4)}) : t("not registered");
+  const hiddenPhoneNumber = user?.phoneNumber?.value
+    ? t('ends with', { number: user?.phoneNumber?.value?.slice(-4) })
+    : t('not registered');
   const ableToResetPhoneNumber = React.useMemo(() => {
-    const member = members?.find(it => it.userId?.toString() === user.userId?.toString());
-    return isAdmin && (user?.phoneNumber?.value) && member?.email;
+    const member = members?.find((it) => it.userId?.toString() === user.userId?.toString());
+    return isAdmin && user?.phoneNumber?.value && member?.email;
   }, [isAdmin, user, members]);
 
   const phoneDropdownOptions = React.useMemo(() => {
@@ -103,36 +104,36 @@ const SearchUserItem = (
       return [
         {
           value: 1,
-          label: hiddenPhoneNumber,
+          label: hiddenPhoneNumber
         },
         {
           value: 2,
-          label: 'Reset registered phone number',
-        },
+          label: 'Reset registered phone number'
+        }
       ];
     }
     return [];
   }, [hiddenPhoneNumber, ableToResetPhoneNumber]);
 
   const actionOptions = React.useMemo(() => {
-    return hasRightToEdit ? doableActions : doableActions.filter(it => it.value?.toString() !== "3");
+    return hasRightToEdit
+      ? doableActions
+      : doableActions.filter((it) => it.value?.toString() !== '3');
   }, [doableActions, hasRightToEdit]);
 
   return (
     <div className={clsx(style.User)}>
       <div className={clsx(style.RemoveIconWrapper)}>
-        {
-          user.updated &&
+        {user.updated && (
           <img
             src={removeIcon}
-            className={"exist-when-updated"}
+            className={'exist-when-updated'}
             alt="remove icon"
             onClick={() => handleResetUpdates(user)}
           />
-        }
+        )}
       </div>
-      {
-        user.locked &&
+      {user.locked && (
         <div className={clsx(style.LockIconWrapper)}>
           <img
             className={clsx(style.LockIcon)}
@@ -141,16 +142,18 @@ const SearchUserItem = (
             onClick={() => handleUnlockUser(user)}
           />
         </div>
-      }
+      )}
 
       <div className={clsx(style.UserRow)}>
         <div className="d-flex flex-column">
-          <label className='font-input-label'>
-            {t("firstName")}
-          </label>
+          <label className="font-input-label">{t('firstName')}</label>
 
           <input
-            className={clsx(style.Input, (!isAdmin || !hasRightToEdit) ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
+            className={clsx(
+              style.Input,
+              !isAdmin || !hasRightToEdit ? style.DisabledInput : null,
+              'input mt-10 font-heading-small text-white'
+            )}
             value={user?.firstName}
             name={`${id}.firstName`}
             disabled={!isAdmin || !hasRightToEdit}
@@ -158,21 +161,20 @@ const SearchUserItem = (
             onChange={(e) => handleMemberInfoChange(e.target.value, user?.originIndex, 'firstName')}
           />
 
-          {
-            touchField?.[index]?.firstName &&
-            errorField?.[index]?.firstName && (
-              <span className="font-helper-text text-error mt-10">{errorField[index].firstName}</span>
-            )
-          }
+          {touchField?.[index]?.firstName && errorField?.[index]?.firstName && (
+            <span className="font-helper-text text-error mt-10">{errorField[index].firstName}</span>
+          )}
         </div>
 
         <div className="d-flex flex-column">
-          <label className='font-input-label'>
-            {t("lastName")}
-          </label>
+          <label className="font-input-label">{t('lastName')}</label>
 
           <input
-            className={clsx(style.Input, (!isAdmin || !hasRightToEdit) ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
+            className={clsx(
+              style.Input,
+              !isAdmin || !hasRightToEdit ? style.DisabledInput : null,
+              'input mt-10 font-heading-small text-white'
+            )}
             name={`${id}.lastName`}
             value={user?.lastName}
             type="text"
@@ -180,23 +182,22 @@ const SearchUserItem = (
             onChange={(e) => handleMemberInfoChange(e.target.value, user?.originIndex, 'lastName')}
           />
 
-          {
-            touchField?.[index]?.lastName &&
-            errorField?.[index]?.lastName && (
-              <span className="font-helper-text text-error mt-10">{errorField[index].lastName}</span>
-            )
-          }
+          {touchField?.[index]?.lastName && errorField?.[index]?.lastName && (
+            <span className="font-helper-text text-error mt-10">{errorField[index].lastName}</span>
+          )}
         </div>
       </div>
 
       <div className={clsx(style.UserRow)}>
         <div className="d-flex flex-column">
-          <label className='font-input-label'>
-            {t("email")}
-          </label>
+          <label className="font-input-label">{t('email')}</label>
 
           <input
-            className={clsx(style.Input, (!isAdmin || !hasRightToEdit) ? style.DisabledInput : null, 'input mt-10 font-heading-small text-white')}
+            className={clsx(
+              style.Input,
+              !isAdmin || !hasRightToEdit ? style.DisabledInput : null,
+              'input mt-10 font-heading-small text-white'
+            )}
             value={user?.email}
             type="text"
             name={`${id}.email`}
@@ -204,18 +205,13 @@ const SearchUserItem = (
             onChange={(e) => handleMemberInfoChange(e.target.value, user?.originIndex, 'email')}
           />
 
-          {
-            touchField?.[index]?.email &&
-            errorField?.[index]?.email && (
-              <span className="font-helper-text text-error mt-10">{errorField[index].email}</span>
-            )
-          }
+          {touchField?.[index]?.email && errorField?.[index]?.email && (
+            <span className="font-helper-text text-error mt-10">{errorField[index].email}</span>
+          )}
         </div>
 
         <div className="d-flex flex-column">
-          <label className="font-input-label text-white text-capitalize">
-            {t("team")}
-          </label>
+          <label className="font-input-label text-white text-capitalize">{t('team')}</label>
 
           <ResponsiveSelect
             className={clsx(style.Select, 'mt-10 font-heading-small text-black')}
@@ -223,11 +219,13 @@ const SearchUserItem = (
             options={newlyFormattedTeams}
             value={selectedTeam}
             styles={customStyles(!hasRightToEdit)}
-            placeholder={t("team name select")}
+            placeholder={t('team name select')}
             menuPortalTarget={document.body}
             menuPosition={'fixed'}
             isDisabled={!hasRightToEdit}
-            onChange={(e) => handleMemberTeamChange(e?.value, user?.originIndex, selectedPermissionLevel)}
+            onChange={(e) =>
+              handleMemberTeamChange(e?.value, user?.originIndex, selectedPermissionLevel)
+            }
           />
           {/*fixme fix validation rule */}
         </div>
@@ -235,14 +233,15 @@ const SearchUserItem = (
 
       <div className={clsx(style.UserRow)}>
         <div className="d-flex flex-column">
-          <label className="font-input-label text-white text-capitalize">
-            {t("job")}
-          </label>
+          <label className="font-input-label text-white text-capitalize">{t('job')}</label>
 
           <ResponsiveSelect
-            className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
+            className={clsx(
+              style.Select,
+              'mt-10 font-heading-small text-black select-custom-class'
+            )}
             options={jobs}
-            placeholder={t("select")}
+            placeholder={t('select')}
             value={user?.job}
             styles={customStyles(!isAdmin || !hasRightToEdit)}
             maxMenuHeight={190}
@@ -252,29 +251,31 @@ const SearchUserItem = (
             name={`${id}.job`}
             onChange={(e) => handleMemberInfoChange(e?.value, user?.originIndex, 'job')}
           />
-          {
-            touchField?.[index]?.job &&
-            errorField?.[index]?.job && (
-              <span className="font-helper-text text-error mt-10">{errorField[index].job}</span>
-            )
-          }
+          {touchField?.[index]?.job && errorField?.[index]?.job && (
+            <span className="font-helper-text text-error mt-10">{errorField[index].job}</span>
+          )}
         </div>
 
         <div className="d-flex flex-column">
           <label className="font-input-label text-white text-capitalize">
-            {t("permission level")}
+            {t('permission level')}
           </label>
           {/*fixme make clearable dropdown*/}
           <ResponsiveSelect
-            className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
+            className={clsx(
+              style.Select,
+              'mt-10 font-heading-small text-black select-custom-class'
+            )}
             options={permissionLevels}
-            placeholder={t("select")}
+            placeholder={t('select')}
             value={selectedPermissionLevel}
             styles={customStyles(!isAdmin || !hasRightToEdit)}
             isDisabled={!isAdmin || !hasRightToEdit}
             menuPortalTarget={document.body}
             menuPosition={'fixed'}
-            onChange={(e) => handleMemberTeamUserTypeChange(e, user?.originIndex, false, user?.teamId)}
+            onChange={(e) =>
+              handleMemberTeamUserTypeChange(e, user?.originIndex, false, user?.teamId)
+            }
           />
           {/* fixme fix validation rule */}
         </div>
@@ -282,66 +283,70 @@ const SearchUserItem = (
 
       <div className={clsx(style.UserRow)}>
         <div className="d-flex flex-column">
-          <label className='font-input-label'>
-            {t("phone number")}
-          </label>
-          {
-            ableToResetPhoneNumber ?
-              <div className={clsx(style.PhoneWrapper, 'mt-10')}>
-                <DropdownButton
-                  placeholder={t("select action")}
-                  option={user?.phoneAction}
-                  options={phoneDropdownOptions}
-                  onClick={() => {}}
-                  onClickOption={value => {
-                    handlePhoneOptionClick(value, user)
-                  }}
-                />
-              </div> :
-              <input
-                className={clsx(style.Input, style.DisabledInput, 'input mt-10 font-heading-small text-white text-capitalize')}
-                value={hiddenPhoneNumber}
-                type="text"
-                disabled={true}
-                onChange={() => {
+          <label className="font-input-label">{t('phone number')}</label>
+          {ableToResetPhoneNumber ? (
+            <div className={clsx(style.PhoneWrapper, 'mt-10')}>
+              <DropdownButton
+                placeholder={t('select action')}
+                option={user?.phoneAction}
+                options={phoneDropdownOptions}
+                onClick={() => {}}
+                onClickOption={(value) => {
+                  handlePhoneOptionClick(value, user);
                 }}
               />
-          }
+            </div>
+          ) : (
+            <input
+              className={clsx(
+                style.Input,
+                style.DisabledInput,
+                'input mt-10 font-heading-small text-white text-capitalize'
+              )}
+              value={hiddenPhoneNumber}
+              type="text"
+              disabled={true}
+              onChange={() => {}}
+            />
+          )}
         </div>
 
         <div className={style.GroupWrapper}>
           <div className="d-flex flex-column">
             <div className={clsx(style.WearingLabelWrapper)}>
               <label className="font-input-label text-white text-capitalize">
-                {t("wearing a device")}
+                {t('wearing a device')}
               </label>
             </div>
 
             <ResponsiveSelect
-              className={clsx(style.Select, 'mt-10 font-heading-small text-black select-custom-class')}
+              className={clsx(
+                style.Select,
+                'mt-10 font-heading-small text-black select-custom-class'
+              )}
               options={yesNoOptions}
-              placeholder={t("select")}
+              placeholder={t('select')}
               value={wearingDeviceSelected}
               styles={customStyles(wearingDeviceDisabled)}
               isDisabled={wearingDeviceDisabled}
               menuPortalTarget={document.body}
               menuPosition={'fixed'}
-              onChange={(e) => handleMemberTeamUserTypeChange(e, user?.originIndex, true, user?.teamId)}
+              onChange={(e) =>
+                handleMemberTeamUserTypeChange(e, user?.originIndex, true, user?.teamId)
+              }
             />
           </div>
 
           <div className="d-flex flex-column">
-            <label className="font-input-label text-white text-capitalize">
-              {t("actions")}
-            </label>
+            <label className="font-input-label text-white text-capitalize">{t('actions')}</label>
 
             <div className={clsx(style.ButtonWrapper)}>
               <DropdownButton
-                placeholder={t("select action")}
+                placeholder={t('select action')}
                 option={user?.action}
                 options={actionOptions}
                 onClick={() => {}}
-                onClickOption={value => {
+                onClickOption={(value) => {
                   handleActionOptionClick(value, user);
                 }}
               />
@@ -350,14 +355,11 @@ const SearchUserItem = (
         </div>
       </div>
     </div>
-  )
+  );
 };
 
 const mapStateToProps = (state) => ({
-  isAdmin: get(state, 'auth.isAdmin'),
+  isAdmin: get(state, 'auth.isAdmin')
 });
 
-export default connect(
-  mapStateToProps,
-  null,
-)(withTranslation()(SearchUserItem));
+export default connect(mapStateToProps, null)(withTranslation()(SearchUserItem));
