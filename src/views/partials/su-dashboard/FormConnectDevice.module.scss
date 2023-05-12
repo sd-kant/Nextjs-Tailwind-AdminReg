@@ -12,7 +12,7 @@
   .FormRow {
     display: inline-flex;
 
-    & > input {
+    & input {
       &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
         @include input-placeholder;
       }
