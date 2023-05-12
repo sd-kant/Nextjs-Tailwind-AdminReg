@@ -141,8 +141,13 @@ const FormConnectMemberDevice = (props) => {
         <p className={clsx(style.DeviceIDExplanation)}>{t('device id explanation')}</p>
       </div>
 
-      <div className="mt-80">
-        <div>
+      <div className="mt-50">
+        {!isEditing && (
+          <div>
+            <span className="font-input-label">{t('connect device member confirm')}</span>
+          </div>
+        )}
+        <div className="mt-40">
           {!isEditing && (
             <button
               className={`button ${
@@ -153,7 +158,11 @@ const FormConnectMemberDevice = (props) => {
             </button>
           )}
           <button
-            className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
+            className={clsx(
+              style.CancelBtn,
+              isEditing ? style.Alone : null,
+              `button cursor-pointer cancel`
+            )}
             type={'button'}
             onClick={handleCancel}>
             <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>

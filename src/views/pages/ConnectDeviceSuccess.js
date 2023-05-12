@@ -15,7 +15,7 @@ const ConnectDeviceSuccess = () => {
         </span>
       </div>
 
-      <FormConnectDeviceSuccess />
+      <FormConnectDeviceSuccess individual={true} />
     </div>
   );
 };

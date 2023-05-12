@@ -3,7 +3,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { getParamFromUrl } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 
-const FormConnectDeviceSuccess = () => {
+const FormConnectDeviceSuccess = ({ individual }) => {
   const { t } = useTranslation();
   const deviceId = getParamFromUrl('deviceId');
   const navigate = useNavigate();
@@ -16,7 +16,11 @@ const FormConnectDeviceSuccess = () => {
         </div>
 
         <div className="mt-40">
-          <span className="font-binary text-white">{t('device connected description')}</span>
+          <span className="font-binary text-white">
+            {individual
+              ? t('device connected description')
+              : t('device connected member description')}
+          </span>
         </div>
 
         <div className="mt-10">

@@ -78,7 +78,7 @@ const ConnectMember = ({ userType }) => {
             element={
               <WrappedMembersProvider>
                 <ParamsWrapper>
-                  <FormConnectDeviceSuccess navigate={navigate} />
+                  <FormConnectDeviceSuccess navigate={navigate} individual={false} />
                 </ParamsWrapper>
               </WrappedMembersProvider>
             }
