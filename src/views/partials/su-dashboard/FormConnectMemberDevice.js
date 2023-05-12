@@ -29,6 +29,7 @@ const FormConnectMemberDevice = (props) => {
   const { values, errors, touched, setFieldValue, t } = props;
   const [devices, setDevices] = React.useState([]);
   const [device, setDevice] = React.useState(null);
+  const [searching, setSearching] = React.useState(false);
   const navigate = useNavigate();
   const changeFormField = (e) => {
     const { value, name } = e.target;
@@ -54,29 +55,50 @@ const FormConnectMemberDevice = (props) => {
 
   const { isEditing, deviceId } = values;
 
-  React.useEffect(() => {
-    let mounted = true;
+  const tDeviceId = React.useMemo(() => {
     if (deviceId) {
       const tDeviceId = deviceId.replace(/\W/g, '')?.slice(-4);
       if (tDeviceId?.length === 4) {
-        verifyKenzenDevice(tDeviceId)
-          .then((res) => {
-            if (mounted) {
-              const device = res.data;
-              setDevices([device]);
-            }
-          })
-          .catch((e) => {
-            console.error('device verify error', e);
-            setDevices([]);
-          });
+        return tDeviceId;
       }
+      return '';
+    }
+
+    return '';
+  }, [deviceId]);
+
+  React.useEffect(() => {
+    let mounted = true;
+    if (tDeviceId) {
+      if (mounted) {
+        setSearching(true);
+      }
+      verifyKenzenDevice(tDeviceId)
+        .then((res) => {
+          if (mounted) {
+            const device = res.data;
+            setDevices([device]);
+          }
+        })
+        .catch((e) => {
+          console.error('device verify error', e);
+          setDevices([]);
+        })
+        .finally(() => {
+          if (mounted) {
+            setSearching(false);
+          }
+        });
     }
 
     return () => {
       mounted = false;
     };
-  }, [deviceId]);
+  }, [tDeviceId]);
+
+  const noMatch = React.useMemo(() => {
+    return !searching && devices?.length === 0 && tDeviceId;
+  }, [devices, searching, tDeviceId]);
 
   const dropdownItems = React.useMemo(() => {
     return (
@@ -120,6 +142,8 @@ const FormConnectMemberDevice = (props) => {
               items={dropdownItems}
               visibleDropdown={visibleDropdown}
               onItemClick={handleItemClick}
+              noMatch={noMatch}
+              noMatchText={t('no device match')}
             />
           </>
         ) : (
@@ -136,10 +160,12 @@ const FormConnectMemberDevice = (props) => {
         )}
       </div>
 
-      <div className={clsx(style.DeviceWrapper)}>
-        <img className={clsx(style.DeviceImage)} src={LKenzenDeviceImg} alt="kenzen device" />
-        <p className={clsx(style.DeviceIDExplanation)}>{t('device id explanation')}</p>
-      </div>
+      {isEditing && (
+        <div className={clsx(style.DeviceWrapper)}>
+          <img className={clsx(style.DeviceImage)} src={LKenzenDeviceImg} alt="kenzen device" />
+          <p className={clsx(style.DeviceIDExplanation)}>{t('device id explanation')}</p>
+        </div>
+      )}
 
       <div className="mt-50">
         {!isEditing && (

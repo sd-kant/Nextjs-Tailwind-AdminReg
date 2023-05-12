@@ -144,7 +144,7 @@ const FormConnectDevice = (props) => {
               visibleDropdown={visibleDropdown}
               onItemClick={handleItemClick}
               noMatch={noMatch}
-              noMatchText={'No Device ID match found'}
+              noMatchText={t('no device match')}
             />
           </>
         ) : (
@@ -161,10 +161,12 @@ const FormConnectDevice = (props) => {
         )}
       </div>
 
-      <div className={clsx(style.DeviceWrapper)}>
-        <img className={clsx(style.DeviceImage)} src={LKenzenDeviceImg} alt="kenzen device" />
-        <p className={clsx(style.DeviceIDExplanation)}>{t('device id explanation')}</p>
-      </div>
+      {isEditing && (
+        <div className={clsx(style.DeviceWrapper)}>
+          <img className={clsx(style.DeviceImage)} src={LKenzenDeviceImg} alt="kenzen device" />
+          <p className={clsx(style.DeviceIDExplanation)}>{t('device id explanation')}</p>
+        </div>
+      )}
 
       <div className="mt-50">
         {!isEditing && (
