@@ -3,7 +3,14 @@ import clsx from 'clsx';
 import style from './SearchDropdown.module.scss';
 
 const SearchDropdown = React.forwardRef((props, ref) => {
-  const { items, visibleDropdown, renderInput = () => {}, onItemClick = () => {} } = props;
+  const {
+    items,
+    visibleDropdown,
+    renderInput = () => {},
+    onItemClick = () => {},
+    noMatch,
+    noMatchText
+  } = props;
   return (
     <React.Fragment>
       <div ref={ref} className={clsx(style.Wrapper)}>
@@ -23,6 +30,11 @@ const SearchDropdown = React.forwardRef((props, ref) => {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+        {noMatch && (
+          <div className="mt-15">
+            <span className="font-input-label">{noMatchText}</span>
           </div>
         )}
       </div>
