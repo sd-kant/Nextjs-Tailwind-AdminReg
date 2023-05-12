@@ -684,11 +684,11 @@
   "attention guide": "Please use <a1>{{link}}</a1> to log into our customer site",
   "phone free hub": "Phone-Free Hub",
   "connect your device": "Connect to your Device",
-  "device id label": "Device ID : Enter Last 4-Digits",
-  "device id placeholder": "Enter the DeviceID or the last 4-digits of Device ID",
+  "device id label": "Enter Device ID or Serial Number",
+  "device id placeholder": "Enter the DeviceID or the device serial number",
   "device id required": "Please enter a device id",
   "device id invalid": "Please enter a valid device id",
-  "device id explanation": "Locate the 4 digits located on the front of your device or the full DeivceID on the back of the device",
+  "device id explanation": "Locate the 4 digits Device ID on the front of your device or the full serial number on the back of the device",
   "connect device": "Connect to Device",
   "connect": "Connect",
   "connect device success": "Device Connected",
@@ -699,5 +699,5 @@
   "modify profile": "modify your profile",
   "connect team member": "Connect a Team Member",
   "mac address found": "MAC Address Found",
-  "device id sn": "Device ID (Serial Number)"
+  "device id sn": "Device Serial Number"
 }
