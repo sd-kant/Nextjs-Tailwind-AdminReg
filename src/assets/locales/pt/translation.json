@@ -699,5 +699,6 @@
   "modify profile": "modifique seu perfil",
   "connect team member": "Conectar um membro da equipe",
   "mac address found": "Endereço MAC encontrado",
-  "device id sn": "Número de série do dispositivo"
+  "device id sn": "Número de série do dispositivo",
+  "enter team member": "Insira o membro da equipe"
 }
