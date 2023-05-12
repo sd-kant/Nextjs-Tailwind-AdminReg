@@ -12,6 +12,7 @@ import { linkKenzenDevice, verifyKenzenDevice } from '../../../http';
 import { setLoadingAction, showErrorNotificationAction } from '../../../redux/action/ui';
 import SearchDropdown from '../../components/SearchDropdown';
 import useClickOutSide from '../../../hooks/useClickOutSide';
+import { useNavigate } from 'react-router-dom';
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -28,6 +29,7 @@ const FormConnectDevice = (props) => {
   const { values, errors, touched, setFieldValue, t } = props;
   const [devices, setDevices] = React.useState([]);
   const [device, setDevice] = React.useState(null);
+  const navigate = useNavigate();
 
   const changeFormField = (e) => {
     const { value, name } = e.target;
@@ -87,6 +89,14 @@ const FormConnectDevice = (props) => {
     );
   }, [devices]);
 
+  const handleCancel = () => {
+    if (isEditing) {
+      navigate(-1);
+    } else {
+      setFieldValue('isEditing', true);
+    }
+  };
+
   return (
     <Form className={clsx(style.Wrapper, 'form')}>
       <div className={clsx('d-flex flex-column mt-25', style.FormRow)}>
@@ -135,22 +145,20 @@ const FormConnectDevice = (props) => {
       <div className="mt-80">
         <div>
           {!isEditing && (
-            <>
-              <button
-                className={`button ${
-                  values['deviceId'] ? 'active cursor-pointer' : 'inactive cursor-default'
-                }`}
-                type={values['deviceId'] ? 'submit' : 'button'}>
-                <span className="font-button-label text-white">{t('connect')}</span>
-              </button>
-              <button
-                className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
-                type={'button'}
-                onClick={() => setFieldValue('isEditing', true)}>
-                <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
-              </button>
-            </>
+            <button
+              className={`button ${
+                values['deviceId'] ? 'active cursor-pointer' : 'inactive cursor-default'
+              }`}
+              type={values['deviceId'] ? 'submit' : 'button'}>
+              <span className="font-button-label text-white">{t('connect')}</span>
+            </button>
           )}
+          <button
+            className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
+            type={'button'}
+            onClick={handleCancel}>
+            <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
+          </button>
         </div>
       </div>
     </Form>

@@ -55,8 +55,8 @@ const FormConnectMemberSearch = ({ t }) => {
 
         <div className={clsx(style.Row, 'mt-25')}>
           <div className="d-flex flex-column">
-            <button className="active cursor-pointer button" type="button" onClick={handleCancel}>
-              <span className="font-button-label text-white text-uppercase">{'cancel'}</span>
+            <button className="button cursor-pointer cancel" type="button" onClick={handleCancel}>
+              <span className="font-button-label text-orange text-uppercase">{'cancel'}</span>
             </button>
           </div>
         </div>
