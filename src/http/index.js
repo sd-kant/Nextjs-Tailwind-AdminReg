@@ -453,7 +453,7 @@ export const linkKenzenDevice = (deviceId) => {
 };
 
 export const linkMemberKenzenDevice = (teamId, userId, deviceId) => {
-  return patch(`/device/${deviceId}`);
+  return patch(`/team/${teamId}/device/${userId}/${deviceId}`);
 };
 
 export const verifyKenzenDevice = (deviceId) => {
