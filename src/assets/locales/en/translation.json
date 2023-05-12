@@ -703,5 +703,6 @@
   "device connected member description": "You’ve successfully connected your team member to Device ID:",
   "connect device confirm": "Connect to your device?",
   "connect device member confirm": "Connect your team member to this device?",
-  "no device match": "No Device ID match found"
+  "no device match": "No Device ID match found",
+  "no member match": "No team member found"
 }

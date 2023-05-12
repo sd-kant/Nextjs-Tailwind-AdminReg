@@ -8,9 +8,13 @@ import useClickOutSide from '../../../hooks/useClickOutSide';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const FormConnectMemberSearch = ({ t }) => {
-  const { searchedOperators, keywordOnInvite, setKeywordOnInvite } = useMembersContext();
+  const { searchedOperators, keywordOnInvite, setKeywordOnInvite, searching } = useMembersContext();
   const navigate = useNavigate();
   const { organizationId } = useParams();
+
+  const noMatch = React.useMemo(() => {
+    return !searching && searchedOperators?.length === 0 && keywordOnInvite;
+  }, [searching, searchedOperators, keywordOnInvite]);
 
   const [visible, setVisible] = React.useState(false);
   const dropdownRef = React.useRef(null);
@@ -50,6 +54,8 @@ const FormConnectMemberSearch = ({ t }) => {
           items={searchedOperators}
           visibleDropdown={visibleDropdown}
           onItemClick={handleItemClick}
+          noMatch={noMatch}
+          noMatchText={t('no member match')}
         />
       </div>
 

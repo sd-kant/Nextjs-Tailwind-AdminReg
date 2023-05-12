@@ -953,6 +953,7 @@ const MembersProvider = ({
     () => keywordOnInvite?.trim()?.toLowerCase(),
     [keywordOnInvite]
   );
+  const [searching, setSearching] = React.useState(false);
   React.useEffect(() => {
     if (trimmedKeywordOnInvite) {
       let promise = null;
@@ -983,7 +984,12 @@ const MembersProvider = ({
         };
 
         try {
-          load().then((res) => setSearchedUsers(res));
+          setSearching(true);
+          load()
+            .then((res) => setSearchedUsers(res))
+            .finally(() => {
+              setSearching(false);
+            });
         } catch (e) {
           console.error('load based on keywordOnInvite error', e);
           setSearchedUsers([]);
@@ -1047,6 +1053,7 @@ const MembersProvider = ({
     keywordOnInvite,
     setKeywordOnInvite,
     searchedOperators,
+    searching,
     initializeMembers,
     handleMemberInfoChange,
     handleMemberTeamUserTypeChange,
