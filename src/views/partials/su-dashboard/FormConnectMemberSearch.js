@@ -30,39 +30,36 @@ const FormConnectMemberSearch = ({ t }) => {
   };
 
   return (
-    <div className={clsx(style.Wrapper)}>
-      <div className={clsx(style.Body)}>
-        <div className={clsx(style.Row)}>
-          <div className="d-flex flex-column">
-            <SearchDropdown
-              ref={dropdownRef}
-              renderInput={() => (
-                <input
-                  className={clsx(style.Input, 'input mt-10 font-heading-small text-white')}
-                  type="text"
-                  value={keywordOnInvite}
-                  placeholder={t('search user')}
-                  onChange={(e) => setKeywordOnInvite(e.target.value)}
-                  onClick={() => setVisible(true)}
-                />
-              )}
-              items={searchedOperators}
-              visibleDropdown={visibleDropdown}
-              onItemClick={handleItemClick}
+    <div className={clsx(style.Wrapper, 'form')}>
+      <div className={clsx('d-flex flex-column mt-25', style.FormRow)}>
+        <label className="font-input-label" htmlFor="deviceId">
+          {t('enter team member')}
+        </label>
+        <SearchDropdown
+          ref={dropdownRef}
+          renderInput={() => (
+            <input
+              className={clsx(style.Input, 'input mt-10 font-heading-small text-white')}
+              type="text"
+              value={keywordOnInvite}
+              placeholder={t('search user')}
+              onChange={(e) => setKeywordOnInvite(e.target.value)}
+              onClick={() => setVisible(true)}
             />
-          </div>
-        </div>
-
-        <div className={clsx(style.Row, 'mt-25')}>
-          <div className="d-flex flex-column">
-            <button className="button cursor-pointer cancel" type="button" onClick={handleCancel}>
-              <span className="font-button-label text-orange text-uppercase">{'cancel'}</span>
-            </button>
-          </div>
-        </div>
+          )}
+          items={searchedOperators}
+          visibleDropdown={visibleDropdown}
+          onItemClick={handleItemClick}
+        />
       </div>
 
-      <div className={clsx(style.Footer)} />
+      <div className={clsx('mt-80')}>
+        <div>
+          <button className="button cursor-pointer cancel" type="button" onClick={handleCancel}>
+            <span className="font-button-label text-orange text-uppercase">{'cancel'}</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

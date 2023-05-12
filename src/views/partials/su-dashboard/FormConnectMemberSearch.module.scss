@@ -1,86 +1,13 @@
 @import "src/assets/scss/colors";
 
 .Wrapper {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-  height: 400px;
+  .FormRow {
+    display: inline-flex;
+    max-width: 330px;
 
-  .Body {
-    .Row {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-
-      & > div {
-        margin-top: 10px;
-      }
-
-      .Input {
-        width: calc(100% - 45px);
-        font-size: 15px;
-      }
-    }
-  }
-}
-
-.Footer {
-  display: flex;
-  justify-content: center;
-  margin-top: 25px;
-}
-
-@media only screen and (min-width: 768px) {
-  .Wrapper {
-    padding: 40px;
-    .Body {
-      .Row {
-        .Input {
-          width: calc(450px - 22px);
-          font-size: 21px;
-        }
-      }
-
-      & > .Row:first-child > div:first-child {
-        margin-top: 0;
-      }
-    }
-  }
-}
-
-@media only screen and (min-width: 1024px) {
-  .Wrapper {
-    padding: 20px;
-
-    .Body {
-      .Row {
-        flex-direction: row;
-
-        .Input {
-          width: calc(450px - 22px);
-        }
-      }
-      & > .Row:first-child > div {
-        margin-top: 0;
-      }
-    }
-  }
-}
-
-@media only screen and (min-width: 1400px) {
-  .Wrapper {
-    padding: 40px;
-
-    .Body {
-      .Row {
-        flex-direction: row;
-
-        .Input {
-          width: calc(475px - 22px);
-        }
-      }
+    & > .Input {
+      width: calc(100% - 45px);
+      font-size: 15px;
     }
   }
 }
