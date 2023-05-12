@@ -694,11 +694,13 @@
   "connect device success": "Dispositivo conectado",
   "device connected description": "Te has conectado con éxito a Device ID: ",
   "device connected support": "¿Tiene alguna pregunta o inquietud? ¡Consulte nuestra página de soporte <a1>aquí</a1>! O envíenos un correo electrónico a: <a2>{{supportEmail}}</a2>",
-  "close window": "Cerrar ventana",
   "profile": "perfil",
   "modify profile": "modifica tu perfil",
   "connect team member": "Conectar a un miembro del equipo",
   "mac address found": "Dirección MAC encontrada",
   "device id sn": "Número de serie del dispositivo",
-  "enter team member": "Ingresa al miembro del equipo"
+  "enter team member": "Ingresa al miembro del equipo",
+  "device connected member description": "Has conectado con éxito al miembro de tu equipo a Device ID:",
+  "connect device confirm": "¿Conectarse a su dispositivo?",
+  "connect device member confirm": "¿Conectar a un miembro de su equipo a este dispositivo?"
 }

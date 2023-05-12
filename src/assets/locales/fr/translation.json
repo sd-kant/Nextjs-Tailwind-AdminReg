@@ -694,11 +694,13 @@
   "connect device success": "Appareil connecté",
   "device connected description": "Vous avez réussi à vous connecter à Device ID :",
   "device connected support": "Vous avez une question ou un souci ? Consultez notre page d'assistance <a1>ici</a1>! Ou envoyez-nous un e-mail à : <a2>{{supportEmail}}</a2>",
-  "close window": "Fermer la fenêtre",
   "profile": "profil",
   "modify profile": "modifier votre profil",
   "connect team member": "Connecter un membre de l'équipe",
   "mac address found": "Adresse MAC trouvée",
   "device id sn": "Numéro de série de l'appareil",
-  "enter team member": "Entrer un membre de l'équipe"
+  "enter team member": "Entrer un membre de l'équipe",
+  "device connected member description": "Vous avez réussi à connecter le membre de votre équipe à Device ID:",
+  "connect device confirm": "Connectez-vous à votre appareil ?",
+  "connect device member confirm": "Connecter un membre de votre équipe à cet appareil ?"
 }

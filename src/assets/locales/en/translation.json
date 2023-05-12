@@ -694,11 +694,13 @@
   "connect device success": "Device Connected",
   "device connected description": "You’ve successfully connected to Device ID: ",
   "device connected support": "Have a question or concern? Check out our support page <a1>here</a1>! Or email us at: <a2>{{supportEmail}}</a2>",
-  "close window": "close window",
   "profile": "profile",
   "modify profile": "modify your profile",
   "connect team member": "Connect a Team Member",
   "mac address found": "MAC Address Found",
   "device id sn": "Device Serial Number",
-  "enter team member": "Enter Team Member"
+  "enter team member": "Enter Team Member",
+  "device connected member description": "You’ve successfully connected your team member to Device ID:",
+  "connect device confirm": "Connect to your device?",
+  "connect device member confirm": "Connect your team member to this device?"
 }
