@@ -697,5 +697,7 @@
   "close window": "Fermer la fenêtre",
   "profile": "profil",
   "modify profile": "modifier votre profil",
-  "connect team member": "Connecter un membre de l'équipe"
+  "connect team member": "Connecter un membre de l'équipe",
+  "mac address found": "Adresse MAC trouvée",
+  "device id sn": "ID de l'appareil (numéro de série)"
 }

@@ -73,11 +73,11 @@ const FormSelectMode = (props) => {
                       className={clsx(style.WorkerWhiteImage1)}
                       alt="settings"
                     />
-                    <img
+                    {/*<img
                       src={workerOrange}
                       className={clsx(style.WorkerWhiteImage2)}
                       alt="settings"
-                    />
+                    />*/}
                     <img
                       src={workerOrange}
                       className={clsx(style.WorkerOrangeImage)}
@@ -99,8 +99,15 @@ const FormSelectMode = (props) => {
                 </div>
 
                 <div className={clsx(style.ImageWrapper3)}>
-                  <img src={workerOrange} alt="worker" />
-                  <img src={ArrowIcon} alt="arrow" />
+                  <div className={clsx(style.GroupMembers)}>
+                    <img
+                      src={workerOrange}
+                      className={clsx(style.WorkerWhiteImage1)}
+                      alt="settings"
+                    />
+                    <img src={workerOrange} alt="worker" />
+                  </div>
+                  <img src={ArrowIcon} className={clsx(style.Arrow)} alt="arrow" />
                   <img src={KenzenDeviceImg} alt="kenzen device" />
                 </div>
 
@@ -116,7 +123,7 @@ const FormSelectMode = (props) => {
               <span className={clsx('font-button-label')}>{t('phone free hub')}</span>
             </div>
 
-            <div className={clsx(style.ImageWrapper3)}>
+            <div className={clsx(style.ImageWrapper4)}>
               <img src={workerOrange} alt="worker" />
               <img src={ArrowIcon} alt="arrow" />
               <img src={KenzenDeviceImg} alt="kenzen device" />

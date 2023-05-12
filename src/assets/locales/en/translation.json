@@ -697,5 +697,7 @@
   "close window": "close window",
   "profile": "profile",
   "modify profile": "modify your profile",
-  "connect team member": "Connect a Team Member"
+  "connect team member": "Connect a Team Member",
+  "mac address found": "MAC Address Found",
+  "device id sn": "Device ID (Serial Number)"
 }

@@ -8,8 +8,10 @@ import clsx from 'clsx';
 import style from './FormConnectMemberDevice.module.scss';
 import LKenzenDeviceImg from '../../../assets/images/kenzen-device-l.png';
 import { isValidMacAddress } from '../../../utils';
-import { linkMemberKenzenDevice } from '../../../http';
+import { linkMemberKenzenDevice, verifyKenzenDevice } from '../../../http';
 import { setLoadingAction, showErrorNotificationAction } from '../../../redux/action/ui';
+import SearchDropdown from '../../components/SearchDropdown';
+import useClickOutSide from '../../../hooks/useClickOutSide';
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -22,33 +24,102 @@ export const formSchema = (t) => {
   });
 };
 
-const FromConnectMemberDevice = (props) => {
+const FormConnectMemberDevice = (props) => {
   const { values, errors, touched, setFieldValue, t } = props;
+  const [devices, setDevices] = React.useState([]);
+  const [device, setDevice] = React.useState(null);
 
   const changeFormField = (e) => {
     const { value, name } = e.target;
     setFieldValue(name, value);
   };
 
-  const { isEditing } = values;
+  const [visible, setVisible] = React.useState(false);
+  const dropdownRef = React.useRef(null);
+  useClickOutSide(dropdownRef, () => setVisible(false));
+
+  const visibleDropdown = React.useMemo(() => {
+    return visible && devices?.length > 0;
+  }, [visible, devices?.length]);
+
+  const handleItemClick = (id) => {
+    const device = devices?.find((it) => it.deviceId === id);
+    if (device) {
+      setFieldValue('isEditing', false);
+      setFieldValue('deviceId', device.deviceId);
+      setDevice(device);
+    }
+  };
+
+  const { isEditing, deviceId } = values;
+
+  React.useEffect(() => {
+    let mounted = true;
+    if (deviceId) {
+      const tDeviceId = deviceId.replace(/\W/g, '')?.slice(-4);
+      if (tDeviceId?.length === 4) {
+        verifyKenzenDevice(tDeviceId)
+          .then((res) => {
+            if (mounted) {
+              const device = res.data;
+              setDevices([device]);
+            }
+          })
+          .catch((e) => {
+            console.error('device verify error', e);
+            setDevices([]);
+          });
+      }
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, [deviceId]);
+
+  const dropdownItems = React.useMemo(() => {
+    return (
+      devices?.map((device) => ({
+        value: device.deviceId,
+        title: device.deviceId,
+        subtitle: device.serialNumber
+      })) ?? []
+    );
+  }, [devices]);
 
   return (
     <Form className={clsx(style.Wrapper, 'form')}>
       <div className={clsx('d-flex flex-column mt-25', style.FormRow)}>
-        <label className="font-input-label" htmlFor="deviceId">
-          {isEditing ? t('device id label') : t('device id')}
-        </label>
         {isEditing ? (
-          <input
-            className="input input-field mt-10 font-heading-small text-white"
-            name="deviceId"
-            type="text"
-            value={values['deviceId']}
-            placeholder={t('device id placeholder')}
-            onChange={changeFormField}
-          />
+          <>
+            <label className="font-input-label" htmlFor="deviceId">
+              {t('device id label')}
+            </label>
+            <SearchDropdown
+              ref={dropdownRef}
+              renderInput={() => (
+                <input
+                  className="input input-field mt-10 font-heading-small text-white"
+                  name="deviceId"
+                  type="text"
+                  value={values['deviceId']}
+                  placeholder={t('device id placeholder')}
+                  onChange={changeFormField}
+                  onClick={() => setVisible(true)}
+                />
+              )}
+              items={dropdownItems}
+              visibleDropdown={visibleDropdown}
+              onItemClick={handleItemClick}
+            />
+          </>
         ) : (
-          <p>{values['deviceId']}</p>
+          <>
+            <label className="font-input-label">{t('mac address found')}</label>
+            <p className="ml-15">{device['deviceId']}</p>
+            <label className="font-input-label">{t('device id sn')}</label>
+            <p className="ml-15">{device['serialNumber']}</p>
+          </>
         )}
 
         {errors.deviceId && touched.deviceId && (
@@ -63,22 +134,22 @@ const FromConnectMemberDevice = (props) => {
 
       <div className="mt-80">
         <div>
-          <button
-            className={`button ${
-              values['deviceId'] ? 'active cursor-pointer' : 'inactive cursor-default'
-            }`}
-            type={values['deviceId'] ? 'submit' : 'button'}>
-            <span className="font-button-label text-white">
-              {isEditing ? t('next') : t('connect')}
-            </span>
-          </button>
           {!isEditing && (
-            <button
-              className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
-              type={'button'}
-              onClick={() => setFieldValue('isEditing', true)}>
-              <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
-            </button>
+            <>
+              <button
+                className={`button ${
+                  values['deviceId'] ? 'active cursor-pointer' : 'inactive cursor-default'
+                }`}
+                type={values['deviceId'] ? 'submit' : 'button'}>
+                <span className="font-button-label text-white">{t('connect')}</span>
+              </button>
+              <button
+                className={clsx(style.CancelBtn, `button cursor-pointer cancel`)}
+                type={'button'}
+                onClick={() => setFieldValue('isEditing', true)}>
+                <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -92,12 +163,10 @@ const EnhancedForm = withFormik({
     deviceId: ''
   }),
   validationSchema: (props) => formSchema(props.t),
-  handleSubmit: async (values, { props, setFieldValue }) => {
+  handleSubmit: async (values, { props }) => {
     const { isEditing } = values;
     const { setLoading, showErrorNotification, navigate, teamId, userId } = props;
-    if (isEditing) {
-      setFieldValue('isEditing', false);
-    } else {
+    if (!isEditing) {
       try {
         const { deviceId } = values;
         const tDeviceId = deviceId.trim();
@@ -112,7 +181,7 @@ const EnhancedForm = withFormik({
       }
     }
   }
-})(FromConnectMemberDevice);
+})(FormConnectMemberDevice);
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(

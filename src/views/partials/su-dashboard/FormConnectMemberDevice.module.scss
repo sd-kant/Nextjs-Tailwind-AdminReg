@@ -10,6 +10,8 @@
 
 .Wrapper {
   .FormRow {
+    display: inline-flex;
+
     & > input {
       &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
         @include input-placeholder;
