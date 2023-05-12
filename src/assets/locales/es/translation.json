@@ -684,11 +684,11 @@
   "attention guide": "Utilice <a1>{{link}}</a1> para iniciar sesión en nuestro sitio de clientes",
   "phone free hub": "Hub sin teléfono",
   "connect your device": "Conéctese a su dispositivo",
-  "device id label": "ID del dispositivo: ingrese los últimos 4 dígitos",
-  "device id placeholder": "Ingrese el ID del dispositivo o los últimos 4 dígitos del ID del dispositivo",
+  "device id label": "Ingrese la identificación del dispositivo o el número de serie",
+  "device id placeholder": "Ingrese el ID del dispositivo o el número de serie del dispositivo",
   "device id required": "Ingrese una ID de dispositivo",
   "device id invalid": "Ingrese una ID de dispositivo válida",
-  "device id explanation": "Localice los 4 dígitos ubicados en la parte frontal de su dispositivo o la identificación completa del dispositivo en la parte posterior del dispositivo",
+  "device id explanation": "Localice el ID del dispositivo de 4 dígitos en la parte frontal de su dispositivo o el número de serie completo en la parte posterior del dispositivo",
   "connect device": "Conectar al dispositivo",
   "connect": "Conectar",
   "connect device success": "Dispositivo conectado",
@@ -699,5 +699,5 @@
   "modify profile": "modifica tu perfil",
   "connect team member": "Conectar a un miembro del equipo",
   "mac address found": "Dirección MAC encontrada",
-  "device id sn": "ID del dispositivo (número de serie)"
+  "device id sn": "Número de serie del dispositivo"
 }

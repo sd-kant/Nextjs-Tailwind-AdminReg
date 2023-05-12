@@ -684,11 +684,11 @@
   "attention guide": "<a1>{{link}}</a1> を使用して、カスタマー サイトにログインしてください",
   "phone free hub": "電話不要のハブ",
   "connect your device": "デバイスに接続する",
-  "device id label": "デバイス ID: 下 4 桁を入力してください",
-  "device id placeholder": "デバイス ID またはデバイス ID の下 4 桁を入力します",
+  "device id label": "デバイス ID またはシリアル番号を入力してください",
+  "device id placeholder": "デバイス ID またはデバイスのシリアル番号を入力します",
   "device id required": "デバイス ID を入力してください",
   "device id invalid": "有効なデバイス ID を入力してください",
-  "device id explanation": "デバイスの前面にある 4 桁の数字、またはデバイスの背面にある完全なデバイス ID を見つけます",
+  "device id explanation": "デバイスの前面にある 4 桁のデバイス ID、またはデバイスの背面にある完全なシリアル番号を見つけます。",
   "connect device": "デバイスに接続",
   "connect": "接続",
   "connect device success": "デバイスが接続されました",
@@ -699,5 +699,5 @@
   "modify profile": "プロフィールを変更する",
   "connect team member": "チームメンバーを接続する",
   "mac address found": "MACアドレスが見つかりました",
-  "device id sn": "デバイスID（シリアルナンバー）"
+  "device id sn": "デバイスのシリアル番号"
 }
