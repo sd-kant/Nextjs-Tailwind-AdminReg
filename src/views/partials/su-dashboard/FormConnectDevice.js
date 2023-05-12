@@ -29,6 +29,7 @@ const FormConnectDevice = (props) => {
   const { values, errors, touched, setFieldValue, t } = props;
   const [devices, setDevices] = React.useState([]);
   const [device, setDevice] = React.useState(null);
+  const [searching, setSearching] = React.useState(null);
   const navigate = useNavigate();
 
   const changeFormField = (e) => {
@@ -55,29 +56,50 @@ const FormConnectDevice = (props) => {
 
   const { isEditing, deviceId } = values;
 
-  React.useEffect(() => {
-    let mounted = true;
+  const tDeviceId = React.useMemo(() => {
     if (deviceId) {
       const tDeviceId = deviceId.replace(/\W/g, '')?.slice(-4);
       if (tDeviceId?.length === 4) {
-        verifyKenzenDevice(tDeviceId)
-          .then((res) => {
-            if (mounted) {
-              const device = res.data;
-              setDevices([device]);
-            }
-          })
-          .catch((e) => {
-            console.error('device verify error', e);
-            setDevices([]);
-          });
+        return tDeviceId;
       }
+      return '';
+    }
+
+    return '';
+  }, [deviceId]);
+
+  React.useEffect(() => {
+    let mounted = true;
+    if (tDeviceId) {
+      if (mounted) {
+        setSearching(true);
+      }
+      verifyKenzenDevice(tDeviceId)
+        .then((res) => {
+          if (mounted) {
+            const device = res.data;
+            setDevices([device]);
+          }
+        })
+        .catch((e) => {
+          console.error('device verify error', e);
+          setDevices([]);
+        })
+        .finally(() => {
+          if (mounted) {
+            setSearching(false);
+          }
+        });
     }
 
     return () => {
       mounted = false;
     };
-  }, [deviceId]);
+  }, [tDeviceId]);
+
+  const noMatch = React.useMemo(() => {
+    return !searching && devices?.length === 0 && tDeviceId;
+  }, [devices, searching, tDeviceId]);
 
   const dropdownItems = React.useMemo(() => {
     return (
@@ -121,6 +143,8 @@ const FormConnectDevice = (props) => {
               items={dropdownItems}
               visibleDropdown={visibleDropdown}
               onItemClick={handleItemClick}
+              noMatch={noMatch}
+              noMatchText={'No Device ID match found'}
             />
           </>
         ) : (
