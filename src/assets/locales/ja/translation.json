@@ -697,5 +697,7 @@
   "close window": "ウィンドウを閉じる",
   "profile": "プロフィール",
   "modify profile": "プロフィールを変更する",
-  "connect team member": "チームメンバーを接続する"
+  "connect team member": "チームメンバーを接続する",
+  "mac address found": "MACアドレスが見つかりました",
+  "device id sn": "デバイスID（シリアルナンバー）"
 }

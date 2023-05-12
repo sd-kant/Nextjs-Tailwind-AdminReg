@@ -63,6 +63,37 @@
       position: relative;
       display: flex;
       padding: 15px 0;
+
+      .GroupMembers {
+        position: relative;
+        display: flex;
+        width: 80px;
+
+        & > img:nth-child(1) {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          width: 30px;
+        }
+
+        & > img:nth-child(2) {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          right: 0;
+          width: 50px;
+        }
+      }
+
+      .Arrow {
+        width: 20px;
+      }
+    }
+
+    .ImageWrapper4 {
+      position: relative;
+      display: flex;
+      padding: 15px 0;
     }
 
     &:nth-child(1) {

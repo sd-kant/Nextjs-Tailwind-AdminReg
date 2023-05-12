@@ -455,3 +455,7 @@ export const linkKenzenDevice = (deviceId) => {
 export const linkMemberKenzenDevice = (teamId, userId, deviceId) => {
   return patch(`/device/${deviceId}`);
 };
+
+export const verifyKenzenDevice = (deviceId) => {
+  return get(`/device/${deviceId}/verify`);
+};
