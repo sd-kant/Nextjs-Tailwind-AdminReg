@@ -703,5 +703,6 @@
   "device connected member description": "Has conectado con éxito al miembro de tu equipo a Device ID:",
   "connect device confirm": "¿Conectarse a su dispositivo?",
   "connect device member confirm": "¿Conectar a un miembro de su equipo a este dispositivo?",
-  "no device match": "No se encontró ninguna coincidencia de ID de dispositivo"
+  "no device match": "No se encontró ninguna coincidencia de ID de dispositivo",
+  "no member match": "Ningún miembro del equipo encontrado"
 }

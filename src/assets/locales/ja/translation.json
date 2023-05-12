@@ -703,5 +703,6 @@
   "device connected member description": "チーム メンバーをデバイス ID に正常に接続しました。",
   "connect device confirm": "デバイスに接続しますか?",
   "connect device member confirm": "チームメンバーをこのデバイスに接続しますか?",
-  "no device match": "一致するデバイス ID が見つかりませんでした"
+  "no device match": "一致するデバイス ID が見つかりませんでした",
+  "no member match": "チームメンバーが見つかりません"
 }
