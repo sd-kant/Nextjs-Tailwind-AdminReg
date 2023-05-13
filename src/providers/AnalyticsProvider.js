@@ -1,14 +1,7 @@
 import * as React from 'react';
 import * as XLSX from 'xlsx/xlsx.mjs';
-import {
-  queryTeamMembers,
-  getRiskLevels,
-} from "../http";
-import {
-  celsiusToFahrenheit,
-  dateFormat,
-  numMinutesBetweenWithNow,
-} from "../utils";
+import { queryTeamMembers, getRiskLevels } from '../http';
+import { celsiusToFahrenheit, dateFormat, numMinutesBetweenWithNow } from '../utils';
 import {
   onCalc,
   getDateList,
@@ -22,8 +15,8 @@ import {
   getThisWeekByTeam,
   checkMetric,
   getKeyApiCall,
-  getHeaderMetrics,
-} from "../utils/anlytics";
+  getHeaderMetrics
+} from '../utils/anlytics';
 import {
   COLOR_WHITE,
   HEAT_SWEAT_CHART_COLORS,
@@ -44,41 +37,29 @@ import {
   SWEAT_LOW_MEDIUM_HIGH,
   LABELS_HEAT_DOUGHNUT,
   LABELS_SWEAT_DOUGHNUT,
-  INVALID_VALUES2,
-} from "../constant";
-import {useBasicContext} from "./BasicProvider";
-import {
-  formatHeartRate,
-  literToQuart
-} from "../utils/dashboard";
-import {useUtilsContext} from "./UtilsProvider";
-import {useTranslation} from "react-i18next";
-import soft from "timezone-soft";
-import spacetime from "spacetime";
+  INVALID_VALUES2
+} from '../constant';
+import { useBasicContext } from './BasicProvider';
+import { formatHeartRate, literToQuart } from '../utils/dashboard';
+import { useUtilsContext } from './UtilsProvider';
+import { useTranslation } from 'react-i18next';
+import soft from 'timezone-soft';
+import spacetime from 'spacetime';
 
 const AnalyticsContext = React.createContext(null);
 
-export const AnalyticsProvider = (
-  {
-    children,
-    setLoading,
-    metric: unitMetric,
-  }) => {
-  const {t} = useTranslation();
-  const {
-    formatAlert,
-    formatHeartCbt,
-    alertPriorities
-  } = useUtilsContext();
+export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) => {
+  const { t } = useTranslation();
+  const { formatAlert, formatHeartCbt, alertPriorities } = useUtilsContext();
   const [pickedMembers, setPickedMembers] = React.useState([]);
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
-  const {pickedTeams, organization, formattedTeams} = useBasicContext();
+  const { pickedTeams, organization, formattedTeams } = useBasicContext();
   const [members, _setMembers] = React.useState();
   const membersRef = React.useRef(members);
   const [visibleExport, setVisibleExport] = React.useState(false);
   const [exportOption, setExportOption] = React.useState(null);
-  const setMembers = v => {
+  const setMembers = (v) => {
     _setMembers(v);
     membersRef.current = v;
   };
@@ -92,17 +73,19 @@ export const AnalyticsProvider = (
 
   React.useEffect(() => {
     let mounted = true;
-    getRiskLevels().then(response => {
+    getRiskLevels().then((response) => {
       if (mounted) setRiskLevels(response.data);
     });
 
     return () => {
       mounted = false;
-    }
+    };
   }, []);
 
   const selectedTeams = React.useMemo(() => {
-    return formattedTeams?.filter(it => pickedTeams.some(ele => ele.toString() === it.value?.toString()))
+    return formattedTeams?.filter((it) =>
+      pickedTeams.some((ele) => ele.toString() === it.value?.toString())
+    );
   }, [pickedTeams, formattedTeams]);
 
   const [isEnablePrint, setIsEnablePrint] = React.useState(false);
@@ -116,23 +99,29 @@ export const AnalyticsProvider = (
     const membersPromises = [];
     setMembers([]);
     if (pickedTeams?.length > 0) {
-      pickedTeams.forEach(team => {
+      pickedTeams.forEach((team) => {
         membersPromises.push(queryTeamMembers(team));
       });
-      const a = () => new Promise(resolve => {
-        Promise.allSettled(membersPromises)
-          .then(results => {
-            results?.forEach((result, index) => {
-              if (result.status === `fulfilled`) {
-                if (result.value?.data?.members?.length > 0) {
-                  const operators = result.value?.data?.members?.filter(it => it.teamId?.toString() === pickedTeams?.[index]?.toString() && it.orgId?.toString() === organization?.toString()) ?? [];
-                  setMembers([...membersRef.current, ...operators]);
+      const a = () =>
+        new Promise((resolve) => {
+          Promise.allSettled(membersPromises)
+            .then((results) => {
+              results?.forEach((result, index) => {
+                if (result.status === `fulfilled`) {
+                  if (result.value?.data?.members?.length > 0) {
+                    const operators =
+                      result.value?.data?.members?.filter(
+                        (it) =>
+                          it.teamId?.toString() === pickedTeams?.[index]?.toString() &&
+                          it.orgId?.toString() === organization?.toString()
+                      ) ?? [];
+                    setMembers([...membersRef.current, ...operators]);
+                  }
                 }
-              }
+              });
             })
-          })
-          .finally(() => resolve());
-      });
+            .finally(() => resolve());
+        });
       Promise.allSettled([a()]).then();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -152,16 +141,16 @@ export const AnalyticsProvider = (
     return {
       title,
       action: () => {
-        const v = actionSorts?.map(it => ({
+        const v = actionSorts?.map((it) => ({
           index: it[0],
           direction: it[1],
-          type: it[2],
+          type: it[2]
         }));
         setSort(v);
       },
-      highlight: sort?.[0]?.index === actionSorts?.[0]?.[0] &&
-        sort?.[0]?.direction === actionSorts?.[0]?.[1],
-    }
+      highlight:
+        sort?.[0]?.index === actionSorts?.[0]?.[0] && sort?.[0]?.direction === actionSorts?.[0]?.[1]
+    };
   };
   /**
    *
@@ -189,7 +178,7 @@ export const AnalyticsProvider = (
    */
   const makeSort = (title, options) => ({
     title,
-    options: options?.map(it => makeOption(it[0], it[1]))
+    options: options?.map((it) => makeOption(it[0], it[1]))
   });
 
   const sortOptions = React.useMemo(() => {
@@ -197,115 +186,286 @@ export const AnalyticsProvider = (
     switch (metric) {
       case METRIC_USER_TABLE_VALUES.WEAR_TIME: // 1
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[1, 'asc', 'string']]],
+            [SORT_TITLES[1], [[1, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[2, 'asc', 'number']]],
+            [SORT_TITLES[3], [[2, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[3, 'asc', 'number']]],
+            [SORT_TITLES[3], [[3, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[4, 'asc', 'number']]],
+            [SORT_TITLES[3], [[4, 'desc', 'number']]]
+          ])
         ];
         break;
       case METRIC_USER_TABLE_VALUES.ALERTS: // 2
       case METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK: // 31
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[4], [[2, 'desc', 'date']]], [SORT_TITLES[5], [[2, 'asc', 'date']]]]),
-          makeSort('Sort', [[SORT_TITLES[6], [[3, 'desc', 'alert']]], [SORT_TITLES[7], [[3, 'asc', 'alert']]]]),
-          makeSort('Sort', [[SORT_TITLES[8], [[4, 'desc', 'risk']]], [SORT_TITLES[9], [[4, 'asc', 'risk']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[5, 'asc', 'number']]], [SORT_TITLES[3], [[5, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[6, 'asc', 'number']]], [SORT_TITLES[3], [[6, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[7, 'asc', 'number']]], [SORT_TITLES[3], [[7, 'desc', 'number']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[1, 'asc', 'string']]],
+            [SORT_TITLES[1], [[1, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[4], [[2, 'desc', 'date']]],
+            [SORT_TITLES[5], [[2, 'asc', 'date']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[6], [[3, 'desc', 'alert']]],
+            [SORT_TITLES[7], [[3, 'asc', 'alert']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[8], [[4, 'desc', 'risk']]],
+            [SORT_TITLES[9], [[4, 'asc', 'risk']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[5, 'asc', 'number']]],
+            [SORT_TITLES[3], [[5, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[6, 'asc', 'number']]],
+            [SORT_TITLES[3], [[6, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[7, 'asc', 'number']]],
+            [SORT_TITLES[3], [[7, 'desc', 'number']]]
+          ])
         ];
         break;
       case METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK: // 32
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[4], [[2, 'asc', 'date']]], [SORT_TITLES[5], [[2, 'desc', 'date']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[1, 'asc', 'string']]],
+            [SORT_TITLES[1], [[1, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[4], [[2, 'asc', 'date']]],
+            [SORT_TITLES[5], [[2, 'desc', 'date']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[3, 'asc', 'number']]],
+            [SORT_TITLES[3], [[3, 'desc', 'number']]]
+          ])
         ];
         break;
       case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT: // 4
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[1, 'asc', 'string']]],
+            [SORT_TITLES[1], [[1, 'desc', 'string']]]
+          ]),
           null,
-          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[3, 'asc', 'number']]],
+            [SORT_TITLES[3], [[3, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[4, 'asc', 'number']]],
+            [SORT_TITLES[3], [[4, 'desc', 'number']]]
+          ])
         ];
         break;
       case METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT: // 5
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[10], [[2, 'asc', 'susceptibility']]], [SORT_TITLES[11], [[2, 'desc', 'susceptibility']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[1, 'asc', 'string']]],
+            [SORT_TITLES[1], [[1, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[10], [[2, 'asc', 'susceptibility']]],
+            [SORT_TITLES[11], [[2, 'desc', 'susceptibility']]]
+          ]),
           null,
-          null,
+          null
         ];
         break;
       case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'number']]], [SORT_TITLES[1], [[0, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'number']]],
+            [SORT_TITLES[1], [[0, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[1, 'asc', 'string']]],
+            [SORT_TITLES[1], [[1, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[2, 'asc', 'number']]],
+            [SORT_TITLES[3], [[2, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[3, 'asc', 'number']]],
+            [SORT_TITLES[3], [[3, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[4, 'asc', 'number']]],
+            [SORT_TITLES[3], [[4, 'desc', 'number']]]
+          ])
         ];
         break;
       case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[0], [[1, 'asc', 'string']]], [SORT_TITLES[1], [[1, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'string']]], [SORT_TITLES[3], [[2, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'string']]], [SORT_TITLES[3], [[3, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[0], [[4, 'asc', 'string']]], [SORT_TITLES[1], [[4, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[0], [[5, 'asc', 'string']]], [SORT_TITLES[1], [[5, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[6, 'asc', 'number']]], [SORT_TITLES[3], [[6, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[7, 'asc', 'number']]], [SORT_TITLES[3], [[7, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[4], [[8, 'asc', 'date']]], [SORT_TITLES[5], [[8, 'desc', 'date']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[1, 'asc', 'string']]],
+            [SORT_TITLES[1], [[1, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[2, 'asc', 'string']]],
+            [SORT_TITLES[3], [[2, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[3, 'asc', 'string']]],
+            [SORT_TITLES[3], [[3, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[4, 'asc', 'string']]],
+            [SORT_TITLES[1], [[4, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[5, 'asc', 'string']]],
+            [SORT_TITLES[1], [[5, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[6, 'asc', 'number']]],
+            [SORT_TITLES[3], [[6, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[7, 'asc', 'number']]],
+            [SORT_TITLES[3], [[7, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[4], [[8, 'asc', 'date']]],
+            [SORT_TITLES[5], [[8, 'desc', 'date']]]
+          ])
         ];
         break;
       case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
         ret = [
           null,
-          makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[1, 'asc', 'number']]],
+            [SORT_TITLES[3], [[1, 'desc', 'number']]]
+          ])
         ];
         break;
       case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
       case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[5, 'asc', 'number']]], [SORT_TITLES[3], [[5, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[6, 'asc', 'number']]], [SORT_TITLES[3], [[6, 'desc', 'number']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[1, 'asc', 'number']]],
+            [SORT_TITLES[3], [[1, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[2, 'asc', 'number']]],
+            [SORT_TITLES[3], [[2, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[3, 'asc', 'number']]],
+            [SORT_TITLES[3], [[3, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[4, 'asc', 'number']]],
+            [SORT_TITLES[3], [[4, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[5, 'asc', 'number']]],
+            [SORT_TITLES[3], [[5, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[6, 'asc', 'number']]],
+            [SORT_TITLES[3], [[6, 'desc', 'number']]]
+          ])
         ];
         break;
       case METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS: // 21
       case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[4, 'asc', 'number']]], [SORT_TITLES[3], [[4, 'desc', 'number']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[1, 'asc', 'number']]],
+            [SORT_TITLES[3], [[1, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[2, 'asc', 'number']]],
+            [SORT_TITLES[3], [[2, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[3, 'asc', 'number']]],
+            [SORT_TITLES[3], [[3, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[4, 'asc', 'number']]],
+            [SORT_TITLES[3], [[4, 'desc', 'number']]]
+          ])
         ];
         break;
       case METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS: // 22
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[1, 'asc', 'number']]],
+            [SORT_TITLES[3], [[1, 'desc', 'number']]]
+          ])
         ];
         break;
       case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE: // 23
       case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE: // 24
         ret = [
-          makeSort('Sort', [[SORT_TITLES[0], [[0, 'asc', 'string']]], [SORT_TITLES[1], [[0, 'desc', 'string']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[1, 'asc', 'number']]], [SORT_TITLES[3], [[1, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[2, 'asc', 'number']]], [SORT_TITLES[3], [[2, 'desc', 'number']]]]),
-          makeSort('Sort', [[SORT_TITLES[2], [[3, 'asc', 'number']]], [SORT_TITLES[3], [[3, 'desc', 'number']]]]),
+          makeSort('Sort', [
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[1, 'asc', 'number']]],
+            [SORT_TITLES[3], [[1, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[2, 'asc', 'number']]],
+            [SORT_TITLES[3], [[2, 'desc', 'number']]]
+          ]),
+          makeSort('Sort', [
+            [SORT_TITLES[2], [[3, 'asc', 'number']]],
+            [SORT_TITLES[3], [[3, 'desc', 'number']]]
+          ])
         ];
         break;
     }
@@ -321,10 +481,10 @@ export const AnalyticsProvider = (
   const [riskLevels, setRiskLevels] = React.useState(null);
   const formattedMembers = React.useMemo(() => {
     const ret = [];
-    members?.forEach(user => {
+    members?.forEach((user) => {
       ret.push({
         value: user.userId,
-        label: `${user.firstName} ${user.lastName}`,
+        label: `${user.firstName} ${user.lastName}`
       });
     });
 
@@ -334,7 +494,7 @@ export const AnalyticsProvider = (
   React.useEffect(() => {
     const ret = [];
     pickedMembers?.forEach((it) => {
-      if (members?.some(ele => ele.userId?.toString() === it?.toString())) {
+      if (members?.some((ele) => ele.userId?.toString() === it?.toString())) {
         ret.push(it);
       }
     });
@@ -343,7 +503,8 @@ export const AnalyticsProvider = (
   }, [members]);
 
   const organizationAnalytics = React.useMemo(
-    () => selectedTeams?.length > 0 ? (onFilterDataByOrganization(analytics, organization) ?? {}) : {},
+    () =>
+      selectedTeams?.length > 0 ? onFilterDataByOrganization(analytics, organization) ?? {} : {},
     [analytics, organization, selectedTeams]
   );
 
@@ -360,7 +521,7 @@ export const AnalyticsProvider = (
 
           if (
             checkMetric(METRIC_TEAM_CHART_VALUES, metric) || // team chart only
-            metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA  // user Device_Data
+            metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA // user Device_Data
           ) {
             startD.setDate(startD.getDate() - 2); // e.g. 2022-04-03
             endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
@@ -368,75 +529,90 @@ export const AnalyticsProvider = (
 
           setLoading(true);
           const promises = [];
-          apiCalls.forEach(api => {
-            promises.push(api(organization, {
-              teamIds: pickedTeams,
-              startDate: dateFormat(new Date(startD)),
-              endDate: dateFormat(new Date(endD)),
-            }));
+          apiCalls.forEach((api) => {
+            promises.push(
+              api(organization, {
+                teamIds: pickedTeams,
+                startDate: dateFormat(new Date(startD)),
+                endDate: dateFormat(new Date(endD))
+              })
+            );
           });
 
           let list = {};
-          const a = () => new Promise(resolve => {
-            Promise.allSettled(promises)
-              .then(response => {
-                response?.forEach((result, index) => {
-                  if (result.status === `fulfilled`) {
-                    if (result.value?.data?.length > 0) {
-                      list = {...list, [keys[index]]: result.value.data};
+          const a = () =>
+            new Promise((resolve) => {
+              Promise.allSettled(promises)
+                .then((response) => {
+                  response?.forEach((result, index) => {
+                    if (result.status === `fulfilled`) {
+                      if (result.value?.data?.length > 0) {
+                        list = { ...list, [keys[index]]: result.value.data };
+                      }
                     }
-                  }
+                  });
                 })
-              })
-              .finally(() => {
-                setAnalytics({
-                  ...analytics,
-                  [organization]: {
-                    ...organizationAnalytics,
-                    ...list
-                  },
+                .finally(() => {
+                  setAnalytics({
+                    ...analytics,
+                    [organization]: {
+                      ...organizationAnalytics,
+                      ...list
+                    }
+                  });
+                  setLoading(false);
+                  resolve();
                 });
-                setLoading(false);
-                resolve();
-              });
-          });
+            });
           Promise.allSettled([a()]).then();
         }
       }
     }
   };
 
-  const formatRiskLevel = id => {
-    return riskLevels?.find(it => it.id?.toString() === id?.toString())?.name;
+  const formatRiskLevel = (id) => {
+    return riskLevels?.find((it) => it.id?.toString() === id?.toString())?.name;
   };
 
   const selectedMembers = React.useMemo(() => {
-    let formattedMembersTemp = formattedMembers?.filter(it =>
-      members?.some(ele =>
-        ele.userId?.toString() === it.value?.toString() &&
-        ele.orgId?.toString() === organization?.toString()
-      ));
-    return formattedMembersTemp?.filter(it => pickedMembers?.some(ele => ele.toString() === it.value?.toString()));
+    let formattedMembersTemp = formattedMembers?.filter((it) =>
+      members?.some(
+        (ele) =>
+          ele.userId?.toString() === it.value?.toString() &&
+          ele.orgId?.toString() === organization?.toString()
+      )
+    );
+    return formattedMembersTemp?.filter((it) =>
+      pickedMembers?.some((ele) => ele.toString() === it.value?.toString())
+    );
   }, [pickedMembers, formattedMembers, members, organization]);
 
   const selectedMetric = React.useMemo(() => {
-    let _metric = metrics?.find(it => it.value?.toString() === metric?.toString());
-    if (checkMetric(METRIC_USER_CHART_VALUES, _metric?.value) && selectedMembers.filter(it => users.includes(it.value))?.length === 0) {
-      setUsers(selectedMembers.map(it => it.value));
+    let _metric = metrics?.find((it) => it.value?.toString() === metric?.toString());
+    if (
+      checkMetric(METRIC_USER_CHART_VALUES, _metric?.value) &&
+      selectedMembers.filter((it) => users.includes(it.value))?.length === 0
+    ) {
+      setUsers(selectedMembers.map((it) => it.value));
     }
-    return _metric
+    return _metric;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metric, metrics]);
 
   React.useEffect(() => {
-    if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) && selectedMembers.filter(it => users.includes(it.value))?.length === 0) {
-      setUsers(selectedMembers.map(it => it.value));
+    if (
+      checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) &&
+      selectedMembers.filter((it) => users.includes(it.value))?.length === 0
+    ) {
+      setUsers(selectedMembers.map((it) => it.value));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMetric, selectedMembers]);
 
   const selectedUsers = React.useMemo(() => {
-    return selectedMembers?.filter(it => users.some(ele => ele?.toString() === it.value?.toString()))
+    return selectedMembers?.filter((it) =>
+      users.some((ele) => ele?.toString() === it.value?.toString())
+    );
   }, [selectedMembers, users]);
 
   const timeZone = React.useMemo(() => {
@@ -451,39 +627,46 @@ export const AnalyticsProvider = (
     return {
       name: a?.iana,
       valid: true,
-      displayName: a.standard?.abbr,
+      displayName: a.standard?.abbr
     };
   }, [selectedTeams]);
 
   React.useEffect(() => {
-    setDetailCbt(null)
+    setDetailCbt(null);
   }, [statsBy, selectedMembers, selectedMetric, selectedTeams]);
 
   const chartData = React.useMemo(() => {
     if (
-        [
-          METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT,
-          METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT,
-          METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
-          METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
-        ].includes(metric)
+      [
+        METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT,
+        METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT,
+        METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
+        METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE
+      ].includes(metric)
     ) {
       let tempRet = [0, 0, 0, 0, 0, 0];
-      let totalHeat = 0, totalSweat = 0;
+      let totalHeat = 0,
+        totalSweat = 0;
 
-      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(it => {
-        let findHeatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.heatSusceptibility?.toLowerCase());
-        let findSweatIndex = SWEAT_LOW_MEDIUM_HIGH.findIndex(a => a === it.sweatRateCategory?.toLowerCase());
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(
+        (it) => {
+          let findHeatIndex = HEAT_LOW_MEDIUM_HIGH.findIndex(
+            (a) => a === it.heatSusceptibility?.toLowerCase()
+          );
+          let findSweatIndex = SWEAT_LOW_MEDIUM_HIGH.findIndex(
+            (a) => a === it.sweatRateCategory?.toLowerCase()
+          );
 
-        if (findHeatIndex > -1) {
-          tempRet[findHeatIndex] += 1;
-          totalHeat += 1;
+          if (findHeatIndex > -1) {
+            tempRet[findHeatIndex] += 1;
+            totalHeat += 1;
+          }
+          if (findSweatIndex > -1) {
+            tempRet[findSweatIndex + 3] += 1;
+            totalSweat += 1;
+          }
         }
-        if (findSweatIndex > -1) {
-          tempRet[findSweatIndex + 3] += 1;
-          totalSweat += 1;
-        }
-      });
+      );
 
       const dataChart = (mode) => {
         if (['heat', 'sweat'].includes(mode)) {
@@ -494,14 +677,14 @@ export const AnalyticsProvider = (
               data = [
                 onCalc(0, tempRet, totalHeat), // Low Data
                 onCalc(1, tempRet, totalHeat), // Medium Data
-                onCalc(2, tempRet, totalHeat), // High Data
+                onCalc(2, tempRet, totalHeat) // High Data
               ];
               break;
             case 'sweat':
               data = [
                 onCalc(3, tempRet, totalSweat), // Low Data
                 onCalc(4, tempRet, totalSweat), // Medium Data
-                onCalc(5, tempRet, totalSweat), // High Data
+                onCalc(5, tempRet, totalSweat) // High Data
               ];
               break;
             default:
@@ -515,13 +698,9 @@ export const AnalyticsProvider = (
                 label: label,
                 data,
                 backgroundColor: HEAT_SWEAT_CHART_COLORS,
-                borderColor: [
-                  COLOR_WHITE,
-                  COLOR_WHITE,
-                  COLOR_WHITE
-                ],
-              },
-            ],
+                borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE]
+              }
+            ]
           };
         }
         return null;
@@ -530,9 +709,10 @@ export const AnalyticsProvider = (
       return {
         dataHeat: dataChart('heat'),
         dataSweat: dataChart('sweat'),
-        counts: tempRet,
+        counts: tempRet
       };
-    } else if (checkMetric(METRIC_USER_CHART_VALUES, metric)) { // 40, 41
+    } else if (checkMetric(METRIC_USER_CHART_VALUES, metric)) {
+      // 40, 41
       return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.HEART_RATE, null, null);
     } else {
       return null;
@@ -548,10 +728,16 @@ export const AnalyticsProvider = (
     let startD = thisWeek.startDate;
 
     if (
-        metric === METRIC_USER_TABLE_VALUES.ALERTS ||
-        metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
-    ) { // 2, 31
-      let thisData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ALERT_METRICS, null, null)?.filter(it => spacetime(it.ts).isBefore(endD) && spacetime(it.ts).isAfter(startD));
+      metric === METRIC_USER_TABLE_VALUES.ALERTS ||
+      metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
+    ) {
+      // 2, 31
+      let thisData = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.ALERT_METRICS,
+        null,
+        null
+      )?.filter((it) => spacetime(it.ts).isBefore(endD) && spacetime(it.ts).isAfter(startD));
 
       let arrayPerDate = [
         getListPerLabel({
@@ -574,25 +760,25 @@ export const AnalyticsProvider = (
           stageIds: [3, 4],
           startD,
           endD
-        }), // Safe ids
+        }) // Safe ids
       ];
       const xLabel = getDateList(startD, endD);
       const dataSet = [
         {
           label: formatAlert(1).label, // At Risk
           data: xLabel?.map((it, index) => arrayPerDate[0][index]),
-          backgroundColor: HEAT_SWEAT_CHART_COLORS[0],
+          backgroundColor: HEAT_SWEAT_CHART_COLORS[0]
         },
         {
           label: formatAlert(2).label, // Elevated Risk
           data: xLabel?.map((it, index) => arrayPerDate[1][index]),
-          backgroundColor: HEAT_SWEAT_CHART_COLORS[1],
+          backgroundColor: HEAT_SWEAT_CHART_COLORS[1]
         },
         {
           label: formatAlert(3).label, // Safe
           data: xLabel?.map((it, index) => arrayPerDate[2][index]),
-          backgroundColor: HEAT_SWEAT_CHART_COLORS[2],
-        },
+          backgroundColor: HEAT_SWEAT_CHART_COLORS[2]
+        }
       ];
 
       /**
@@ -619,17 +805,24 @@ export const AnalyticsProvider = (
        */
       return {
         labels: xLabel,
-        datasets: dataSet,
+        datasets: dataSet
       };
-    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) { // 32
+    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) {
+      // 32
       while (startD.isBefore(endD)) {
         const subList = [];
         const endDByOneDay = startD.add(1, `day`);
 
-        const dailyData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, null, null)?.filter(it =>
-          selectedMembers?.findIndex(a => a?.value === it?.userId) > -1 &&
-          spacetime(it.utcTs).isBefore(endDByOneDay) &&
-          spacetime(it.utcTs).isAfter(startD)
+        const dailyData = onFilterData(
+          organizationAnalytics,
+          ANALYTICS_API_KEYS.MAX_CBT,
+          null,
+          null
+        )?.filter(
+          (it) =>
+            selectedMembers?.findIndex((a) => a?.value === it?.userId) > -1 &&
+            spacetime(it.utcTs).isBefore(endDByOneDay) &&
+            spacetime(it.utcTs).isAfter(startD)
         );
 
         let startHour = startD;
@@ -638,24 +831,32 @@ export const AnalyticsProvider = (
           let endHour = startHour.add(1, `hour`);
           const hourlyData = [];
           const tempData = [];
-          dailyData?.filter(it => {
-            return spacetime(it.utcTs).isBefore(endHour) && spacetime(it.utcTs).isAfter(startHour);
-          })
+          dailyData
+            ?.filter((it) => {
+              return (
+                spacetime(it.utcTs).isBefore(endHour) && spacetime(it.utcTs).isAfter(startHour)
+              );
+            })
             .sort((a, b) => {
               return a?.maxCbt > b?.maxCbt ? -1 : 1;
             })
-            .forEach(it => {
+            .forEach((it) => {
               hourlyData.push([
                 getUserNameFromUserId(members, it.userId),
                 getTeamNameFromUserId(members, formattedTeams, it.userId),
                 it.utcTs ? it.utcTs : ``,
-                it?.maxCbt ? formatHeartCbt(it?.maxCbt) : ``,
+                it?.maxCbt ? formatHeartCbt(it?.maxCbt) : ``
               ]);
               tempData.push(it?.maxCbt ? it?.maxCbt : ``);
             });
           let maxCbtColor = tempData?.length > 0 ? celsiusToFahrenheit(tempData[0]) : 0;
-          maxCbtColor = Math.min(Math.max(maxCbtColor, HIGHEST_CHART_CELSIUS_MIN), HIGHEST_CHART_CELSIUS_MAX);
-          maxCbtColor = ((HIGHEST_CHART_CELSIUS_MAX - maxCbtColor) * 255) / (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
+          maxCbtColor = Math.min(
+            Math.max(maxCbtColor, HIGHEST_CHART_CELSIUS_MIN),
+            HIGHEST_CHART_CELSIUS_MAX
+          );
+          maxCbtColor =
+            ((HIGHEST_CHART_CELSIUS_MAX - maxCbtColor) * 255) /
+            (HIGHEST_CHART_CELSIUS_MAX - HIGHEST_CHART_CELSIUS_MIN);
 
           let tooltip = ``;
           if (hourlyData?.length > 0) {
@@ -664,13 +865,13 @@ export const AnalyticsProvider = (
           }
 
           subList.push(
-              hourlyData?.length > 0 ? {
-                maxCbtColor: maxCbtColor.toFixed(2),
-                details: hourlyData,
-                tooltip: tooltip,
-              }
-              :
-              null
+            hourlyData?.length > 0
+              ? {
+                  maxCbtColor: maxCbtColor.toFixed(2),
+                  details: hourlyData,
+                  tooltip: tooltip
+                }
+              : null
           );
 
           startHour = startHour.add(1, 'hour');
@@ -687,13 +888,29 @@ export const AnalyticsProvider = (
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [analytics, metric, formatAlert, organization, selectedTeams, selectedMembers, timeZone, startDate, endDate]);
+  }, [
+    analytics,
+    metric,
+    formatAlert,
+    organization,
+    selectedTeams,
+    selectedMembers,
+    timeZone,
+    startDate,
+    endDate
+  ]);
 
   const data = React.useMemo(() => {
     let ret = [];
 
-    if (metric === METRIC_USER_TABLE_VALUES.WEAR_TIME) { // 1, wear time
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.WEAR_TIME, pickedMembers, members)?.map(it => {
+    if (metric === METRIC_USER_TABLE_VALUES.WEAR_TIME) {
+      // 1, wear time
+      ret = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.WEAR_TIME,
+        pickedMembers,
+        members
+      )?.map((it) => {
         const daysWorn = it.avgWearTime ? Math.round(it.wearTime / it.avgWearTime) : ``;
         const total = formatNumber(it.wearTime / 240) ?? '';
         const avg = daysWorn && total ? formatNumber(total / daysWorn) : '';
@@ -702,14 +919,20 @@ export const AnalyticsProvider = (
           getTeamNameFromUserId(members, formattedTeams, it.userId),
           avg,
           total,
-          daysWorn,
+          daysWorn
         ];
-      })
+      });
     } else if (
-        metric === METRIC_USER_TABLE_VALUES.ALERTS ||
-        metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
-    ) { // 2, 31
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ALERT_METRICS, pickedMembers, members)?.map(it => ([
+      metric === METRIC_USER_TABLE_VALUES.ALERTS ||
+      metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
+    ) {
+      // 2, 31
+      ret = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.ALERT_METRICS,
+        pickedMembers,
+        members
+      )?.map((it) => [
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.ts ? new Date(it.ts)?.toLocaleString() : ``,
@@ -717,194 +940,264 @@ export const AnalyticsProvider = (
         it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
         it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
         formatNumber(it.humidity) ?? '',
-        it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``,
-      ]))
-    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && !detailCbt) { // 32
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, pickedMembers, members)?.map(it => ([
+        it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``
+      ]);
+    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && !detailCbt) {
+      // 32
+      ret = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.MAX_CBT,
+        pickedMembers,
+        members
+      )?.map((it) => [
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.utcTs ? new Date(it.utcTs)?.toLocaleString() : ``,
-        it.maxCbt ? formatHeartCbt(it.maxCbt) : ``,
-      ]));
-    } else if (METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT === metric) { // 4
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, pickedMembers, members)?.map(it => {
-        let sweatRate = (INVALID_VALUES2.includes(it.sweatRate) || it.sweatRate <= 0) ? '' : it.sweatRate;
+        it.maxCbt ? formatHeartCbt(it.maxCbt) : ``
+      ]);
+    } else if (METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT === metric) {
+      // 4
+      ret = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.SWR_FLUID,
+        pickedMembers,
+        members
+      )?.map((it) => {
+        let sweatRate =
+          INVALID_VALUES2.includes(it.sweatRate) || it.sweatRate <= 0 ? '' : it.sweatRate;
         sweatRate = unitMetric ? sweatRate : literToQuart(sweatRate);
         sweatRate = formatNumber(sweatRate);
         let fluidR = it.fluidRecommendationL ?? '';
         fluidR = unitMetric ? fluidR : literToQuart(fluidR);
         fluidR = formatNumber(fluidR);
-        return ([
+        return [
           getUserNameFromUserId(members, it.userId),
           getTeamNameFromUserId(members, formattedTeams, it.userId),
           it.sweatRateCategory ?? ``,
           sweatRate,
-          fluidR,
-        ])
+          fluidR
+        ];
       });
-    } else if (METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT === metric) { // 5
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, pickedMembers, members)?.map(it => ([
+    } else if (METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT === metric) {
+      // 5
+      ret = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.SWR_FLUID,
+        pickedMembers,
+        members
+      )?.map((it) => [
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         it.heatSusceptibility ?? ``,
         it.previousIllness ?? ``,
-        it.acclimatizationStatus ?? ``,
-      ]));
-    } else if (metric === METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES) { // 6
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_CATE_DATA, pickedMembers, members)?.map(it => ([
+        it.acclimatizationStatus ?? ``
+      ]);
+    } else if (metric === METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES) {
+      // 6
+      ret = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.TEMP_CATE_DATA,
+        pickedMembers,
+        members
+      )?.map((it) => [
         getUserNameFromUserId(members, it.userId),
         getTeamNameFromUserId(members, formattedTeams, it.userId),
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, `safe to work`),
         getTimeSpentFromUserId(it?.temperatureCategoryCounts, `mild heat`),
-        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `hyperthermia`),
-      ]));
-    } else if (metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA) { // 7
+        getTimeSpentFromUserId(it?.temperatureCategoryCounts, `hyperthermia`)
+      ]);
+    } else if (metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA) {
+      // 7
       let tempRet = [];
-      let filterData = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.DEVICE_DATA, pickedMembers, members);
-      const teamMemberIdList = pickedMembers?.length> 0 ? pickedMembers : members?.map(it => it.userId);
-      teamMemberIdList?.forEach(it => {
-        let recentItem = filterData?.filter(a => a?.userId?.toString() === it?.toString())?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+      let filterData = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.DEVICE_DATA,
+        pickedMembers,
+        members
+      );
+      const teamMemberIdList =
+        pickedMembers?.length > 0 ? pickedMembers : members?.map((it) => it.userId);
+      teamMemberIdList?.forEach((it) => {
+        let recentItem = filterData
+          ?.filter((a) => a?.userId?.toString() === it?.toString())
+          ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
         if (recentItem) tempRet.push(recentItem);
       });
 
-      ret = tempRet?.map(it => {
-        let a = organizationAnalytics?.maxCbt?.find(maxCbt => maxCbt?.userId === it.userId)?.maxCbt;
+      ret = tempRet?.map((it) => {
+        let a = organizationAnalytics?.maxCbt?.find(
+          (maxCbt) => maxCbt?.userId === it.userId
+        )?.maxCbt;
         a = formatNumber(a);
-        let b = organizationAnalytics?.maxCbt?.find(maxCbt => maxCbt?.userId === it.userId)?.maxHrAvg;
+        let b = organizationAnalytics?.maxCbt?.find(
+          (maxCbt) => maxCbt?.userId === it.userId
+        )?.maxHrAvg;
         b = formatNumber(b);
 
-        return ([
+        return [
           it.fullname ?? ``,
           getTeamNameFromTeamId(formattedTeams, it.teamId),
-          it.type === `kenzen` ? (it?.version || ``) : ``,
-          it.type === `kenzen` ? `` : (it.osVersion ?? ``),
-          it.type === `kenzen` ? `` : (it.version ?? ``),
+          it.type === `kenzen` ? it?.version || `` : ``,
+          it.type === `kenzen` ? `` : it.osVersion ?? ``,
+          it.type === `kenzen` ? `` : it.version ?? ``,
           it.type ?? ``,
           a,
           b,
-          new Date(it.ts).toLocaleString() ?? ``,
-        ])
+          new Date(it.ts).toLocaleString() ?? ``
+        ];
       });
-    } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) { // 8
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES, null, null)?.map(it => ([
-        it.temperatureCategory,
-        formatNumber(it.percentage),
-      ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY) { // 20
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_HUMIDITY, null, null)?.map(it => ([
-        it.teamName ?? ``,
-        it.maxTemp ? formatHeartCbt(it.maxTemp) : ``,
-        it.minTemp ? formatHeartCbt(it.minTemp) : ``,
-        it.avgTemp ? formatHeartCbt(it.avgTemp) : ``,
-        formatNumber(it.maxHumidity),
-        formatNumber(it.minHumidity),
-        formatNumber(it.avgHumidity),
-      ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS) { // 21
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ALERT_USER_COUNT, null, null)?.map(it => ([
+    } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) {
+      // 8
+      ret = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES,
+        null,
+        null
+      )?.map((it) => [it.temperatureCategory, formatNumber(it.percentage)]);
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY) {
+      // 20
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_HUMIDITY, null, null)?.map(
+        (it) => [
+          it.teamName ?? ``,
+          it.maxTemp ? formatHeartCbt(it.maxTemp) : ``,
+          it.minTemp ? formatHeartCbt(it.minTemp) : ``,
+          it.avgTemp ? formatHeartCbt(it.avgTemp) : ``,
+          formatNumber(it.maxHumidity),
+          formatNumber(it.minHumidity),
+          formatNumber(it.avgHumidity)
+        ]
+      );
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS) {
+      // 21
+      ret = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.ALERT_USER_COUNT,
+        null,
+        null
+      )?.map((it) => [
         it.teamName ?? ``,
         it.alertPercentage ?? ``,
         it.noAlertPercentage ?? ``,
         it.usersWithAlerts,
-        it.activeUsers - it.usersWithAlerts,
-      ]))
-    } else if (metric === METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS) { // 22
+        it.activeUsers - it.usersWithAlerts
+      ]);
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS) {
+      // 22
       let tempRet = [];
-      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ACTIVE_USERS, null, null)?.forEach(it => {
-        const member = members?.find(ele => ele.userId === it.userId);
-        const memberTeamId = member?.teamId;
-        if (memberTeamId) {
-          const index = tempRet?.findIndex(e => e.teamId === memberTeamId);
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.ACTIVE_USERS, null, null)?.forEach(
+        (it) => {
+          const member = members?.find((ele) => ele.userId === it.userId);
+          const memberTeamId = member?.teamId;
+          if (memberTeamId) {
+            const index = tempRet?.findIndex((e) => e.teamId === memberTeamId);
 
-          if (index !== -1) {
-            tempRet.splice(index, 1, {
-              teamId: memberTeamId,
-              cnt: tempRet[index].cnt + 1,
-            });
-          } else {
-            tempRet.push({
-              teamId: memberTeamId,
-              cnt: 1,
-            })
+            if (index !== -1) {
+              tempRet.splice(index, 1, {
+                teamId: memberTeamId,
+                cnt: tempRet[index].cnt + 1
+              });
+            } else {
+              tempRet.push({
+                teamId: memberTeamId,
+                cnt: 1
+              });
+            }
           }
         }
-      });
-      ret = tempRet?.map(it => ([
-        getTeamNameFromTeamId(formattedTeams, it.teamId),
-        it.cnt,
-      ]));
-    } else if (
-        metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE
-    ) {
+      );
+      ret = tempRet?.map((it) => [getTeamNameFromTeamId(formattedTeams, it.teamId), it.cnt]);
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE) {
       let tempRet = [];
-      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(it => {
-        const index = tempRet?.findIndex(e => e.teamId === it.teamId);
-        if ([`low`, `moderate`, `high`].includes(it.sweatRateCategory?.toLowerCase())) {
-          if (index !== -1) {
-            tempRet.splice(index, 1, {
-              ...tempRet[index],
-              [it.sweatRateCategory?.toLowerCase()]: (tempRet[index][it.sweatRateCategory?.toLowerCase()] ?? 0) + 1,
-            });
-          } else {
-            tempRet.push({
-              teamId: it.teamId,
-              [it.sweatRateCategory?.toLowerCase()]: 1,
-            })
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(
+        (it) => {
+          const index = tempRet?.findIndex((e) => e.teamId === it.teamId);
+          if ([`low`, `moderate`, `high`].includes(it.sweatRateCategory?.toLowerCase())) {
+            if (index !== -1) {
+              tempRet.splice(index, 1, {
+                ...tempRet[index],
+                [it.sweatRateCategory?.toLowerCase()]:
+                  (tempRet[index][it.sweatRateCategory?.toLowerCase()] ?? 0) + 1
+              });
+            } else {
+              tempRet.push({
+                teamId: it.teamId,
+                [it.sweatRateCategory?.toLowerCase()]: 1
+              });
+            }
           }
         }
-      });                                                                             ``
-      ret = tempRet?.map(it => ([
+      );
+      ``;
+      ret = tempRet?.map((it) => [
         getTeamNameFromTeamId(formattedTeams, it.teamId),
         it[`low`],
         it[`moderate`],
-        it[`high`],
-      ]));
-    } else if (
-      metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE
-    ) { // 24
+        it[`high`]
+      ]);
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE) {
+      // 24
       let tempRet = [];
-      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(it => {
-        const index = tempRet?.findIndex(e => e.teamId === it.teamId);
-        if (HEAT_LOW_MEDIUM_HIGH.includes(it.heatSusceptibility?.toLowerCase())) {
-          if (index !== -1) {
-            tempRet.splice(index, 1, {
-              ...tempRet[index],
-              [it.heatSusceptibility?.toLowerCase()]: (tempRet[index][it.heatSusceptibility?.toLowerCase()] ?? 0) + 1,
-            });
-          } else {
-            tempRet.push({
-              teamId: it.teamId,
-              [it.heatSusceptibility?.toLowerCase()]: 1,
-            })
+      onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.SWR_FLUID, null, members)?.forEach(
+        (it) => {
+          const index = tempRet?.findIndex((e) => e.teamId === it.teamId);
+          if (HEAT_LOW_MEDIUM_HIGH.includes(it.heatSusceptibility?.toLowerCase())) {
+            if (index !== -1) {
+              tempRet.splice(index, 1, {
+                ...tempRet[index],
+                [it.heatSusceptibility?.toLowerCase()]:
+                  (tempRet[index][it.heatSusceptibility?.toLowerCase()] ?? 0) + 1
+              });
+            } else {
+              tempRet.push({
+                teamId: it.teamId,
+                [it.heatSusceptibility?.toLowerCase()]: 1
+              });
+            }
           }
         }
-      });
-      ret = tempRet?.map(it => ([
+      );
+      ret = tempRet?.map((it) => [
         getTeamNameFromTeamId(formattedTeams, it.teamId),
         it[`low`],
         it[`medium`],
-        it[`high`],
-      ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES) { // 25
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_CATE_IN_CBT_ZONES, null, null)?.map(it => ([
+        it[`high`]
+      ]);
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES) {
+      // 25
+      ret = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.TEMP_CATE_IN_CBT_ZONES,
+        null,
+        null
+      )?.map((it) => [
         it.teamName ?? ``,
         it.lowCount ?? ``,
         it.mediumCount ?? ``,
         it.highCount,
         it.alertCount ?? ``,
         it.alertPercentage ?? ``,
-        it.noAlertPercentage ?? ``,
-      ]));
-    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED) { // 26
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.FLUID_METRICS_BY_TEAM, null, null)?.map(it => ([
+        it.noAlertPercentage ?? ``
+      ]);
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED) {
+      // 26
+      ret = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.FLUID_METRICS_BY_TEAM,
+        null,
+        null
+      )?.map((it) => [
         it.teamName ?? ``,
         it.heatAcclimatized ?? ``,
         it.heatUnacclimatized ?? ``,
         it.previousIllness,
-        it.noPreviousIllness ?? ``,
-      ]));
-    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && detailCbt) { // detail table of highest CBT chart
-      ret = maxCBTTileData?.list?.length > 0 ? maxCBTTileData.list[detailCbt.dayIndex][detailCbt.timeIndex]?.details || [] : [];
+        it.noPreviousIllness ?? ``
+      ]);
+    } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && detailCbt) {
+      // detail table of highest CBT chart
+      ret =
+        maxCBTTileData?.list?.length > 0
+          ? maxCBTTileData.list[detailCbt.dayIndex][detailCbt.timeIndex]?.details || []
+          : [];
     }
 
     ret = ret ?? [];
@@ -914,11 +1207,13 @@ export const AnalyticsProvider = (
     if (ret?.length > 0 && Boolean(sort) && sort?.length > 0) {
       // todo update function to accommodate multi-level sort
       ret = ret.sort((a, b) => {
-        if ([null, undefined, ""].includes(a?.[sort[0].index])) return 1;
-        if ([null, undefined, ""].includes(b?.[sort[0].index])) return -1;
+        if ([null, undefined, ''].includes(a?.[sort[0].index])) return 1;
+        if ([null, undefined, ''].includes(b?.[sort[0].index])) return -1;
 
         if (sort[0].type === `string`) {
-          const v = a?.[sort[0].index]?.localeCompare(b?.[sort[0].index], undefined, {sensitivity: `accent`});
+          const v = a?.[sort[0].index]?.localeCompare(b?.[sort[0].index], undefined, {
+            sensitivity: `accent`
+          });
           if (sort[0].direction === `asc`) {
             return v;
           } else if (sort[0].direction === `desc`) {
@@ -941,14 +1236,17 @@ export const AnalyticsProvider = (
             return v;
           }
         } else if (sort[0].type === `risk`) {
-          const v = RISK_PRIORITIES[a?.[sort[0].index]?.toLowerCase()] - RISK_PRIORITIES[b?.[sort[0].index]?.toLowerCase()];
+          const v =
+            RISK_PRIORITIES[a?.[sort[0].index]?.toLowerCase()] -
+            RISK_PRIORITIES[b?.[sort[0].index]?.toLowerCase()];
           if (sort[0].direction === `asc`) {
             return v;
           } else if (sort[0].direction === `desc`) {
             return v * -1;
           }
         } else if (sort[0].type === `alert`) {
-          const v = alertPriorities(sort[0].direction)[a?.[sort[0].index]?.toLowerCase()] -
+          const v =
+            alertPriorities(sort[0].direction)[a?.[sort[0].index]?.toLowerCase()] -
             alertPriorities(sort[0].direction)[b?.[sort[0].index]?.toLowerCase()];
           if (sort[0].direction === `asc`) {
             return v * -1;
@@ -956,8 +1254,9 @@ export const AnalyticsProvider = (
             return v;
           }
         } else if (sort[0].type === `susceptibility`) {
-          const v = HEAT_SUSCEPTIBILITY_PRIORITIES[a?.[sort[0].index]?.toLowerCase()] -
-              HEAT_SUSCEPTIBILITY_PRIORITIES[b?.[sort[0].index]?.toLowerCase()];
+          const v =
+            HEAT_SUSCEPTIBILITY_PRIORITIES[a?.[sort[0].index]?.toLowerCase()] -
+            HEAT_SUSCEPTIBILITY_PRIORITIES[b?.[sort[0].index]?.toLowerCase()];
           if (sort[0].direction === `asc`) {
             return v;
           } else if (sort[0].direction === `desc`) {
@@ -975,7 +1274,18 @@ export const AnalyticsProvider = (
 
     return ret;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organization, metric, analytics, members, selectedTeams, pickedMembers, unitMetric, headers, sort, detailCbt]);
+  }, [
+    organization,
+    metric,
+    analytics,
+    members,
+    selectedTeams,
+    pickedMembers,
+    unitMetric,
+    headers,
+    sort,
+    detailCbt
+  ]);
 
   const pageData = React.useMemo(() => {
     let ret = [];
@@ -993,29 +1303,33 @@ export const AnalyticsProvider = (
 
   const teamLabel = React.useMemo(() => {
     if (selectedTeams?.length > 0) {
-      if (formattedTeams?.length > 1 && (selectedTeams?.length === formattedTeams?.length)) {
-        return t("all teams");
+      if (formattedTeams?.length > 1 && selectedTeams?.length === formattedTeams?.length) {
+        return t('all teams');
       } else if (selectedTeams?.length > 1) {
-        return t("n teams selected", {n: selectedTeams?.length});
+        return t('n teams selected', { n: selectedTeams?.length });
       } else {
-        return formattedTeams?.find(it => it.value?.toString() === selectedTeams[0]?.value?.toString())?.label;
+        return formattedTeams?.find(
+          (it) => it.value?.toString() === selectedTeams[0]?.value?.toString()
+        )?.label;
       }
     } else {
-      return t("select team");
+      return t('select team');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTeams, formattedTeams]);
   const userLabel = React.useMemo(() => {
     if (selectedMembers?.length > 0) {
-      if (formattedMembers?.length > 1 && (selectedMembers?.length === formattedMembers?.length)) {
-        return t("all users");
+      if (formattedMembers?.length > 1 && selectedMembers?.length === formattedMembers?.length) {
+        return t('all users');
       } else if (selectedMembers?.length > 1) {
-        return t("n users selected", {n: selectedMembers?.length});
+        return t('n users selected', { n: selectedMembers?.length });
       } else {
-        return formattedMembers?.find(it => it.value?.toString() === selectedMembers?.[0]?.value?.toString())?.label;
+        return formattedMembers?.find(
+          (it) => it.value?.toString() === selectedMembers?.[0]?.value?.toString()
+        )?.label;
       }
     } else {
-      return t("select user");
+      return t('select user');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMembers, formattedMembers, organization]);
@@ -1029,11 +1343,15 @@ export const AnalyticsProvider = (
           skipHeader: true
         });
         XLSX.utils.sheet_add_aoa(ws, [headers]);
-        const sheetLabel = (metrics?.findIndex(it => it.value === metric) ?? 0).toString();
+        const sheetLabel = (metrics?.findIndex((it) => it.value === metric) ?? 0).toString();
         XLSX.utils.book_append_sheet(wb, ws, sheetLabel + 1);
-        XLSX.writeFile(wb, `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`, {
-          bookType: exportOption.value,
-        });
+        XLSX.writeFile(
+          wb,
+          `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
+          {
+            bookType: exportOption.value
+          }
+        );
       }
     }
   };
@@ -1085,20 +1403,16 @@ export const AnalyticsProvider = (
     chartRef,
     setLoading,
     isEnablePrint,
-    setIsEnablePrint,
+    setIsEnablePrint
   };
 
-  return (
-    <AnalyticsContext.Provider value={providerValue}>
-      {children}
-    </AnalyticsContext.Provider>
-  );
+  return <AnalyticsContext.Provider value={providerValue}>{children}</AnalyticsContext.Provider>;
 };
 
 export const useAnalyticsContext = () => {
   const context = React.useContext(AnalyticsContext);
   if (!context) {
-    throw new Error("useAnalyticsContext must be used within AnalyticsProvider");
+    throw new Error('useAnalyticsContext must be used within AnalyticsProvider');
   }
   return context;
 };

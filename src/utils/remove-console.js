@@ -10,16 +10,12 @@ export const GlobalDebug = (function () {
       // suppress the default console functionality
       // eslint-disable-next-line no-global-assign
       console = {};
-      console.log = function () {
-      };
+      console.log = function () {};
       // suppress all type of consoles
       if (suppress) {
-        console.info = function () {
-        };
-        console.warn = function () {
-        };
-        console.error = function () {
-        };
+        console.info = function () {};
+        console.warn = function () {};
+        console.error = function () {};
       } else {
         console.info = savedConsole.info;
         console.warn = savedConsole.warn;

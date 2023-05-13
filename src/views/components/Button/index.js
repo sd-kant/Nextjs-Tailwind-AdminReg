@@ -3,23 +3,21 @@ import * as React from 'react';
 import clsx from 'clsx';
 import style from './Button.module.scss';
 
-const Button = (
-  {
-    size = 'md',
-    color = "white",
-    bgColor = "orange",
-    borderColor = "orange",
-    title = 'ok',
-    dropdown = false,
-    rounded = false,
-    fullWidth = false,
-    icon = null,
-    disabled = false,
-    drop,
-    onClick = () => {},
-    onClickArrow = () => {},
-  }) => {
-
+const Button = ({
+  size = 'md',
+  color = 'white',
+  bgColor = 'orange',
+  borderColor = 'orange',
+  title = 'ok',
+  dropdown = false,
+  rounded = false,
+  fullWidth = false,
+  icon = null,
+  disabled = false,
+  drop,
+  onClick = () => {},
+  onClickArrow = () => {}
+}) => {
   const calcColor = () => {
     switch (color) {
       case 'white':
@@ -32,8 +30,7 @@ const Button = (
   };
 
   const calcBgColor = () => {
-    if (disabled)
-      return '#979797';
+    if (disabled) return '#979797';
     switch (bgColor) {
       case 'orange':
         return '#DE7D2C';
@@ -41,7 +38,7 @@ const Button = (
         return '#272727';
       case 'green':
         return '#2B5734';
-      case "black":
+      case 'black':
         return '#212121';
       default:
         return '#DE7D2C';
@@ -49,8 +46,7 @@ const Button = (
   };
 
   const calcBorderColor = () => {
-    if (disabled)
-      return '#979797';
+    if (disabled) return '#979797';
     switch (borderColor) {
       case 'orange':
         return '#DE7D2C';
@@ -58,7 +54,7 @@ const Button = (
         return '#272727';
       case 'green':
         return '#2B5734';
-      case "black":
+      case 'black':
         return '#212121';
       default:
         return '#DE7D2C';
@@ -93,43 +89,33 @@ const Button = (
 
   return (
     <div
-      className={
-        clsx(
-          style.Wrapper,
-          disabled ? style.Disabled : null,
-          calcSizeStyle(),
-          rounded ? style.Rounded : null,
-          fullWidth ? style.FullWidth : null,
-          dropdown ? style.Dropdown : null,
-        )
-      }
-      style={{color: calcColor(), backgroundColor: calcBgColor(), borderColor: calcBorderColor()}}
-      onClick={() => disabled ? () => {} : onClick()}
-    >
+      className={clsx(
+        style.Wrapper,
+        disabled ? style.Disabled : null,
+        calcSizeStyle(),
+        rounded ? style.Rounded : null,
+        fullWidth ? style.FullWidth : null,
+        dropdown ? style.Dropdown : null
+      )}
+      style={{ color: calcColor(), backgroundColor: calcBgColor(), borderColor: calcBorderColor() }}
+      onClick={() => (disabled ? () => {} : onClick())}>
       <div className={clsx(style.InnerWrapper)}>
-        <span
-          className={clsx(calcTxtSizeStyle())}
-        >
-        {title}
-      </span>
+        <span className={clsx(calcTxtSizeStyle())}>{title}</span>
       </div>
-      {
-        icon ?
-          <div
-            className={clsx(style.IconWrapper)}
-            ref={drop}
-            onClick={e => {
-              onClickArrow();
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-          >
-            {icon}
-          </div> : null
-      }
+      {icon ? (
+        <div
+          className={clsx(style.IconWrapper)}
+          ref={drop}
+          onClick={(e) => {
+            onClickArrow();
+            e.preventDefault();
+            e.stopPropagation();
+          }}>
+          {icon}
+        </div>
+      ) : null}
     </div>
-  )
+  );
 };
 
 export default Button;
-

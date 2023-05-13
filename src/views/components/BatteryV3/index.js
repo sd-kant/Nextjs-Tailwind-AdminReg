@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {withTranslation} from "react-i18next";
+import { withTranslation } from 'react-i18next';
 
 import clsx from 'clsx';
 import style from './BatteryV3.module.scss';
@@ -14,11 +14,7 @@ import battery4Charge from '../../../assets/images/batteries/battery-4-charge.sv
 import battery5 from '../../../assets/images/batteries/battery-5.svg';
 import battery5Charge from '../../../assets/images/batteries/battery-5-charge.svg';
 
-const BatteryV3 = (
-  {
-    percent = Math.floor(Math.random() * 100),
-    charging,
-  }) => {
+const BatteryV3 = ({ percent = Math.floor(Math.random() * 100), charging }) => {
   const imgSrc = React.useMemo(() => {
     if (percent > 67) {
       return charging ? battery4Charge : battery4;
@@ -34,9 +30,9 @@ const BatteryV3 = (
   }, [percent, charging]);
   return (
     <div className={clsx(style.Wrapper)}>
-      <img src={imgSrc} width={36} alt="battery"/>
+      <img src={imgSrc} width={36} alt="battery" />
     </div>
-  )
+  );
 };
 
 export default withTranslation()(React.memo(BatteryV3));

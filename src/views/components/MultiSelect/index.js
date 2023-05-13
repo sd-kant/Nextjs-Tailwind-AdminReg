@@ -1,24 +1,20 @@
-import React, { Component } from "react";
-import makeAnimated from "react-select/animated";
-import MySelect from "./MySelect.js";
-import { components } from "react-select";
+import React, { Component } from 'react';
+import makeAnimated from 'react-select/animated';
+import MySelect from './MySelect.js';
+import { components } from 'react-select';
 
-const Option = props => {
+const Option = (props) => {
   return (
     <div>
       <components.Option {...props}>
-        <input
-          type="checkbox"
-          checked={props.isSelected}
-          onChange={() => null}
-        />{" "}
+        <input type="checkbox" checked={props.isSelected} onChange={() => null} />{' '}
         <label>{props.label}</label>
       </components.Option>
     </div>
   );
 };
 
-const MultiValue = props => (
+const MultiValue = (props) => (
   <components.MultiValue {...props}>
     <span>{props.data.label}</span>
   </components.MultiValue>

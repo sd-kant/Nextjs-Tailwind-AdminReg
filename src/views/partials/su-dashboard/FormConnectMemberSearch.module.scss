@@ -1,0 +1,13 @@
+@import "src/assets/scss/colors";
+
+.Wrapper {
+  .FormRow {
+    display: inline-flex;
+    max-width: 330px;
+
+    & > .Input {
+      width: calc(100% - 45px);
+      font-size: 15px;
+    }
+  }
+}

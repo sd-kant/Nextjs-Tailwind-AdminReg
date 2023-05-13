@@ -2,18 +2,15 @@ import * as React from 'react';
 
 const StickyComponentsContext = React.createContext(null);
 
-export const StickyComponentsProvider = (
-  {
-    children,
-  }) => {
+export const StickyComponentsProvider = ({ children }) => {
   const [visible, setVisible] = React.useState({
     statistics: false,
-    workRestBar: false,
+    workRestBar: false
   });
 
   const providerValue = {
     visible,
-    setVisible,
+    setVisible
   };
 
   return (
@@ -26,7 +23,7 @@ export const StickyComponentsProvider = (
 export const useStickyComponentsContext = () => {
   const context = React.useContext(StickyComponentsContext);
   if (!context) {
-    throw new Error("useStickyComponentsContext must be used within StickyComponentsProvider");
+    throw new Error('useStickyComponentsContext must be used within StickyComponentsProvider');
   }
   return context;
 };
