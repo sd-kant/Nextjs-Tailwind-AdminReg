@@ -76,8 +76,8 @@ const FormConnectMemberDevice = (props) => {
       verifyKenzenDevice(tDeviceId)
         .then((res) => {
           if (mounted) {
-            const device = res.data;
-            setDevices([device]);
+            const deviceList = res.data;
+            setDevices([...deviceList]);
           }
         })
         .catch((e) => {
