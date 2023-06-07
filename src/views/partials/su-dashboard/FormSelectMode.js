@@ -137,25 +137,6 @@ const FormSelectMode = (props) => {
               <span className={clsx('font-small')}>{t('connect your device')}</span>
             </div>
           </div>
-
-          <div className={clsx(style.OptionWrapper)} onClick={() => navigate('/profile')}>
-            <div>
-              <span className={clsx('font-button-label text-capitalize')}>{t('profile')}</span>
-            </div>
-
-            <div className={clsx(style.ImageWrapper)}>
-              <img
-                src={workerOrange1}
-                className={clsx(style.WorkerOrangeImage)}
-                alt="worker orange"
-              />
-              <img src={settings} className={clsx(style.SettingsImage)} alt="settings" />
-            </div>
-
-            <div className={clsx(style.DescriptionDiv)}>
-              <span className={clsx('font-small text-capitalize')}>{t('modify profile')}</span>
-            </div>
-          </div>
         </div>
       </div>
 
