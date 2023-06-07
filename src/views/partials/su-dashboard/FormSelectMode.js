@@ -25,6 +25,10 @@ const FormSelectMode = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const openInNewTab = (url) => {
+    window.open(url, '_blank', 'noreferrer');
+  };
+
   return (
     <div className="form-group mt-25">
       <div>
@@ -61,7 +65,7 @@ const FormSelectMode = (props) => {
               <div
                 className={clsx(style.OptionWrapper)}
                 // todo encodeURIComponent
-                onClick={() => navigate(`/dashboard/multi?${flattened}`)}>
+                onClick={() => openInNewTab(`/dashboard/multi?${flattened}`)}>
                 <div>
                   <span className={clsx('font-button-label')}>{t('dashboard')}</span>
                 </div>
