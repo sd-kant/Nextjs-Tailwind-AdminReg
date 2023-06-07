@@ -89,6 +89,10 @@ const FormConnectMemberDevice = (props) => {
             setSearching(false);
           }
         });
+    } else {
+      if (mounted) {
+        setDevices([]);
+      }
     }
 
     return () => {
