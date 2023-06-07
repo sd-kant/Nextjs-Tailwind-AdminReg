@@ -7,6 +7,7 @@ const FormConnectDeviceSuccess = ({ individual }) => {
   const { t } = useTranslation();
   const deviceId = getParamFromUrl('deviceId');
   const navigate = useNavigate();
+  const name = getParamFromUrl('name') ?? '';
 
   return (
     <div className="form-group mt-57">
@@ -19,7 +20,7 @@ const FormConnectDeviceSuccess = ({ individual }) => {
           <span className="font-binary text-white">
             {individual
               ? t('device connected description')
-              : t('device connected member description')}
+              : t('device connected member description', { name })}
           </span>
         </div>
 

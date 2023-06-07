@@ -700,7 +700,7 @@
   "mac address found": "MACアドレスが見つかりました",
   "device id sn": "デバイスのシリアル番号",
   "enter team member": "チームメンバーを入力してください",
-  "device connected member description": "チーム メンバーをデバイス ID に正常に接続しました。",
+  "device connected member description": "{{name}} をデバイス ID に正常に接続しました:",
   "connect device confirm": "デバイスに接続しますか?",
   "connect device member confirm": "チームメンバーをこのデバイスに接続しますか?",
   "no device match": "一致するデバイス ID が見つかりませんでした",
