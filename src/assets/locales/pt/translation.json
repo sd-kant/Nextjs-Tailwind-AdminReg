@@ -700,7 +700,7 @@
   "mac address found": "Endereço MAC encontrado",
   "device id sn": "Número de série do dispositivo",
   "enter team member": "Insira o membro da equipe",
-  "device connected member description": "Você conectou com sucesso o membro da sua equipe ao Device ID:",
+  "device connected member description": "Você conectou com sucesso {{name}} ao Device ID:",
   "connect device confirm": "Conectar ao seu dispositivo?",
   "connect device member confirm": "Conectar o membro da sua equipe a este dispositivo?",
   "no device match": "Nenhuma correspondência de ID de dispositivo encontrada",

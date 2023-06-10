@@ -7,7 +7,7 @@ import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import style from './FormConnectMemberDevice.module.scss';
 import LKenzenDeviceImg from '../../../assets/images/kenzen-device-l.png';
-import { isValidMacAddress } from '../../../utils';
+import { getParamFromUrl, isValidMacAddress } from '../../../utils';
 import { linkMemberKenzenDevice, verifyKenzenDevice } from '../../../http';
 import { setLoadingAction, showErrorNotificationAction } from '../../../redux/action/ui';
 import SearchDropdown from '../../components/SearchDropdown';
@@ -89,6 +89,10 @@ const FormConnectMemberDevice = (props) => {
             setSearching(false);
           }
         });
+    } else {
+      if (mounted) {
+        setDevices([]);
+      }
     }
 
     return () => {
@@ -214,7 +218,11 @@ const EnhancedForm = withFormik({
         const tDeviceId = deviceId.trim();
         setLoading(true);
         await linkMemberKenzenDevice(teamId, userId, tDeviceId);
-        navigate(`/connect/member/device/success?deviceId=${encodeURIComponent(tDeviceId)}`);
+        navigate(
+          `/connect/member/device/success?deviceId=${encodeURIComponent(
+            tDeviceId
+          )}&name=${encodeURIComponent(getParamFromUrl('name'))}`
+        );
       } catch (e) {
         console.error('[link] [member] [device] [error]', e);
         showErrorNotification(e.response?.data?.message);

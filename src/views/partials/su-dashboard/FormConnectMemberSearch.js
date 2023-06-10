@@ -26,7 +26,13 @@ const FormConnectMemberSearch = ({ t }) => {
 
   const handleItemClick = (id) => {
     const item = searchedOperators?.find((it) => it.value === id);
-    navigate(`/connect/member/${organizationId}/device/${item.teamId}/${id}`);
+    if (item) {
+      navigate(
+        `/connect/member/${organizationId}/device/${item.teamId}/${id}?name=${encodeURIComponent(
+          item.title
+        )}`
+      );
+    }
   };
 
   const handleCancel = () => {

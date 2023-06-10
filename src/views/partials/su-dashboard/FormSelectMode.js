@@ -25,6 +25,10 @@ const FormSelectMode = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const openInNewTab = (url) => {
+    window.open(url, '_blank', 'noreferrer');
+  };
+
   return (
     <div className="form-group mt-25">
       <div>
@@ -61,7 +65,7 @@ const FormSelectMode = (props) => {
               <div
                 className={clsx(style.OptionWrapper)}
                 // todo encodeURIComponent
-                onClick={() => navigate(`/dashboard/multi?${flattened}`)}>
+                onClick={() => openInNewTab(`/dashboard/multi?${flattened}`)}>
                 <div>
                   <span className={clsx('font-button-label')}>{t('dashboard')}</span>
                 </div>
@@ -131,25 +135,6 @@ const FormSelectMode = (props) => {
 
             <div className={clsx(style.DescriptionDiv)}>
               <span className={clsx('font-small')}>{t('connect your device')}</span>
-            </div>
-          </div>
-
-          <div className={clsx(style.OptionWrapper)} onClick={() => navigate('/profile')}>
-            <div>
-              <span className={clsx('font-button-label text-capitalize')}>{t('profile')}</span>
-            </div>
-
-            <div className={clsx(style.ImageWrapper)}>
-              <img
-                src={workerOrange1}
-                className={clsx(style.WorkerOrangeImage)}
-                alt="worker orange"
-              />
-              <img src={settings} className={clsx(style.SettingsImage)} alt="settings" />
-            </div>
-
-            <div className={clsx(style.DescriptionDiv)}>
-              <span className={clsx('font-small text-capitalize')}>{t('modify profile')}</span>
             </div>
           </div>
         </div>
