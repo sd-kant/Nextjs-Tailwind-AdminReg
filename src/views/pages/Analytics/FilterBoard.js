@@ -245,7 +245,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
   const datePickerReadOnly = React.useMemo(() => {
     return (
       (selectedMetric?.value && checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) ||
-      METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
+      // METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
       METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK === selectedMetric?.value
     );
   }, [selectedMetric]);

@@ -723,15 +723,17 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   const maxCBTTileData = React.useMemo(() => {
     let list = [];
     let dayList = [];
-    const thisWeek = getThisWeekByTeam(timeZone);
-    const endD = thisWeek.endDate;
-    let startD = thisWeek.startDate;
 
     if (
       metric === METRIC_USER_TABLE_VALUES.ALERTS ||
       metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
     ) {
       // 2, 31
+      let startD = spacetime(startDate, timeZone.name);
+      startD = startD.time('12:00am');
+      let endD = spacetime(endDate.toLocaleString(), timeZone.name);
+      endD = endD.time('11:59pm');
+
       let thisData = onFilterData(
         organizationAnalytics,
         ANALYTICS_API_KEYS.ALERT_METRICS,
@@ -808,6 +810,9 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         datasets: dataSet
       };
     } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) {
+      const thisWeek = getThisWeekByTeam(timeZone);
+      const endD = thisWeek.endDate;
+      let startD = thisWeek.startDate;
       // 32
       while (startD.isBefore(endD)) {
         const subList = [];
