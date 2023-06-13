@@ -460,10 +460,10 @@ export const TEAM_STATUS_METRICS = [
     )}`,
     value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED // 26
   },
-  {
-    label: `${i18n.t('chart')} - ${i18n.t('number of alerts by week')}`,
-    value: METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK // 31
-  },
+  // {
+  //   label: `${i18n.t('chart')} - ${i18n.t('number of alerts by week')}`,
+  //   value: METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK // 31
+  // },
   {
     label: `${i18n.t('chart')} - ${i18n.t('highest cbt by time of day and day of week')}`,
     value: METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK // 32
