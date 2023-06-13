@@ -307,8 +307,8 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
         ret = [
           makeSort('Sort', [
-            [SORT_TITLES[0], [[0, 'asc', 'number']]],
-            [SORT_TITLES[1], [[0, 'desc', 'number']]]
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
           ]),
           makeSort('Sort', [
             [SORT_TITLES[0], [[1, 'asc', 'string']]],
