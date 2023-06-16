@@ -24,7 +24,7 @@ import {
   chartPlugins,
   checkEmptyData,
   getWeeksInMonth,
-  randomHexColorCode
+  getRandomLightColor
 } from '../../../../utils/anlytics';
 import MultiSelectPopup from '../../../components/MultiSelectPopup';
 import { useUtilsContext } from '../../../../providers/UtilsProvider';
@@ -171,7 +171,7 @@ const ChartUserAlert = ({ metric: unit }) => {
           }
         });
 
-        let color = randomHexColorCode();
+        let color = getRandomLightColor();
         const label = selectedMembers?.find((it) => it.value === userId)?.label;
         datasets.push({
           label: `${isCbt ? 'CBT' : 'HR'} : ${label}`,
