@@ -319,6 +319,15 @@ export const randomHexColorCode = () => {
   return '#' + n.slice(0, 6);
 };
 
+export const getRandomLightColor = () => {
+  const letters = 'BCDEF'.split('');
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * letters.length)];
+  }
+  return color;
+};
+
 /**
  * checking if the constant values include the selected metric
  * data: json data
