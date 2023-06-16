@@ -159,7 +159,9 @@ const ChartUserAlert = ({ metric: unit }) => {
 
         userChartData?.forEach((u) => {
           const st = spacetime(u.utcTs);
-          const i = timestamps.findIndex((e) => e === new Date(st.epoch).getTime());
+          const i = timestamps.findIndex(
+            (e) => new Date(st.epoch).getTime() >= e && new Date(st.epoch).getTime() < e + 60
+          );
           if (i !== -1) {
             tempData[i] = isCbt
               ? u.cbt
