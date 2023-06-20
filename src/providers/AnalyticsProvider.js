@@ -1030,13 +1030,13 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       });
 
       ret = tempRet?.map((it) => {
-        let a = organizationAnalytics?.maxCbt?.find(
-          (maxCbt) => maxCbt?.userId === it.userId
+        let a = organizationAnalytics?.[ANALYTICS_API_KEYS.MAX_CBT]?.find(
+          (e) => e?.userId === it.userId
         )?.maxCbt;
         a = formatNumber(a);
-        let b = organizationAnalytics?.maxCbt?.find(
-          (maxCbt) => maxCbt?.userId === it.userId
-        )?.maxHrAvg;
+        let b = organizationAnalytics?.[ANALYTICS_API_KEYS.MAX_HR_ALL]
+          ?.filter((e) => e?.userId === it.userId)
+          ?.sort((i, j) => j?.maxHr - i?.maxHr)?.[0]?.maxHr;
         b = formatNumber(b);
 
         return [

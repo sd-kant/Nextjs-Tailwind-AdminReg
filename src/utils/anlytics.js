@@ -17,6 +17,7 @@ import {
   queryOrganizationFluidMetricsByTeam,
   queryOrganizationHeartRate,
   queryOrganizationMaxCbt,
+  queryOrganizationMaxHrAll,
   queryOrganizationSWRFluid,
   queryOrganizationTempCateData,
   queryOrganizationUsersInCBTZones,
@@ -368,8 +369,12 @@ export const getKeyApiCall = (value) => {
       keys = [ANALYTICS_API_KEYS.TEMP_CATE_DATA];
       break;
     case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
-      apiCalls = [queryOrganizationDeviceData, queryOrganizationMaxCbt];
-      keys = [ANALYTICS_API_KEYS.DEVICE_DATA, ANALYTICS_API_KEYS.MAX_CBT];
+      apiCalls = [queryOrganizationDeviceData, queryOrganizationMaxCbt, queryOrganizationMaxHrAll];
+      keys = [
+        ANALYTICS_API_KEYS.DEVICE_DATA,
+        ANALYTICS_API_KEYS.MAX_CBT,
+        ANALYTICS_API_KEYS.MAX_HR_ALL
+      ];
       break;
     case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
       apiCalls = [queryOrganizationUsersInCBTZones];

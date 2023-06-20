@@ -307,6 +307,7 @@ export const ANALYTICS_API_KEYS = {
   WEAR_TIME: 'wearTime',
   ALERT_METRICS: 'alertMetrics',
   MAX_CBT: 'maxCbt',
+  MAX_HR_ALL: 'maxHrAll',
   TEMP_CATE_DATA: 'tempCateData',
   DEVICE_DATA: 'deviceData',
   USERS_IN_CBT_ZONES: 'usersInCBTZones',
