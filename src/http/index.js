@@ -404,6 +404,10 @@ export const queryOrganizationMaxCbt = (orgId, data) => {
   return post(`/organization/${orgId}/data/maxCbt`, data);
 };
 
+export const queryOrganizationMaxHrAll = (orgId, data) => {
+  return post(`/organization/${orgId}/data/maxHrAll`, data);
+};
+
 export const queryOrganizationUsersInCBTZones = (orgId, data) => {
   return post(`/organization/${orgId}/data/temperatureCategories`, data);
 };
