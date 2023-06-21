@@ -20,7 +20,6 @@ import {
   queryOrganizationMaxHrAll,
   queryOrganizationSWRFluid,
   queryOrganizationTempCateData,
-  queryOrganizationUsersInCBTZones,
   queryOrganizationWearTime
 } from '../http';
 import i18n from '../i18nextInit';
@@ -58,11 +57,12 @@ export const onCalc = (key, tempRet, total) => {
   if (key !== 2 && key !== 5) return Math.floor((tempRet[key] * 1000) / (total ?? 1)) / 10;
   else {
     return (
-      (1000 -
-        Math.floor(
-          ((tempRet[key === 2 ? 0 : 3] + tempRet[key === 2 ? 1 : 4]) * 1000) / (total ?? 1)
-        )) /
-      10
+      Math.round(
+        (100 -
+          onCalc(key === 2 ? 0 : 3, tempRet, total) -
+          onCalc(key === 2 ? 1 : 4, tempRet, total)) *
+          10
+      ) / 10
     );
   }
 };
@@ -377,8 +377,10 @@ export const getKeyApiCall = (value) => {
       ];
       break;
     case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
-      apiCalls = [queryOrganizationUsersInCBTZones];
-      keys = [ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES];
+      apiCalls = [queryOrganizationTempCateData];
+      keys = [ANALYTICS_API_KEYS.TEMP_CATE_DATA];
+      // apiCalls = [queryOrganizationUsersInCBTZones];
+      // keys = [ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES];
       break;
     case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
       apiCalls = [queryAmbientTempHumidity];
