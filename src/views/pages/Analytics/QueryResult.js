@@ -25,6 +25,7 @@ import {
   METRIC_USER_TABLE_VALUES
 } from '../../../constant';
 import { checkMetric, getKeyApiCall } from '../../../utils/anlytics';
+import ChartCBTZones from './Charts/ChartCBTZones';
 
 const QueryResult = ({ metric }) => {
   const {
@@ -54,6 +55,8 @@ const QueryResult = ({ metric }) => {
     )
       // 2, 31
       return <ChartTeamVerticalBar />;
+    else if (selectedMetric?.value === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES)
+      return <ChartCBTZones />;
     else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK)
       // 32
       return <ChartHighestCBT />;
@@ -73,7 +76,8 @@ const QueryResult = ({ metric }) => {
         METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
         METRIC_USER_TABLE_VALUES.ALERTS,
         METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK,
-        METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK
+        METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK,
+        METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES
       ].includes(selectedMetric?.value);
     }
   };

@@ -37,7 +37,8 @@ import {
   SWEAT_LOW_MEDIUM_HIGH,
   LABELS_HEAT_DOUGHNUT,
   LABELS_SWEAT_DOUGHNUT,
-  INVALID_VALUES2
+  INVALID_VALUES2,
+  LABELS_CBT_ZONES_DOUGHNUT
 } from '../constant';
 import { useBasicContext } from './BasicProvider';
 import { formatHeartRate, literToQuart } from '../utils/dashboard';
@@ -714,6 +715,54 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     } else if (checkMetric(METRIC_USER_CHART_VALUES, metric)) {
       // 40, 41
       return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.HEART_RATE, null, null);
+    } else if ([METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES].includes(metric)) {
+      let safe = 0;
+      let mild = 0;
+      let moderate = 0;
+      onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.TEMP_CATE_DATA,
+        pickedMembers,
+        members
+      )?.forEach((it) => {
+        it.temperatureCategoryCounts?.forEach((e) => {
+          if (e.temperatureCategory?.toLowerCase()?.includes('safe to work')) {
+            safe += e.count ?? 0;
+          } else if (e.temperatureCategory?.toLowerCase()?.includes('mild')) {
+            mild += e.count ?? 0;
+          } else if (e.temperatureCategory?.toLowerCase()?.includes('moderate')) {
+            moderate += e.count ?? 0;
+          }
+        });
+      });
+      const total = safe + mild + moderate;
+      const tempRet = [safe, mild, moderate];
+      const dataChart = () => {
+        let label = '  # of Alerts';
+        const data = [
+          onCalc(0, tempRet, total),
+          onCalc(1, tempRet, total),
+          onCalc(2, tempRet, total)
+        ];
+
+        return {
+          type: 'doughnut',
+          labels: LABELS_CBT_ZONES_DOUGHNUT,
+          datasets: [
+            {
+              label: label,
+              data,
+              backgroundColor: HEAT_SWEAT_CHART_COLORS,
+              borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE]
+            }
+          ]
+        };
+      };
+
+      return {
+        dataCBTZones: dataChart(),
+        counts: tempRet
+      };
     } else {
       return null;
     }
@@ -1055,10 +1104,39 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       // 8
       ret = onFilterData(
         organizationAnalytics,
-        ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES,
-        null,
-        null
-      )?.map((it) => [it.temperatureCategory, formatNumber(it.percentage)]);
+        ANALYTICS_API_KEYS.TEMP_CATE_DATA,
+        pickedMembers,
+        members
+      );
+      let safe = 0;
+      let mild = 0;
+      let moderate = 0;
+      ret?.forEach((it) => {
+        it.temperatureCategoryCounts?.forEach((e) => {
+          if (e.temperatureCategory?.toLowerCase()?.includes('safe to work')) {
+            safe += e.count ?? 0;
+          } else if (e.temperatureCategory?.toLowerCase()?.includes('mild')) {
+            mild += e.count ?? 0;
+          } else if (e.temperatureCategory?.toLowerCase()?.includes('moderate')) {
+            moderate += e.count ?? 0;
+          }
+        });
+      });
+      const total = safe + mild + moderate;
+      ret = [
+        [
+          unitMetric ? 'Safe to Work < 38.0˚C' : 'Safe to Work < 100.4 ˚F',
+          onCalc(0, [safe, mild, moderate], total)
+        ],
+        [
+          unitMetric ? 'Mild Hyperthermia 38.0˚C - 38.4˚C' : 'Mild Hyperthermia 100.4˚F - 101.2˚F',
+          onCalc(1, [safe, mild, moderate], total)
+        ],
+        [
+          unitMetric ? 'Moderate Hyperthermia >= 38.5˚C' : 'Moderate Hyperthermia >= 101.3˚F',
+          onCalc(2, [safe, mild, moderate], total)
+        ]
+      ];
     } else if (metric === METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY) {
       // 20
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_HUMIDITY, null, null)?.map(
