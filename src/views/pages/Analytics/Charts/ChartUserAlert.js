@@ -10,8 +10,11 @@ import {
   PointElement,
   LineElement,
   Title,
-  Tooltip
+  Legend,
+  Tooltip,
+  TimeScale
 } from 'chart.js';
+import 'chartjs-adapter-spacetime';
 import { METRIC_USER_CHART_VALUES, TYPES, INIT_USER_CHART_ALERT_DATA } from '../../../../constant';
 
 import clsx from 'clsx';
@@ -30,10 +33,20 @@ import MultiSelectPopup from '../../../components/MultiSelectPopup';
 import { useUtilsContext } from '../../../../providers/UtilsProvider';
 import { formatHeartRate } from '../../../../utils/dashboard';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  TimeScale,
+  Legend
+);
 
 const ChartUserAlert = ({ metric: unit }) => {
   const {
+    members,
     selectedMetric,
     selectedTeams,
     selectedMembers,
@@ -113,34 +126,13 @@ const ChartUserAlert = ({ metric: unit }) => {
     return selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT;
   }, [selectedMetric]);
 
-  const xLabel = React.useMemo(() => {
-    const tz =
-      selectedTeams?.length === 1
-        ? timeZone
-          ? timeZone?.displayName + ` - ` + timeZone?.name
-          : ''
-        : 'UTC';
-    return `Time of Day (${tz})`;
-  }, [selectedTeams, timeZone]);
+  const xLabel = 'Time of Day';
 
   React.useEffect(() => {
-    const tz = timeZone?.name ?? 'UTC';
+    const teamTz = timeZone?.name ?? 'UTC';
 
     if (selectedDate) {
-      let startTime = spacetime(selectedDate.label, tz);
-      startTime = startTime.time('9:00am');
-      let countTime = startTime;
-      let endTime = spacetime(selectedDate.label, tz);
-      endTime = endTime.time('11:59pm');
-      let timestamps = [];
-      let labels = [];
       let datasets = [];
-
-      while (countTime.isBefore(endTime)) {
-        timestamps.push(countTime.epoch);
-        labels.push(countTime.unixFmt('hh:mm'));
-        countTime = countTime.add(1, 'minute');
-      }
       const filteredUsers = users
         ?.filter(
           (it) => selectedMembers?.findIndex((a) => a?.value?.toString() === it.toString()) > -1
@@ -148,43 +140,55 @@ const ChartUserAlert = ({ metric: unit }) => {
         ?.sort((a, b) => (a > b ? 1 : -1));
 
       filteredUsers?.forEach((userId) => {
-        let tempData = new Array(timestamps?.length || 0).fill('');
+        const memberFull = members?.find((a) => a?.userId?.toString() === userId?.toString());
+        const memberTz = memberFull?.gmt ?? teamTz;
+        let temp = [];
+        let startTimeForUser = spacetime(selectedDate.label, memberTz);
+        startTimeForUser = startTimeForUser.time('9:00am');
+        let endTimeForUser = spacetime(selectedDate.label, memberTz);
+        endTimeForUser = endTimeForUser.time('11:59pm');
         const userChartData =
           chartData
             ?.find((it) => userId.toString() === it.userId.toString())
             ?.data?.filter((a) => {
-              const st = spacetime(a.utcTs);
-              return st.isAfter(startTime) && st.isBefore(endTime);
+              const st = spacetime(a.utcTs).goto(memberTz);
+              return st.isAfter(startTimeForUser) && st.isBefore(endTimeForUser);
             }) ?? [];
 
         userChartData?.forEach((u) => {
-          const st = spacetime(u.utcTs);
-          const i = timestamps.findIndex(
-            (e) => new Date(st.epoch).getTime() >= e && new Date(st.epoch).getTime() < e + 60
-          );
-          if (i !== -1) {
-            tempData[i] = isCbt
-              ? u.cbt
-                ? formatHeartCbt(u.cbt)
+          const stStr = spacetime(u.utcTs).goto(memberTz).unixFmt('yyyy.MM.dd HH:mm');
+          if (temp.findIndex((a) => a.time === stStr) === -1) {
+            temp.push({
+              time: stStr,
+              value: isCbt
+                ? u.cbt
+                  ? formatHeartCbt(u.cbt)
+                  : ''
+                : u.hr
+                ? formatHeartRate(u.hr)
                 : ''
-              : u.hr
-              ? formatHeartRate(u.hr)
-              : '';
+            });
           }
         });
+        temp = temp.map((a) => ({
+          x: new Date(a.time),
+          y: a.value
+        }));
 
         let color = getRandomLightColor();
         const label = selectedMembers?.find((it) => it.value === userId)?.label;
-        datasets.push({
-          label: `${isCbt ? 'CBT' : 'HR'} : ${label}`,
-          data: tempData,
-          borderWidth: 1,
-          borderColor: color,
-          backgroundColor: color
-        });
+        if (temp?.length > 0) {
+          datasets.push({
+            label: `${memberTz} : ${label}`,
+            data: temp,
+            borderWidth: 1,
+            borderColor: color,
+            backgroundColor: color
+          });
+        }
       });
 
-      setData(labels?.length > 0 ? { labels, datasets } : INIT_USER_CHART_ALERT_DATA);
+      setData(datasets ? { datasets } : INIT_USER_CHART_ALERT_DATA);
     }
   }, [
     chartData,
@@ -196,7 +200,8 @@ const ChartUserAlert = ({ metric: unit }) => {
     selectedTeams,
     timeZone,
     formatHeartCbt,
-    isCbt
+    isCbt,
+    members
   ]);
 
   React.useEffect(() => {
@@ -280,9 +285,22 @@ const ChartUserAlert = ({ metric: unit }) => {
               pointRadius: 1,
               scales: {
                 x: {
+                  type: 'time',
                   title: {
                     display: true,
                     text: xLabel
+                  },
+                  min: `${selectedDate?.label}T09:00`,
+                  max: `${selectedDate?.label}T23:59`,
+                  suggestedMin: `${selectedDate?.label}T09:00`,
+                  suggestedMax: `${selectedDate?.label}T23:59`,
+                  autoSkip: false,
+                  time: {
+                    unit: 'minute',
+                    stepSize: 15,
+                    displayFormats: {
+                      minute: 'HH:mm'
+                    }
                   }
                 },
                 y: {

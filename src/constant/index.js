@@ -277,7 +277,6 @@ export const HEAT_SUSCEPTIBILITY_PRIORITIES = {
 export const HEAT_SWEAT_CHART_COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
 export const COLOR_WHITE = '#fff';
 export const INIT_USER_CHART_ALERT_DATA = {
-  labels: [],
   datasets: [
     {
       label: ``,
