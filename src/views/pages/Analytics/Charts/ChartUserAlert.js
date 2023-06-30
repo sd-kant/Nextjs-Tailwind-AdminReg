@@ -14,7 +14,7 @@ import {
   Tooltip,
   TimeScale
 } from 'chart.js';
-import 'chartjs-adapter-date-fns';
+import 'chartjs-adapter-spacetime';
 import { METRIC_USER_CHART_VALUES, TYPES, INIT_USER_CHART_ALERT_DATA } from '../../../../constant';
 
 import clsx from 'clsx';
@@ -290,17 +290,17 @@ const ChartUserAlert = ({ metric: unit }) => {
                     display: true,
                     text: xLabel
                   },
+                  min: `${selectedDate?.label}T09:00`,
+                  max: `${selectedDate?.label}T23:59`,
+                  suggestedMin: `${selectedDate?.label}T09:00`,
+                  suggestedMax: `${selectedDate?.label}T23:59`,
                   autoSkip: false,
                   time: {
                     unit: 'minute',
-                    unitStepSize: 15,
-                    min: `${selectedDate?.label}T09:00`,
-                    max: `${selectedDate?.label}T23:59)`,
-                    suggestedMin: `${selectedDate?.label}T09:00`,
-                    suggestedMax: `${selectedDate?.label}T23:59)`
-                  },
-                  displayFormats: {
-                    minute: 'H:mm'
+                    stepSize: 15,
+                    displayFormats: {
+                      minute: 'HH:mm'
+                    }
                   }
                 },
                 y: {
