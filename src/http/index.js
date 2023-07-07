@@ -404,6 +404,10 @@ export const queryOrganizationMaxCbt = (orgId, data) => {
   return post(`/organization/${orgId}/data/maxCbt`, data);
 };
 
+export const queryOrganizationMaxCbtAll = (orgId, data) => {
+  return post(`/organization/${orgId}/data/maxCbtAll`, data);
+};
+
 export const queryOrganizationMaxHrAll = (orgId, data) => {
   return post(`/organization/${orgId}/data/maxHrAll`, data);
 };

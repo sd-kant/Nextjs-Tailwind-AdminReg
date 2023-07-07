@@ -108,7 +108,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
       dateRange: null,
       metric: null
     };
-    if (!startDate || !endDate || startDate >= endDate) {
+    if (!startDate || !endDate || startDate > endDate) {
       errors.dateRange = t('date range invalid');
     }
     if (

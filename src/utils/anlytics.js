@@ -17,6 +17,7 @@ import {
   queryOrganizationFluidMetricsByTeam,
   queryOrganizationHeartRate,
   queryOrganizationMaxCbt,
+  queryOrganizationMaxCbtAll,
   queryOrganizationMaxHrAll,
   queryOrganizationSWRFluid,
   queryOrganizationTempCateData,
@@ -413,6 +414,10 @@ export const getKeyApiCall = (value) => {
     case METRIC_USER_CHART_VALUES.HR: // 41
       apiCalls = [queryOrganizationHeartRate];
       keys = [ANALYTICS_API_KEYS.HEART_RATE];
+      break;
+    case METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT:
+      apiCalls = [queryOrganizationMaxCbtAll];
+      keys = [ANALYTICS_API_KEYS.MAX_CBT_ALL];
       break;
     default:
       console.log('metric is not available');

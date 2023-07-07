@@ -311,6 +311,7 @@ export const ANALYTICS_API_KEYS = {
   WEAR_TIME: 'wearTime',
   ALERT_METRICS: 'alertMetrics',
   MAX_CBT: 'maxCbt',
+  MAX_CBT_ALL: 'maxCbtAll',
   MAX_HR_ALL: 'maxHrAll',
   TEMP_CATE_DATA: 'tempCateData',
   DEVICE_DATA: 'deviceData',
@@ -351,7 +352,8 @@ export const METRIC_USER_CHART_VALUES = {
 };
 export const METRIC_TEAM_CHART_VALUES = {
   NUMBER_ALERTS_WEEK: 31,
-  HIGHEST_CBT_TIME_DAY_WEEK: 32
+  HIGHEST_CBT_TIME_DAY_WEEK: 32,
+  DAY_MAXIMUM_CBT: 33
 };
 
 export const DAY_LIST = [
@@ -472,6 +474,10 @@ export const TEAM_STATUS_METRICS = [
   {
     label: `${i18n.t('chart')} - ${i18n.t('highest cbt by time of day and day of week')}`,
     value: METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK // 32
+  },
+  {
+    label: 'Maximum CBT Time of Day',
+    value: METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT
   }
 ];
 
