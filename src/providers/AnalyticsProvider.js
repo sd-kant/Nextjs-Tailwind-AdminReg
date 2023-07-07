@@ -777,6 +777,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
 
         return accum;
       }, []);
+      const finalFilterData = filteredData?.filter((it) => it.maxCbt > 38);
       let finalData = [];
       userIds?.forEach((userId) => {
         const memberFull = members?.find((it) => it?.userId === userId);
@@ -786,7 +787,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         endD.setDate(endD.getDate() + 1);
         const endDStr = `${endD.getFullYear()}-${endD.getMonth() + 1}-${endD.getDate()}`;
         const endT = spacetime(endDStr, userTz);
-        const userData = filteredData
+        const userData = finalFilterData
           ?.filter((it) => it.userId === userId)
           ?.filter(
             (it) => spacetime(it.utcTs).isAfter(startT) && spacetime(it.utcTs).isBefore(endT)
