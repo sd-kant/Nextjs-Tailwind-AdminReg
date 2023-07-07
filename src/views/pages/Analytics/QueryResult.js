@@ -26,6 +26,7 @@ import {
 } from '../../../constant';
 import { checkMetric, getKeyApiCall } from '../../../utils/anlytics';
 import ChartCBTZones from './Charts/ChartCBTZones';
+import ChartMaximumCBT from './Charts/ChartMaximumCBT';
 
 const QueryResult = ({ metric }) => {
   const {
@@ -63,7 +64,10 @@ const QueryResult = ({ metric }) => {
     else if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value))
       // 40, 41
       return <ChartUserAlert />;
-    else return <div />;
+    else if (METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT === selectedMetric?.value) {
+      console.log('2');
+      return <ChartMaximumCBT />;
+    } else return <div />;
   }, [selectedMetric]);
 
   const checkTableChartTogether = () => {
@@ -90,7 +94,11 @@ const QueryResult = ({ metric }) => {
             getKeyApiCall(selectedMetric?.value).keys[0]
           ) && (
             <>
-              {!checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) && (
+              {![
+                METRIC_USER_CHART_VALUES.CBT,
+                METRIC_USER_CHART_VALUES.HR,
+                METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT
+              ].includes(selectedMetric?.value) && (
                 <div
                   className={clsx(
                     checkTableChartTogether() ? style.InnerWrapper : style.CenterWrapper

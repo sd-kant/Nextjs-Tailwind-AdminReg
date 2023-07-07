@@ -524,7 +524,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
             checkMetric(METRIC_TEAM_CHART_VALUES, metric) || // team chart only
             metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA // user Device_Data
           ) {
-            startD.setDate(startD.getDate() - 2); // e.g. 2022-04-03
+            startD.setDate(startD.getDate() - 1); // e.g. 2022-04-04
             endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
           }
 
@@ -762,6 +762,87 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       return {
         dataCBTZones: dataChart(),
         counts: tempRet
+      };
+    } else if (METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT === metric) {
+      const filteredData = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.MAX_CBT_ALL,
+        pickedMembers,
+        members
+      );
+      const userIds = filteredData?.reduce((accum, it) => {
+        if (!accum.includes(it.userId)) {
+          accum.push(it.userId);
+        }
+
+        return accum;
+      }, []);
+      let finalData = [];
+      userIds?.forEach((userId) => {
+        const memberFull = members?.find((it) => it?.userId === userId);
+        const userTz = memberFull?.gmt ?? 'UTC';
+        const startT = spacetime(startDate, userTz);
+        const endD = new Date(endDate);
+        endD.setDate(endD.getDate() + 1);
+        const endDStr = `${endD.getFullYear()}-${endD.getMonth() + 1}-${endD.getDate()}`;
+        const endT = spacetime(endDStr, userTz);
+        const userData = filteredData
+          ?.filter((it) => it.userId === userId)
+          ?.filter(
+            (it) => spacetime(it.utcTs).isAfter(startT) && spacetime(it.utcTs).isBefore(endT)
+          );
+        userData?.forEach((it) => {
+          const hh = spacetime(it.utcTs).goto(userTz).unixFmt('HH');
+          const index = finalData.findIndex((e) => e.time === `${hh}:00`);
+          let keyName = null;
+          if (it.maxCbt >= 38.5) {
+            keyName = 'moderate';
+          } else if (it.maxCbt > 38) {
+            keyName = 'mild';
+          }
+
+          if (keyName) {
+            if (index !== -1) {
+              finalData[index] = {
+                ...finalData[index],
+                [keyName]: (finalData[index]?.[keyName] ?? 0) + 1
+              };
+            } else {
+              finalData.push({
+                time: `${hh}:00`,
+                [keyName]: 1
+              });
+            }
+          }
+        });
+      });
+      finalData = finalData?.sort((a, b) => (a.time > b.time ? 1 : -1));
+      const labels = [];
+      const mildDataList = [];
+      const moderateDataList = [];
+      finalData.forEach((it) => {
+        labels.push(it.time);
+        mildDataList.push(it.mild ?? 0);
+        moderateDataList.push(it.moderate ?? 0);
+      });
+      return {
+        labels,
+        datasets: [
+          {
+            label: unitMetric
+              ? 'Moderate Hyperthermia >= 38.5˚C'
+              : 'Moderate Hyperthermia >= 101.3˚F',
+            data: mildDataList,
+            backgroundColor: 'yellow'
+          },
+          {
+            label: unitMetric
+              ? 'Mild Hyperthermia 38.0˚C - 38.4˚C'
+              : 'Mild Hyperthermia 100.4˚F - 101.2˚F',
+            data: moderateDataList,
+            backgroundColor: 'orange'
+          }
+        ]
       };
     } else {
       return null;
