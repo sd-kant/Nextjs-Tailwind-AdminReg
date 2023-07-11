@@ -33,7 +33,7 @@
   "team name select": "Select a team",
   "team name required": "Please enter a team name",
   "team name min error": "Please enter more than 6 characters",
-  "team name max error": "Please enter less than 1024 characters",
+  "team name max error": "Please enter a maximum of 40 characters",
   "team location": "Team Location",
   "team location required": "Please enter the team location",
   "team location min error": "Please enter more than 2 characters",

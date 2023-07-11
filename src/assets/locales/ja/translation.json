@@ -33,7 +33,7 @@
   "team name select": "チームを選択する",
   "team name required": "チーム名を入力してください",
   "team name min error": "6文字以上を入力してください",
-  "team name max error": "1024文字未満で入力してください",
+  "team name max error": "最大40文字まで入力してください",
   "team location": "チームの職場",
   "team location required": "チームの職場を入力してください",
   "team location min error": "2文字以上を入力してください",

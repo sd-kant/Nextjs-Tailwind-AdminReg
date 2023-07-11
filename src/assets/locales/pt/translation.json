@@ -33,7 +33,7 @@
   "team name select": "Selecione um grupo",
   "team name required": "Favor inserir um nome do grupo",
   "team name min error": "Favor inserir mais de 6 personagens",
-  "team name max error": "Favor inserir menos de 1024 personagens",
+  "team name max error": "Insira no máximo 40 caracteres",
   "team location": "Localização do grupo",
   "team location required": "Favor inserir a localização do grupo",
   "team location min error": "Favor inserir mais de 2 personagens",
