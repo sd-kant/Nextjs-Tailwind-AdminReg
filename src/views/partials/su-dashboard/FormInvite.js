@@ -535,7 +535,7 @@ const FormInvite = (props) => {
               </div>
             )}
 
-            {operators?.map((user, index) => renderUser(user, index, 'user'))}
+            {operators?.map((user) => renderUser(user, user.index, 'user'))}
 
             {admins?.length > 0 && (
               <div className="mt-28">
@@ -545,7 +545,7 @@ const FormInvite = (props) => {
               </div>
             )}
 
-            {admins?.map((user, index) => renderUser(user, index, 'admin'))}
+            {admins?.map((user) => renderUser(user, user.index, 'admin'))}
           </div>
         </div>
       </Form>
