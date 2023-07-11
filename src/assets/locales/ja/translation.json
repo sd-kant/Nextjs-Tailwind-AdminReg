@@ -704,5 +704,6 @@
   "connect device confirm": "デバイスに接続しますか?",
   "connect device member confirm": "チームメンバーをこのデバイスに接続しますか?",
   "no device match": "一致するデバイス ID が見つかりませんでした",
-  "no member match": "チームメンバーが見つかりません"
+  "no member match": "チームメンバーが見つかりません",
+  "username invalid 3": "ユーザー名を確認してください。電子メールは有効なユーザー名ではありません"
 }

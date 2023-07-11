@@ -9,7 +9,8 @@ import {
   checkUsernameValidation1,
   checkPasswordValidation,
   getTokenFromUrl,
-  getParamFromUrl
+  getParamFromUrl,
+  checkIfEmail
 } from '../../../utils';
 import { resetPasswordV2 } from '../../../http';
 import {
@@ -29,6 +30,9 @@ const formSchema = (t) => {
       .required(t('username required'))
       .min(6, t('username min error'))
       .max(1024, t('username max error'))
+      .test('is-valid-3', t('username invalid 3'), function (value) {
+        return !checkIfEmail(value);
+      })
       .test('is-valid-2', t('username invalid 2'), function (value) {
         return checkUsernameValidation2(value);
       })
