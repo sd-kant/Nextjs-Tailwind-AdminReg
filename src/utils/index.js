@@ -50,6 +50,12 @@ export const checkUsernameValidation2 = (str) => {
   return str?.charAt(str.length - 1) !== '.';
 };
 
+export const checkIfEmail = (value) => {
+  const regexExp =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/gi;
+  return regexExp.test(value);
+};
+
 export const getParamFromUrl = (key) => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);

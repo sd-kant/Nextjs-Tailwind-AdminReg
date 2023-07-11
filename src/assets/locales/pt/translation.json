@@ -704,5 +704,6 @@
   "connect device confirm": "Conectar ao seu dispositivo?",
   "connect device member confirm": "Conectar o membro da sua equipe a este dispositivo?",
   "no device match": "Nenhuma correspondência de ID de dispositivo encontrada",
-  "no member match": "Nenhum membro da equipe encontrado"
+  "no member match": "Nenhum membro da equipe encontrado",
+  "username invalid 3": "Verifique o nome de usuário, o e-mail não é um nome de usuário válido"
 }
