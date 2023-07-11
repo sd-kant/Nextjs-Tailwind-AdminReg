@@ -61,9 +61,15 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
       };
     }
     if (stat?.chargingFlag) {
+      if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 2) {
+        return {
+          label: t('charging'),
+          value: 2
+        };
+      }
       return {
-        label: t('charging'),
-        value: 2
+        label: t('no connection'),
+        value: 8
       };
     }
 
