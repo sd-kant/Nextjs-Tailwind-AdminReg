@@ -33,7 +33,7 @@
   "team name select": "Sélectionnez une équipe",
   "team name required": "Veuillez entrer un nom d'équipe",
   "team name min error": "Veuillez saisir plus de 6 caractères",
-  "team name max error": "Veuillez saisir moins de 1024 caractères",
+  "team name max error": "Veuillez entrer un maximum de 40 caractères",
   "team location": "Emplacement de l'équipe",
   "team location required": "Veuillez entrer l'emplacement de l'équipe",
   "team location min error": "Veuillez saisir plus de 2 caractères",

@@ -31,7 +31,7 @@ const formSchema = (t) => {
       })
       .required(t('team name required'))
       .min(6, t('team name min error'))
-      .max(1024, t('team name max error')),
+      .max(40, t('team name max error')),
     country: Yup.object().required(t('team country required')),
     region: Yup.object()
       .shape({
