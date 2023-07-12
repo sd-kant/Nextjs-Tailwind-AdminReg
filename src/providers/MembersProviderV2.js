@@ -44,6 +44,11 @@ export const MembersProviderV2Draft = ({ t, children }) => {
     }
   };
 
+  React.useEffect(() => {
+    const selectedMembersTeamIds = selectedMembers?.map((it) => it.teamId) ?? [];
+    setSelectedUsersTeams([...new Set(selectedMembersTeamIds)]);
+  }, [selectedMembers]);
+
   const handleRemoveClick = async () => {
     const selectedMembersTeamIds = selectedMembers?.map((it) => it.teamId) ?? [];
     if (selectedMembersTeamIds?.length > 0) {
@@ -55,7 +60,6 @@ export const MembersProviderV2Draft = ({ t, children }) => {
         }),
         mode: 'remove'
       });
-      setSelectedUsersTeams([...new Set(selectedMembersTeamIds)]);
     }
   };
 
