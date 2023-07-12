@@ -34,6 +34,10 @@ const MultiSelectPopup = ({ label, options, value, onChange }) => {
     }
   };
 
+  const matches = React.useMemo(() => {
+    return options?.filter((option) => option.label.toLowerCase().includes(keyword.toLowerCase()));
+  }, [options, keyword]);
+
   return (
     <>
       <div
@@ -97,23 +101,22 @@ const MultiSelectPopup = ({ label, options, value, onChange }) => {
                 />
               </div>
             )}
-            {options?.map((option, index) => {
-              if (option.label.toLowerCase().includes(keyword.toLowerCase())) {
-                return (
-                  <div key={`multi-selector-option-${index}`}>
-                    <Checkbox
-                      checked={checkedItems?.some(
-                        (it) => it.value?.toString() === option.value?.toString()
-                      )}
-                      label={option.label}
-                      setChecked={(v) => handleChange(option.value, v)}
-                    />
-                  </div>
-                );
-              } else {
-                return null;
-              }
-            })}
+            {matches?.map((match, index) => (
+              <div key={`multi-selector-option-${index}`}>
+                <Checkbox
+                  checked={checkedItems?.some(
+                    (it) => it.value?.toString() === match.value?.toString()
+                  )}
+                  label={match.label}
+                  setChecked={(v) => handleChange(match.value, v)}
+                />
+              </div>
+            ))}
+            {matches?.length === 0 && (
+              <div className="font-heading-small text-capitalize">
+                <span>{t('no matches found')}</span>
+              </div>
+            )}
           </div>
           {options?.length > 0 && (
             <div className={clsx(style.Footer)}>
