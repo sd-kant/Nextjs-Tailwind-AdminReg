@@ -26,7 +26,7 @@ const formSchema = (t) => {
       .required(t('your password required'))
       .min(pwMinLength, t('n password rule', { n: pwMinLength }))
       .max(1024, t('password max error'))
-      .test('is-valid', t('password rule'), function (value) {
+      .test('is-valid', t('n password rule', { n: pwMinLength }), function (value) {
         return checkPasswordValidation(value, pwMinLength);
       }),
     confirmPassword: Yup.string()

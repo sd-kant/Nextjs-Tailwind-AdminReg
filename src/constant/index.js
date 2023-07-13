@@ -277,7 +277,6 @@ export const HEAT_SUSCEPTIBILITY_PRIORITIES = {
 export const HEAT_SWEAT_CHART_COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
 export const COLOR_WHITE = '#fff';
 export const INIT_USER_CHART_ALERT_DATA = {
-  labels: [],
   datasets: [
     {
       label: ``,
@@ -300,6 +299,11 @@ export const TYPES = [
 ];
 export const LABELS_HEAT_DOUGHNUT = [i18n.t('low %'), i18n.t('medium'), i18n.t('high')];
 export const LABELS_SWEAT_DOUGHNUT = [i18n.t('low %'), i18n.t('moderate'), i18n.t('high')];
+export const LABELS_CBT_ZONES_DOUGHNUT = [
+  i18n.t('Safe to Work < 38.0˚C'),
+  i18n.t('Mild Hyperthermia 38.0˚C - 38.4˚C'),
+  i18n.t('Moderate Hyperthermia >= 38.5˚C')
+];
 export const HEAT_LOW_MEDIUM_HIGH = ['low', 'medium', 'high'];
 export const SWEAT_LOW_MEDIUM_HIGH = ['low', 'moderate', 'high'];
 
@@ -307,6 +311,8 @@ export const ANALYTICS_API_KEYS = {
   WEAR_TIME: 'wearTime',
   ALERT_METRICS: 'alertMetrics',
   MAX_CBT: 'maxCbt',
+  MAX_CBT_ALL: 'maxCbtAll',
+  MAX_HR_ALL: 'maxHrAll',
   TEMP_CATE_DATA: 'tempCateData',
   DEVICE_DATA: 'deviceData',
   USERS_IN_CBT_ZONES: 'usersInCBTZones',
@@ -346,7 +352,8 @@ export const METRIC_USER_CHART_VALUES = {
 };
 export const METRIC_TEAM_CHART_VALUES = {
   NUMBER_ALERTS_WEEK: 31,
-  HIGHEST_CBT_TIME_DAY_WEEK: 32
+  HIGHEST_CBT_TIME_DAY_WEEK: 32,
+  DAY_MAXIMUM_CBT: 33
 };
 
 export const DAY_LIST = [
@@ -460,13 +467,17 @@ export const TEAM_STATUS_METRICS = [
     )}`,
     value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED // 26
   },
-  {
-    label: `${i18n.t('chart')} - ${i18n.t('number of alerts by week')}`,
-    value: METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK // 31
-  },
+  // {
+  //   label: `${i18n.t('chart')} - ${i18n.t('number of alerts by week')}`,
+  //   value: METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK // 31
+  // },
   {
     label: `${i18n.t('chart')} - ${i18n.t('highest cbt by time of day and day of week')}`,
     value: METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK // 32
+  },
+  {
+    label: 'Maximum CBT Time of Day',
+    value: METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT
   }
 ];
 

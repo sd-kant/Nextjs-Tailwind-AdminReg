@@ -17,9 +17,10 @@ import {
   queryOrganizationFluidMetricsByTeam,
   queryOrganizationHeartRate,
   queryOrganizationMaxCbt,
+  queryOrganizationMaxCbtAll,
+  queryOrganizationMaxHrAll,
   queryOrganizationSWRFluid,
   queryOrganizationTempCateData,
-  queryOrganizationUsersInCBTZones,
   queryOrganizationWearTime
 } from '../http';
 import i18n from '../i18nextInit';
@@ -57,11 +58,12 @@ export const onCalc = (key, tempRet, total) => {
   if (key !== 2 && key !== 5) return Math.floor((tempRet[key] * 1000) / (total ?? 1)) / 10;
   else {
     return (
-      (1000 -
-        Math.floor(
-          ((tempRet[key === 2 ? 0 : 3] + tempRet[key === 2 ? 1 : 4]) * 1000) / (total ?? 1)
-        )) /
-      10
+      Math.round(
+        (100 -
+          onCalc(key === 2 ? 0 : 3, tempRet, total) -
+          onCalc(key === 2 ? 1 : 4, tempRet, total)) *
+          10
+      ) / 10
     );
   }
 };
@@ -319,6 +321,15 @@ export const randomHexColorCode = () => {
   return '#' + n.slice(0, 6);
 };
 
+export const getRandomLightColor = () => {
+  const letters = 'BCDEF'.split('');
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * letters.length)];
+  }
+  return color;
+};
+
 /**
  * checking if the constant values include the selected metric
  * data: json data
@@ -359,12 +370,18 @@ export const getKeyApiCall = (value) => {
       keys = [ANALYTICS_API_KEYS.TEMP_CATE_DATA];
       break;
     case METRIC_USER_TABLE_VALUES.DEVICE_DATA: // 7
-      apiCalls = [queryOrganizationDeviceData, queryOrganizationMaxCbt];
-      keys = [ANALYTICS_API_KEYS.DEVICE_DATA, ANALYTICS_API_KEYS.MAX_CBT];
+      apiCalls = [queryOrganizationDeviceData, queryOrganizationMaxCbt, queryOrganizationMaxHrAll];
+      keys = [
+        ANALYTICS_API_KEYS.DEVICE_DATA,
+        ANALYTICS_API_KEYS.MAX_CBT,
+        ANALYTICS_API_KEYS.MAX_HR_ALL
+      ];
       break;
     case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
-      apiCalls = [queryOrganizationUsersInCBTZones];
-      keys = [ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES];
+      apiCalls = [queryOrganizationTempCateData];
+      keys = [ANALYTICS_API_KEYS.TEMP_CATE_DATA];
+      // apiCalls = [queryOrganizationUsersInCBTZones];
+      // keys = [ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES];
       break;
     case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
       apiCalls = [queryAmbientTempHumidity];
@@ -397,6 +414,10 @@ export const getKeyApiCall = (value) => {
     case METRIC_USER_CHART_VALUES.HR: // 41
       apiCalls = [queryOrganizationHeartRate];
       keys = [ANALYTICS_API_KEYS.HEART_RATE];
+      break;
+    case METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT:
+      apiCalls = [queryOrganizationMaxCbtAll];
+      keys = [ANALYTICS_API_KEYS.MAX_CBT_ALL];
       break;
     default:
       console.log('metric is not available');

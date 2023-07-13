@@ -33,7 +33,7 @@
   "team name select": "チームを選択する",
   "team name required": "チーム名を入力してください",
   "team name min error": "6文字以上を入力してください",
-  "team name max error": "1024文字未満で入力してください",
+  "team name max error": "最大40文字まで入力してください",
   "team location": "チームの職場",
   "team location required": "チームの職場を入力してください",
   "team location min error": "2文字以上を入力してください",
@@ -704,5 +704,7 @@
   "connect device confirm": "デバイスに接続しますか?",
   "connect device member confirm": "チームメンバーをこのデバイスに接続しますか?",
   "no device match": "一致するデバイス ID が見つかりませんでした",
-  "no member match": "チームメンバーが見つかりません"
+  "no member match": "チームメンバーが見つかりません",
+  "username invalid 3": "ユーザー名を確認してください。電子メールは有効なユーザー名ではありません",
+  "unable to remove email": "電子メールを削除できません。 メールアドレスまたは電話番号は必須です"
 }

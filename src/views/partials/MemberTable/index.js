@@ -34,25 +34,32 @@ const MemberTable = ({ t, forceWidthUpdate }) => {
 
   return (
     <>
-      <table className={clsx(style.Table)}>
-        <TableHeader
-          columnsMap={columnsMap}
-          visibleColumns={visibleColumns}
-          setVisibleColumns={setVisibleColumns}
-          forceWidthUpdate={forceWidthUpdate}
-        />
+      {members?.length > 0 ? (
+        <table className={clsx(style.Table)}>
+          <TableHeader
+            columnsMap={columnsMap}
+            visibleColumns={visibleColumns}
+            setVisibleColumns={setVisibleColumns}
+            forceWidthUpdate={forceWidthUpdate}
+          />
 
-        <tbody>
-          {members?.map((member, key) => (
-            <TableRow
-              member={member}
-              key={`member-${key}-${member.userId}`}
-              visibleColumns={visibleColumns}
-              columnsMap={columnsMap}
-            />
-          ))}
-        </tbody>
-      </table>
+          <tbody>
+            {members?.map((member, key) => (
+              <TableRow
+                member={member}
+                key={`member-${key}-${member.userId}`}
+                visibleColumns={visibleColumns}
+                columnsMap={columnsMap}
+              />
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className="font-heading-small text-capitalize mt-25">
+          <span>{t('no matches found')}</span>
+        </div>
+      )}
+
       {visibleMemberModal && (
         <UserSubscriptionProvider>
           <MemberDetail

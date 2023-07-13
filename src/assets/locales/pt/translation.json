@@ -33,7 +33,7 @@
   "team name select": "Selecione um grupo",
   "team name required": "Favor inserir um nome do grupo",
   "team name min error": "Favor inserir mais de 6 personagens",
-  "team name max error": "Favor inserir menos de 1024 personagens",
+  "team name max error": "Insira no máximo 40 caracteres",
   "team location": "Localização do grupo",
   "team location required": "Favor inserir a localização do grupo",
   "team location min error": "Favor inserir mais de 2 personagens",
@@ -704,5 +704,7 @@
   "connect device confirm": "Conectar ao seu dispositivo?",
   "connect device member confirm": "Conectar o membro da sua equipe a este dispositivo?",
   "no device match": "Nenhuma correspondência de ID de dispositivo encontrada",
-  "no member match": "Nenhum membro da equipe encontrado"
+  "no member match": "Nenhum membro da equipe encontrado",
+  "username invalid 3": "Verifique o nome de usuário, o e-mail não é um nome de usuário válido",
+  "unable to remove email": "Não foi possível remover o e-mail. E-mail ou número de telefone é obrigatório"
 }

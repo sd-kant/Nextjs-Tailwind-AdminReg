@@ -33,7 +33,7 @@
   "team name select": "Sélectionnez une équipe",
   "team name required": "Veuillez saisir un nom d’équipe",
   "team name min error": "Veuillez saisir plus de 6 caractères",
-  "team name max error": "Veuillez saisir moins de 1024 caractères",
+  "team name max error": "Veuillez entrer un maximum de 40 caractères",
   "team location": "Emplacement de l’équipe",
   "team location required": "Veuillez indiquer la localisation de l’équipe",
   "team location min error": "Veuillez saisir plus de 2 caractères",
@@ -704,5 +704,7 @@
   "connect device confirm": "Connectez-vous à votre appareil ?",
   "connect device member confirm": "Connecter un membre de votre équipe à cet appareil ?",
   "no device match": "Aucune correspondance d'ID d'appareil n'a été trouvée",
-  "no member match": "Aucun membre de l'équipe trouvé"
+  "no member match": "Aucun membre de l'équipe trouvé",
+  "username invalid 3": "Veuillez vérifier le nom d'utilisateur, l'e-mail n'est pas un nom d'utilisateur valide",
+  "unable to remove email": "Impossible de supprimer l'e-mail. Un e-mail ou un numéro de téléphone est requis"
 }

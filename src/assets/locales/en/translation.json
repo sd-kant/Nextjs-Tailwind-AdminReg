@@ -33,7 +33,7 @@
   "team name select": "Select a team",
   "team name required": "Please enter a team name",
   "team name min error": "Please enter more than 6 characters",
-  "team name max error": "Please enter less than 1024 characters",
+  "team name max error": "Please enter a maximum of 40 characters",
   "team location": "Team Location",
   "team location required": "Please enter the team location",
   "team location min error": "Please enter more than 2 characters",
@@ -704,5 +704,7 @@
   "connect device confirm": "Connect to your device?",
   "connect device member confirm": "Connect your team member to this device?",
   "no device match": "No Device ID match found",
-  "no member match": "No team member found"
+  "no member match": "No team member found",
+  "username invalid 3": "Please check Username, email is not a valid Username",
+  "unable to remove email": "Unable to remove email. Email or phone number is required"
 }

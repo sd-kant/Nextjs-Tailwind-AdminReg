@@ -25,6 +25,8 @@ import {
   METRIC_USER_TABLE_VALUES
 } from '../../../constant';
 import { checkMetric, getKeyApiCall } from '../../../utils/anlytics';
+import ChartCBTZones from './Charts/ChartCBTZones';
+import ChartMaximumCBT from './Charts/ChartMaximumCBT';
 
 const QueryResult = ({ metric }) => {
   const {
@@ -54,13 +56,18 @@ const QueryResult = ({ metric }) => {
     )
       // 2, 31
       return <ChartTeamVerticalBar />;
+    else if (selectedMetric?.value === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES)
+      return <ChartCBTZones />;
     else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK)
       // 32
       return <ChartHighestCBT />;
     else if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value))
       // 40, 41
       return <ChartUserAlert />;
-    else return <div />;
+    else if (METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT === selectedMetric?.value) {
+      console.log('2');
+      return <ChartMaximumCBT />;
+    } else return <div />;
   }, [selectedMetric]);
 
   const checkTableChartTogether = () => {
@@ -73,7 +80,8 @@ const QueryResult = ({ metric }) => {
         METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
         METRIC_USER_TABLE_VALUES.ALERTS,
         METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK,
-        METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK
+        METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK,
+        METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES
       ].includes(selectedMetric?.value);
     }
   };
@@ -86,7 +94,11 @@ const QueryResult = ({ metric }) => {
             getKeyApiCall(selectedMetric?.value).keys[0]
           ) && (
             <>
-              {!checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value) && (
+              {![
+                METRIC_USER_CHART_VALUES.CBT,
+                METRIC_USER_CHART_VALUES.HR,
+                METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT
+              ].includes(selectedMetric?.value) && (
                 <div
                   className={clsx(
                     checkTableChartTogether() ? style.InnerWrapper : style.CenterWrapper

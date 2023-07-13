@@ -108,7 +108,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
       dateRange: null,
       metric: null
     };
-    if (!startDate || !endDate || startDate >= endDate) {
+    if (!startDate || !endDate || startDate > endDate) {
       errors.dateRange = t('date range invalid');
     }
     if (
@@ -245,7 +245,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
   const datePickerReadOnly = React.useMemo(() => {
     return (
       (selectedMetric?.value && checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) ||
-      METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
+      // METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
       METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK === selectedMetric?.value
     );
   }, [selectedMetric]);

@@ -37,7 +37,8 @@ import {
   SWEAT_LOW_MEDIUM_HIGH,
   LABELS_HEAT_DOUGHNUT,
   LABELS_SWEAT_DOUGHNUT,
-  INVALID_VALUES2
+  INVALID_VALUES2,
+  LABELS_CBT_ZONES_DOUGHNUT
 } from '../constant';
 import { useBasicContext } from './BasicProvider';
 import { formatHeartRate, literToQuart } from '../utils/dashboard';
@@ -307,8 +308,8 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       case METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES: // 6
         ret = [
           makeSort('Sort', [
-            [SORT_TITLES[0], [[0, 'asc', 'number']]],
-            [SORT_TITLES[1], [[0, 'desc', 'number']]]
+            [SORT_TITLES[0], [[0, 'asc', 'string']]],
+            [SORT_TITLES[1], [[0, 'desc', 'string']]]
           ]),
           makeSort('Sort', [
             [SORT_TITLES[0], [[1, 'asc', 'string']]],
@@ -523,7 +524,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
             checkMetric(METRIC_TEAM_CHART_VALUES, metric) || // team chart only
             metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA // user Device_Data
           ) {
-            startD.setDate(startD.getDate() - 2); // e.g. 2022-04-03
+            startD.setDate(startD.getDate() - 1); // e.g. 2022-04-04
             endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
           }
 
@@ -714,6 +715,136 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     } else if (checkMetric(METRIC_USER_CHART_VALUES, metric)) {
       // 40, 41
       return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.HEART_RATE, null, null);
+    } else if ([METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES].includes(metric)) {
+      let safe = 0;
+      let mild = 0;
+      let moderate = 0;
+      onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.TEMP_CATE_DATA,
+        pickedMembers,
+        members
+      )?.forEach((it) => {
+        it.temperatureCategoryCounts?.forEach((e) => {
+          if (e.temperatureCategory?.toLowerCase()?.includes('safe to work')) {
+            safe += e.count ?? 0;
+          } else if (e.temperatureCategory?.toLowerCase()?.includes('mild')) {
+            mild += e.count ?? 0;
+          } else if (e.temperatureCategory?.toLowerCase()?.includes('moderate')) {
+            moderate += e.count ?? 0;
+          }
+        });
+      });
+      const total = safe + mild + moderate;
+      const tempRet = [safe, mild, moderate];
+      const dataChart = () => {
+        let label = '  # of Alerts';
+        const data = [
+          onCalc(0, tempRet, total),
+          onCalc(1, tempRet, total),
+          onCalc(2, tempRet, total)
+        ];
+
+        return {
+          type: 'doughnut',
+          labels: LABELS_CBT_ZONES_DOUGHNUT,
+          datasets: [
+            {
+              label: label,
+              data,
+              backgroundColor: HEAT_SWEAT_CHART_COLORS,
+              borderColor: [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE]
+            }
+          ]
+        };
+      };
+
+      return {
+        dataCBTZones: dataChart(),
+        counts: tempRet
+      };
+    } else if (METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT === metric) {
+      const filteredData = onFilterData(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.MAX_CBT_ALL,
+        pickedMembers,
+        members
+      );
+      const userIds = filteredData?.reduce((accum, it) => {
+        if (!accum.includes(it.userId)) {
+          accum.push(it.userId);
+        }
+
+        return accum;
+      }, []);
+      const finalFilterData = filteredData?.filter((it) => it.maxCbt > 38);
+      let finalData = [];
+      userIds?.forEach((userId) => {
+        const memberFull = members?.find((it) => it?.userId === userId);
+        const userTz = memberFull?.gmt ?? 'UTC';
+        const startT = spacetime(startDate, userTz);
+        const endD = new Date(endDate);
+        endD.setDate(endD.getDate() + 1);
+        const endDStr = `${endD.getFullYear()}-${endD.getMonth() + 1}-${endD.getDate()}`;
+        const endT = spacetime(endDStr, userTz);
+        const userData = finalFilterData
+          ?.filter((it) => it.userId === userId)
+          ?.filter(
+            (it) => spacetime(it.utcTs).isAfter(startT) && spacetime(it.utcTs).isBefore(endT)
+          );
+        userData?.forEach((it) => {
+          const hh = spacetime(it.utcTs).goto(userTz).unixFmt('HH');
+          const index = finalData.findIndex((e) => e.time === `${hh}:00`);
+          let keyName = null;
+          if (it.maxCbt >= 38.5) {
+            keyName = 'moderate';
+          } else if (it.maxCbt > 38) {
+            keyName = 'mild';
+          }
+
+          if (keyName) {
+            if (index !== -1) {
+              finalData[index] = {
+                ...finalData[index],
+                [keyName]: (finalData[index]?.[keyName] ?? 0) + 1
+              };
+            } else {
+              finalData.push({
+                time: `${hh}:00`,
+                [keyName]: 1
+              });
+            }
+          }
+        });
+      });
+      finalData = finalData?.sort((a, b) => (a.time > b.time ? 1 : -1));
+      const labels = [];
+      const mildDataList = [];
+      const moderateDataList = [];
+      finalData.forEach((it) => {
+        labels.push(it.time);
+        mildDataList.push(it.mild ?? 0);
+        moderateDataList.push(it.moderate ?? 0);
+      });
+      return {
+        labels,
+        datasets: [
+          {
+            label: unitMetric
+              ? 'Moderate Hyperthermia >= 38.5˚C'
+              : 'Moderate Hyperthermia >= 101.3˚F',
+            data: mildDataList,
+            backgroundColor: 'yellow'
+          },
+          {
+            label: unitMetric
+              ? 'Mild Hyperthermia 38.0˚C - 38.4˚C'
+              : 'Mild Hyperthermia 100.4˚F - 101.2˚F',
+            data: moderateDataList,
+            backgroundColor: 'orange'
+          }
+        ]
+      };
     } else {
       return null;
     }
@@ -723,15 +854,17 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   const maxCBTTileData = React.useMemo(() => {
     let list = [];
     let dayList = [];
-    const thisWeek = getThisWeekByTeam(timeZone);
-    const endD = thisWeek.endDate;
-    let startD = thisWeek.startDate;
 
     if (
       metric === METRIC_USER_TABLE_VALUES.ALERTS ||
       metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
     ) {
       // 2, 31
+      let startD = spacetime(startDate, timeZone.name);
+      startD = startD.time('12:00am');
+      let endD = spacetime(endDate.toLocaleString(), timeZone.name);
+      endD = endD.time('11:59pm');
+
       let thisData = onFilterData(
         organizationAnalytics,
         ANALYTICS_API_KEYS.ALERT_METRICS,
@@ -808,6 +941,9 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         datasets: dataSet
       };
     } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) {
+      const thisWeek = getThisWeekByTeam(timeZone);
+      const endD = thisWeek.endDate;
+      let startD = thisWeek.startDate;
       // 32
       while (startD.isBefore(endD)) {
         const subList = [];
@@ -1025,13 +1161,13 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       });
 
       ret = tempRet?.map((it) => {
-        let a = organizationAnalytics?.maxCbt?.find(
-          (maxCbt) => maxCbt?.userId === it.userId
+        let a = organizationAnalytics?.[ANALYTICS_API_KEYS.MAX_CBT]?.find(
+          (e) => e?.userId === it.userId
         )?.maxCbt;
         a = formatNumber(a);
-        let b = organizationAnalytics?.maxCbt?.find(
-          (maxCbt) => maxCbt?.userId === it.userId
-        )?.maxHrAvg;
+        let b = organizationAnalytics?.[ANALYTICS_API_KEYS.MAX_HR_ALL]
+          ?.filter((e) => e?.userId === it.userId)
+          ?.sort((i, j) => j?.maxHr - i?.maxHr)?.[0]?.maxHr;
         b = formatNumber(b);
 
         return [
@@ -1050,10 +1186,39 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       // 8
       ret = onFilterData(
         organizationAnalytics,
-        ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES,
-        null,
-        null
-      )?.map((it) => [it.temperatureCategory, formatNumber(it.percentage)]);
+        ANALYTICS_API_KEYS.TEMP_CATE_DATA,
+        pickedMembers,
+        members
+      );
+      let safe = 0;
+      let mild = 0;
+      let moderate = 0;
+      ret?.forEach((it) => {
+        it.temperatureCategoryCounts?.forEach((e) => {
+          if (e.temperatureCategory?.toLowerCase()?.includes('safe to work')) {
+            safe += e.count ?? 0;
+          } else if (e.temperatureCategory?.toLowerCase()?.includes('mild')) {
+            mild += e.count ?? 0;
+          } else if (e.temperatureCategory?.toLowerCase()?.includes('moderate')) {
+            moderate += e.count ?? 0;
+          }
+        });
+      });
+      const total = safe + mild + moderate;
+      ret = [
+        [
+          unitMetric ? 'Safe to Work < 38.0˚C' : 'Safe to Work < 100.4 ˚F',
+          onCalc(0, [safe, mild, moderate], total)
+        ],
+        [
+          unitMetric ? 'Mild Hyperthermia 38.0˚C - 38.4˚C' : 'Mild Hyperthermia 100.4˚F - 101.2˚F',
+          onCalc(1, [safe, mild, moderate], total)
+        ],
+        [
+          unitMetric ? 'Moderate Hyperthermia >= 38.5˚C' : 'Moderate Hyperthermia >= 101.3˚F',
+          onCalc(2, [safe, mild, moderate], total)
+        ]
+      ];
     } else if (metric === METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY) {
       // 20
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.TEMP_HUMIDITY, null, null)?.map(
