@@ -705,5 +705,6 @@
   "connect device member confirm": "Connect your team member to this device?",
   "no device match": "No Device ID match found",
   "no member match": "No team member found",
-  "username invalid 3": "Please check Username, email is not a valid Username"
+  "username invalid 3": "Please check Username, email is not a valid Username",
+  "unable to remove email": "Unable to remove email. Email or phone number is required"
 }

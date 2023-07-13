@@ -705,5 +705,6 @@
   "connect device member confirm": "Conectar o membro da sua equipe a este dispositivo?",
   "no device match": "Nenhuma correspondência de ID de dispositivo encontrada",
   "no member match": "Nenhum membro da equipe encontrado",
-  "username invalid 3": "Verifique o nome de usuário, o e-mail não é um nome de usuário válido"
+  "username invalid 3": "Verifique o nome de usuário, o e-mail não é um nome de usuário válido",
+  "unable to remove email": "Não foi possível remover o e-mail. E-mail ou número de telefone é obrigatório"
 }
