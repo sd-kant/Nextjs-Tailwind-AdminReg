@@ -58,12 +58,23 @@ const formatPhoneNumber = (users) => {
   );
 };
 
+const formatEmailForModify = (users) => {
+  return (
+    users &&
+    users.map((user) => ({
+      ...user,
+      // when modifying a user, if email is empty, it is for unsetting the email
+      email: user.email ? user.email.toLowerCase() : ''
+    }))
+  );
+};
+
 const formatEmail = (users) => {
   return (
     users &&
     users.map((user) => ({
       ...user,
-      // fixme admin can set user's email as empty, in this case how to un-assign email from user
+      // when creating a user, if email is empty, it is for not setting the email
       email: user.email ? user.email.toLowerCase() : null
     }))
   );
@@ -272,7 +283,7 @@ export const handleModifyUsers = async ({
         usersToModify.push(it);
       }
     });
-    usersToModify = setUserType(formatJob(formatEmail(usersToModify)));
+    usersToModify = setUserType(formatJob(formatEmailForModify(usersToModify)));
     usersToModify = usersToModify?.map((it) => ({
       userId: it.userId,
       firstName: it.firstName,
