@@ -299,10 +299,10 @@ export const TYPES = [
 ];
 export const LABELS_HEAT_DOUGHNUT = [i18n.t('low %'), i18n.t('medium'), i18n.t('high')];
 export const LABELS_SWEAT_DOUGHNUT = [i18n.t('low %'), i18n.t('moderate'), i18n.t('high')];
-export const LABELS_CBT_ZONES_DOUGHNUT = [
-  i18n.t('Safe to Work < 38.0˚C'),
-  i18n.t('Mild Hyperthermia 38.0˚C - 38.4˚C'),
-  i18n.t('Moderate Hyperthermia >= 38.5˚C')
+export const LABELS_CBT_ZONES_DOUGHNUT = (metric) => [
+  metric ? 'Safe to Work < 38.0˚C' : 'Safe to Work < 100.4 ˚F',
+  metric ? 'Mild Hyperthermia 38.0˚C - 38.4˚C' : 'Mild Hyperthermia 100.4˚F - 101.2˚F',
+  metric ? 'Moderate Hyperthermia >= 38.5˚C' : 'Moderate Hyperthermia >= 101.3˚F'
 ];
 export const HEAT_LOW_MEDIUM_HIGH = ['low', 'medium', 'high'];
 export const SWEAT_LOW_MEDIUM_HIGH = ['low', 'moderate', 'high'];

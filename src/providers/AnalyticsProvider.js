@@ -747,7 +747,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
 
         return {
           type: 'doughnut',
-          labels: LABELS_CBT_ZONES_DOUGHNUT,
+          labels: LABELS_CBT_ZONES_DOUGHNUT(unitMetric),
           datasets: [
             {
               label: label,
