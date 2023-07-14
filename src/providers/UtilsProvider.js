@@ -214,9 +214,9 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
       const age = Math.abs(ageDate.getUTCFullYear() - 1970);
       const maxHR = 208 - 0.7 * age;
 
-      if (heartRate <= 0.57 * maxHR) return HEART_RATE_VALUES[1]; // very light
-      else if (heartRate <= 0.64 * maxHR) return HEART_RATE_VALUES[2]; // light
-      else if (heartRate <= 0.75 * maxHR) return HEART_RATE_VALUES[3]; // moderate
+      if (heartRate <= 0.57 * maxHR) return HEART_RATE_VALUES[1];
+      else if (heartRate <= 0.64 * maxHR) return HEART_RATE_VALUES[2];
+      else if (heartRate <= 0.75 * maxHR) return HEART_RATE_VALUES[3];
       else return HEART_RATE_VALUES[4]; // high
     }
 
