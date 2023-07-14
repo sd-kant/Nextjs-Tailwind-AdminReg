@@ -144,7 +144,7 @@ const ChartUserAlert = ({ metric: unit }) => {
         const memberTz = memberFull?.gmt ?? teamTz;
         let temp = [];
         let startTimeForUser = spacetime(selectedDate.label, memberTz);
-        startTimeForUser = startTimeForUser.time('9:00am');
+        startTimeForUser = startTimeForUser.time('0:00am');
         let endTimeForUser = spacetime(selectedDate.label, memberTz);
         endTimeForUser = endTimeForUser.time('11:59pm');
         const userChartData =
@@ -290,9 +290,9 @@ const ChartUserAlert = ({ metric: unit }) => {
                     display: true,
                     text: xLabel
                   },
-                  min: `${selectedDate?.label}T09:00`,
+                  min: `${selectedDate?.label}T00:00`,
                   max: `${selectedDate?.label}T23:59`,
-                  suggestedMin: `${selectedDate?.label}T09:00`,
+                  suggestedMin: `${selectedDate?.label}T00:00`,
                   suggestedMax: `${selectedDate?.label}T23:59`,
                   autoSkip: false,
                   time: {
