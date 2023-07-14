@@ -5,16 +5,16 @@ import { Doughnut } from 'react-chartjs-2';
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
-import { useTranslation, withTranslation } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
 import { HEAT_SWEAT_CHART_COLORS, LABELS_CBT_ZONES_DOUGHNUT } from '../../../../constant';
-import { chartPlugins, checkEmptyData } from '../../../../utils/anlytics';
+import { checkEmptyData } from '../../../../utils/anlytics';
+import { get } from 'lodash';
 
 ChartJS.register(ArcElement);
 
-const ChartCBTZones = () => {
+const ChartCBTZones = ({ metric }) => {
   const { chartData, chartRef, setIsEnablePrint } = useAnalyticsContext();
-  const { t } = useTranslation();
 
   React.useEffect(() => {
     setIsEnablePrint(
@@ -29,14 +29,19 @@ const ChartCBTZones = () => {
         <h1 className={clsx(style.TxtCenter)}>{title}</h1>
         <Doughnut
           data={data}
-          plugins={chartPlugins('doughnut-heat', t(`no data to display`))}
+          // plugins={chartPlugins('doughnut-heat', t(`no data to display`))}
           options={{
             plugins: {
               tooltip: {
                 callbacks: {
                   label: function (context) {
                     return (
-                      (context.dataset.label || '') + ': ' + chartData?.counts[context?.dataIndex]
+                      (context.dataset.label || '') +
+                      ': ' +
+                      chartData?.counts[context?.dataIndex] +
+                      ' - ' +
+                      context.dataset?.data?.[context?.dataIndex] +
+                      '%'
                     );
                   }
                 }
@@ -65,13 +70,15 @@ const ChartCBTZones = () => {
         <ChartComponent
           title={''}
           data={chartData?.dataCBTZones}
-          labels={LABELS_CBT_ZONES_DOUGHNUT}
+          labels={LABELS_CBT_ZONES_DOUGHNUT(metric)}
         />
       </div>
     </div>
   );
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  metric: get(state, 'ui.metric')
+});
 
 export default connect(mapStateToProps, null)(withTranslation()(ChartCBTZones));
