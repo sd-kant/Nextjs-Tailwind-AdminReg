@@ -7,13 +7,12 @@ import clsx from 'clsx';
 import style from './Chart.module.scss';
 import { withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
-import { HEAT_SWEAT_CHART_COLORS, LABELS_CBT_ZONES_DOUGHNUT } from '../../../../constant';
 import { checkEmptyData } from '../../../../utils/anlytics';
 import { get } from 'lodash';
 
 ChartJS.register(ArcElement);
 
-const ChartCBTZones = ({ metric }) => {
+const ChartCBTZones = () => {
   const { chartData, chartRef, setIsEnablePrint } = useAnalyticsContext();
 
   React.useEffect(() => {
@@ -23,15 +22,21 @@ const ChartCBTZones = ({ metric }) => {
     );
   }, [chartData, setIsEnablePrint]);
 
-  const ChartComponent = ({ title, data, labels }) => {
+  const ChartComponent = ({ title, data }) => {
     return (
       <div>
         <h1 className={clsx(style.TxtCenter)}>{title}</h1>
         <Doughnut
           data={data}
-          // plugins={chartPlugins('doughnut-heat', t(`no data to display`))}
           options={{
             plugins: {
+              legend: {
+                display: true,
+                labels: {
+                  color: 'white'
+                },
+                position: 'bottom'
+              },
               tooltip: {
                 callbacks: {
                   label: function (context) {
@@ -49,16 +54,6 @@ const ChartCBTZones = ({ metric }) => {
             }
           }}
         />
-        <div className={clsx(style.LegendBoxBody)}>
-          {HEAT_SWEAT_CHART_COLORS.map((item, key) => {
-            return (
-              <div key={key} className={clsx(style.LegendFlex)}>
-                <div className={clsx(style.LegendBoxItem)} style={{ backgroundColor: item }} />
-                <div className={clsx(style.LegendBoxTxt)}>{labels[key]}</div>
-              </div>
-            );
-          })}
-        </div>
       </div>
     );
   };
@@ -67,11 +62,7 @@ const ChartCBTZones = ({ metric }) => {
   return (
     <div ref={chartRef} className={clsx(style.ChartBody)}>
       <div className={clsx(style.DoughnutGrid2)}>
-        <ChartComponent
-          title={''}
-          data={chartData?.dataCBTZones}
-          labels={LABELS_CBT_ZONES_DOUGHNUT(metric)}
-        />
+        <ChartComponent title={''} data={chartData?.dataCBTZones} />
       </div>
     </div>
   );
