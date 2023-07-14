@@ -266,12 +266,21 @@ export const QUESTION_TYPE_BOOLEAN = 'boolean';
 export const HEAT_SUSCEPTIBILITY_HIGH = 'High';
 export const HEAT_SUSCEPTIBILITY_MEDIUM = 'Medium';
 export const HEAT_SUSCEPTIBILITY_LOW = 'Low';
+export const SWEAT_HIGH = 'High';
+export const SWEAT_MODERATE = 'MODERATE';
+export const SWEAT_LOW = 'Low';
 export const ALERT_STAGE_ID_LIST = ['1', '2', '3', '4'];
 
 export const HEAT_SUSCEPTIBILITY_PRIORITIES = {
   [HEAT_SUSCEPTIBILITY_HIGH.toLowerCase()]: 1,
   [HEAT_SUSCEPTIBILITY_MEDIUM.toLowerCase()]: 2,
   [HEAT_SUSCEPTIBILITY_LOW.toLowerCase()]: 3
+};
+
+export const SWEAT_PRIORITIES = {
+  [SWEAT_HIGH.toLowerCase()]: 1,
+  [SWEAT_MODERATE.toLowerCase()]: 2,
+  [SWEAT_LOW.toLowerCase()]: 3
 };
 
 export const HEAT_SWEAT_CHART_COLORS = ['#ffe699', '#ffc000', '#ed7d31'];

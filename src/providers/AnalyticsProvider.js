@@ -38,7 +38,8 @@ import {
   LABELS_HEAT_DOUGHNUT,
   LABELS_SWEAT_DOUGHNUT,
   INVALID_VALUES2,
-  LABELS_CBT_ZONES_DOUGHNUT
+  LABELS_CBT_ZONES_DOUGHNUT,
+  SWEAT_PRIORITIES
 } from '../constant';
 import { useBasicContext } from './BasicProvider';
 import { formatHeartRate, literToQuart } from '../utils/dashboard';
@@ -276,7 +277,10 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
             [SORT_TITLES[0], [[1, 'asc', 'string']]],
             [SORT_TITLES[1], [[1, 'desc', 'string']]]
           ]),
-          null,
+          makeSort('Sort', [
+            [SORT_TITLES[10], [[2, 'asc', 'sweat']]],
+            [SORT_TITLES[11], [[2, 'desc', 'sweat']]]
+          ]),
           makeSort('Sort', [
             [SORT_TITLES[2], [[3, 'asc', 'number']]],
             [SORT_TITLES[3], [[3, 'desc', 'number']]]
@@ -1440,6 +1444,15 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
           const v =
             HEAT_SUSCEPTIBILITY_PRIORITIES[a?.[sort[0].index]?.toLowerCase()] -
             HEAT_SUSCEPTIBILITY_PRIORITIES[b?.[sort[0].index]?.toLowerCase()];
+          if (sort[0].direction === `asc`) {
+            return v;
+          } else if (sort[0].direction === `desc`) {
+            return v * -1;
+          }
+        } else if (sort[0].type === `sweat`) {
+          const v =
+            SWEAT_PRIORITIES[a?.[sort[0].index]?.toLowerCase()] -
+            SWEAT_PRIORITIES[b?.[sort[0].index]?.toLowerCase()];
           if (sort[0].direction === `asc`) {
             return v;
           } else if (sort[0].direction === `desc`) {
