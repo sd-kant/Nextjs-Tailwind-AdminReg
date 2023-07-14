@@ -40,14 +40,7 @@ const ChartCBTZones = () => {
               tooltip: {
                 callbacks: {
                   label: function (context) {
-                    return (
-                      (context.dataset.label || '') +
-                      ': ' +
-                      chartData?.counts[context?.dataIndex] +
-                      ' - ' +
-                      context.dataset?.data?.[context?.dataIndex] +
-                      '%'
-                    );
+                    return ' ' + context.dataset?.data?.[context?.dataIndex] + '%';
                   }
                 }
               }
