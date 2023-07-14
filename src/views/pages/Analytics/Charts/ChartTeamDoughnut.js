@@ -8,7 +8,7 @@ import style from './Chart.module.scss';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
 import { METRIC_TEAM_TABLE_VALUES, METRIC_USER_TABLE_VALUES } from '../../../../constant';
-import { chartPlugins, checkEmptyData } from '../../../../utils/anlytics';
+import { checkEmptyData } from '../../../../utils/anlytics';
 
 ChartJS.register(ArcElement);
 
@@ -40,7 +40,6 @@ const ChartTeamDoughnut = () => {
         </h1>
         <Doughnut
           data={data}
-          plugins={chartPlugins(`doughnut-${mode}`, t(`no data to display`))}
           options={{
             plugins: {
               legend: {
@@ -54,6 +53,9 @@ const ChartTeamDoughnut = () => {
                 callbacks: {
                   label: function (context) {
                     return (
+                      ' ' +
+                      context.dataset?.data?.[context?.dataIndex] +
+                      '%' +
                       (context.dataset.label || '') +
                       ': ' +
                       chartData?.counts[context?.dataIndex + (mode === 'heat' ? 0 : 3)]
