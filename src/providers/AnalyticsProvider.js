@@ -1154,10 +1154,29 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       const teamMemberIdList =
         pickedMembers?.length > 0 ? pickedMembers : members?.map((it) => it.userId);
       teamMemberIdList?.forEach((it) => {
-        let recentItem = filterData
-          ?.filter((a) => a?.userId?.toString() === it?.toString())
+        // device type: kenzen
+        // data transfer middle device type: hub | ios | android
+        const recentKenzenDevice = filterData
+          ?.filter(
+            (a) => a?.userId?.toString() === it?.toString() && a.active && a.type === 'kenzen'
+          )
           ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
-        if (recentItem) tempRet.push(recentItem);
+        const recentDataDevice = filterData
+          ?.filter(
+            (a) =>
+              a?.userId?.toString() === it?.toString() &&
+              a.active &&
+              ['hub', 'android', 'ios'].includes(a.type)
+          )
+          ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+        if (recentKenzenDevice || recentDataDevice) {
+          tempRet.push({
+            kenzen: recentKenzenDevice,
+            data: recentDataDevice,
+            ...(recentDataDevice ?? []),
+            ...(recentKenzenDevice ?? [])
+          });
+        }
       });
 
       ret = tempRet?.map((it) => {
@@ -1169,17 +1188,16 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
           ?.filter((e) => e?.userId === it.userId)
           ?.sort((i, j) => j?.maxHr - i?.maxHr)?.[0]?.maxHr;
         b = formatNumber(b);
-
         return [
-          it.fullname ?? ``,
+          it.fullname ?? '',
           getTeamNameFromTeamId(formattedTeams, it.teamId),
-          it.type === `kenzen` ? it?.version || `` : ``,
-          it.type === `kenzen` ? `` : it.osVersion ?? ``,
-          it.type === `kenzen` ? `` : it.version ?? ``,
-          it.type ?? ``,
+          it.kenzen?.version ?? '',
+          it.data?.osVersion ?? '',
+          it.data?.version ?? '',
+          it.data?.type ?? '',
           a,
           b,
-          new Date(it.ts).toLocaleString() ?? ``
+          new Date(it.ts).toLocaleString() ?? ''
         ];
       });
     } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) {
