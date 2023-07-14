@@ -266,12 +266,21 @@ export const QUESTION_TYPE_BOOLEAN = 'boolean';
 export const HEAT_SUSCEPTIBILITY_HIGH = 'High';
 export const HEAT_SUSCEPTIBILITY_MEDIUM = 'Medium';
 export const HEAT_SUSCEPTIBILITY_LOW = 'Low';
+export const SWEAT_HIGH = 'High';
+export const SWEAT_MODERATE = 'MODERATE';
+export const SWEAT_LOW = 'Low';
 export const ALERT_STAGE_ID_LIST = ['1', '2', '3', '4'];
 
 export const HEAT_SUSCEPTIBILITY_PRIORITIES = {
   [HEAT_SUSCEPTIBILITY_HIGH.toLowerCase()]: 1,
   [HEAT_SUSCEPTIBILITY_MEDIUM.toLowerCase()]: 2,
   [HEAT_SUSCEPTIBILITY_LOW.toLowerCase()]: 3
+};
+
+export const SWEAT_PRIORITIES = {
+  [SWEAT_HIGH.toLowerCase()]: 1,
+  [SWEAT_MODERATE.toLowerCase()]: 2,
+  [SWEAT_LOW.toLowerCase()]: 3
 };
 
 export const HEAT_SWEAT_CHART_COLORS = ['#ffe699', '#ffc000', '#ed7d31'];
@@ -299,10 +308,10 @@ export const TYPES = [
 ];
 export const LABELS_HEAT_DOUGHNUT = [i18n.t('low %'), i18n.t('medium'), i18n.t('high')];
 export const LABELS_SWEAT_DOUGHNUT = [i18n.t('low %'), i18n.t('moderate'), i18n.t('high')];
-export const LABELS_CBT_ZONES_DOUGHNUT = [
-  i18n.t('Safe to Work < 38.0˚C'),
-  i18n.t('Mild Hyperthermia 38.0˚C - 38.4˚C'),
-  i18n.t('Moderate Hyperthermia >= 38.5˚C')
+export const LABELS_CBT_ZONES_DOUGHNUT = (metric) => [
+  metric ? 'Safe to Work < 38.0˚C' : 'Safe to Work < 100.4 ˚F',
+  metric ? 'Mild Hyperthermia 38.0˚C - 38.4˚C' : 'Mild Hyperthermia 100.4˚F - 101.2˚F',
+  metric ? 'Moderate Hyperthermia >= 38.5˚C' : 'Moderate Hyperthermia >= 101.3˚F'
 ];
 export const HEAT_LOW_MEDIUM_HIGH = ['low', 'medium', 'high'];
 export const SWEAT_LOW_MEDIUM_HIGH = ['low', 'moderate', 'high'];

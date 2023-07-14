@@ -5,16 +5,15 @@ import { Doughnut } from 'react-chartjs-2';
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
-import { useTranslation, withTranslation } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
-import { HEAT_SWEAT_CHART_COLORS, LABELS_CBT_ZONES_DOUGHNUT } from '../../../../constant';
-import { chartPlugins, checkEmptyData } from '../../../../utils/anlytics';
+import { checkEmptyData } from '../../../../utils/anlytics';
+import { get } from 'lodash';
 
 ChartJS.register(ArcElement);
 
 const ChartCBTZones = () => {
   const { chartData, chartRef, setIsEnablePrint } = useAnalyticsContext();
-  const { t } = useTranslation();
 
   React.useEffect(() => {
     setIsEnablePrint(
@@ -23,37 +22,31 @@ const ChartCBTZones = () => {
     );
   }, [chartData, setIsEnablePrint]);
 
-  const ChartComponent = ({ title, data, labels }) => {
+  const ChartComponent = ({ title, data }) => {
     return (
       <div>
         <h1 className={clsx(style.TxtCenter)}>{title}</h1>
         <Doughnut
           data={data}
-          plugins={chartPlugins('doughnut-heat', t(`no data to display`))}
           options={{
             plugins: {
+              legend: {
+                display: true,
+                labels: {
+                  color: 'white'
+                },
+                position: 'bottom'
+              },
               tooltip: {
                 callbacks: {
                   label: function (context) {
-                    return (
-                      (context.dataset.label || '') + ': ' + chartData?.counts[context?.dataIndex]
-                    );
+                    return ' ' + context.dataset?.data?.[context?.dataIndex] + '%';
                   }
                 }
               }
             }
           }}
         />
-        <div className={clsx(style.LegendBoxBody)}>
-          {HEAT_SWEAT_CHART_COLORS.map((item, key) => {
-            return (
-              <div key={key} className={clsx(style.LegendFlex)}>
-                <div className={clsx(style.LegendBoxItem)} style={{ backgroundColor: item }} />
-                <div className={clsx(style.LegendBoxTxt)}>{labels[key]}</div>
-              </div>
-            );
-          })}
-        </div>
       </div>
     );
   };
@@ -62,16 +55,14 @@ const ChartCBTZones = () => {
   return (
     <div ref={chartRef} className={clsx(style.ChartBody)}>
       <div className={clsx(style.DoughnutGrid2)}>
-        <ChartComponent
-          title={''}
-          data={chartData?.dataCBTZones}
-          labels={LABELS_CBT_ZONES_DOUGHNUT}
-        />
+        <ChartComponent title={''} data={chartData?.dataCBTZones} />
       </div>
     </div>
   );
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  metric: get(state, 'ui.metric')
+});
 
 export default connect(mapStateToProps, null)(withTranslation()(ChartCBTZones));

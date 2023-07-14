@@ -38,7 +38,8 @@ import {
   LABELS_HEAT_DOUGHNUT,
   LABELS_SWEAT_DOUGHNUT,
   INVALID_VALUES2,
-  LABELS_CBT_ZONES_DOUGHNUT
+  LABELS_CBT_ZONES_DOUGHNUT,
+  SWEAT_PRIORITIES
 } from '../constant';
 import { useBasicContext } from './BasicProvider';
 import { formatHeartRate, literToQuart } from '../utils/dashboard';
@@ -276,7 +277,10 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
             [SORT_TITLES[0], [[1, 'asc', 'string']]],
             [SORT_TITLES[1], [[1, 'desc', 'string']]]
           ]),
-          null,
+          makeSort('Sort', [
+            [SORT_TITLES[10], [[2, 'asc', 'sweat']]],
+            [SORT_TITLES[11], [[2, 'desc', 'sweat']]]
+          ]),
           makeSort('Sort', [
             [SORT_TITLES[2], [[3, 'asc', 'number']]],
             [SORT_TITLES[3], [[3, 'desc', 'number']]]
@@ -344,16 +348,16 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
             [SORT_TITLES[3], [[2, 'desc', 'string']]]
           ]),
           makeSort('Sort', [
-            [SORT_TITLES[2], [[3, 'asc', 'string']]],
-            [SORT_TITLES[3], [[3, 'desc', 'string']]]
+            [SORT_TITLES[0], [[3, 'asc', 'string']]],
+            [SORT_TITLES[1], [[3, 'desc', 'string']]]
           ]),
           makeSort('Sort', [
-            [SORT_TITLES[0], [[4, 'asc', 'string']]],
-            [SORT_TITLES[1], [[4, 'desc', 'string']]]
+            [SORT_TITLES[2], [[4, 'asc', 'string']]],
+            [SORT_TITLES[3], [[4, 'desc', 'string']]]
           ]),
           makeSort('Sort', [
-            [SORT_TITLES[0], [[5, 'asc', 'string']]],
-            [SORT_TITLES[1], [[5, 'desc', 'string']]]
+            [SORT_TITLES[2], [[5, 'asc', 'string']]],
+            [SORT_TITLES[3], [[5, 'desc', 'string']]]
           ]),
           makeSort('Sort', [
             [SORT_TITLES[2], [[6, 'asc', 'number']]],
@@ -747,7 +751,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
 
         return {
           type: 'doughnut',
-          labels: LABELS_CBT_ZONES_DOUGHNUT,
+          labels: LABELS_CBT_ZONES_DOUGHNUT(unitMetric),
           datasets: [
             {
               label: label,
@@ -1154,10 +1158,29 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       const teamMemberIdList =
         pickedMembers?.length > 0 ? pickedMembers : members?.map((it) => it.userId);
       teamMemberIdList?.forEach((it) => {
-        let recentItem = filterData
-          ?.filter((a) => a?.userId?.toString() === it?.toString())
+        // device type: kenzen
+        // data transfer middle device type: hub | ios | android
+        const recentKenzenDevice = filterData
+          ?.filter(
+            (a) => a?.userId?.toString() === it?.toString() && a.active && a.type === 'kenzen'
+          )
           ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
-        if (recentItem) tempRet.push(recentItem);
+        const recentDataDevice = filterData
+          ?.filter(
+            (a) =>
+              a?.userId?.toString() === it?.toString() &&
+              a.active &&
+              ['hub', 'android', 'ios'].includes(a.type)
+          )
+          ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+        if (recentKenzenDevice || recentDataDevice) {
+          tempRet.push({
+            kenzen: recentKenzenDevice,
+            data: recentDataDevice,
+            ...(recentDataDevice ?? []),
+            ...(recentKenzenDevice ?? [])
+          });
+        }
       });
 
       ret = tempRet?.map((it) => {
@@ -1169,17 +1192,16 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
           ?.filter((e) => e?.userId === it.userId)
           ?.sort((i, j) => j?.maxHr - i?.maxHr)?.[0]?.maxHr;
         b = formatNumber(b);
-
         return [
-          it.fullname ?? ``,
+          it.fullname ?? '',
           getTeamNameFromTeamId(formattedTeams, it.teamId),
-          it.type === `kenzen` ? it?.version || `` : ``,
-          it.type === `kenzen` ? `` : it.osVersion ?? ``,
-          it.type === `kenzen` ? `` : it.version ?? ``,
-          it.type ?? ``,
+          it.kenzen?.version ?? '',
+          it.data?.type ?? '',
+          it.data?.osVersion ?? '',
+          it.data?.version ?? '',
           a,
           b,
-          new Date(it.ts).toLocaleString() ?? ``
+          new Date(it.ts).toLocaleString() ?? ''
         ];
       });
     } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) {
@@ -1422,6 +1444,15 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
           const v =
             HEAT_SUSCEPTIBILITY_PRIORITIES[a?.[sort[0].index]?.toLowerCase()] -
             HEAT_SUSCEPTIBILITY_PRIORITIES[b?.[sort[0].index]?.toLowerCase()];
+          if (sort[0].direction === `asc`) {
+            return v;
+          } else if (sort[0].direction === `desc`) {
+            return v * -1;
+          }
+        } else if (sort[0].type === `sweat`) {
+          const v =
+            SWEAT_PRIORITIES[a?.[sort[0].index]?.toLowerCase()] -
+            SWEAT_PRIORITIES[b?.[sort[0].index]?.toLowerCase()];
           if (sort[0].direction === `asc`) {
             return v;
           } else if (sort[0].direction === `desc`) {
