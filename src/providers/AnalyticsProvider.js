@@ -348,16 +348,16 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
             [SORT_TITLES[3], [[2, 'desc', 'string']]]
           ]),
           makeSort('Sort', [
-            [SORT_TITLES[2], [[3, 'asc', 'string']]],
-            [SORT_TITLES[3], [[3, 'desc', 'string']]]
+            [SORT_TITLES[0], [[3, 'asc', 'string']]],
+            [SORT_TITLES[1], [[3, 'desc', 'string']]]
           ]),
           makeSort('Sort', [
-            [SORT_TITLES[0], [[4, 'asc', 'string']]],
-            [SORT_TITLES[1], [[4, 'desc', 'string']]]
+            [SORT_TITLES[2], [[4, 'asc', 'string']]],
+            [SORT_TITLES[3], [[4, 'desc', 'string']]]
           ]),
           makeSort('Sort', [
-            [SORT_TITLES[0], [[5, 'asc', 'string']]],
-            [SORT_TITLES[1], [[5, 'desc', 'string']]]
+            [SORT_TITLES[2], [[5, 'asc', 'string']]],
+            [SORT_TITLES[3], [[5, 'desc', 'string']]]
           ]),
           makeSort('Sort', [
             [SORT_TITLES[2], [[6, 'asc', 'number']]],
@@ -1196,9 +1196,9 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
           it.fullname ?? '',
           getTeamNameFromTeamId(formattedTeams, it.teamId),
           it.kenzen?.version ?? '',
+          it.data?.type ?? '',
           it.data?.osVersion ?? '',
           it.data?.version ?? '',
-          it.data?.type ?? '',
           a,
           b,
           new Date(it.ts).toLocaleString() ?? ''
