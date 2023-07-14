@@ -7,13 +7,7 @@ import clsx from 'clsx';
 import style from './Chart.module.scss';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
-import {
-  HEAT_SWEAT_CHART_COLORS,
-  LABELS_HEAT_DOUGHNUT,
-  LABELS_SWEAT_DOUGHNUT,
-  METRIC_TEAM_TABLE_VALUES,
-  METRIC_USER_TABLE_VALUES
-} from '../../../../constant';
+import { METRIC_TEAM_TABLE_VALUES, METRIC_USER_TABLE_VALUES } from '../../../../constant';
 import { chartPlugins, checkEmptyData } from '../../../../utils/anlytics';
 
 ChartJS.register(ArcElement);
@@ -30,7 +24,7 @@ const ChartTeamDoughnut = () => {
     );
   }, [chartData, setIsEnablePrint]);
 
-  const ChartComponent = (title, data, mode, labels) => {
+  const ChartComponent = (title, data, mode) => {
     return (
       <div>
         <h1 className={clsx(style.TxtCenter)}>
@@ -49,6 +43,13 @@ const ChartTeamDoughnut = () => {
           plugins={chartPlugins(`doughnut-${mode}`, t(`no data to display`))}
           options={{
             plugins: {
+              legend: {
+                display: true,
+                labels: {
+                  color: 'white'
+                },
+                position: 'bottom'
+              },
               tooltip: {
                 callbacks: {
                   label: function (context) {
@@ -63,16 +64,6 @@ const ChartTeamDoughnut = () => {
             }
           }}
         />
-        <div className={clsx(style.LegendBoxBody)}>
-          {HEAT_SWEAT_CHART_COLORS.map((item, key) => {
-            return (
-              <div key={key} className={clsx(style.LegendFlex)}>
-                <div className={clsx(style.LegendBoxItem)} style={{ backgroundColor: item }} />
-                <div className={clsx(style.LegendBoxTxt)}>{labels[key]}</div>
-              </div>
-            );
-          })}
-        </div>
       </div>
     );
   };
@@ -85,18 +76,13 @@ const ChartTeamDoughnut = () => {
           METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT,
           METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE
         ].includes(selectedMetric?.value) &&
-          ChartComponent(
-            t(`heat susceptibility`),
-            chartData?.dataHeat,
-            'heat',
-            LABELS_HEAT_DOUGHNUT
-          )}
+          ChartComponent(t(`heat susceptibility`), chartData?.dataHeat, 'heat')}
 
         {[
           METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT,
           METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE
         ].includes(selectedMetric?.value) &&
-          ChartComponent(t(`sweat rate`), chartData?.dataSweat, 'sweat', LABELS_SWEAT_DOUGHNUT)}
+          ChartComponent(t(`sweat rate`), chartData?.dataSweat, 'sweat')}
       </div>
     </div>
   );
