@@ -32,6 +32,11 @@ const MemberTable = ({ t, forceWidthUpdate }) => {
     lastDataSync: t('last data sync')
   };
 
+  React.useEffect(() => {
+    forceWidthUpdate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Boolean(members.length)]);
+
   return (
     <>
       {members?.length > 0 ? (
