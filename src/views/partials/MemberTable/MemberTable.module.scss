@@ -2,3 +2,7 @@
   border-spacing: 0;
   border-collapse: separate;
 }
+
+.NoMatches {
+  min-width: min(492px, calc(100vw - 40px));
+}
