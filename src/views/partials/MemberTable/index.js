@@ -60,7 +60,7 @@ const MemberTable = ({ t, forceWidthUpdate }) => {
           </tbody>
         </table>
       ) : (
-        <div className="font-heading-small text-capitalize mt-25">
+        <div className={clsx(style.NoMatches, 'font-heading-small text-capitalize mt-25')}>
           <span>{t('no matches found')}</span>
         </div>
       )}
