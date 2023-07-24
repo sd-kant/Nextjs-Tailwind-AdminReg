@@ -171,7 +171,7 @@ const ChartUserAlert = ({ metric: unit }) => {
           }
         });
         temp = temp.map((a) => ({
-          x: new Date(a.time),
+          x: a.time,
           y: a.value
         }));
 
