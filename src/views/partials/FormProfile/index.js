@@ -536,7 +536,7 @@ const FormProfile = (props) => {
               disabled={!edit}
               value={Math.round(values['weight']) || ''}
               name="weight"
-              step={5}
+              step={1}
               onChange={changeFormField}
             />
 
