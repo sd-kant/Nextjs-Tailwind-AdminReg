@@ -338,12 +338,12 @@ export const dateFormat = (d) => {
   return `${year}-${formattedMonth}-${formattedDate}`;
 };
 
-export const getHeightAsMetric = ({ measure, feet, inch, height }) => {
+export const getHeightAsMetric = ({ measure, feet, inch, m, cm }) => {
   if (measure === IMPERIAL) {
-    const { m, cm } = convertImperialToMetric(`${feet}ft${inch}in`);
-    return parseInt(m) * 100 + parseInt(cm);
+    const { m: _m, cm: _cm } = convertImperialToMetric(`${feet}ft${inch}in`);
+    return parseInt(_m) * 100 + parseInt(_cm);
   } else {
-    return height?.replaceAll('m', '').replaceAll('c', '');
+    return parseInt(m) * 100 + parseInt(cm);
   }
 };
 

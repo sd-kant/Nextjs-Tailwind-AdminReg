@@ -4,14 +4,22 @@ import { withTranslation } from 'react-i18next';
 import { get } from 'lodash';
 import * as Yup from 'yup';
 import { Form, withFormik } from 'formik';
-import InputMask from 'react-input-mask';
 import { bindActionCreators } from 'redux';
 import { setRestBarClassAction, showErrorNotificationAction } from '../../../redux/action/ui';
 import maleIcon from '../../../assets/images/male.svg';
 import maleGrayIcon from '../../../assets/images/male-gray.svg';
 import femaleIcon from '../../../assets/images/female.svg';
 import femaleGrayIcon from '../../../assets/images/female-gray.svg';
-import { FEMALE, IMPERIAL, MALE, METRIC, FT_OPTIONS, IN_OPTIONS } from '../../../constant';
+import {
+  FEMALE,
+  IMPERIAL,
+  MALE,
+  METRIC,
+  FT_OPTIONS,
+  IN_OPTIONS,
+  M_OPTIONS,
+  CM_OPTIONS
+} from '../../../constant';
 import imperialIcon from '../../../assets/images/imperial.svg';
 import imperialGrayIcon from '../../../assets/images/imperial-gray.svg';
 import metricIcon from '../../../assets/images/metric.svg';
@@ -118,7 +126,8 @@ const FormProfile = (props) => {
       setFieldValue('feet', feet ?? '');
       setFieldValue('inch', inch ?? '');
       const { m, cm } = convertCmToMetric(height);
-      setFieldValue('height', `${m}m${cm}cm`);
+      setFieldValue('m', m);
+      setFieldValue('cm', cm);
       const option = timezones?.find((it) => it.value === profile.gmt);
       setFieldValue('timezone', option ?? '');
       setFieldValue('workLength', profile.workDayLength ?? '');
@@ -164,7 +173,8 @@ const FormProfile = (props) => {
         setFieldValue('weightUnit', '2');
         if (values.feet && values.inch) {
           const { m, cm } = convertImperialToMetric(`${values.feet}ft${values.inch}in`);
-          setFieldValue('height', `${m}m${cm}cm`);
+          setFieldValue('m', m);
+          setFieldValue('cm', cm);
         }
         if (values.weight) {
           const kilos = convertLbsToKilos(values.weight);
@@ -221,9 +231,11 @@ const FormProfile = (props) => {
         }
       }
     } else if (measureType === METRIC) {
-      if (values?.height) {
-        const cm = values?.height?.replaceAll('m', '')?.replaceAll('c', '');
-        if (cm !== profile?.height?.toString()) {
+      if (values?.m) {
+        if (
+          (parseInt(values?.m) * 100 + parseInt(values?.cm)).toString() !==
+          profile?.height?.toString()
+        ) {
           ret.push('height');
         }
       }
@@ -271,6 +283,8 @@ const FormProfile = (props) => {
 
     let _feet = values?.feet ?? 0;
     let _inch = values?.inch ?? 0;
+    let _m = values?.m ?? 0;
+    let _cm = values?.cm ?? 0;
     if (['feet', 'inch'].includes(name)) {
       if (name === 'feet') {
         _feet = value;
@@ -278,7 +292,18 @@ const FormProfile = (props) => {
         _inch = value;
       }
       const { m, cm } = convertImperialToMetric(`${_feet}ft${_inch}in`);
-      setFieldValue('height', `${m}m${cm}cm`);
+      setFieldValue('m', m);
+      setFieldValue('cm', cm);
+    }
+    if (['m', 'cm'].includes(name)) {
+      if (name === 'm') {
+        _m = value;
+      } else {
+        _cm = value;
+      }
+      const { feet, inch } = convertCmToImperial(parseInt(_m) * 100 + parseInt(_cm));
+      setFieldValue('feet', feet);
+      setFieldValue('inch', inch);
     }
   };
   const unitOptions = [
@@ -320,6 +345,8 @@ const FormProfile = (props) => {
 
   const onOkModal = () =>
     setStatus({ edit: edit, confirmedCnt: confirmedCnt, visibleModal: false });
+
+  const isImperial = values.measureType === IMPERIAL;
 
   return (
     <React.Fragment>
@@ -446,58 +473,44 @@ const FormProfile = (props) => {
               <label className="font-input-label">{t('height')}</label>
             </div>
 
-            {values['heightUnit'] === '1' ? (
-              <div className="d-flex mt-25">
-                <div className="unit-picker">
-                  <select
-                    className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
-                    value={values['feet']}
-                    name="feet"
-                    disabled={!edit}
-                    onChange={changeFormField}>
-                    {FT_OPTIONS.map((ftOption) => (
-                      <option value={ftOption} key={`ft-${ftOption}`}>
-                        {ftOption}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                &nbsp;&nbsp;
-                <label>{t('feet')}</label>
-                &nbsp;&nbsp;
-                <div className="unit-picker">
-                  <select
-                    className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
-                    value={values['inch']}
-                    name="inch"
-                    disabled={!edit}
-                    onChange={changeFormField}>
-                    {IN_OPTIONS.map((inOption) => (
-                      <option value={inOption} key={`ft-${inOption}`}>
-                        {inOption}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                &nbsp;&nbsp;
-                <label>{t('inch')}</label>
+            <div className="d-flex mt-25">
+              <div className="unit-picker">
+                <select
+                  className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
+                  value={isImperial ? values['feet'] : values['m']}
+                  name={isImperial ? 'feet' : 'm'}
+                  disabled={!edit}
+                  onChange={changeFormField}>
+                  {(isImperial ? FT_OPTIONS : M_OPTIONS).map((it) => (
+                    <option value={it} key={`first-${it}`}>
+                      {it}
+                    </option>
+                  ))}
+                </select>
               </div>
-            ) : (
-              <InputMask
-                className={`d-block input input-field mt-10 font-heading-small ${
-                  edit ? 'text-white' : 'text-gray'
-                }`}
-                placeholder={`_m__cm`}
-                mask={`9m99cm`}
-                value={values['height']}
-                disabled={!edit}
-                name="height"
-                onChange={changeFormField}
-              />
-            )}
+              &nbsp;&nbsp;
+              <label>{isImperial ? t('feet') : 'm'}</label>
+              &nbsp;&nbsp;
+              <div className="unit-picker">
+                <select
+                  className={`font-input-label ${edit ? 'text-white' : 'text-gray'}`}
+                  value={isImperial ? values['inch'] : values['cm']}
+                  name={isImperial ? 'inch' : 'cm'}
+                  disabled={!edit}
+                  onChange={changeFormField}>
+                  {(isImperial ? IN_OPTIONS : CM_OPTIONS).map((it) => (
+                    <option value={it} key={`second-${it}`}>
+                      {it}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              &nbsp;&nbsp;
+              <label>{isImperial ? t('inch') : 'cm'}</label>
+            </div>
 
-            {errors.height && touched.height && (
-              <span className="font-helper-text text-error mt-10">{errors.height}</span>
+            {((errors.m && touched.m) || (errors.cm && touched.cm)) && (
+              <span className="font-helper-text text-error mt-10">{t('height invalid')}</span>
             )}
 
             {((errors.feet && touched.feet) || (errors.inch && touched.inch)) && (
@@ -523,7 +536,7 @@ const FormProfile = (props) => {
               disabled={!edit}
               value={Math.round(values['weight']) || ''}
               name="weight"
-              step={5}
+              step={1}
               onChange={changeFormField}
             />
 
@@ -726,7 +739,8 @@ const EnhancedForm = withFormik({
         minute,
         dob,
         measureType,
-        height,
+        m,
+        cm,
         feet,
         inch,
         weight,
@@ -737,7 +751,8 @@ const EnhancedForm = withFormik({
       const measure = measureType;
       const heightAsMetric = getHeightAsMetric({
         measure: measure,
-        height: height,
+        m: m,
+        cm: cm,
         feet: feet,
         inch: inch
       });
