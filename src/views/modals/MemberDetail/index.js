@@ -104,7 +104,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
   const userDevices = devices?.find(
     (it) => it.userId?.toString() === data?.userId?.toString()
   )?.devices;
-  let phoneDevice = null;
+  let apiDevice = null;
   let kenzenDevice = null;
   if (userDevices?.length > 0) {
     if (stat.deviceId) {
@@ -124,11 +124,11 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
         );
       }
     };
-    phoneDevice = userDevices
+    apiDevice = userDevices
       ?.filter(filterFunc)
       ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
-    if (!phoneDevice)
-      phoneDevice = userDevices
+    if (!apiDevice)
+      apiDevice = userDevices
         ?.filter((it) => it.type !== 'kenzen')
         ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
   }
@@ -247,6 +247,24 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
     }
   }, [data, moveMember, unlockMember, t, team, warningModal]);
 
+  const apiDeviceInfo = React.useMemo(() => {
+    if (!apiDevice) return null;
+    let ret = 'Not Recognized';
+    if (apiDevice?.type === 'ios') {
+      ret = `iOS Ver. ${apiDevice?.osVersion ?? 'N/A'}`;
+    } else if (apiDevice?.type === 'android') {
+      ret = `Android Ver. ${apiDevice?.osVersion ?? 'N/A'}`;
+    } else if (apiDevice?.type === 'hub') {
+      ret = `Hub Ver. ${apiDevice?.osVersion ?? 'N/A'}`;
+    }
+    return ret;
+  }, [apiDevice]);
+
+  const appInfo = React.useMemo(() => {
+    if (!apiDevice) return null;
+    return `App Ver. ${apiDevice?.version ?? 'N/A'}`;
+  }, [apiDevice]);
+
   return (
     <React.Fragment>
       <Modal
@@ -309,19 +327,14 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                           </span>
                         </div>
                       )}
-                      {phoneDevice && (
+                      {apiDeviceInfo && (
                         <div>
-                          <span className={clsx('font-binary')}>
-                            {phoneDevice?.type === 'ios' ? 'iOS Ver.' : 'Android Ver.'}{' '}
-                            {phoneDevice?.osVersion}
-                          </span>
+                          <span className={clsx('font-binary')}>{apiDeviceInfo}</span>
                         </div>
                       )}
-                      {phoneDevice && (
+                      {appInfo && (
                         <div>
-                          <span className={clsx('font-binary')}>
-                            App Ver. {phoneDevice?.version}
-                          </span>
+                          <span className={clsx('font-binary')}>{appInfo}</span>
                         </div>
                       )}
                     </div>
