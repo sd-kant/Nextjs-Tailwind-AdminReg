@@ -173,11 +173,11 @@ export const RISK_PRIORITIES = {
 };
 export const PRIORITIES = {
   1: 6,
-  2: 5,
+  2: 3,
   3: 1,
   4: 2,
-  7: 3,
-  8: 4
+  7: 4,
+  8: 5
 };
 export const actions = [
   {
