@@ -1,6 +1,6 @@
 {
   "name": "kenzen-invite-v2",
-  "version": "3.10.49",
+  "version": "3.10.50",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",

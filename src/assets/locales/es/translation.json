@@ -706,5 +706,6 @@
   "no device match": "No se encontró ninguna coincidencia de ID de dispositivo",
   "no member match": "Ningún miembro del equipo encontrado",
   "username invalid 3": "Verifique el nombre de usuario, el correo electrónico no es un nombre de usuario válido",
-  "unable to remove email": "No se puede eliminar el correo electrónico. Se requiere correo electrónico o número de teléfono"
+  "unable to remove email": "No se puede eliminar el correo electrónico. Se requiere correo electrónico o número de teléfono",
+  "msg credentials invalid": "Ingresaste un nombre de usuario, contraseña o ambos incorrectos"
 }

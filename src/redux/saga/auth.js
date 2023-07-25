@@ -125,6 +125,13 @@ function* loginSaga({
           msg: i18n.t('msg wrong code')
         }
       });
+    } else if (e.response?.data?.error === 'error.auth.invalidCredentials') {
+      yield put({
+        type: actionTypes.ERROR_NOTIFICATION,
+        payload: {
+          msg: i18n.t('msg credentials invalid')
+        }
+      });
     } else {
       yield put({
         type: actionTypes.ERROR_NOTIFICATION,
