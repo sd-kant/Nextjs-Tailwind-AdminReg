@@ -117,6 +117,8 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         return STAGE_VALUES[3]; // Safe
       case '4':
         return STAGE_VALUES[4]; // Safe
+      case '5':
+        return STAGE_VALUES[5]; // Manual Test Alert
       default:
         return STAGE_VALUES[0]; // N/A
     }
@@ -125,7 +127,8 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     'at risk': direction === 'asc' ? 2 : 1,
     'elevated risk': direction === 'asc' ? 1 : 2,
     safe: 3,
-    'n/a': 3
+    'n/a': 3,
+    'manual test alert': 3
   });
   // fixme translation
   const formatAlertForDetail = (stageId) => {
@@ -138,6 +141,8 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         return 'Safe, Return to Work';
       case '4':
         return isProductionMode ? 'Safe, Return to Work' : 'Alert Reset';
+      case '5':
+        return 'Manual Test Alert';
       default:
         return 'N/A';
     }
