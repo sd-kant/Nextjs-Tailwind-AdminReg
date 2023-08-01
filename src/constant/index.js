@@ -550,7 +550,7 @@ export const STAGE_VALUES = [
     value: 4
   },
   {
-    label: 'Safe',
+    label: 'Manual Test Alert',
     value: 5
   }
 ];
