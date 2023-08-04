@@ -269,7 +269,7 @@ export const HEAT_SUSCEPTIBILITY_LOW = 'Low';
 export const SWEAT_HIGH = 'High';
 export const SWEAT_MODERATE = 'MODERATE';
 export const SWEAT_LOW = 'Low';
-export const ALERT_STAGE_ID_LIST = ['1', '2', '3', '4'];
+export const ALERT_STAGE_ID_LIST = ['1', '2', '3', '4', '5'];
 
 export const HEAT_SUSCEPTIBILITY_PRIORITIES = {
   [HEAT_SUSCEPTIBILITY_HIGH.toLowerCase()]: 1,
