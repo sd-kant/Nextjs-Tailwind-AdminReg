@@ -105,7 +105,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
 
   const formatAlert = (stageId) => {
     if (!stageId) {
-      return STAGE_VALUES[5]; // Safe
+      return STAGE_VALUES[0]; // N/A
     }
 
     switch (stageId?.toString()) {
