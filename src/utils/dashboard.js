@@ -132,7 +132,11 @@ export const sortMembers = ({ arrOrigin, filter }) => {
     // sort by username
     arr = arr?.sort((a, b) => {
       return filter?.username === 1
-        ? a.lastName?.localeCompare(b.lastName)
+        ? a.lastName?.localeCompare(b.lastName) === 0
+          ? a.firstName?.localeCompare(b.firstName)
+          : a.lastName?.localeCompare(b.lastName)
+        : b.lastName?.localeCompare(a.lastName) === 0
+        ? b.firstName?.localeCompare(a.firstName)
         : b.lastName?.localeCompare(a.lastName);
     });
   }
