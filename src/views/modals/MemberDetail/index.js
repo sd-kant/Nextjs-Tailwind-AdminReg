@@ -39,7 +39,7 @@ export const filters = [
 ];
 
 const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, metric }) => {
-  const { getHeartRateZone, formatHeartCbt } = useUtilsContext();
+  const { getHeartRateZone, formatHeartCbt, getHeartCBTZone } = useUtilsContext();
   const {
     values: { devices },
     formattedMembers,
@@ -91,6 +91,11 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
     3: style.Moderate,
     4: style.High
   };
+  const heartCBTZoneStyles = {
+    1: style.Safe,
+    2: style.AtRisk,
+    3: style.ExtremeRisk
+  };
   const [team, setTeam] = React.useState(null);
   React.useEffect(() => {
     if (data?.teamId) {
@@ -135,6 +140,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
+  const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
 
   const hideWarningModal = () => {
     setWarningModal({ visible: false, title: '', mode: null });
@@ -438,9 +444,17 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                   )}
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <span className={clsx('font-binary text-danger')} />
-                </div>
+                {!hideCbtHR && visibleHeartStats && (
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <span
+                      className={clsx(
+                        'font-binary',
+                        heartCBTZoneStyles[heartCBTZone?.value?.toString()]
+                      )}>
+                      {heartCBTZone?.label}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className={clsx(style.HeartCard, style.Card)}>

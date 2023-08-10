@@ -165,6 +165,18 @@
 
       .RiskCard {
         margin-top: 15px;
+
+        .Safe {
+          color: #35EA6C;
+        }
+
+        .AtRisk {
+          color: #F1374E;
+        }
+
+        .ExtremeRisk {
+          color: #F1374E;
+        }
       }
 
       .InformationContent {
