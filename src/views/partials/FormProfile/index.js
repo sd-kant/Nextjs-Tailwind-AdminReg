@@ -374,8 +374,21 @@ const FormProfile = (props) => {
             'form-header-medium'
           )}>
           <ScrollToFieldError />
-          {/*name section*/}
+          {/*email section*/}
           <div className="mt-10 form-header-medium">
+            <span className="font-header-medium d-block">{t('email description')}</span>
+          </div>
+          <div className="mt-15 d-flex flex-column">
+            <label className="font-input-label">{t('email')}</label>
+            <input
+              className={'input input-field mt-10 font-heading-small text-gray'}
+              defaultValue={profile?.email}
+              disabled={true}
+              type="text"
+            />
+          </div>
+          {/*name section*/}
+          <div className="mt-28 form-header-medium">
             <span className="font-header-medium d-block">{t('name description')}</span>
           </div>
           <div className="mt-15 d-flex flex-column">

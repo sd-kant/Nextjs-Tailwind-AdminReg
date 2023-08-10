@@ -707,5 +707,6 @@
   "no member match": "Nenhum membro da equipe encontrado",
   "username invalid 3": "Verifique o nome de usuário, o e-mail não é um nome de usuário válido",
   "unable to remove email": "Não foi possível remover o e-mail. E-mail ou número de telefone é obrigatório",
-  "msg credentials invalid": "Você digitou um nome de usuário incorreto, senha ou ambos"
+  "msg credentials invalid": "Você digitou um nome de usuário incorreto, senha ou ambos",
+  "email description": "Qual é o seu email?"
 }
