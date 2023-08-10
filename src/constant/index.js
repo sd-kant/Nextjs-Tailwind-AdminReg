@@ -554,6 +554,25 @@ export const STAGE_VALUES = [
     value: 5
   }
 ];
+
+export const HEART_CBT_VALUES = [
+  {
+    label: null,
+    value: null
+  },
+  {
+    label: 'Safe',
+    value: 1
+  },
+  {
+    label: 'At Risk',
+    value: 2
+  },
+  {
+    label: 'Extreme Risk',
+    value: 3
+  }
+];
 export const HEART_RATE_VALUES = [
   {
     label: null,

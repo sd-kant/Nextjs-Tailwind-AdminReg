@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { get } from 'lodash';
 import { celsiusToFahrenheit, numMinutesBetweenWithNow as numMinutesBetween } from '../utils';
 import { isProductionMode } from '../App';
-import { HEART_RATE_VALUES, INVALID_VALUES2, STAGE_VALUES } from '../constant';
+import { HEART_CBT_VALUES, HEART_RATE_VALUES, INVALID_VALUES2, STAGE_VALUES } from '../constant';
 
 const UtilsContext = React.createContext(null);
 
@@ -228,8 +228,20 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     return HEART_RATE_VALUES[0];
   };
 
+  const getHeartCBTZone = (cbt) => {
+    if (!cbt) return HEART_CBT_VALUES[0];
+    if (cbt <= 38.5) {
+      return HEART_CBT_VALUES[1];
+    } else if (cbt <= 39.5) {
+      return HEART_CBT_VALUES[2];
+    } else {
+      return HEART_CBT_VALUES[3];
+    }
+  };
+
   const providerValue = {
     getHeartRateZone,
+    getHeartCBTZone,
     formatHeartCbt,
     formatAlertForDetail,
     formatAlert,
