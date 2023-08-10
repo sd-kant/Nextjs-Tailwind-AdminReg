@@ -137,6 +137,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
         ?.filter((it) => it.type !== 'kenzen')
         ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
   }
+  // fixme duplicated
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
