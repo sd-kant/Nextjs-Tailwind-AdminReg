@@ -211,19 +211,24 @@ export const UserSubscriptionProvider = ({ children }) => {
       }
     }
 
+    const validAlerts =
+      unique?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? [];
+
     return {
-      totalAlerts: unique.length || 0,
-      stopAlerts: unique?.filter((it) => ['1', '2'].includes(it?.alertStageId?.toString())).length,
+      totalAlerts: validAlerts?.length || 0,
+      stopAlerts: validAlerts?.filter((it) => ['1', '2'].includes(it?.alertStageId?.toString()))
+        ?.length,
       highestCbt:
-        unique.length > 0
+        validAlerts?.length > 0
           ? formatHeartCbt(
-              unique.sort((a, b) => (b?.heartCbtAvg ?? 0) - (a?.heartCbtAvg ?? 0))[0]?.heartCbtAvg
+              validAlerts?.sort((a, b) => (b?.heartCbtAvg ?? 0) - (a?.heartCbtAvg ?? 0))[0]
+                ?.heartCbtAvg
             )
           : 0,
       highestHr:
-        unique.length > 0
+        validAlerts?.length > 0
           ? formatHeartRate(
-              unique.sort((a, b) => (b?.heartRateAvg ?? 0) - (a?.heartRateAvg ?? 0))[0]
+              validAlerts?.sort((a, b) => (b?.heartRateAvg ?? 0) - (a?.heartRateAvg ?? 0))[0]
                 ?.heartRateAvg
             )
           : 0

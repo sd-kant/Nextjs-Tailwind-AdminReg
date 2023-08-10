@@ -397,7 +397,9 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       const alert = alertsForMe?.sort(function (a, b) {
         return new Date(b.utcTs) - new Date(a.utcTs);
       })?.[0];
-      const numberOfAlerts = alertsForMe?.length;
+      const numberOfAlerts = (
+        alertsForMe?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? []
+      )?.length;
       const alertObj = formatAlert(alert?.alertStageId);
       const connectionObj = formatConnectionStatusV2({
         flag: stat?.onOffFlag,
