@@ -8,6 +8,7 @@ import { formatDevice4Digits, formatHeartRate } from '../../../utils/dashboard';
 import BatteryV3 from '../../components/BatteryV3';
 import { useTranslation } from 'react-i18next';
 import { TIME_FORMAT_YYYYMDHM } from '../../../constant';
+import { numMinutesBetweenWithNow as numMinutesBetween } from '../../../utils';
 
 const TableCell = ({ value, member, metric, hideCbtHR }) => {
   const {
@@ -25,6 +26,9 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
     heatSusceptibility
   } = member;
   const { formatHeartCbt } = useUtilsContext();
+  // fixme duplicated
+  const visibleHeartStats =
+    numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const cellGray = ['1', '2', '8'].includes(connectionObj?.value?.toString())
     ? style.NoConnection
     : null;
@@ -85,7 +89,20 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
       return <td className={clsx(style.TableCell, cellGray)}>{heatSusceptibility ?? ''}</td>;
     case 'lastDataSync':
       return (
-        <td className={clsx(style.TableCell, cellGray)}>{!invisibleLastSync ? lastSyncStr : ''}</td>
+        <td className={clsx(style.TableCell)}>
+          {!invisibleLastSync && (
+            <div className={clsx(style.Device, cellGray)}>
+              <span className={clsx('font-bold')}>{lastSyncStr}</span>
+              {!hideCbtHR && (
+                <span>
+                  {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
+                  {metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;
+                  {formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)} BPM
+                </span>
+              )}
+            </div>
+          )}
+        </td>
       );
     default:
       return null;
