@@ -433,6 +433,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       const invisibleLastSync =
         new Date(lastSync).getTime() > new Date().getTime() + 60 * 1000 ||
         ['1'].includes(connectionObj?.value?.toString());
+      const invisibleLastUpdates = ['1', '2', '8'].includes(connectionObj?.value?.toString());
 
       arr.push({
         ...member,
@@ -448,7 +449,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         invisibleDeviceMac,
         invisibleBattery,
         invisibleHeatRisk,
-        invisibleLastSync
+        invisibleLastSync,
+        invisibleLastUpdates
       });
     });
 
