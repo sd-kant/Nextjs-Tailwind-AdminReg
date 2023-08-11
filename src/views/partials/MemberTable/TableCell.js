@@ -23,6 +23,7 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
     invisibleBattery,
     invisibleHeatRisk,
     invisibleLastSync,
+    invisibleLastUpdates,
     heatSusceptibility
   } = member;
   const { formatHeartCbt } = useUtilsContext();
@@ -93,7 +94,7 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
           {!invisibleLastSync && (
             <div className={clsx(style.Device, cellGray)}>
               <span className={clsx('font-bold')}>{lastSyncStr}</span>
-              {!hideCbtHR && (
+              {!hideCbtHR && !invisibleLastUpdates && (
                 <span>
                   {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
                   {metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;
