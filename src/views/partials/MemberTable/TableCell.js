@@ -104,27 +104,20 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
               <span className={clsx('font-bold')}>{lastSyncStr}</span>
               {!hideCbtHR && !invisibleLastUpdates && (
                 <div>
-                  <span>
-                    <span
-                      style={
-                        visibleHeartStats
-                          ? heartCBTZoneStyles[heartCBTZone?.value?.toString()]
-                          : null
-                      }>
-                      {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
-                    </span>
+                  <span
+                    style={
+                      visibleHeartStats ? heartCBTZoneStyles[heartCBTZone?.value?.toString()] : null
+                    }>
+                    {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
                     {metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;
                   </span>
-                  <span>
-                    <span
-                      style={
-                        visibleHeartStats
-                          ? heartRateZoneStyles[heartRateZone?.value?.toString()]
-                          : null
-                      }>
-                      {formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)}
-                    </span>{' '}
-                    BPM
+                  <span
+                    style={
+                      visibleHeartStats
+                        ? heartRateZoneStyles[heartRateZone?.value?.toString()]
+                        : null
+                    }>
+                    {formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)} BPM
                   </span>
                 </div>
               )}
