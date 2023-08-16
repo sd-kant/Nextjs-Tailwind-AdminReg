@@ -239,6 +239,32 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     }
   };
 
+  const heartRateZoneStyles = {
+    1: {
+      color: '#0DAAEE'
+    },
+    2: {
+      color: '#35EA6C'
+    },
+    3: {
+      color: '#FFD600'
+    },
+    4: {
+      color: '#F1374E'
+    }
+  };
+  const heartCBTZoneStyles = {
+    1: {
+      color: '#35EA6C'
+    },
+    2: {
+      color: '#F1374E'
+    },
+    3: {
+      color: '#F1374E'
+    }
+  };
+
   const providerValue = {
     getHeartRateZone,
     getHeartCBTZone,
@@ -247,7 +273,9 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     formatAlert,
     formatConnectionStatusV2,
     formatActivityLog,
-    alertPriorities
+    alertPriorities,
+    heartRateZoneStyles,
+    heartCBTZoneStyles
   };
 
   return <UtilsContext.Provider value={providerValue}>{children}</UtilsContext.Provider>;
