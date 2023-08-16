@@ -392,7 +392,10 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         )
         ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
       const alertsForMe = valuesV2.alerts?.filter(
-        (it) => it.userId?.toString() === member.userId?.toString()
+        (it) =>
+          it.userId?.toString() === member.userId?.toString() &&
+          (!(it?.alertStageId?.toString() === '5') ||
+            numMinutesBetween(new Date(), new Date(it.utcTs)) <= 1)
       );
       const alert = alertsForMe?.sort(function (a, b) {
         return new Date(b.utcTs) - new Date(a.utcTs);
