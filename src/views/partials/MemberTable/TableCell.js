@@ -26,7 +26,13 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
     invisibleLastUpdates,
     heatSusceptibility
   } = member;
-  const { formatHeartCbt } = useUtilsContext();
+  const {
+    formatHeartCbt,
+    heartCBTZoneStyles,
+    heartRateZoneStyles,
+    getHeartRateZone,
+    getHeartCBTZone
+  } = useUtilsContext();
   // fixme duplicated
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
@@ -34,6 +40,8 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
     ? style.NoConnection
     : null;
   const { t } = useTranslation();
+  const heartRateZone = getHeartRateZone(member?.dateOfBirth, stat?.heartRateAvg);
+  const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
 
   switch (value) {
     case 'connection':
@@ -95,11 +103,23 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
             <div className={clsx(style.Device, cellGray)}>
               <span className={clsx('font-bold')}>{lastSyncStr}</span>
               {!hideCbtHR && !invisibleLastUpdates && (
-                <span>
-                  {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
-                  {metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;
-                  {formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)} BPM
-                </span>
+                <div>
+                  <span
+                    style={
+                      visibleHeartStats ? heartCBTZoneStyles[heartCBTZone?.value?.toString()] : null
+                    }>
+                    {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
+                    {metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;
+                  </span>
+                  <span
+                    style={
+                      visibleHeartStats
+                        ? heartRateZoneStyles[heartRateZone?.value?.toString()]
+                        : null
+                    }>
+                    {formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)} BPM
+                  </span>
+                </div>
               )}
             </div>
           )}

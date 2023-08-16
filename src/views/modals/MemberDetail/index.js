@@ -39,7 +39,13 @@ export const filters = [
 ];
 
 const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, metric }) => {
-  const { getHeartRateZone, formatHeartCbt, getHeartCBTZone } = useUtilsContext();
+  const {
+    getHeartRateZone,
+    formatHeartCbt,
+    getHeartCBTZone,
+    heartCBTZoneStyles,
+    heartRateZoneStyles
+  } = useUtilsContext();
   const {
     values: { devices },
     formattedMembers,
@@ -85,17 +91,6 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
   } else if (connectionObj?.value?.toString() === '4') {
     badgeColorStyle = style.Yellow;
   }
-  const heartRateZoneStyles = {
-    1: style.VeryLight,
-    2: style.Light,
-    3: style.Moderate,
-    4: style.High
-  };
-  const heartCBTZoneStyles = {
-    1: style.Safe,
-    2: style.AtRisk,
-    3: style.ExtremeRisk
-  };
   const [team, setTeam] = React.useState(null);
   React.useEffect(() => {
     if (data?.teamId) {
@@ -448,10 +443,8 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                 {!hideCbtHR && visibleHeartStats && (
                   <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <span
-                      className={clsx(
-                        'font-binary',
-                        heartCBTZoneStyles[heartCBTZone?.value?.toString()]
-                      )}>
+                      className={clsx('font-binary')}
+                      style={heartCBTZoneStyles[heartCBTZone?.value?.toString()]}>
                       {heartCBTZone?.label}
                     </span>
                   </div>
@@ -489,10 +482,8 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                 {!hideCbtHR && visibleHeartStats && (
                   <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <span
-                      className={clsx(
-                        'font-binary',
-                        heartRateZoneStyles[heartRateZone?.value?.toString()]
-                      )}>
+                      className={clsx('font-binary')}
+                      style={heartRateZoneStyles[heartRateZone?.value?.toString()]}>
                       {heartRateZone?.label}
                     </span>
                   </div>
