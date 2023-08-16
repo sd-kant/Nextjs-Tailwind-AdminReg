@@ -493,7 +493,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           safeUsers++;
         }
       }
-      totalAlerts += member.alertsForMe?.length ?? 0;
+      totalAlerts += member.numberOfAlerts ?? 0;
     });
 
     return {
