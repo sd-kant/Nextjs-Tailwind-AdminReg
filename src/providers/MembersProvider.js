@@ -144,6 +144,20 @@ const MembersProvider = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userType]);
 
+  const manageablePermissionLevels = React.useMemo(() => {
+    if (userType?.includes(USER_TYPE_ADMIN)) {
+      return permissionLevels;
+    } else if (userType?.includes(USER_TYPE_ORG_ADMIN)) {
+      // only org admin
+      return permissionLevels.filter((it) => it.value === 4);
+    } else if (userType?.includes(USER_TYPE_TEAM_ADMIN)) {
+      return permissionLevels.filter((it) => [1, 2].includes(it.value));
+    } else {
+      return [];
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userType]);
+
   React.useEffect(() => {
     let users = [];
     let admins = [];
@@ -1054,6 +1068,7 @@ const MembersProvider = ({
     setKeywordOnInvite,
     searchedOperators,
     searching,
+    manageablePermissionLevels,
     initializeMembers,
     handleMemberInfoChange,
     handleMemberTeamUserTypeChange,
