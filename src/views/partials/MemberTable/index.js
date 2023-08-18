@@ -19,7 +19,13 @@ const MemberTable = ({ t, forceWidthUpdate }) => {
   } = useDashboardContext();
   const storedVisibleColumns = localStorage.getItem('visibleColumns');
   const parsedVisibleColumns = storedVisibleColumns ? JSON.parse(storedVisibleColumns) : null;
-  const validVisibleColumns = parsedVisibleColumns ?? ['name', 'connection', 'heatRisk', 'alerts'];
+  const validVisibleColumns = parsedVisibleColumns ?? [
+    'name',
+    'connection',
+    'heatRisk',
+    'alerts',
+    'lastDataSync'
+  ];
   const [visibleColumns, setVisibleColumns] = React.useState(validVisibleColumns);
   React.useEffect(() => {
     localStorage.setItem('visibleColumns', JSON.stringify(visibleColumns));
