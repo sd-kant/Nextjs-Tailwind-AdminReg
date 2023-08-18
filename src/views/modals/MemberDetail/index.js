@@ -257,7 +257,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
     } else if (apiDevice?.type === 'android') {
       ret = `Android Ver. ${apiDevice?.osVersion ?? 'N/A'}`;
     } else if (apiDevice?.type === 'hub') {
-      ret = `Hub Ver. ${apiDevice?.osVersion ?? 'N/A'}`;
+      ret = `Hub MAC: ${apiDevice?.deviceId ?? 'N/A'}`;
     }
     return ret;
   }, [apiDevice]);
