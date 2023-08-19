@@ -46,7 +46,7 @@
           display: grid;
           grid-template-columns: auto 1fr;
           grid-column-gap: 10px;
-          height: 150px;
+          height: 170px;
 
           .AvatarArea {
             position: relative;
@@ -165,6 +165,18 @@
 
       .RiskCard {
         margin-top: 15px;
+
+        .Safe {
+          color: #35EA6C;
+        }
+
+        .AtRisk {
+          color: #F1374E;
+        }
+
+        .ExtremeRisk {
+          color: #F1374E;
+        }
       }
 
       .InformationContent {

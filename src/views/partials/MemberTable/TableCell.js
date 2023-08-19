@@ -8,6 +8,7 @@ import { formatDevice4Digits, formatHeartRate } from '../../../utils/dashboard';
 import BatteryV3 from '../../components/BatteryV3';
 import { useTranslation } from 'react-i18next';
 import { TIME_FORMAT_YYYYMDHM } from '../../../constant';
+import { numMinutesBetweenWithNow as numMinutesBetween } from '../../../utils';
 
 const TableCell = ({ value, member, metric, hideCbtHR }) => {
   const {
@@ -22,13 +23,25 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
     invisibleBattery,
     invisibleHeatRisk,
     invisibleLastSync,
+    invisibleLastUpdates,
     heatSusceptibility
   } = member;
-  const { formatHeartCbt } = useUtilsContext();
+  const {
+    formatHeartCbt,
+    heartCBTZoneStyles,
+    heartRateZoneStyles,
+    getHeartRateZone,
+    getHeartCBTZone
+  } = useUtilsContext();
+  // fixme duplicated
+  const visibleHeartStats =
+    numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const cellGray = ['1', '2', '8'].includes(connectionObj?.value?.toString())
     ? style.NoConnection
     : null;
   const { t } = useTranslation();
+  const heartRateZone = getHeartRateZone(member?.dateOfBirth, stat?.heartRateAvg);
+  const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
 
   switch (value) {
     case 'connection':
@@ -85,7 +98,32 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
       return <td className={clsx(style.TableCell, cellGray)}>{heatSusceptibility ?? ''}</td>;
     case 'lastDataSync':
       return (
-        <td className={clsx(style.TableCell, cellGray)}>{!invisibleLastSync ? lastSyncStr : ''}</td>
+        <td className={clsx(style.TableCell)}>
+          {!invisibleLastSync && (
+            <div className={clsx(style.Device, cellGray)}>
+              <span className={clsx('font-bold')}>{lastSyncStr}</span>
+              {!hideCbtHR && !invisibleLastUpdates && (
+                <div>
+                  <span
+                    style={
+                      visibleHeartStats ? heartCBTZoneStyles[heartCBTZone?.value?.toString()] : null
+                    }>
+                    {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
+                    {metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;
+                  </span>
+                  <span
+                    style={
+                      visibleHeartStats
+                        ? heartRateZoneStyles[heartRateZone?.value?.toString()]
+                        : null
+                    }>
+                    {formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)} BPM
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </td>
       );
     default:
       return null;

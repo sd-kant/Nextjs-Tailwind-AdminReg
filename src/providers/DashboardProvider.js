@@ -392,12 +392,17 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         )
         ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
       const alertsForMe = valuesV2.alerts?.filter(
-        (it) => it.userId?.toString() === member.userId?.toString()
+        (it) =>
+          it.userId?.toString() === member.userId?.toString() &&
+          (!(it?.alertStageId?.toString() === '5') ||
+            numMinutesBetween(new Date(), new Date(it.utcTs)) <= 1)
       );
       const alert = alertsForMe?.sort(function (a, b) {
         return new Date(b.utcTs) - new Date(a.utcTs);
       })?.[0];
-      const numberOfAlerts = alertsForMe?.length;
+      const numberOfAlerts = (
+        alertsForMe?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? []
+      )?.length;
       const alertObj = formatAlert(alert?.alertStageId);
       const connectionObj = formatConnectionStatusV2({
         flag: stat?.onOffFlag,
@@ -426,10 +431,12 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         ['1', '8'].includes(connectionObj?.value?.toString()) ||
         (['2', '4'].includes(connectionObj?.value?.toString()) &&
           numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 240);
-      const invisibleHeatRisk = ['1', '2', '8'].includes(connectionObj?.value?.toString());
+      const invisibleHeatRisk =
+        !alert || ['1', '2', '8'].includes(connectionObj?.value?.toString());
       const invisibleLastSync =
         new Date(lastSync).getTime() > new Date().getTime() + 60 * 1000 ||
         ['1'].includes(connectionObj?.value?.toString());
+      const invisibleLastUpdates = ['1', '2', '8'].includes(connectionObj?.value?.toString());
 
       arr.push({
         ...member,
@@ -445,7 +452,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         invisibleDeviceMac,
         invisibleBattery,
         invisibleHeatRisk,
-        invisibleLastSync
+        invisibleLastSync,
+        invisibleLastUpdates
       });
     });
 
@@ -488,7 +496,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           safeUsers++;
         }
       }
-      totalAlerts += member.alertsForMe?.length ?? 0;
+      totalAlerts += member.numberOfAlerts ?? 0;
     });
 
     return {

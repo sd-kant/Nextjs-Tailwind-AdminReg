@@ -39,7 +39,13 @@ export const filters = [
 ];
 
 const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, metric }) => {
-  const { getHeartRateZone, formatHeartCbt } = useUtilsContext();
+  const {
+    getHeartRateZone,
+    formatHeartCbt,
+    getHeartCBTZone,
+    heartCBTZoneStyles,
+    heartRateZoneStyles
+  } = useUtilsContext();
   const {
     values: { devices },
     formattedMembers,
@@ -85,12 +91,6 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
   } else if (connectionObj?.value?.toString() === '4') {
     badgeColorStyle = style.Yellow;
   }
-  const heartRateZoneStyles = {
-    1: style.VeryLight,
-    2: style.Light,
-    3: style.Moderate,
-    4: style.High
-  };
   const [team, setTeam] = React.useState(null);
   React.useEffect(() => {
     if (data?.teamId) {
@@ -104,7 +104,7 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
   const userDevices = devices?.find(
     (it) => it.userId?.toString() === data?.userId?.toString()
   )?.devices;
-  let phoneDevice = null;
+  let apiDevice = null;
   let kenzenDevice = null;
   if (userDevices?.length > 0) {
     if (stat.deviceId) {
@@ -124,17 +124,19 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
         );
       }
     };
-    phoneDevice = userDevices
+    apiDevice = userDevices
       ?.filter(filterFunc)
       ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
-    if (!phoneDevice)
-      phoneDevice = userDevices
+    if (!apiDevice)
+      apiDevice = userDevices
         ?.filter((it) => it.type !== 'kenzen')
         ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
   }
+  // fixme duplicated
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
+  const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
 
   const hideWarningModal = () => {
     setWarningModal({ visible: false, title: '', mode: null });
@@ -247,6 +249,24 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
     }
   }, [data, moveMember, unlockMember, t, team, warningModal]);
 
+  const apiDeviceInfo = React.useMemo(() => {
+    if (!apiDevice) return null;
+    let ret = 'Not Recognized';
+    if (apiDevice?.type === 'ios') {
+      ret = `iOS Ver. ${apiDevice?.osVersion ?? 'N/A'}`;
+    } else if (apiDevice?.type === 'android') {
+      ret = `Android Ver. ${apiDevice?.osVersion ?? 'N/A'}`;
+    } else if (apiDevice?.type === 'hub') {
+      ret = `Hub MAC: ${apiDevice?.deviceId ?? 'N/A'}`;
+    }
+    return ret;
+  }, [apiDevice]);
+
+  const appInfo = React.useMemo(() => {
+    if (!apiDevice) return null;
+    return `App Ver. ${apiDevice?.version ?? 'N/A'}`;
+  }, [apiDevice]);
+
   return (
     <React.Fragment>
       <Modal
@@ -309,19 +329,14 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                           </span>
                         </div>
                       )}
-                      {phoneDevice && (
+                      {apiDeviceInfo && (
                         <div>
-                          <span className={clsx('font-binary')}>
-                            {phoneDevice?.type === 'ios' ? 'iOS Ver.' : 'Android Ver.'}{' '}
-                            {phoneDevice?.osVersion}
-                          </span>
+                          <span className={clsx('font-binary')}>{apiDeviceInfo}</span>
                         </div>
                       )}
-                      {phoneDevice && (
+                      {appInfo && (
                         <div>
-                          <span className={clsx('font-binary')}>
-                            App Ver. {phoneDevice?.version}
-                          </span>
+                          <span className={clsx('font-binary')}>{appInfo}</span>
                         </div>
                       )}
                     </div>
@@ -425,9 +440,15 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                   )}
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <span className={clsx('font-binary text-danger')} />
-                </div>
+                {!hideCbtHR && visibleHeartStats && (
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <span
+                      className={clsx('font-binary')}
+                      style={heartCBTZoneStyles[heartCBTZone?.value?.toString()]}>
+                      {heartCBTZone?.label}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className={clsx(style.HeartCard, style.Card)}>
@@ -461,10 +482,8 @@ const MemberDetail = ({ t, open = false, closeModal = () => {}, data: origin, me
                 {!hideCbtHR && visibleHeartStats && (
                   <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <span
-                      className={clsx(
-                        'font-binary',
-                        heartRateZoneStyles[heartRateZone?.value?.toString()]
-                      )}>
+                      className={clsx('font-binary')}
+                      style={heartRateZoneStyles[heartRateZone?.value?.toString()]}>
                       {heartRateZone?.label}
                     </span>
                   </div>

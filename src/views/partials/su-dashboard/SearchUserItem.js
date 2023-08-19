@@ -20,6 +20,7 @@ const SearchUserItem = ({ user, index, isAdmin, id, errorField, touchField, t })
     jobs,
     members,
     doableActions,
+    manageablePermissionLevels,
     handleMemberInfoChange,
     handleMemberTeamChange,
     handleMemberTeamUserTypeChange,
@@ -266,11 +267,11 @@ const SearchUserItem = ({ user, index, isAdmin, id, errorField, touchField, t })
               style.Select,
               'mt-10 font-heading-small text-black select-custom-class'
             )}
-            options={permissionLevels}
+            options={manageablePermissionLevels}
             placeholder={t('select')}
             value={selectedPermissionLevel}
-            styles={customStyles(!isAdmin || !hasRightToEdit)}
-            isDisabled={!isAdmin || !hasRightToEdit}
+            styles={customStyles(!hasRightToEdit)}
+            isDisabled={!hasRightToEdit}
             menuPortalTarget={document.body}
             menuPosition={'fixed'}
             onChange={(e) =>

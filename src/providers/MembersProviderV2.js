@@ -45,6 +45,25 @@ export const MembersProviderV2Draft = ({ t, children }) => {
   };
 
   React.useEffect(() => {
+    if (selectedMembers?.length > 0) {
+      if (warningModal.mode === 'move') {
+        setWarningModal({
+          visible: true,
+          title: t(
+            `move n ${selectedMembers?.length > 1 ? 'users' : 'user'} to team warning title`,
+            {
+              n: selectedMembers?.length,
+              team: teamName
+            }
+          ),
+          mode: `move`
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [warningModal.visible, teamName, selectedMembers?.length]);
+
+  React.useEffect(() => {
     const selectedMembersTeamIds = selectedMembers?.map((it) => it.teamId) ?? [];
     setSelectedUsersTeams([...new Set(selectedMembersTeamIds)]);
   }, [selectedMembers]);

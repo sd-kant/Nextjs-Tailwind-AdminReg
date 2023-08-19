@@ -173,11 +173,11 @@ export const RISK_PRIORITIES = {
 };
 export const PRIORITIES = {
   1: 6,
-  2: 5,
+  2: 3,
   3: 1,
   4: 2,
-  7: 3,
-  8: 4
+  7: 4,
+  8: 5
 };
 export const actions = [
   {
@@ -269,7 +269,7 @@ export const HEAT_SUSCEPTIBILITY_LOW = 'Low';
 export const SWEAT_HIGH = 'High';
 export const SWEAT_MODERATE = 'MODERATE';
 export const SWEAT_LOW = 'Low';
-export const ALERT_STAGE_ID_LIST = ['1', '2', '3', '4'];
+export const ALERT_STAGE_ID_LIST = ['1', '2', '3', '4', '5'];
 
 export const HEAT_SUSCEPTIBILITY_PRIORITIES = {
   [HEAT_SUSCEPTIBILITY_HIGH.toLowerCase()]: 1,
@@ -550,8 +550,27 @@ export const STAGE_VALUES = [
     value: 4
   },
   {
-    label: 'Safe',
+    label: 'Manual Test Alert',
     value: 5
+  }
+];
+
+export const HEART_CBT_VALUES = [
+  {
+    label: null,
+    value: null
+  },
+  {
+    label: 'Safe',
+    value: 1
+  },
+  {
+    label: 'At Risk',
+    value: 2
+  },
+  {
+    label: 'Extreme Risk',
+    value: 3
   }
 ];
 export const HEART_RATE_VALUES = [

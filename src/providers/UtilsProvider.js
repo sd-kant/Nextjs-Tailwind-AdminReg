@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { get } from 'lodash';
 import { celsiusToFahrenheit, numMinutesBetweenWithNow as numMinutesBetween } from '../utils';
 import { isProductionMode } from '../App';
-import { HEART_RATE_VALUES, INVALID_VALUES2, STAGE_VALUES } from '../constant';
+import { HEART_CBT_VALUES, HEART_RATE_VALUES, INVALID_VALUES2, STAGE_VALUES } from '../constant';
 
 const UtilsContext = React.createContext(null);
 
@@ -105,7 +105,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
 
   const formatAlert = (stageId) => {
     if (!stageId) {
-      return STAGE_VALUES[5]; // Safe
+      return STAGE_VALUES[0]; // N/A
     }
 
     switch (stageId?.toString()) {
@@ -117,6 +117,8 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         return STAGE_VALUES[3]; // Safe
       case '4':
         return STAGE_VALUES[4]; // Safe
+      case '5':
+        return STAGE_VALUES[5]; // Manual Test Alert
       default:
         return STAGE_VALUES[0]; // N/A
     }
@@ -125,7 +127,8 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     'at risk': direction === 'asc' ? 2 : 1,
     'elevated risk': direction === 'asc' ? 1 : 2,
     safe: 3,
-    'n/a': 3
+    'n/a': 3,
+    'manual test alert': 3
   });
   // fixme translation
   const formatAlertForDetail = (stageId) => {
@@ -138,6 +141,8 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         return 'Safe, Return to Work';
       case '4':
         return isProductionMode ? 'Safe, Return to Work' : 'Alert Reset';
+      case '5':
+        return 'Manual Test Alert';
       default:
         return 'N/A';
     }
@@ -223,14 +228,54 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     return HEART_RATE_VALUES[0];
   };
 
+  const getHeartCBTZone = (cbt) => {
+    if (!cbt) return HEART_CBT_VALUES[0];
+    if (cbt <= 38.5) {
+      return HEART_CBT_VALUES[1];
+    } else if (cbt <= 39.5) {
+      return HEART_CBT_VALUES[2];
+    } else {
+      return HEART_CBT_VALUES[3];
+    }
+  };
+
+  const heartRateZoneStyles = {
+    1: {
+      color: '#0DAAEE'
+    },
+    2: {
+      color: '#35EA6C'
+    },
+    3: {
+      color: '#FFD600'
+    },
+    4: {
+      color: '#F1374E'
+    }
+  };
+  const heartCBTZoneStyles = {
+    1: {
+      color: '#35EA6C'
+    },
+    2: {
+      color: '#F1374E'
+    },
+    3: {
+      color: '#F1374E'
+    }
+  };
+
   const providerValue = {
     getHeartRateZone,
+    getHeartCBTZone,
     formatHeartCbt,
     formatAlertForDetail,
     formatAlert,
     formatConnectionStatusV2,
     formatActivityLog,
-    alertPriorities
+    alertPriorities,
+    heartRateZoneStyles,
+    heartCBTZoneStyles
   };
 
   return <UtilsContext.Provider value={providerValue}>{children}</UtilsContext.Provider>;
