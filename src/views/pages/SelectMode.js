@@ -8,7 +8,6 @@ const SelectMode = () => {
       <div className="form-header">
         <img className="form-header-logo" src={logo} alt="kenzen logo" />
       </div>
-
       <FormSelectMode />
     </div>
   );

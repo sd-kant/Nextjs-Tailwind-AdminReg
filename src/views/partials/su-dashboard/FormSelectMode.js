@@ -11,7 +11,7 @@ import ArrowIcon from '../../../assets/images/arrow.svg';
 import KenzenDeviceImg from '../../../assets/images/kenzen-device.png';
 import clsx from 'clsx';
 import style from './FormSelectMode.module.scss';
-import { concatAsUrlParam, getUrlParamAsJson, isAdmin } from '../../../utils';
+import { concatAsUrlParam, getUrlParamAsJson, isAdmin, isOperator } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 
 const FormSelectMode = (props) => {
@@ -19,6 +19,7 @@ const FormSelectMode = (props) => {
   const flattened = concatAsUrlParam(getUrlParamAsJson());
   const navigate = useNavigate();
   const hasAdminRole = React.useMemo(() => isAdmin(userType), [userType]);
+  const hasOperatorRole = React.useMemo(() => isOperator(userType), [userType]);
 
   useEffect(() => {
     setRestBarClass(`progress-50`);
@@ -61,7 +62,11 @@ const FormSelectMode = (props) => {
                   <span className={clsx('font-small')}>{t('create or modify team')}</span>
                 </div>
               </div>
+            </>
+          )}
 
+          {hasAdminRole && (
+            <>
               <div
                 className={clsx(style.OptionWrapper)}
                 // todo encodeURIComponent
@@ -94,7 +99,48 @@ const FormSelectMode = (props) => {
                   <span className={clsx('font-small')}>{t('monitor your team')}</span>
                 </div>
               </div>
+            </>
+          )}
 
+          {hasOperatorRole && (
+            <>
+              <div
+                className={clsx(style.OptionWrapper)}
+                // todo encodeURIComponent
+                onClick={() => openInNewTab(`/dashboard/me`)}>
+                <div>
+                  <span className={clsx('font-button-label')}>{t('my dashboard')}</span>
+                </div>
+
+                <div className={clsx(style.ImageWrapper2_Body)}>
+                  <div className={clsx(style.ImageWrapper2)}>
+                    <img
+                      src={workerOrange}
+                      className={clsx(style.WorkerWhiteImage1)}
+                      alt="settings"
+                    />
+                    {/*<img
+                      src={workerOrange}
+                      className={clsx(style.WorkerWhiteImage2)}
+                      alt="settings"
+                    />*/}
+                    <img
+                      src={workerOrange}
+                      className={clsx(style.WorkerOrangeImage)}
+                      alt="worker orange"
+                    />
+                  </div>
+                </div>
+
+                <div className={clsx(style.DescriptionDiv)}>
+                  <span className={clsx('font-small')}>{t('monitor your data')}</span>
+                </div>
+              </div>
+            </>
+          )}
+
+          {hasAdminRole && (
+            <>
               <div
                 className={clsx(style.OptionWrapper)}
                 onClick={() => navigate('/connect/member/company')}>
