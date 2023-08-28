@@ -1,0 +1,71 @@
+@import "src/assets/scss/colors";
+
+.DataRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: 8px;
+
+  .DataLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .Padding {
+    display: inline-block;
+    padding: 0 15px;
+  }
+
+  .DetailSpan {
+    max-width: 200px;
+    word-break: break-word;
+  }
+
+  .Rounded {
+    display: inline-flex;
+    border-radius: 10px;
+    padding: 8px 15px;
+    background-color: $app-ts;
+
+    .HeartCBTSpan {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      width: 31px;
+      height: 24px;
+    }
+
+    .BlockIcon {
+      width: 20px;
+    }
+  }
+
+  & > div {
+    margin-bottom: 8px;
+  }
+}
+
+.Header,
+.HideSM {
+  display: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .DataRow {
+    grid-template-columns: 1fr 150px 200px;
+    margin-top: 8px;
+  }
+
+  .DataRow,
+  .Header {
+    display: grid;
+  }
+
+  .MobileOnly {
+    display: none;
+  }
+
+  .HideSM {
+    display: block;
+  }
+}

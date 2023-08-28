@@ -103,7 +103,7 @@ instance.interceptors.response.use(
   }
 );
 
-function get(url, token, customHeaders) {
+export function get(url, token, customHeaders) {
   let headers = {};
   if (customHeaders) {
     headers = customHeaders;

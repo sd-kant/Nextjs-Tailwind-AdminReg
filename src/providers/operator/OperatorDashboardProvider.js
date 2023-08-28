@@ -1,190 +1,186 @@
 import * as React from 'react';
-import { getTeamMemberEvents, getTeamMemberAlerts, subscribeDataEvents } from '../../http';
-import axios from 'axios';
-import { ACTIVITIES_FILTERS, ALERT_STAGE_ID_LIST } from '../../constant';
-import { useUtilsContext } from '../UtilsProvider';
-import { formatHeartRate } from '../../utils/dashboard';
 import { withTranslation } from 'react-i18next';
 import { get } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { setLoadingAction } from '../../redux/action/ui';
+import { setLoadingAction } from 'redux/action/ui';
+import { gerUserData, getUserAlerts, getUserOrganization } from 'http/user';
+import { formatLastSync, formatHeartRate } from 'utils/dashboard';
+import { ACTIVITIES_FILTERS, ALERT_STAGE_ID_LIST } from 'constant';
+import {
+  getLatestDateBeforeNow as getLatestDate,
+  getParamFromUrl,
+  numMinutesBetweenWithNow as numMinutesBetween,
+  updateUrlParam
+} from 'utils';
+import { useUtilsContext } from 'providers/UtilsProvider';
 
 const OperatorDashboardContext = React.createContext(null);
 
-const OperatorDashboardProviderDraft = ({ children, organization }) => {
-  const { formatHeartCbt } = useUtilsContext();
-  const [duration] = React.useState(30); // 1, 7, or 30 days
+const OperatorDashboardProviderDraft = ({ children, profile }) => {
+  const [loading, setLoading] = React.useState(false);
   const activitiesFilters = ACTIVITIES_FILTERS;
   const [activitiesFilter, setActivitiesFilter] = React.useState(activitiesFilters[0]);
   const [metricsFilter, setMetricsFilter] = React.useState(activitiesFilters[0]);
-  const [user, setUser] = React.useState(null);
-  const [horizon, _setHorizon] = React.useState(null);
-  const horizonRef = React.useRef(horizon);
-  const [loading, setLoading] = React.useState(false);
-  const setHorizon = (v) => {
-    horizonRef.current = v;
-    _setHorizon(v);
-  };
-  const [alerts, _setAlerts] = React.useState([]);
-  const alertsRef = React.useRef(alerts);
-  const setAlerts = (v) => {
-    alertsRef.current = v;
-    _setAlerts(v);
-  };
-  const [activities, _setActivities] = React.useState([]);
-  const activitiesRef = React.useRef(activities);
-  const setActivities = (v) => {
-    activitiesRef.current = v;
-    _setActivities(v);
-  };
-  const [metricsLog, _setMetricsLog] = React.useState([]);
-  const metricsLogRef = React.useRef(metricsLog);
-  const setMetricsLog = (v) => {
-    metricsLogRef.current = v;
-    _setMetricsLog(v);
-  };
-  React.useEffect(() => {
-    return () => {
-      setAlerts([]);
-      setActivities([]);
-      setMetricsLog([]);
-      setHorizon(null);
-      setUser(null);
-    };
-  }, []);
+  const { formatAlert, formatConnectionStatusV2, formatHeartCbt } = useUtilsContext();
 
-  React.useEffect(() => {
-    setAlerts([]);
-    setActivities([]);
-    setMetricsLog([]);
-    if (user?.userId && user?.teamId) {
-      const promises = [];
-      const d = new Date();
-      d.setDate(d.getDate() - duration);
-      const a = getTeamMemberAlerts({
-        teamId: user.teamId,
-        userId: user.userId,
-        since: d.toISOString()
-      });
-
-      const b = getTeamMemberEvents({
-        teamId: user.teamId,
-        userId: user.userId,
-        endDate: getDateStr(new Date()),
-        startDate: getDateStr(d)
-      });
-
-      const source = axios.CancelToken.source();
-      promises.push(a, b);
-      if (promises?.length > 0) {
-        setLoading(true);
-        Promise.allSettled(promises)
-          .then((results) => {
-            // fixme there might be new events between the time when api returned and now
-            const ts = new Date().getTime();
-            setHorizon(ts);
-            subscribe(ts, source.token);
-            results.forEach((result, index) => {
-              if (result.status === 'fulfilled') {
-                if (index === 0) {
-                  // alerts
-                  if (typeof result?.value?.data === 'object') {
-                    let sortedAlerts = result?.value?.data
-                      ?.sort((a, b) => new Date(b.ts) - new Date(a.ts))
-                      ?.map((it) => ({
-                        ...it,
-                        utcTs: it.ts
-                      }));
-                    sortedAlerts = sortedAlerts?.filter((it) =>
-                      ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString())
-                    );
-                    setAlerts(sortedAlerts ?? []);
-                  }
-                } else if (index === 1) {
-                  // events
-                  if (typeof result?.value?.data === 'object') {
-                    const sortedActivities = result?.value?.data
-                      ?.sort((a, b) => new Date(b.ts) - new Date(a.ts))
-                      ?.map((it) => ({
-                        ...it,
-                        utcTs: it.ts
-                      }));
-                    setActivities(sortedActivities ?? []);
-                  }
-                }
-              }
-            });
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
-
-      return () => {
-        source.cancel('user subscription cancel by user');
-      };
+  const [userData, setUserData] = React.useState({
+    devices: [],
+    events: [],
+    alertObj: {},
+    alerts: [],
+    stat: {
+      batteryPercent: 0,
+      cbtAvg: 0,
+      chargingFlag: false,
+      deviceId: '',
+      deviceLogTs: '',
+      heartRateAvg: 0,
+      heartRateTs: '',
+      lastTimestamp: '',
+      onOffFlag: false,
+      skinTemp: 0,
+      sourceDeviceId: 'test',
+      tempHumidityTs: '',
+      userId: 0
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.userId, user?.teamId]);
+  });
 
-  const subscribe = React.useCallback(
-    (ts, cancelToken) => {
-      if (organization) {
-        let sinceTs = horizonRef.current;
-        let subscribeAgain = true;
-        subscribeDataEvents({
-          filter: {
-            userIds: user?.userId ? [user?.userId] : []
-          },
-          orgId: organization,
-          horizon: ts,
-          cancelToken
-        })
-          .then((res) => {
-            if (res.status?.toString() === '200') {
-              const events = res.data;
-              if (events?.length > 0) {
-                const latestTs = events?.sort((a, b) => b.ts - a.ts)?.[0]?.ts;
-                if (latestTs) {
-                  setHorizon(latestTs);
-                  sinceTs = latestTs;
-                }
+  React.useEffect(() => {
+    // fetch user data
+    setLoading(true);
 
-                let newAlerts = events?.filter((it) => it.type === 'Alert');
-                if (newAlerts?.length > 0) {
-                  newAlerts = newAlerts?.filter((it) =>
-                    ALERT_STAGE_ID_LIST.includes(it.data.alertStageId?.toString())
-                  );
-                  setAlerts([...newAlerts.map((it) => it.data), ...alertsRef.current]);
-                }
-                const newActivities = events?.filter((it) => it.type === 'Event');
-                if (newActivities?.length > 0) {
-                  setActivities([...newActivities.map((it) => it.data), ...activitiesRef.current]);
-                }
-              }
-            } else if (res.status?.toString() === '204') {
-              // when there is no updates
-            }
-          })
-          .catch((error) => {
-            console.error('user subscribe error', error);
-            // fixme check what possible error codes can be
-            subscribeAgain = false;
-          })
-          .finally(() => {
-            subscribeAgain && subscribe(sinceTs, cancelToken);
-            console.log(`user last event signal received at ${new Date().toLocaleString()}`);
+    if (profile) {
+      const userDataPromises = [gerUserData(), getUserAlerts(), getUserOrganization(profile.orgId)];
+      Promise.all(userDataPromises)
+        .then((resArr) => {
+          console.log(' ----- promise all ----');
+          console.log('resArr ==>', resArr);
+          const { stat, alert, devices, events } = resArr[0].data;
+          const alerts = resArr[1].data;
+          const organization = resArr[2].data;
+
+          const alertObj = formatAlert(alert?.alertStageId);
+
+          const lastSync = getLatestDate(
+            getLatestDate(
+              stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
+              stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null
+            ),
+            getLatestDate(
+              stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
+              alert?.utcTs ? new Date(alert?.utcTs) : null
+            )
+          );
+          const lastSyncStr = formatLastSync(lastSync);
+
+          const userKenzenDevice = devices
+            ?.filter(
+              (it) =>
+                it.type === 'kenzen' && it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase()
+            )
+            ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+
+          const numberOfAlerts = (
+            alerts?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? []
+          )?.length;
+
+          const connectionObj = formatConnectionStatusV2({
+            flag: stat?.onOffFlag,
+            connected: userKenzenDevice?.connected,
+            lastTimestamp: stat?.tempHumidityTs,
+            deviceId: stat?.deviceId,
+            numberOfAlerts,
+            stat,
+            alert
           });
-      }
-    },
-    [organization, user?.userId]
-  );
+
+          const invisibleHeatRisk =
+            !alert || ['1', '2', '8'].includes(connectionObj?.value?.toString());
+
+          // const logs = getLogs(alerts, events);
+
+          setUserData({
+            events,
+            stat,
+            alerts,
+            devices,
+            lastSyncStr,
+            alertObj,
+            numberOfAlerts,
+            invisibleHeatRisk,
+            connectionObj,
+            organization
+          });
+          setLoading(false);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+
+    // gerUserData().then(({ data }) => {
+    //   const { stat, alert, devices } = data;
+
+    //   const alertObj = formatAlert(alert?.alertStageId);
+
+    //   const lastSync = getLatestDate(
+    //     getLatestDate(
+    //       stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
+    //       stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null
+    //     ),
+    //     getLatestDate(
+    //       stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
+    //       alert?.utcTs ? new Date(alert?.utcTs) : null
+    //     )
+    //   );
+    //   const lastSyncStr = formatLastSync(lastSync);
+
+    //   const userKenzenDevice = devices
+    //     ?.filter(
+    //       (it) =>
+    //         it.type === 'kenzen' && it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase()
+    //     )
+    //     ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+
+    //     const alertsForMe = valuesV2.alerts?.filter(
+    //       (it) =>
+    //         it.userId?.toString() === member.userId?.toString() &&
+    //         (!(it?.alertStageId?.toString() === '5') ||
+    //           numMinutesBetween(new Date(), new Date(it.utcTs)) <= 1)
+    //     );
+
+    //   const alert = alertsForMe?.sort(function (a, b) {
+    //     return new Date(b.utcTs) - new Date(a.utcTs);
+    //   })?.[0];
+    //   const numberOfAlerts = (
+    //     alertsForMe?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? []
+    //   )?.length;
+
+    //   const connectionObj = formatConnectionStatusV2({
+    //     flag: stat?.onOffFlag,
+    //     connected: userKenzenDevice?.connected,
+    //     lastTimestamp: stat?.tempHumidityTs,
+    //     deviceId: stat?.deviceId,
+    //     numberOfAlerts,
+    //     stat,
+    //     alert
+    //   });
+
+    //   const invisibleHeatRisk =
+    //     !alert || ['1', '2', '8'].includes(connectionObj?.value?.toString());
+
+    //   setUserData({ ...data, lastSyncStr, alertObj });
+    //   setLoading(false);
+    // });
+  }, [profile]);
 
   const logs = React.useMemo(() => {
+    const { alerts, events } = userData;
+
     let merged = [
       ...(alerts?.map((it) => ({ ...it, type: 'Alert' })) ?? []),
-      ...(activities?.map((it) => ({ ...it, type: 'Event' })) ?? [])
+      ...(events?.map((it) => ({ ...it, type: 'Event' })) ?? [])
     ];
     const d = new Date();
     d.setDate(d.getDate() - (activitiesFilter?.value ?? 1));
@@ -197,11 +193,12 @@ const OperatorDashboardProviderDraft = ({ children, organization }) => {
         unique.push(entry);
       }
     }
-
     return unique;
-  }, [alerts, activities, activitiesFilter?.value]);
+  }, [userData, activitiesFilter?.value]);
 
   const metricStats = React.useMemo(() => {
+    const { alerts } = userData;
+    console.log('alerts ===>', alerts);
     const d = new Date();
     d.setDate(d.getDate() - (metricsFilter?.value ?? 1));
     let tempAlerts = [...alerts]
@@ -238,23 +235,18 @@ const OperatorDashboardProviderDraft = ({ children, organization }) => {
           : 0
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alerts, metricsFilter?.value]);
-
-  const getDateStr = (date) => {
-    const d = new Date(date);
-    return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-  };
+  }, [userData, metricsFilter?.value]);
 
   const providerValue = {
-    setUser,
+    userData,
+    loading,
     logs,
     metricStats,
     activitiesFilter,
-    setActivitiesFilter,
     activitiesFilters,
     metricsFilter,
-    setMetricsFilter,
-    loading
+    setActivitiesFilter,
+    setMetricsFilter
   };
 
   return (
@@ -265,8 +257,7 @@ const OperatorDashboardProviderDraft = ({ children, organization }) => {
 };
 
 const mapStateToProps = (state) => ({
-  // userType: get(state, 'auth.userType'),
-  organization: get(state, 'profile.organization')
+  profile: get(state, 'profile.profile')
 });
 
 const mapDispatchToProps = (dispatch) =>
