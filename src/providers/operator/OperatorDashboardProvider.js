@@ -62,7 +62,6 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
     const userDataPromises = [gerUserData(), getUserAlerts(), getUserOrganization(profile.orgId)];
     Promise.all(userDataPromises)
       .then((resArr) => {
-        console.log(' ----- promise all ----');
         const { stat, alert, devices, events } = resArr[0].data;
         const alerts = resArr[1].data;
         const organization = resArr[2].data;
@@ -188,7 +187,6 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
       ...(alerts?.map((it) => ({ ...it, type: 'Alert' })) ?? []),
       ...(activities?.map((it) => ({ ...it, type: 'Event' })) ?? [])
     ];
-    console.log(merged);
     const d = new Date();
     d.setDate(d.getDate() - (activitiesFilter?.value ?? 1));
     merged = merged
