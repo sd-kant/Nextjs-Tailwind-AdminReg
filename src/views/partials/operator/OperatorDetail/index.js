@@ -46,9 +46,7 @@ const OperatorDetail = ({ t, profile, metric }) => {
   } = useOperatorDashboardContext();
   const {
     devices,
-    events,
     stat,
-    lastSyncStr,
     numberOfAlerts,
     invisibleHeatRisk,
     alertObj,
