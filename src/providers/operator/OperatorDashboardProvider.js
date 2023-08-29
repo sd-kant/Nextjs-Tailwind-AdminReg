@@ -8,10 +8,7 @@ import { gerUserData, getUserAlerts, getUserOrganization, subscribeDataEvents } 
 import { formatLastSync, formatHeartRate } from 'utils/dashboard';
 import { ACTIVITIES_FILTERS, ALERT_STAGE_ID_LIST } from 'constant';
 import {
-  getLatestDateBeforeNow as getLatestDate,
-  getParamFromUrl,
-  numMinutesBetweenWithNow as numMinutesBetween,
-  updateUrlParam
+  getLatestDateBeforeNow as getLatestDate
 } from 'utils';
 import { useUtilsContext } from 'providers/UtilsProvider';
 

@@ -10,7 +10,6 @@ import clsx from 'clsx';
 import style from './OperatorDetail.module.scss';
 
 import avatar from 'assets/images/logo_round.png';
-import lockIcon from 'assets/images/lock.svg';
 import blockIcon from 'assets/images/no.svg';
 import alertsIcon from 'assets/images/alerts-icon.svg';
 import thermometer from 'assets/images/thermometer-orange.svg';
@@ -19,7 +18,6 @@ import heart from 'assets/images/heart.svg';
 import { useUtilsContext } from 'providers/UtilsProvider';
 import { useOperatorDashboardContext } from 'providers/operator/OperatorDashboardProvider';
 
-import Button from 'views/components/Button';
 import ResponsiveSelect from 'views/components/ResponsiveSelect';
 import BatteryV3 from 'views/components/BatteryV3';
 
@@ -58,35 +56,6 @@ const OperatorDetail = ({ t, profile, metric }) => {
     organization
   } = userData;
 
-  // const {
-  //   setUser,
-  //   logs,
-  //   metricStats,
-  //   activitiesFilters,
-  //   activitiesFilter,
-  //   setActivitiesFilter,
-  //   metricsFilter,
-  //   setMetricsFilter
-  // } = useUserSubscriptionContext();
-  const [warningModal, setWarningModal] = React.useState({ visible: false, title: '', mode: null }); // mode: 'move', 'unlock'
-  const [confirmModal, setConfirmModal] = React.useState({ visible: false, title: '', mode: null }); // mode: move, unlock
-  const memberId = React.useRef(origin?.userId);
-
-  // const data = React.useMemo(() => {
-  //   return origin
-  //     ? origin
-  //     : formattedMembers.find((it) => it.userId?.toString() === memberId.current?.toString());
-  // }, [formattedMembers, origin]);
-
-  // const { stat, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk } =
-  //   data ?? {
-  //     stat: null,
-  //     alertsForMe: null,
-  //     lastSyncStr: null,
-  //     numberOfAlerts: null,
-  //     settings: { hideCbtHR: false }
-  //   };
-
   const hideCbtHR = organization?.settings?.hideCbtHR;
   let badgeColorStyle = style.Off;
   if (connectionObj?.value?.toString() === '3') {
@@ -98,20 +67,6 @@ const OperatorDetail = ({ t, profile, metric }) => {
   } else if (connectionObj?.value?.toString() === '4') {
     badgeColorStyle = style.Yellow;
   }
-  // const [team, setTeam] = React.useState(null);
-  // React.useEffect(() => {
-  //   if (data?.teamId) {
-  //     setTeam(formattedTeams?.find((it) => it.value?.toString() === data?.teamId?.toString()));
-  //   } else {
-  //     setTeam(null);
-  //   }
-  //   setUser(data);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [data]);
-
-  // const userDevices = devices?.find(
-  //   (it) => it.userId?.toString() === data?.userId?.toString()
-  // )?.devices;
 
   let apiDevice = null;
   let kenzenDevice = null;
@@ -148,117 +103,6 @@ const OperatorDetail = ({ t, profile, metric }) => {
   const heartRateZone = getHeartRateZone(profile?.dateOfBirth, stat?.heartRateAvg);
   const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
 
-  // const hideWarningModal = () => {
-  //   setWarningModal({ visible: false, title: '', mode: null });
-  // };
-
-  // const handleConfirm = React.useCallback(() => {
-  //   switch (confirmModal.mode) {
-  //     case 'move':
-  //       setMember(null);
-  //       setConfirmModal({ visible: false, title: '', mode: null });
-  //       break;
-  //     case 'unlock':
-  //       setConfirmModal({ visible: false, title: '', mode: null });
-  //       break;
-  //     default:
-  //       console.log('action not registered');
-  //   }
-  // }, [confirmModal, setMember]);
-
-  // const renderActionContent = () => {
-  //   return (
-  //     <>
-  //       {/*<div className={clsx(style.Control)}>
-  //         <Button
-  //           size="sm"
-  //           bgColor={'transparent'}
-  //           borderColor={'orange'}
-  //           title={t("send a message")}
-  //         />
-  //       </div>*/}
-  //       {data?.locked ? (
-  //         <div className={clsx(style.Control)}>
-  //           <Button
-  //             size="sm"
-  //             bgColor={'transparent'}
-  //             borderColor={'orange'}
-  //             title={t('unlock user')}
-  //             onClick={handleClickUnlock}
-  //           />
-  //         </div>
-  //       ) : null}
-  //     </>
-  //   );
-  // };
-
-  // const handleClickMoveTeam = () => {
-  //   setWarningModal({
-  //     visible: true,
-  //     title: t('move user to team warning title', {
-  //       user: `${data?.firstName} ${data?.lastName}`,
-  //       team: team?.label
-  //     }),
-  //     mode: 'move'
-  //   });
-  // };
-
-  // const handleClickUnlock = () => {
-  //   setWarningModal({
-  //     visible: true,
-  //     title: t('unlock user warning title'),
-  //     mode: 'unlock'
-  //   });
-  // };
-
-  // const handleWarningClick = React.useCallback(() => {
-  //   const handleMove = () => {
-  //     moveMember([data], team?.value)
-  //       .then(() => {
-  //         hideWarningModal();
-  //         setConfirmModal({
-  //           visible: true,
-  //           title: t('move user to team confirmation title', {
-  //             user: `${data?.firstName} ${data?.lastName}`,
-  //             team: team?.label
-  //           }),
-  //           mode: 'move'
-  //         });
-  //       })
-  //       .catch((e) => {
-  //         console.log('moving member error', e);
-  //       });
-  //   };
-
-  //   const handleUnlock = () => {
-  //     unlockMember(data)
-  //       .then(() => {
-  //         hideWarningModal();
-  //         setConfirmModal({
-  //           visible: true,
-  //           title: t('unlock user confirmation title', {
-  //             name: `${data?.firstName} ${data?.lastName}`
-  //           }),
-  //           mode: 'unlock'
-  //         });
-  //       })
-  //       .catch((e) => {
-  //         console.log('moving member error', e);
-  //       });
-  //   };
-
-  //   switch (warningModal.mode) {
-  //     case 'move':
-  //       handleMove();
-  //       break;
-  //     case 'unlock':
-  //       handleUnlock();
-  //       break;
-  //     default:
-  //       console.log('action moe not registered');
-  //   }
-  // }, [data, moveMember, unlockMember, t, team, warningModal]);
-
   const apiDeviceInfo = React.useMemo(() => {
     if (!apiDevice) return null;
     let ret = 'Not Recognized';
@@ -285,17 +129,6 @@ const OperatorDetail = ({ t, profile, metric }) => {
             <div className={clsx(style.UserMain)}>
               <div className={clsx(style.AvatarArea)}>
                 <img className={clsx(style.Avatar)} src={avatar} alt="avatar" />
-                {/* {data?.locked ? (
-                  <img
-                    className={clsx(style.LockIcon)}
-                    src={lockIcon}
-                    alt="lock icon"
-                    onClick={() => {}}
-                  />
-                ) : null} */}
-                {/* <span className={clsx('text-orange cursor-pointer text-capitalize')}>
-                  {t('edit')}
-                </span> */}
               </div>
 
               <div className={clsx(style.NameDevice)}>
@@ -398,8 +231,6 @@ const OperatorDetail = ({ t, profile, metric }) => {
               </div>
             </div>
           </div>
-
-          {/* <div className={clsx(style.FirstRolesCard)}>{renderActionContent()}</div> */}
         </div>
 
         <div className={clsx(style.HeartRiskCard)}>
@@ -534,23 +365,6 @@ const OperatorDetail = ({ t, profile, metric }) => {
 
           <div className={clsx(style.MetricCardContent)}>
             <MetricLogs metricStats={metricStats} />
-          </div>
-        </div>
-
-        <div className={clsx(style.ActivityRoleCard)}>
-          <div className={clsx(style.ActivityCard, style.Card_No_Back)}>
-            <div className="d-flex justify-end">
-              {/* <Button
-                title={'update team'}
-                size="sm"
-                disabled={team?.value?.toString() === data?.teamId?.toString()}
-                onClick={handleClickMoveTeam}
-              /> */}
-            </div>
-          </div>
-
-          <div className={clsx(style.SecondRoleCard, style.Card_No_Back)}>
-            {/* {renderActionContent()} */}
           </div>
         </div>
       </div>
