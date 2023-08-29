@@ -11,3 +11,7 @@ export const getUserAlerts = () => {
 export const getUserOrganization = (orgId) => {
   return get(`/organization/${orgId}`);
 };
+
+export const subscribeDataEvents = (horizon) => {
+  return get(`/user/subscribe/${horizon}`);
+};

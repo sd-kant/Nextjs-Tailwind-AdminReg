@@ -1,4 +1,5 @@
 declare global {
+  
   interface T_ApiValidationError {
     field: string;
     messageCode: string;
@@ -75,7 +76,7 @@ declare global {
     charging: boolean;
     ppg: boolean;
     onOff: boolean;
-    connected: booelan;
+    connected: boolean;
   }
 
   interface T_MemberStat {
@@ -122,7 +123,7 @@ declare global {
     orgId: number;
     settings: { teamAlerts: number[] };
     stat: T_MemberStat;
-    teamId?: teamId;
+    teamId?: number;
     userId: number;
     userTypes: string[];
   }

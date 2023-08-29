@@ -58,9 +58,6 @@ const OperatorDetail = ({ t, profile, metric }) => {
     organization
   } = userData;
 
-  console.log('profile ===>', profile);
-  console.log('userData ===>', userData);
-
   // const {
   //   setUser,
   //   logs,
@@ -481,24 +478,6 @@ const OperatorDetail = ({ t, profile, metric }) => {
                 </span>
               </div>
             )}
-          </div>
-        </div>
-
-        <div className="mt-15">
-          <div className={clsx(style.CardHeader, 'font-heading-small')}>
-            <span>{t('modify team')}</span>
-          </div>
-
-          <div>
-            {/* <ResponsiveSelect
-              className="mt-10 font-heading-small text-black"
-              placeholder={t('select')}
-              styles={customStyles()}
-              options={formattedTeams}
-              value={team}
-              onChange={(e) => setTeam(e)}
-              maxMenuHeight={190}
-            /> */}
           </div>
         </div>
       </div>
