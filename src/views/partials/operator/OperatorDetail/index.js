@@ -7,7 +7,6 @@ import { numMinutesBetweenWithNow as numMinutesBetween } from 'utils';
 import { formatHeartRate } from 'utils/dashboard';
 
 import clsx from 'clsx';
-import style from './OperatorDetail.module.scss';
 
 import avatar from 'assets/images/logo_round.png';
 import blockIcon from 'assets/images/no.svg';
@@ -25,6 +24,9 @@ import { customStyles } from 'views/pages/DashboardV2';
 
 import MetricLogs from './MetricLogs';
 import ActivityLogs from './ActivityLogs';
+import Card from './Card';
+import Divider from './Divider';
+import Badge from './Badge';
 
 const OperatorDetail = ({ t, profile, metric }) => {
   const {
@@ -55,15 +57,16 @@ const OperatorDetail = ({ t, profile, metric }) => {
   } = userData;
 
   const hideCbtHR = organization?.settings?.hideCbtHR;
-  let badgeColorStyle = style.Off;
+
+  let connectStatus = 'off';
   if (connectionObj?.value?.toString() === '3') {
     if (['1', '2'].includes(alertObj?.value?.toString())) {
-      badgeColorStyle = style.Red;
+      connectStatus = 'risk';
     } else {
-      badgeColorStyle = style.Green;
+      connectStatus = 'safe';
     }
   } else if (connectionObj?.value?.toString() === '4') {
-    badgeColorStyle = style.Yellow;
+    connectStatus = 'sleep';
   }
 
   let apiDevice = null;
@@ -120,138 +123,127 @@ const OperatorDetail = ({ t, profile, metric }) => {
   }, [apiDevice]);
 
   return (
-    <div className={clsx(style.Wrapper)}>
-      <div className={clsx(style.LeftCard)}>
-        <div className={clsx(style.UserActionCard)}>
-          <div className={clsx(style.UserCard, style.Card)}>
-            <div className={clsx(style.UserMain)}>
-              <div className={clsx(style.AvatarArea)}>
-                <img className={clsx(style.Avatar)} src={avatar} alt="avatar" />
+    <div
+      className={
+        'tw-p-2 md:tw-px-8 md:tw-py-2 tw-relative tw-grid tw-grid-cols-12 tw-gap-2 md:tw-gap-8 tw-bg-app-list-bg'
+      }>
+      <div className="tw-col-span-12 md:tw-col-span-4">
+        <Card className="tw-grid tw-grid-cols-12 md:tw-grid-cols-1 tw-gap-4">
+          <div className="tw-col-span-8 md:tw-col-span-1 tw-grid tw-grid-cols-12 tw-gap-4">
+            <div className="tw-col-span-3 md:tw-col-span-4">
+              <img
+                className={'tw-w-12 tw-h-12 md:tw-w-[80px] md:tw-h-[80px]'}
+                src={avatar}
+                alt="avatar"
+              />
+            </div>
+
+            <div className="tw-col-span-9 md:tw-col-span-8 tw-flex tw-flex-col tw-gap-4">
+              <div
+                title={profile?.firstName + ' ' + profile?.lastName}
+                className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
+                <span className={clsx('font-heading-small')}>
+                  {`${profile?.firstName}  ${profile?.lastName}`}
+                </span>
               </div>
 
-              <div className={clsx(style.NameDevice)}>
-                <div
-                  title={profile?.firstName + ' ' + profile?.lastName}
-                  className={clsx(style.NameDeviceElement)}>
-                  <span className={clsx('font-heading-small')}>
-                    {`${profile?.firstName}  ${profile?.lastName}`}
-                  </span>
-                </div>
+              <div
+                title={profile?.email}
+                className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
+                <span className={clsx('font-binary')}>{profile?.email}</span>
+              </div>
 
-                <div title={profile?.email} className={clsx(style.NameDeviceElement)}>
-                  <span className={clsx('font-binary')}>{profile?.email}</span>
+              <div>
+                <div className="tw-flex tw-items-center">
+                  <span className={clsx('font-binary')}>{stat?.deviceId ?? 'N/A'}</span>
+                  &nbsp;&nbsp;
+                  <BatteryV3 charging={stat?.chargingFlag} percent={stat?.batteryPercent} />
                 </div>
-
-                <div>
-                  <div className={clsx(style.Mac_Battery)}>
-                    <span className={clsx('font-binary')}>{stat?.deviceId ?? 'N/A'}</span>
-                    &nbsp;&nbsp;
-                    <BatteryV3 charging={stat?.chargingFlag} percent={stat?.batteryPercent} />
+                {kenzenDevice && (
+                  <div>
+                    <span className={clsx('font-binary')}>FW Ver. {kenzenDevice?.version}</span>
                   </div>
-                  {kenzenDevice && (
-                    <div>
-                      <span className={clsx('font-binary')}>FW Ver. {kenzenDevice?.version}</span>
-                    </div>
-                  )}
-                  {apiDeviceInfo && (
-                    <div>
-                      <span className={clsx('font-binary')}>{apiDeviceInfo}</span>
-                    </div>
-                  )}
-                  {appInfo && (
-                    <div>
-                      <span className={clsx('font-binary')}>{appInfo}</span>
-                    </div>
-                  )}
+                )}
+                {apiDeviceInfo && (
+                  <div>
+                    <span className={clsx('font-binary')}>{apiDeviceInfo}</span>
+                  </div>
+                )}
+                {appInfo && (
+                  <div>
+                    <span className={clsx('font-binary')}>{appInfo}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <Divider className="tw-my-4 tw-hidden md:tw-block" />
+
+          <div className={'tw-col-span-4 md:tw-col-span-1 tw-grid tw-grid-cols-12 tw-gap-4'}>
+            <div className="tw-col-span-12 md:tw-col-span-4">
+              <div>
+                <div>
+                  <span className="font-helper-text tw-text-app-ns">{t('last sync')}</span>
+                </div>
+                <div style={{ height: '21px' }}>
+                  <span className={clsx('font-input-label')}>{userData.lastSyncStr}</span>
+                </div>
+              </div>
+
+              <div className="tw-mt-2">
+                <div>
+                  <span className="tw-text-app-ns tw-font-helper-text">{t('status')}</span>
+                </div>
+                <div title={invisibleHeatRisk ? null : alertObj?.label}>
+                  <div className="tw-flex tw-items-center">
+                    <Badge status={connectStatus} />
+                  </div>
+                  <span className={clsx('font-input-label')}>
+                    {!invisibleHeatRisk ? alertObj?.label : ''}
+                  </span>
                 </div>
               </div>
             </div>
 
-            <div className={clsx(style.Divider)} />
-
-            <div className={clsx(style.InformationArea)}>
+            <div className="tw-col-span-12 md:tw-col-span-8">
               <div>
-                <div className={clsx(style.InformationEntity)}>
-                  <div>
-                    <span className={clsx(style.HelperText, 'font-helper-text')}>
-                      {t('last sync')}
-                    </span>
-                  </div>
-                  <div style={{ height: '21px' }}>
-                    <span className={clsx('font-input-label')}>{userData.lastSyncStr}</span>
-                  </div>
+                <div>
+                  <span className="tw-text-app-ns font-helper-text">{t('alert(24hr)')}</span>
                 </div>
-
-                <div className={clsx(style.InformationEntity)}>
-                  <div>
-                    <span className={clsx(style.HelperText, 'font-helper-text')}>
-                      {t('status')}
-                    </span>
-                  </div>
-                  <div
-                    className={clsx(style.StatusCell)}
-                    title={invisibleHeatRisk ? null : alertObj?.label}
-                    style={{ height: '18.38px' }}>
-                    <div className={clsx(style.BadgeWrapper)}>
-                      <div className={clsx(style.StatusBadge, badgeColorStyle)} />
-                    </div>
-                    <span className={clsx('font-input-label')}>
-                      {!invisibleHeatRisk ? alertObj?.label : ''}
-                    </span>
-                  </div>
+                <div>
+                  <span className={clsx('font-input-label')}>{numberOfAlerts ?? 0}</span>
                 </div>
               </div>
 
-              <div>
-                <div className={clsx(style.InformationEntity)}>
-                  <div>
-                    <span className={clsx(style.HelperText, 'font-helper-text')}>
-                      {t('alert(24hr)')}
-                    </span>
-                  </div>
-                  <div>
-                    <span className={clsx('font-input-label')}>{numberOfAlerts ?? 0}</span>
-                  </div>
+              <div className="tw-mt-2">
+                <div>
+                  <span className="tw-text-app-ns font-helper-text tw-uppercase">
+                    {t('connection status')}
+                  </span>
                 </div>
-
-                <div className={clsx(style.InformationEntity)}>
-                  <div>
-                    <span className={clsx(style.HelperText, 'font-helper-text', 'text-uppercase')}>
-                      {t('connection status')}
-                    </span>
-                  </div>
-                  <div className={clsx(style.Cell)}>
-                    <span className={clsx('font-input-label')} title={connectionObj?.label}>
-                      {connectionObj?.label}
-                    </span>
-                  </div>
+                <div className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
+                  <span className={clsx('font-input-label')} title={connectionObj?.label}>
+                    {connectionObj?.label}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
-        <div className={clsx(style.HeartRiskCard)}>
-          <div className={clsx(style.RiskCard, style.Card)}>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textAlign: 'center'
-              }}>
+        <div className="tw-grid tw-grid-cols-12 tw-gap-2 md:tw-gap-8 tw-mt-2 md:tw-mt-8">
+          <Card className="tw-col-span-6 tw-hidden md:tw-block">
+            <div className="tw-flex tw-flex-col tw-items-center tw-text-center">
               <span className={clsx('font-input-label')}>{t('cbt avg')}</span>
-              <span className={'font-input-label text-uppercase'}>{metric ? '(°C)' : '(°F)'}</span>
+              <span className={'font-input-label tw-uppercase'}>{metric ? '(°C)' : '(°F)'}</span>
             </div>
 
-            <div
-              className={clsx(style.InformationContent)}
-              style={{ display: 'flex', justifyContent: 'center', height: '55px' }}>
+            <div className="tw-flex tw-items-center tw-justify-center tw-h-[55px]">
               <img src={thermometer} alt="thermometer" width={15} />
               {hideCbtHR ? (
-                <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon" />
+                <img className="tw-w-[25px] tw-ml-[10px]" src={blockIcon} alt="block icon" />
               ) : (
-                <span className={'font-big-number'}>
+                <span className={'font-big-number tw-ml-2'}>
                   {stat?.chargingFlag
                     ? '--'
                     : formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
@@ -268,30 +260,21 @@ const OperatorDetail = ({ t, profile, metric }) => {
                 </span>
               </div>
             )}
-          </div>
-
-          <div className={clsx(style.HeartCard, style.Card)}>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                textAlign: 'center'
-              }}>
-              <span className={clsx('font-input-label text-capitalize')}>
+          </Card>
+          <Card className="tw-col-span-6 tw-hidden md:tw-block">
+            <div className="tw-flex tw-flex-col tw-items-center tw-text-center">
+              <span className={clsx('font-input-label tw-text-capitalize')}>
                 {t('heart rate avg')}
               </span>
-              <span className={clsx('font-input-label text-uppercase')}>(bpm)</span>
+              <span className={clsx('font-input-label tw-uppercase')}>(bpm)</span>
             </div>
 
-            <div
-              className={clsx(style.InformationContent)}
-              style={{ display: 'flex', justifyContent: 'center', height: '55px' }}>
+            <div className="tw-flex tw-items-center tw-justify-center tw-h-[55px]">
               <img src={heart} alt="heart" width={30} />
               {hideCbtHR ? (
-                <img className={clsx(style.BlockIcon)} src={blockIcon} alt="block icon" />
+                <img className="tw-w-[25px] tw-ml-[10px]" src={blockIcon} alt="block icon" />
               ) : (
-                <span className={clsx('font-big-number')}>
+                <span className={clsx('font-big-number tw-ml-2')}>
                   {stat?.chargingFlag
                     ? '--'
                     : formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)}
@@ -307,22 +290,81 @@ const OperatorDetail = ({ t, profile, metric }) => {
                 </span>
               </div>
             )}
-          </div>
+          </Card>
+          <Card className="tw-col-span-12 tw-grid tw-grid-cols-12 md:tw-hidden">
+            <div className="tw-col-span-6">
+              <div className="tw-flex tw-flex-col tw-items-center tw-text-center">
+                <span className={clsx('font-input-label')}>{t('cbt avg')}</span>
+                <span className={'font-input-label tw-uppercase'}>{metric ? '(°C)' : '(°F)'}</span>
+              </div>
+
+              <div className="tw-flex tw-items-center tw-justify-center tw-h-[55px]">
+                <img src={thermometer} alt="thermometer" width={15} />
+                {hideCbtHR ? (
+                  <img className="tw-w-[25px] tw-ml-[10px]" src={blockIcon} alt="block icon" />
+                ) : (
+                  <span className={'font-big-number tw-ml-2'}>
+                    {stat?.chargingFlag
+                      ? '--'
+                      : formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
+                  </span>
+                )}
+              </div>
+
+              {!hideCbtHR && visibleHeartStats && (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <span
+                    className={clsx('font-binary')}
+                    style={heartCBTZoneStyles[heartCBTZone?.value?.toString()]}>
+                    {heartCBTZone?.label}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="tw-col-span-6">
+              <div className="tw-flex tw-flex-col tw-items-center tw-text-center">
+                <span className={clsx('font-input-label tw-text-capitalize')}>
+                  {t('heart rate avg')}
+                </span>
+                <span className={clsx('font-input-label tw-uppercase')}>(bpm)</span>
+              </div>
+
+              <div className="tw-flex tw-items-center tw-justify-center tw-h-[55px]">
+                <img src={heart} alt="heart" width={30} />
+                {hideCbtHR ? (
+                  <img className="tw-w-[25px] tw-ml-[10px]" src={blockIcon} alt="block icon" />
+                ) : (
+                  <span className={clsx('font-big-number tw-ml-2')}>
+                    {stat?.chargingFlag
+                      ? '--'
+                      : formatHeartRate(visibleHeartStats ? stat?.heartRateAvg : null)}
+                  </span>
+                )}
+              </div>
+              {!hideCbtHR && visibleHeartStats && (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <span
+                    className={clsx('font-binary')}
+                    style={heartRateZoneStyles[heartRateZone?.value?.toString()]}>
+                    {heartRateZone?.label}
+                  </span>
+                </div>
+              )}
+            </div>
+          </Card>
         </div>
       </div>
-
-      <div className={clsx(style.RightCard)}>
-        <div className={clsx(style.AlertsCard, style.Card)}>
-          <div className={clsx(style.CardTop)}>
-            <div className={clsx(style.CardHeader, 'font-heading-small')}>
+      <div className="tw-col-span-12 md:tw-col-span-8 tw-flex tw-flex-col-reverse tw-gap-2 md:tw-flex-col md:tw-gap-8">
+        <Card>
+          <div className="tw-flex tw-flex-col md:tw-flex-row md:tw-justify-between md:tw-items-center">
+            <div className={'tw-flex tw-items-center tw-font-heading-small'}>
               <img src={alertsIcon} alt="alerts icon" />
               &nbsp;&nbsp;
               <span>{t('activity logs')}</span>
             </div>
-
-            <div className={clsx(style.FilterArea)}>
+            <div>
               <ResponsiveSelect
-                className={clsx('font-binary text-black', style.Dropdown)}
+                className={clsx('font-binary tw-text-black tw-my-2', 'w-[250px]')}
                 placeholder={t('filter by')}
                 styles={customStyles()}
                 options={activitiesFilters}
@@ -334,22 +376,21 @@ const OperatorDetail = ({ t, profile, metric }) => {
             </div>
           </div>
 
-          <div className={clsx(style.AlertCardContent)}>
+          <div className="max-h-[205px] tw-overflow-y-auto tw-mt-2 md:tw-mt-4">
             <ActivityLogs gmt={profile?.gmt} />
           </div>
-        </div>
-
-        <div className={clsx(style.AlertsCard, style.MetricsCard, style.Card, style.CardMetric)}>
-          <div className={clsx(style.CardTop)}>
-            <div className={clsx(style.CardHeader, 'font-heading-small')}>
+        </Card>
+        <Card>
+          <div className="tw-flex tw-flex-col md:tw-flex-row md:tw-justify-between md:tw-items-center">
+            <div className={clsx('tw-flex tw-items-center', 'font-heading-small')}>
               <img src={alertsIcon} alt="alerts icon" />
               &nbsp;&nbsp;
               <span>{t('alert metrics')}</span>
             </div>
 
-            <div className={clsx(style.FilterArea)}>
+            <div>
               <ResponsiveSelect
-                className={clsx('font-binary text-black', style.Dropdown)}
+                className={clsx('font-binary tw-text-black tw-my-2', 'tw-w-[250px]')}
                 placeholder={t('filter by')}
                 styles={customStyles()}
                 options={activitiesFilters}
@@ -361,10 +402,10 @@ const OperatorDetail = ({ t, profile, metric }) => {
             </div>
           </div>
 
-          <div className={clsx(style.MetricCardContent)}>
+          <div className="tw-mt-2 md:tw-mt-4 h-auto tw-overflow-y-auto">
             <MetricLogs metricStats={metricStats} />
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

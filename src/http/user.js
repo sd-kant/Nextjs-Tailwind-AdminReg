@@ -1,11 +1,12 @@
 import { get } from './index';
+import moment from 'moment-timezone';
 
 export const gerUserData = () => {
   return get('/user/data');
 };
 
-export const getUserAlerts = () => {
-  return get('/alert/user');
+export const getUserAlerts = (startDate, endDate = moment.utc().format('YYYY-MM-DD')) => {
+  return get(`/alert/user?startDate=${startDate}&endDate=${endDate}`);
 };
 
 export const getUserOrganization = (orgId) => {
