@@ -1,5 +1,7 @@
 @import "colors";
 @import "fonts";
+@tailwind utilities;
+
 
 .font-header-medium {
   font-family: Ubuntu-Medium;
@@ -9,26 +11,22 @@
 
 .font-heading-small {
   font-family: Ubuntu-Regular;
-  font-size: 21px;
-  line-height: 24.13px;
+  @apply tw-text-xs md:tw-text-[21px] md:tw-leading-[24.13px];
 }
 
 .font-button-label {
   font-family: Ubuntu-Bold;
-  font-size: 16px;
-  line-height: 18.38px;
+  @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[18.38px];
 }
 
 .font-button-label-sm {
   font-family: Ubuntu-Bold;
-  font-size: 14px;
-  line-height: 16.09px;
+  @apply tw-text-xs md:tw-text-[14px] md:tw-leading-[16.09px];
 }
 
 .font-input-label {
   font-family: Ubuntu-Medium;
-  font-size: 16px;
-  line-height: 18.38px;
+  @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[18.38px];
 }
 
 .font-heading {
@@ -51,14 +49,13 @@
 
 .font-helper-text {
   font-family: Ubuntu-Regular;
-  font-size: 14px;
-  line-height: 21px;
+  @apply tw-text-xs md:tw-text-[14px] md:tw-leading-[21px];
 }
 
 .font-binary {
   font-family: Ubuntu-Regular;
-  font-size: 16px;
-  line-height: 24px;
+  @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[24px];
+  
 }
 
 .font-search {

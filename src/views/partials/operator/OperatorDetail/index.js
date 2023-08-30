@@ -179,8 +179,11 @@ const OperatorDetail = ({ t, profile, metric }) => {
           </div>
           <Divider className="tw-my-4 tw-hidden md:tw-block" />
 
-          <div className={'tw-col-span-4 md:tw-col-span-1 tw-grid tw-grid-cols-12 tw-gap-4'}>
-            <div className="tw-col-span-12 md:tw-col-span-4">
+          <div
+            className={
+              'tw-col-span-4 tw-grid-cols-4 md:tw-col-span-1 tw-grid md:tw-grid-cols-12 tw-gap-4'
+            }>
+            <div className="tw-col-span-4 md:tw-col-span-4">
               <div>
                 <div>
                   <span className="font-helper-text tw-text-app-ns">{t('last sync')}</span>
@@ -195,7 +198,7 @@ const OperatorDetail = ({ t, profile, metric }) => {
                   <span className="tw-text-app-ns tw-font-helper-text">{t('status')}</span>
                 </div>
                 <div title={invisibleHeatRisk ? null : alertObj?.label}>
-                  <div className="tw-flex tw-items-center">
+                  <div className="tw-flex tw-items-center tw-mt-2">
                     <Badge status={connectStatus} />
                   </div>
                   <span className={clsx('font-input-label')}>
@@ -204,8 +207,7 @@ const OperatorDetail = ({ t, profile, metric }) => {
                 </div>
               </div>
             </div>
-
-            <div className="tw-col-span-12 md:tw-col-span-8">
+            <div className="tw-col-span-4 md:tw-col-span-8">
               <div>
                 <div>
                   <span className="tw-text-app-ns font-helper-text">{t('alert(24hr)')}</span>
