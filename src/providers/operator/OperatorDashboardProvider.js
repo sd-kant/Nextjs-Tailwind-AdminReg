@@ -19,7 +19,10 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
   const [activitiesFilter, setActivitiesFilter] = React.useState(activitiesFilters[0]);
   const [metricsFilter, setMetricsFilter] = React.useState(activitiesFilters[0]);
   const { formatAlert, formatConnectionStatusV2, formatHeartCbt } = useUtilsContext();
+  const [isSubscribled, subscribleAPI] = React.useState(false);
+  const [reloadCount, setReloadCount] = React.useState(0);
   const [alerts, _setAlerts] = React.useState([]);
+  const timerRef = React.useRef();
   const setAlerts = (v) => {
     alertsRef.current = v;
     _setAlerts(v);
@@ -100,8 +103,8 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
   }, []);
 
   const fetchUserData = React.useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
     if (profile) {
-      console.log(' --- fetch userdata -- ');
       let userDataPromises = [gerUserData(), getUserOrganization(profile.orgId)];
       if (alerts.length == 0) {
         const yesterday = moment.utc().subtract(24, 'hours').format('YYYY-MM-DD');
@@ -186,22 +189,30 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
         })
         .finally(() => {
           setLoading(false);
-          setTimeout(() => {
+          timerRef.current = setTimeout(() => {
             fetchUserData();
           }, 30000);
-          subscribe(new Date().getTime());
+          subscribleAPI(true);
         });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formatAlert, formatConnectionStatusV2, profile]);
 
   React.useEffect(() => {
+    if (isSubscribled) {
+      console.log('----subscribe-----');
+      subscribe(new Date().getTime());
+    }
+  }, [isSubscribled, subscribe, reloadCount]);
+
+  React.useEffect(() => {
     // fetch user data
     setLoading(true);
     if (profile?.userId) {
+      console.log('---fetchUserData---');
       fetchUserData();
     }
-  }, [profile, fetchUserData]);
+  }, [profile, fetchUserData, reloadCount]);
 
   const logs = React.useMemo(() => {
     let merged = [
@@ -262,9 +273,16 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activities, metricsFilter?.value]);
 
+  const refresh = React.useCallback(() => {
+    setReloadCount(reloadCount + 1);
+  }, [reloadCount]);
+
+  console.log('reloadCount count ==>', reloadCount);
+
   const providerValue = {
     userData,
     loading,
+    refresh,
     logs,
     metricStats,
     activitiesFilter,
