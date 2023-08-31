@@ -2,6 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .font-heading-small {
+    font-family: Ubuntu-Regular;
+    @apply tw-text-xs md:tw-text-[21px] md:tw-leading-[24.13px];
+  }
+
+  .font-button-label {
+    font-family: Ubuntu-Bold;
+    @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[18.38px];
+  }
+
+  .font-button-label-sm {
+    font-family: Ubuntu-Bold;
+    @apply tw-text-xs md:tw-text-[14px] md:tw-leading-[16.09px];
+  }
+  
+  .font-input-label {
+    font-family: Ubuntu-Medium;
+    @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[18.38px];
+  }
+  .font-helper-text {
+    font-family: Ubuntu-Regular;
+    @apply tw-text-xs md:tw-text-[14px] md:tw-leading-[21px];
+  }
+  
+  .font-binary {
+    font-family: Ubuntu-Regular;
+    @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[24px];
+    
+  }
+
+  /* ... */
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',

@@ -1,6 +1,6 @@
 @import "colors";
 @import "fonts";
-@tailwind utilities;
+// @tailwind utilities;
 
 
 .font-header-medium {
@@ -9,25 +9,25 @@
   line-height: 41px;
 }
 
-.font-heading-small {
-  font-family: Ubuntu-Regular;
-  @apply tw-text-xs md:tw-text-[21px] md:tw-leading-[24.13px];
-}
+// .font-heading-small {
+//   font-family: Ubuntu-Regular;
+//   @apply tw-text-xs md:tw-text-[21px] md:tw-leading-[24.13px];
+// }
 
-.font-button-label {
-  font-family: Ubuntu-Bold;
-  @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[18.38px];
-}
+// .font-button-label {
+//   font-family: Ubuntu-Bold;
+//   @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[18.38px];
+// }
 
-.font-button-label-sm {
-  font-family: Ubuntu-Bold;
-  @apply tw-text-xs md:tw-text-[14px] md:tw-leading-[16.09px];
-}
+// .font-button-label-sm {
+//   font-family: Ubuntu-Bold;
+//   @apply tw-text-xs md:tw-text-[14px] md:tw-leading-[16.09px];
+// }
 
-.font-input-label {
-  font-family: Ubuntu-Medium;
-  @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[18.38px];
-}
+// .font-input-label {
+//   font-family: Ubuntu-Medium;
+//   @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[18.38px];
+// }
 
 .font-heading {
   font-family: Ubuntu-Regular;
@@ -47,16 +47,16 @@
   line-height: 50.56px;
 }
 
-.font-helper-text {
-  font-family: Ubuntu-Regular;
-  @apply tw-text-xs md:tw-text-[14px] md:tw-leading-[21px];
-}
+// .font-helper-text {
+//   font-family: Ubuntu-Regular;
+//   @apply tw-text-xs md:tw-text-[14px] md:tw-leading-[21px];
+// }
 
-.font-binary {
-  font-family: Ubuntu-Regular;
-  @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[24px];
+// .font-binary {
+//   font-family: Ubuntu-Regular;
+//   @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[24px];
   
-}
+// }
 
 .font-search {
   font-family: Ubuntu-Regular;
