@@ -9,6 +9,7 @@ import { formatLastSync, formatHeartRate } from 'utils/dashboard';
 import { ACTIVITIES_FILTERS, ALERT_STAGE_ID_LIST } from 'constant';
 import { getLatestDateBeforeNow as getLatestDate } from 'utils';
 import { useUtilsContext } from 'providers/UtilsProvider';
+import moment from 'moment-timezone';
 
 const OperatorDashboardContext = React.createContext(null);
 
@@ -18,7 +19,10 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
   const [activitiesFilter, setActivitiesFilter] = React.useState(activitiesFilters[0]);
   const [metricsFilter, setMetricsFilter] = React.useState(activitiesFilters[0]);
   const { formatAlert, formatConnectionStatusV2, formatHeartCbt } = useUtilsContext();
+  const [isSubscribled, subscribleAPI] = React.useState(false);
+  const [reloadCount, setReloadCount] = React.useState(0);
   const [alerts, _setAlerts] = React.useState([]);
+  const timerRef = React.useRef();
   const setAlerts = (v) => {
     alertsRef.current = v;
     _setAlerts(v);
@@ -98,16 +102,42 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
       });
   }, []);
 
-  React.useEffect(() => {
-    const fetchUserData = async () => {
-      const userDataPromises = [gerUserData(), getUserAlerts(), getUserOrganization(profile.orgId)];
+  const fetchUserData = React.useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (profile) {
+      let userDataPromises = [gerUserData(), getUserOrganization(profile.orgId)];
+      if (alerts.length == 0) {
+        const yesterday = moment.utc().subtract(24, 'hours').format('YYYY-MM-DD');
+        userDataPromises.push(getUserAlerts(yesterday));
+      }
+
       Promise.all(userDataPromises)
         .then((resArr) => {
           const { stat, alert, devices, events } = resArr[0].data;
-          const alerts = resArr[1].data;
-          const organization = resArr[2].data;
-
+          const organization = resArr[1].data;
+          let newUserData = {
+            stat,
+            devices,
+            organization
+          };
+          if (resArr[2]) {
+            const alerts = resArr[2].data;
+            const numberOfAlerts = (
+              alerts?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? []
+            )?.length;
+            console.log('numberOfAlerts ==>', numberOfAlerts);
+            newUserData = {
+              ...newUserData,
+              numberOfAlerts
+            };
+            setAlerts(alerts);
+            setActivities(events);
+          }
           const alertObj = formatAlert(alert?.alertStageId);
+          newUserData = {
+            ...newUserData,
+            alertObj
+          };
 
           const lastSync = getLatestDate(
             getLatestDate(
@@ -120,6 +150,10 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
             )
           );
           const lastSyncStr = formatLastSync(lastSync);
+          newUserData = {
+            ...newUserData,
+            lastSyncStr
+          };
 
           const userKenzenDevice = devices
             ?.filter(
@@ -128,51 +162,57 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
             )
             ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
 
-          const numberOfAlerts = (
-            alerts?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? []
-          )?.length;
-
           const connectionObj = formatConnectionStatusV2({
             flag: stat?.onOffFlag,
             connected: userKenzenDevice?.connected,
             lastTimestamp: stat?.tempHumidityTs,
             deviceId: stat?.deviceId,
-            numberOfAlerts,
+            numberOfAlerts: newUserData.numberOfAlerts,
             stat,
             alert
           });
+          newUserData = {
+            ...newUserData,
+            connectionObj
+          };
 
           const invisibleHeatRisk =
             !alert || ['1', '2', '8'].includes(connectionObj?.value?.toString());
 
-          setUserData({
-            events,
-            stat,
-            alerts,
-            devices,
-            lastSyncStr,
-            alertObj,
-            numberOfAlerts,
-            invisibleHeatRisk,
-            connectionObj,
-            organization
-          });
+          newUserData = {
+            ...newUserData,
+            invisibleHeatRisk
+          };
 
-          setAlerts(alerts);
-          setActivities(events);
+          setUserData(newUserData);
           setLoading(false);
         })
         .finally(() => {
           setLoading(false);
-          subscribe(new Date().getTime());
+          timerRef.current = setTimeout(() => {
+            fetchUserData();
+          }, 30000);
+          subscribleAPI(true);
         });
-    };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formatAlert, formatConnectionStatusV2, profile]);
+
+  React.useEffect(() => {
+    if (isSubscribled) {
+      console.log('----subscribe-----');
+      subscribe(new Date().getTime());
+    }
+  }, [isSubscribled, subscribe, reloadCount]);
+
+  React.useEffect(() => {
     // fetch user data
     setLoading(true);
     if (profile?.userId) {
+      console.log('---fetchUserData---');
       fetchUserData();
     }
-  }, [profile, formatAlert, subscribe, formatConnectionStatusV2]);
+  }, [profile, fetchUserData, reloadCount]);
 
   const logs = React.useMemo(() => {
     let merged = [
@@ -233,9 +273,16 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activities, metricsFilter?.value]);
 
+  const refresh = React.useCallback(() => {
+    setReloadCount(reloadCount + 1);
+  }, [reloadCount]);
+
+  console.log('reloadCount count ==>', reloadCount);
+
   const providerValue = {
     userData,
     loading,
+    refresh,
     logs,
     metricStats,
     activitiesFilter,

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { withTranslation } from 'react-i18next';
-import OperatorDetail from 'views/partials/operator/OperatorDetail';
+import OperatorDetail from 'views/partials/OperatorDetail';
 
 import clsx from 'clsx';
 import style from './OperatorDashboard.scss';
