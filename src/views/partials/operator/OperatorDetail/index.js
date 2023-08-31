@@ -130,7 +130,7 @@ const OperatorDetail = ({ t, profile, metric }) => {
       <div className="tw-col-span-12 md:tw-col-span-4">
         <Card className="tw-grid tw-grid-cols-12 md:tw-grid-cols-1 tw-gap-4">
           <div className="tw-col-span-8 md:tw-col-span-1 tw-grid tw-grid-cols-12 tw-gap-4">
-            <div className="tw-col-span-3 md:tw-col-span-4">
+            <div className="tw-col-span-3 md:tw-col-span-4 tw-flex tw-flex-col tw-justify-between tw-items-center">
               <img
                 className={'tw-w-12 tw-h-12 md:tw-w-[80px] md:tw-h-[80px]'}
                 src={avatar}
@@ -366,7 +366,7 @@ const OperatorDetail = ({ t, profile, metric }) => {
             </div>
             <div>
               <ResponsiveSelect
-                className={clsx('font-binary tw-text-black tw-my-2', 'w-[250px]')}
+                className={clsx('font-binary tw-text-black tw-my-2', 'tw-w-[250px]')}
                 placeholder={t('filter by')}
                 styles={customStyles()}
                 options={activitiesFilters}
@@ -378,7 +378,7 @@ const OperatorDetail = ({ t, profile, metric }) => {
             </div>
           </div>
 
-          <div className="max-h-[205px] tw-overflow-y-auto tw-mt-2 md:tw-mt-4">
+          <div className="tw-max-h-[205px] tw-overflow-y-auto tw-mt-2 md:tw-mt-4">
             <ActivityLogs gmt={profile?.gmt} />
           </div>
         </Card>

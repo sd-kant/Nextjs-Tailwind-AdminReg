@@ -1,6 +1,5 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import style from './MetricLogs.module.scss';
 import { useTranslation } from 'react-i18next';
 import { useOperatorDashboardContext } from 'providers/operator/OperatorDashboardProvider';
 
@@ -11,7 +10,7 @@ const MetricLogs = ({ metricStats }) => {
   return (
     <React.Fragment>
       {logsLoading ? (
-        <div className={clsx(style.DataRow, style.Header, 'font-binary text-white')}>
+        <div className={clsx('tw-flex mt-0', 'font-binary text-white')}>
           <span className={clsx('text-capitalize', 'tw-py-2')}>{t('loading')}</span>
         </div>
       ) : (
