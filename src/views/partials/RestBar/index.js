@@ -9,7 +9,7 @@ import clsx from 'clsx';
 import style from './RestBar.module.scss';
 import Button from '../../components/Button';
 import Toggle from '../../components/Toggle';
-import { filters } from '../../modals/MemberDetail';
+import { filters } from '../../modals/MemberDetailModal';
 import RestBarSetting from '../../modals/RestBarSetting';
 import RoundIcon from '../../components/RoundIcon';
 import { customStyles } from '../../pages/DashboardV2';
