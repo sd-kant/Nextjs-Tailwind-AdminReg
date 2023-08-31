@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import clsx from 'clsx';
-import Modal from 'react-modal';
 import avatar from 'assets/images/logo_round.png';
 import alertsIcon from 'assets/images/alerts-icon.svg';
 import closeIcon from 'assets/images/close-orange.svg';
@@ -26,7 +25,6 @@ import MetricLogs from './MetricLogs';
 import Card from './Card';
 import Divider from './Divider';
 import Badge from './Badge';
-import PropTypes from 'prop-types';
 
 export const filters = [
   {

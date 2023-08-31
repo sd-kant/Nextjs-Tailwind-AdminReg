@@ -11,7 +11,7 @@ const Card = ({ children, className }) => {
 };
 
 Card.propTypes = {
-  children: PropTypes.children,
+  children: PropTypes.array,
   className: PropTypes.string
 };
 

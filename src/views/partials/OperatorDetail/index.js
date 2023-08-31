@@ -129,7 +129,7 @@ const OperatorDetail = ({ t, profile, metric }) => {
   };
 
   return (
-    <div className="tw-p-2 md:tw-p-12 tw-relative tw-bg-app-list-bg">
+    <div className="tw-p-2 md:tw-p-12 tw-relative">
       <div className="tw-flex tw-justify-end">
         <Button title={'Refresh'} size="sm" onClick={handleRefresh} />
       </div>
