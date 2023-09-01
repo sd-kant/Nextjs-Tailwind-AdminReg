@@ -107,7 +107,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
     if (profile) {
       let userDataPromises = [gerUserData(), getUserOrganization(profile.orgId)];
       if (alerts.length == 0) {
-        const yesterday = moment.utc().subtract(24, 'hours').format('YYYY-MM-DD');
+        const yesterday = moment().startOf('day').utc().format('YYYY-MM-DD');
         userDataPromises.push(getUserAlerts(yesterday));
       }
 
@@ -122,6 +122,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
           };
           if (resArr[2]) {
             const alerts = resArr[2].data;
+            console.log('alerts ==>', alerts);
             const numberOfAlerts = (
               alerts?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? []
             )?.length;
@@ -221,6 +222,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
     ];
     const d = new Date();
     d.setDate(d.getDate() - (activitiesFilter?.value ?? 1));
+
     merged = merged
       ?.filter((it) => new Date(it.ts).getTime() > d.getTime())
       ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime());
@@ -276,8 +278,6 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
   const refresh = React.useCallback(() => {
     setReloadCount(reloadCount + 1);
   }, [reloadCount]);
-
-  console.log('reloadCount count ==>', reloadCount);
 
   const providerValue = {
     userData,
