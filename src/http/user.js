@@ -1,5 +1,4 @@
 import { get } from './index';
-import moment from 'moment-timezone';
 
 export const gerUserData = () => {
   return get('/user/data');
