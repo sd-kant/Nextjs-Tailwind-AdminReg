@@ -294,7 +294,7 @@ const MemberDetail = ({
 
                 <div className="tw-mt-2">
                   <div>
-                    <span className="tw-text-app-ns tw-font-helper-text">{t('status')}</span>
+                    <span className="tw-text-app-ns font-helper-text">{t('status')}</span>
                   </div>
                   <div title={invisibleHeatRisk ? null : alertObj?.label}>
                     <div className="tw-flex tw-items-center tw-mt-2">
