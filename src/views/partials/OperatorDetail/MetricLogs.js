@@ -6,7 +6,6 @@ import { useOperatorDashboardContext } from 'providers/operator/OperatorDashboar
 const MetricLogs = ({ metricStats }) => {
   const { t } = useTranslation();
   const { logsLoading } = useOperatorDashboardContext();
-
   return (
     <React.Fragment>
       {logsLoading ? (
