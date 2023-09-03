@@ -21,6 +21,7 @@ import {
   METRIC_TEAM_CHART_VALUES
 } from '../../../constant';
 import { checkMetric, getKeyApiCall, getThisWeek } from '../../../utils/anlytics';
+import moment from 'moment';
 
 const CustomInput = React.forwardRef(({ value, onClick, readOnly }, ref) => {
   return (
@@ -83,6 +84,8 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
 
   const onBeforeGetContentResolve = React.useRef(null);
 
+  const [preDateRange, setPreDateRange] = React.useState();
+
   const submitActivated = React.useMemo(() => {
     return (
       organization &&
@@ -103,6 +106,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
       processQuery();
     }
   };
+
   const errors = React.useMemo(() => {
     const errors = {
       dateRange: null,
@@ -250,10 +254,49 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
     );
   }, [selectedMetric]);
 
+  const preDefinedDateRange = [
+    {
+      label: 'Yesterday',
+      value: moment(endDate || new Date())
+        .startOf()
+        .subtract(1, 'day')
+    },
+    {
+      label: 'Last week',
+      value: moment(endDate || new Date())
+        .startOf()
+        .subtract(7, 'days')
+    },
+    {
+      label: 'Last month',
+      value: moment(endDate || new Date())
+        .startOf()
+        .subtract(1, 'month')
+    },
+    {
+      label: 'Last quarter',
+      value: moment(endDate || new Date())
+        .startOf()
+        .subtract(1, 'quarter')
+    },
+    {
+      label: 'Last 6 month',
+      value: moment(endDate || new Date())
+        .startOf()
+        .subtract(6, 'months')
+    },
+    {
+      label: 'Last year',
+      value: moment(endDate || new Date())
+        .startOf()
+        .subtract(1, 'year')
+    }
+  ];
+
   return (
     <div>
-      <div className={clsx(style.FilterDiv, 'd-flex justify-start')}>
-        <div className="d-flex flex-column">
+      <div className={clsx(style.FilterDiv, 'tw-flex tw-justify-start')}>
+        <div className="tw-flex tw-flex-col">
           <label className="font-input-label">{t('company name')}</label>
           {isAdmin ? (
             <ResponsiveSelect
@@ -273,7 +316,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
         </div>
 
         {teams?.length > 0 ? (
-          <div className={'d-flex flex-column'}>
+          <div className={'tw-flex tw-flex-col'}>
             <label className="font-input-label mb-10">{t('team')}</label>
 
             <MultiSelectPopup
@@ -288,7 +331,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
         ) : null}
 
         {selectedTeams?.length > 0 && members?.length > 0 ? (
-          <div className={'d-flex flex-column'}>
+          <div className={'tw-flex tw-flex-col'}>
             <label className="font-input-label mb-10">{t('users')}</label>
 
             <MultiSelectPopup
@@ -302,38 +345,62 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
           </div>
         ) : null}
 
-        <div className="d-flex flex-column">
-          <label className="font-input-label">{t('start date')}</label>
-          <div className={clsx(style.FlexLeft)}>
-            <CustomDatePicker
-              date={startDate}
-              setDate={setStartDate}
-              CustomInput={CustomInput}
-              maxDate={startDateMax}
-              selectedMetric={selectedMetric}
-              readOnly={datePickerReadOnly}
+        <div className="tw-flex tw-flex-col">
+          <div className="tw-flex tw-gap-4">
+            <div className="tw-flex tw-flex-col">
+              <label className="font-input-label">{t('start date')}</label>
+              <div className={clsx(style.FlexLeft)}>
+                <CustomDatePicker
+                  date={startDate}
+                  setDate={(v) => {
+                    setPreDateRange(null);
+                    setStartDate(v);
+                  }}
+                  CustomInput={CustomInput}
+                  maxDate={startDateMax}
+                  selectedMetric={selectedMetric}
+                  readOnly={datePickerReadOnly}
+                />
+              </div>
+              {submitTried && errors?.dateRange && (
+                <span className="font-helper-text text-error mt-10">{errors.dateRange}</span>
+              )}
+            </div>
+
+            <div className="tw-flex tw-flex-col">
+              <label className="font-input-label">{t('end date')}</label>
+              <div className={clsx(style.FlexLeft)}>
+                <CustomDatePicker
+                  date={endDate}
+                  setDate={(v) => {
+                    setPreDateRange(null);
+                    setEndDate(v);
+                  }}
+                  CustomInput={CustomInput}
+                  maxDate={endDateMax}
+                  selectedMetric={selectedMetric}
+                  readOnly={datePickerReadOnly}
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            <ResponsiveSelect
+              className="mt-10 font-heading-small text-black"
+              isClearable
+              options={preDefinedDateRange}
+              value={preDateRange}
+              styles={customStyles()}
+              placeholder={t('select date range')}
+              onChange={(v) => {
+                setPreDateRange(v);
+                if (v?.value) setStartDate(new Date(v.value.format()));
+              }}
             />
           </div>
-          {submitTried && errors?.dateRange && (
-            <span className="font-helper-text text-error mt-10">{errors.dateRange}</span>
-          )}
         </div>
 
-        <div className="d-flex flex-column">
-          <label className="font-input-label">{t('end date')}</label>
-          <div className={clsx(style.FlexLeft)}>
-            <CustomDatePicker
-              date={endDate}
-              setDate={setEndDate}
-              CustomInput={CustomInput}
-              maxDate={endDateMax}
-              selectedMetric={selectedMetric}
-              readOnly={datePickerReadOnly}
-            />
-          </div>
-        </div>
-
-        <div className="d-flex flex-column">
+        <div className="tw-flex tw-flex-col">
           <label className="font-input-label">{t('select metric')}</label>
 
           <ResponsiveSelect
