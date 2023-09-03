@@ -137,7 +137,7 @@ const OperatorDetail = ({ t, profile, metric }) => {
         <div className={'tw-grid tw-grid-cols-12 tw-gap-2 lg:tw-gap-8'}>
           <div className="tw-col-span-12 lg:tw-col-span-5 xl:tw-col-span-4">
             <Card className="tw-grid tw-grid-cols-12 lg:tw-grid-cols-1 tw-gap-4">
-              <div className="tw-col-span-6 md:tw-col-span-8 lg:tw-col-span-1 tw-grid tw-grid-cols-12 tw-gap-4">
+              <div className="tw-col-span-7 md:tw-col-span-8 lg:tw-col-span-1 tw-grid tw-grid-cols-12 tw-gap-4">
                 <div className="tw-hidden tw-col-span-3 lg:tw-col-span-4 md:tw-flex tw-flex-col tw-justify-between tw-items-center">
                   <img
                     className={'tw-w-12 tw-h-12 lg:tw-w-[80px] lg:tw-h-[80px]'}
@@ -199,7 +199,7 @@ const OperatorDetail = ({ t, profile, metric }) => {
               <Divider className="tw-my-4 tw-hidden lg:tw-block" />
               <div
                 className={
-                  'tw-col-span-6 md:tw-col-span-4 tw-grid-cols-4 lg:tw-col-span-1 tw-grid lg:tw-grid-cols-12 tw-gap-4'
+                  'tw-col-span-5 md:tw-col-span-4 tw-grid-cols-4 lg:tw-col-span-1 tw-grid lg:tw-grid-cols-12 tw-gap-4'
                 }>
                 <div className="tw-col-span-4 lg:tw-col-span-4">
                   {/* <div>

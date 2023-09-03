@@ -216,8 +216,8 @@ const MemberDetail = ({
       <div className={'tw-grid tw-grid-cols-12 tw-gap-2 lg:tw-gap-8 tw-bg-app-list-bg'}>
         <div className="tw-col-span-12 lg:tw-col-span-5 xl:tw-col-span-4">
           <Card className="tw-grid tw-grid-cols-12 lg:tw-grid-cols-1 tw-gap-4">
-            <div className="tw-col-span-8 lg:tw-col-span-1 tw-grid tw-grid-cols-12 tw-gap-4">
-              <div className="tw-col-span-3 lg:tw-col-span-4 tw-flex tw-flex-col tw-justify-between tw-items-center tw-relative">
+            <div className="tw-col-span-7 md:tw-col-span-8 lg:tw-col-span-1 tw-grid tw-grid-cols-12 tw-gap-4">
+              <div className="tw-hidden tw-col-span-3 lg:tw-col-span-4 md:tw-flex tw-flex-col tw-justify-between tw-items-center tw-relative">
                 <img
                   className={'tw-w-12 tw-h-12 lg:tw-w-[80px] lg:tw-h-[80px]'}
                   src={avatar}
@@ -236,19 +236,21 @@ const MemberDetail = ({
                 </span>
               </div>
 
-              <div className="tw-col-span-9 lg:tw-col-span-8 tw-flex tw-flex-col tw-gap-4">
-                <div
-                  title={data?.firstName + ' ' + data?.lastName}
-                  className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
-                  <span className={clsx('font-heading-small')}>
-                    {`${data?.firstName}  ${data?.lastName}`}
-                  </span>
-                </div>
+              <div className="tw-col-span-12 md:tw-col-span-9 lg:tw-col-span-8 tw-flex tw-flex-col tw-gap-4">
+                <div>
+                  <div
+                    title={data?.firstName + ' ' + data?.lastName}
+                    className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
+                    <span className={clsx('font-heading-small')}>
+                      {`${data?.firstName}  ${data?.lastName}`}
+                    </span>
+                  </div>
 
-                <div
-                  title={data?.email}
-                  className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
-                  <span className={clsx('font-binary')}>{data?.email}</span>
+                  <div
+                    title={data?.email}
+                    className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
+                    <span className={clsx('font-binary')}>{data?.email}</span>
+                  </div>
                 </div>
 
                 <div>
@@ -273,6 +275,15 @@ const MemberDetail = ({
                     </div>
                   )}
                 </div>
+
+                {/* <div>
+                  <div>
+                    <span className="font-helper-text tw-text-app-ns">{t('last sync')}</span>
+                  </div>
+                  <div>
+                    <span className={clsx('font-input-label')}>{lastSyncStr}</span>
+                  </div>
+                </div> */}
               </div>
             </div>
 
@@ -280,7 +291,7 @@ const MemberDetail = ({
 
             <div
               className={
-                'tw-col-span-4 tw-grid-cols-4 lg:tw-col-span-1 tw-grid lg:tw-grid-cols-12 tw-gap-4'
+                'tw-col-span-5 md:tw-col-span-4 tw-grid-cols-4 lg:tw-col-span-1 tw-grid lg:tw-grid-cols-12 tw-gap-4'
               }>
               <div className="tw-col-span-4 lg:tw-col-span-4">
                 <div>
@@ -297,6 +308,11 @@ const MemberDetail = ({
                     <span className="tw-text-app-ns font-helper-text">{t('status')}</span>
                   </div>
                   <div title={invisibleHeatRisk ? null : alertObj?.label}>
+                    <div className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
+                      <span className={clsx('font-input-label')} title={connectionObj?.label}>
+                        {connectionObj?.label}
+                      </span>
+                    </div>
                     <div className="tw-flex tw-items-center tw-mt-2">
                       <Badge status={connectStatus} />
                     </div>
@@ -316,7 +332,7 @@ const MemberDetail = ({
                   </div>
                 </div>
 
-                <div className="tw-mt-2">
+                {/* <div className="tw-mt-2">
                   <div>
                     <span className="tw-text-app-ns font-helper-text tw-uppercase">
                       {t('connection status')}
@@ -327,7 +343,7 @@ const MemberDetail = ({
                       {connectionObj?.label}
                     </span>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className={'tw-py-4'}>{renderActionContent()}</div>
