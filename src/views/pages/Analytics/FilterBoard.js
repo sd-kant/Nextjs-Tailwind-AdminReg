@@ -257,39 +257,66 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
   const preDefinedDateRange = [
     {
       label: 'Yesterday',
-      value: moment(endDate || new Date())
-        .startOf()
-        .subtract(1, 'day')
+      value: {
+        from: moment().subtract(1, 'day').startOf('day'),
+        to: moment().subtract(1, 'day').endOf('day')
+      }
     },
     {
-      label: 'Last week',
-      value: moment(endDate || new Date())
-        .startOf()
-        .subtract(7, 'days')
+      label: 'This Week',
+      value: {
+        from: moment().startOf('week'),
+        to: moment()
+      }
     },
     {
-      label: 'Last month',
-      value: moment(endDate || new Date())
-        .startOf()
-        .subtract(1, 'month')
+      label: 'Last Week',
+      value: {
+        from: moment().subtract(1, 'week').startOf('week'),
+        to: moment().subtract(1, 'week').endOf('week')
+      }
     },
     {
-      label: 'Last quarter',
-      value: moment(endDate || new Date())
-        .startOf()
-        .subtract(1, 'quarter')
+      label: 'This Month',
+      value: {
+        from: moment().startOf('month'),
+        to: moment()
+      }
     },
     {
-      label: 'Last 6 month',
-      value: moment(endDate || new Date())
-        .startOf()
-        .subtract(6, 'months')
+      label: 'Last Month',
+      value: {
+        from: moment().subtract(1, 'month').startOf('month'),
+        to: moment().subtract(1, 'month').endOf('month')
+      }
+    },
+    {
+      label: 'This Quarter',
+      value: {
+        from: moment().startOf('quarter'),
+        to: moment()
+      }
+    },
+    {
+      label: 'Last Quarter',
+      value: {
+        from: moment().subtract(1, 'quarter').startOf('quarter'),
+        to: moment().subtract(1, 'quarter').endOf('quarter')
+      }
+    },
+    {
+      label: 'This year',
+      value: {
+        from: moment().startOf('year'),
+        to: moment()
+      }
     },
     {
       label: 'Last year',
-      value: moment(endDate || new Date())
-        .startOf()
-        .subtract(1, 'year')
+      value: {
+        from: moment().subtract(1, 'year').startOf('year'),
+        to: moment().subtract(1, 'year').endOf('year')
+      }
     }
   ];
 
@@ -391,10 +418,13 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               options={preDefinedDateRange}
               value={preDateRange}
               styles={customStyles()}
-              placeholder={t('select date range')}
+              placeholder={t('Select predefined date range')}
               onChange={(v) => {
                 setPreDateRange(v);
-                if (v?.value) setStartDate(new Date(v.value.format()));
+                if (v?.value) {
+                  setStartDate(new Date(v.value.from.format()));
+                  setEndDate(new Date(v.value.to.format()));
+                }
               }}
             />
           </div>
