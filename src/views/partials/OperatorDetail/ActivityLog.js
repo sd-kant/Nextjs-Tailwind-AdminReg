@@ -86,7 +86,7 @@ const ActivityLog = ({ item, timezone }) => {
 
         <div className="tw-col-span-12 md:tw-col-span-3">
           <span className={clsx('font-binary text-gray-2 mt-5', 'tw-py-2')}>
-            {timeOnOtherZone(item.utcTs, timezone)}{' '}
+            {timeOnOtherZone(item.ts, timezone)}{' '}
             <span className={'tw-bock md:tw-hidden'}>({timezone.displayName})</span>
           </span>
         </div>

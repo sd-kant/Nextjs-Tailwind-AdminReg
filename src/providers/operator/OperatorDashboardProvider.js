@@ -35,7 +35,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
     _setActivities(v);
   };
 
-  const [userData, setUserData] = React.useState({
+  const [userData, _setUserData] = React.useState({
     devices: [],
     events: [],
     alertObj: {},
@@ -56,6 +56,12 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
       userId: 0
     }
   });
+
+  const userDataRef = React.useRef(userData);
+  const setUserData = (v) => {
+    userDataRef.current = v;
+    _setUserData(v);
+  };
 
   const subscribe = React.useCallback((sinceTs) => {
     let subscribeAgain = true;
@@ -86,6 +92,27 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
                 ...activitiesRef.current
               ]);
             }
+
+            const latestHeartRate = events
+              ?.filter((it) => it.type === 'HeartRate')
+              ?.sort(
+                (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
+              )?.[0]?.data;
+
+            if (latestHeartRate) {
+              setUserData({
+                ...userDataRef.current,
+                ...{
+                  stat: {
+                    ...userDataRef.current.stat,
+                    ...{
+                      cbtAvg: latestHeartRate.heartCbtAvg,
+                      heartRateAvg: latestHeartRate.heartRateAvg
+                    }
+                  }
+                }
+              });
+            }
           }
         } else if (res.status?.toString() === '204') {
           // when there is no updates
@@ -107,8 +134,8 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
     if (profile) {
       let userDataPromises = [gerUserData(), getUserOrganization(profile.orgId)];
       if (alerts.length == 0) {
-        const yesterday = moment().startOf('day').utc().format('YYYY-MM-DD');
-        userDataPromises.push(getUserAlerts(yesterday));
+        const oneMonthAgo = moment().subtract(30, 'days').utc().format('YYYY-MM-DD');
+        userDataPromises.push(getUserAlerts(oneMonthAgo));
       }
 
       Promise.all(userDataPromises)
@@ -122,11 +149,13 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
           };
           if (resArr[2]) {
             const alerts = resArr[2].data;
-            console.log('alerts ==>', alerts);
             const numberOfAlerts = (
-              alerts?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? []
+              alerts?.filter(
+                (it) =>
+                  moment(it.ts).isAfter(moment().subtract(1, 'day')) &&
+                  ['1', '2', '3'].includes(it?.alertStageId?.toString())
+              ) ?? []
             )?.length;
-            console.log('numberOfAlerts ==>', numberOfAlerts);
             newUserData = {
               ...newUserData,
               numberOfAlerts
@@ -201,7 +230,6 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
 
   React.useEffect(() => {
     if (isSubscribled) {
-      console.log('----subscribe-----');
       subscribe(new Date().getTime());
     }
   }, [isSubscribled, subscribe, reloadCount]);
@@ -210,7 +238,6 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
     // fetch user data
     setLoading(true);
     if (profile?.userId) {
-      console.log('---fetchUserData---');
       fetchUserData();
     }
   }, [profile, fetchUserData, reloadCount]);
@@ -236,16 +263,16 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
   }, [alerts, activities, activitiesFilter?.value]);
 
   const metricStats = React.useMemo(() => {
-    // const { alerts } = userData;
     const d = new Date();
     d.setDate(d.getDate() - (metricsFilter?.value ?? 1));
+    const filterDate = moment().subtract(metricsFilter?.value ?? 1, 'days');
     let tempAlerts = [...alerts]
-      ?.filter((it) => new Date(it.ts).getTime() > d.getTime())
+      ?.filter((it) => moment(it.ts).isAfter(filterDate))
       ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime());
 
     const unique = [];
     for (const entry of tempAlerts) {
-      if (!unique.some((x) => entry.ts === x.ts)) {
+      if (!unique.some((x) => moment(entry.ts).isSame(moment(x.ts)))) {
         unique.push(entry);
       }
     }
