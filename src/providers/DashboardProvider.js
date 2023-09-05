@@ -473,8 +473,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       return (
         it.firstName?.toLowerCase()?.includes(trimmedKeyword?.toLowerCase()) ||
         it.lastName?.toLowerCase()?.includes(trimmedKeyword?.toLowerCase()) ||
-        it.email?.toLowerCase()?.includes(trimmedKeyword?.toLowerCase()) ||
-        it.stat?.deviceId?.toLowerCase()?.includes(trimmedKeyword?.toLowerCase())
+        it.email?.toLowerCase()?.includes(trimmedKeyword?.toLowerCase())
       );
     });
   }, [formattedMembers, trimmedKeyword]);
