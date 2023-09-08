@@ -13,6 +13,7 @@ import { setLoadingAction, showErrorNotificationAction } from '../../../redux/ac
 import SearchDropdown from '../../components/SearchDropdown';
 import useClickOutSide from '../../../hooks/useClickOutSide';
 import { useNavigate } from 'react-router-dom';
+import QRcodeReader from './QRcodeReader';
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -31,7 +32,8 @@ const FormConnectDevice = (props) => {
   const [device, setDevice] = React.useState(null);
   const [searching, setSearching] = React.useState(null);
   const navigate = useNavigate();
-
+  const [openQrCodeReader, setOpenQRcodeReader] = React.useState(false);
+  //const [scanedDeviceId, setScancedDeviceId] = React.useState();
   const changeFormField = (e) => {
     const { value, name } = e.target;
     setFieldValue(name, value);
@@ -67,6 +69,10 @@ const FormConnectDevice = (props) => {
 
     return '';
   }, [deviceId]);
+
+  // React.useEffect(() => {
+  //   if (scanedDeviceId) handleItemClick(scanedDeviceId);
+  // }, [devices, scanedDeviceId]);
 
   React.useEffect(() => {
     let mounted = true;
@@ -131,24 +137,64 @@ const FormConnectDevice = (props) => {
             <label className="font-input-label" htmlFor="deviceId">
               {t('device id label')}
             </label>
-            <SearchDropdown
-              ref={dropdownRef}
-              renderInput={() => (
-                <input
-                  className="input input-field mt-10 font-heading-small text-white"
-                  name="deviceId"
-                  type="text"
-                  value={values['deviceId']}
-                  placeholder={t('device id placeholder')}
-                  onChange={changeFormField}
-                  onClick={() => setVisible(true)}
-                />
-              )}
-              items={dropdownItems}
-              visibleDropdown={visibleDropdown}
-              onItemClick={handleItemClick}
-              noMatch={noMatch}
-              noMatchText={t('no device match')}
+            <div className={clsx('tw-flex tw-flex-col md:tw-flex-row lg:tw-flex-row tw-gap-2')}>
+              <SearchDropdown
+                ref={dropdownRef}
+                renderInput={() => (
+                  <input
+                    className="input input-field mt-10 font-heading-small text-white"
+                    name="deviceId"
+                    type="text"
+                    value={values['deviceId']}
+                    placeholder={t('device id placeholder')}
+                    onChange={changeFormField}
+                    onClick={() => setVisible(true)}
+                  />
+                )}
+                items={dropdownItems}
+                visibleDropdown={visibleDropdown}
+                onItemClick={handleItemClick}
+                noMatch={noMatch}
+                noMatchText={t('no device match')}
+              />
+              <div className="tw-flex tw-items-end tw-justify-center tw-w-full">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenQRcodeReader(!openQrCodeReader);
+                  }}
+                  className="tw-w-[50px] tw-h-[50px] tw-bg-transparent tw-text-white">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-3 h-3">
+                    <path
+                      fillRule="evenodd"
+                      d="M3.75 2A1.75 1.75 0 002 3.75v3.5C2 8.216 2.784 9 3.75 9h3.5A1.75 1.75 0 009 7.25v-3.5A1.75 1.75 0 007.25 2h-3.5zM3.5 3.75a.25.25 0 01.25-.25h3.5a.25.25 0 01.25.25v3.5a.25.25 0 01-.25.25h-3.5a.25.25 0 01-.25-.25v-3.5zM3.75 11A1.75 1.75 0 002 12.75v3.5c0 .966.784 1.75 1.75 1.75h3.5A1.75 1.75 0 009 16.25v-3.5A1.75 1.75 0 007.25 11h-3.5zm-.25 1.75a.25.25 0 01.25-.25h3.5a.25.25 0 01.25.25v3.5a.25.25 0 01-.25.25h-3.5a.25.25 0 01-.25-.25v-3.5zm7.5-9c0-.966.784-1.75 1.75-1.75h3.5c.966 0 1.75.784 1.75 1.75v3.5A1.75 1.75 0 0116.25 9h-3.5A1.75 1.75 0 0111 7.25v-3.5zm1.75-.25a.25.25 0 00-.25.25v3.5c0 .138.112.25.25.25h3.5a.25.25 0 00.25-.25v-3.5a.25.25 0 00-.25-.25h-3.5zm-7.26 1a1 1 0 00-1 1v.01a1 1 0 001 1h.01a1 1 0 001-1V5.5a1 1 0 00-1-1h-.01zm9 0a1 1 0 00-1 1v.01a1 1 0 001 1h.01a1 1 0 001-1V5.5a1 1 0 00-1-1h-.01zm-9 9a1 1 0 00-1 1v.01a1 1 0 001 1h.01a1 1 0 001-1v-.01a1 1 0 00-1-1h-.01zm9 0a1 1 0 00-1 1v.01a1 1 0 001 1h.01a1 1 0 001-1v-.01a1 1 0 00-1-1h-.01zm-3.5-1.5a1 1 0 011-1H12a1 1 0 011 1v.01a1 1 0 01-1 1h-.01a1 1 0 01-1-1V12zm6-1a1 1 0 00-1 1v.01a1 1 0 001 1H17a1 1 0 001-1V12a1 1 0 00-1-1h-.01zm-1 6a1 1 0 011-1H17a1 1 0 011 1v.01a1 1 0 01-1 1h-.01a1 1 0 01-1-1V17zm-4-1a1 1 0 00-1 1v.01a1 1 0 001 1H12a1 1 0 001-1V17a1 1 0 00-1-1h-.01z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <QRcodeReader
+              open={openQrCodeReader}
+              onClose={() => setOpenQRcodeReader(false)}
+              onScan={(data) => {
+                if (data) {
+                  //const macAddrss = data.text.split('_')[0];
+                  const serialNumber = data.text.split('_')[1];
+                  const tDeviceId = serialNumber.replace(/\W/g, '')?.slice(-4);
+                  setFieldValue('deviceId', serialNumber);
+                  handleItemClick(tDeviceId);
+                  //setScancedDeviceId(tDeviceId);
+                }
+              }}
+              handleError={(error) => {
+                console.log('err', error);
+                alert(error);
+              }}
             />
           </>
         ) : (
