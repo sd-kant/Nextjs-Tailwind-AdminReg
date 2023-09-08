@@ -33,9 +33,7 @@ const FormConnectDevice = (props) => {
   const [searching, setSearching] = React.useState(null);
   const navigate = useNavigate();
   const [openQrCodeReader, setOpenQRcodeReader] = React.useState(false);
-  const [scanCount, setScanCount] = React.useState(0);
   const [scanedDeviceId, setScancedDeviceId] = React.useState();
-
   const changeFormField = (e) => {
     const { value, name } = e.target;
     setFieldValue(name, value);
@@ -51,7 +49,6 @@ const FormConnectDevice = (props) => {
 
   const handleItemClick = (id) => {
     const device = devices?.find((it) => it.deviceId === id);
-    console.log('device ==>', device);
     if (device) {
       setFieldValue('isEditing', false);
       setFieldValue('deviceId', device.deviceId);
@@ -186,15 +183,17 @@ const FormConnectDevice = (props) => {
               onClose={() => setOpenQRcodeReader(false)}
               onScan={(data) => {
                 if (data) {
-                  console.log(data.text);
-                  const macAddrss = data.text.split('_')[0];
+                  //const macAddrss = data.text.split('_')[0];
                   const serialNumber = data.text.split('_')[1];
                   const tDeviceId = serialNumber.replace(/\W/g, '')?.slice(-4);
                   setFieldValue('deviceId', serialNumber);
-                  console.log(tDeviceId);
                   handleItemClick(tDeviceId);
                   setScancedDeviceId(tDeviceId);
                 }
+              }}
+              handleError={(error) => {
+                console.log('err', error);
+                alert(error);
               }}
             />
           </>

@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import QrReader from 'react-qr-scanner';
 
-const QRcodeReacer = ({ open, onClose, onScan }) => {
-  console.log('openQrCodeReader ==>', open);
-  const handleError = (error) => {
-    console.log(error);
+const QRcodeReacer = ({ open, onClose, onScan, handleError }) => {
+  const defaultHandleError = (error) => {
+    alert(error);
   };
 
   return (
@@ -23,7 +22,7 @@ const QRcodeReacer = ({ open, onClose, onScan }) => {
             height: '100%',
             width: '100%'
           }}
-          onError={handleError}
+          onError={handleError ?? defaultHandleError}
           onScan={onScan}
         />
       )}
@@ -34,7 +33,8 @@ const QRcodeReacer = ({ open, onClose, onScan }) => {
 QRcodeReacer.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onScan: PropTypes.func.isRequired
+  onScan: PropTypes.func.isRequired,
+  handleError: PropTypes.func
 };
 
 export default QRcodeReacer;
