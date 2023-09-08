@@ -10,14 +10,18 @@ const QRcodeReacer = ({ open, onClose, onScan }) => {
   };
 
   return (
-    <div className={clsx(`tw-w-[300px] tw-h-[300px]`, open ? 'tw-block' : 'tw-hidden')}>
+    <div
+      className={clsx(
+        `tw-w-full tw-h-[300px] md:tw-w-[300px] md:tw-h-[300px]`,
+        open ? 'tw-block' : 'tw-hidden'
+      )}>
       {open && (
         <QrReader
           facingMode="rear"
           delay={100}
           style={{
-            height: 300,
-            width: 300
+            height: '100%',
+            width: '100%'
           }}
           onError={handleError}
           onScan={onScan}
