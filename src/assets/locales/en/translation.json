@@ -686,7 +686,7 @@
   "attention guide": "Please use <a1>{{link}}</a1> to log into our customer site",
   "phone free hub": "Phone-Free Hub",
   "connect your device": "Connect to your Device",
-  "device id label": "Enter Device ID or Serial Number or Mac Address",
+  "device id label": "Enter Device ID or Serial Number",
   "device id placeholder": "Enter the DeviceID or the device serial number",
   "device id required": "Please enter a device id",
   "device id invalid": "Please enter a valid device id",

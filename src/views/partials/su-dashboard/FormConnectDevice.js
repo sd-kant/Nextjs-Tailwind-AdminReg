@@ -13,6 +13,7 @@ import { setLoadingAction, showErrorNotificationAction } from '../../../redux/ac
 import SearchDropdown from '../../components/SearchDropdown';
 import useClickOutSide from '../../../hooks/useClickOutSide';
 import { useNavigate } from 'react-router-dom';
+import QRcodeReader from './QRcodeReader';
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -31,6 +32,9 @@ const FormConnectDevice = (props) => {
   const [device, setDevice] = React.useState(null);
   const [searching, setSearching] = React.useState(null);
   const navigate = useNavigate();
+  const [openQrCodeReader, setOpenQRcodeReader] = React.useState(false);
+  const [scanCount, setScanCount] = React.useState(0);
+  const [scanedDeviceId, setScancedDeviceId] = React.useState();
 
   const changeFormField = (e) => {
     const { value, name } = e.target;
@@ -47,6 +51,7 @@ const FormConnectDevice = (props) => {
 
   const handleItemClick = (id) => {
     const device = devices?.find((it) => it.deviceId === id);
+    console.log('device ==>', device);
     if (device) {
       setFieldValue('isEditing', false);
       setFieldValue('deviceId', device.deviceId);
@@ -67,6 +72,10 @@ const FormConnectDevice = (props) => {
 
     return '';
   }, [deviceId]);
+
+  React.useEffect(() => {
+    if (scanedDeviceId) handleItemClick(scanedDeviceId);
+  }, [devices, scanedDeviceId]);
 
   React.useEffect(() => {
     let mounted = true;
@@ -154,7 +163,10 @@ const FormConnectDevice = (props) => {
               <div className="tw-flex tw-items-end tw-justify-center tw-w-full">
                 <button
                   type="button"
-                  className="tw-w-[50px] tw-h-[50px] tw-bg-transparent tw-text-white tw-">
+                  onClick={() => {
+                    setOpenQRcodeReader(!openQrCodeReader);
+                  }}
+                  className="tw-w-[50px] tw-h-[50px] tw-bg-transparent tw-text-white">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
@@ -169,6 +181,22 @@ const FormConnectDevice = (props) => {
                 </button>
               </div>
             </div>
+            <QRcodeReader
+              open={openQrCodeReader}
+              onClose={() => setOpenQRcodeReader(false)}
+              onScan={(data) => {
+                if (data) {
+                  console.log(data.text);
+                  const macAddrss = data.text.split('_')[0];
+                  const serialNumber = data.text.split('_')[1];
+                  const tDeviceId = serialNumber.replace(/\W/g, '')?.slice(-4);
+                  setFieldValue('deviceId', serialNumber);
+                  console.log(tDeviceId);
+                  handleItemClick(tDeviceId);
+                  setScancedDeviceId(tDeviceId);
+                }
+              }}
+            />
           </>
         ) : (
           <>
