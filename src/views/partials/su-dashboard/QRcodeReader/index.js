@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import QrReader from 'react-qr-scanner';
 
-const QRcodeReacer = ({ open, onClose, onScan, handleError }) => {
+const QRcodeReacer = ({ open, onScan, handleError }) => {
   const defaultHandleError = (error) => {
     alert(error);
   };

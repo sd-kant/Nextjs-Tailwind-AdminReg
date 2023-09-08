@@ -33,7 +33,7 @@ const FormConnectDevice = (props) => {
   const [searching, setSearching] = React.useState(null);
   const navigate = useNavigate();
   const [openQrCodeReader, setOpenQRcodeReader] = React.useState(false);
-  const [scanedDeviceId, setScancedDeviceId] = React.useState();
+  //const [scanedDeviceId, setScancedDeviceId] = React.useState();
   const changeFormField = (e) => {
     const { value, name } = e.target;
     setFieldValue(name, value);
@@ -70,9 +70,9 @@ const FormConnectDevice = (props) => {
     return '';
   }, [deviceId]);
 
-  React.useEffect(() => {
-    if (scanedDeviceId) handleItemClick(scanedDeviceId);
-  }, [devices, scanedDeviceId]);
+  // React.useEffect(() => {
+  //   if (scanedDeviceId) handleItemClick(scanedDeviceId);
+  // }, [devices, scanedDeviceId]);
 
   React.useEffect(() => {
     let mounted = true;
@@ -188,7 +188,7 @@ const FormConnectDevice = (props) => {
                   const tDeviceId = serialNumber.replace(/\W/g, '')?.slice(-4);
                   setFieldValue('deviceId', serialNumber);
                   handleItemClick(tDeviceId);
-                  setScancedDeviceId(tDeviceId);
+                  //setScancedDeviceId(tDeviceId);
                 }
               }}
               handleError={(error) => {
