@@ -33,7 +33,7 @@ const FormConnectDevice = (props) => {
   const [searching, setSearching] = React.useState(null);
   const navigate = useNavigate();
   const [openQrCodeReader, setOpenQRcodeReader] = React.useState(false);
-  //const [scanedDeviceId, setScancedDeviceId] = React.useState();
+  const [scanedDeviceId, setScancedDeviceId] = React.useState();
   const changeFormField = (e) => {
     const { value, name } = e.target;
     setFieldValue(name, value);
@@ -46,15 +46,6 @@ const FormConnectDevice = (props) => {
   const visibleDropdown = React.useMemo(() => {
     return visible && devices?.length > 0;
   }, [visible, devices?.length]);
-
-  const handleItemClick = (id) => {
-    const device = devices?.find((it) => it.deviceId === id);
-    if (device) {
-      setFieldValue('isEditing', false);
-      setFieldValue('deviceId', device.deviceId);
-      setDevice(device);
-    }
-  };
 
   const { isEditing, deviceId } = values;
 
@@ -70,9 +61,21 @@ const FormConnectDevice = (props) => {
     return '';
   }, [deviceId]);
 
-  // React.useEffect(() => {
-  //   if (scanedDeviceId) handleItemClick(scanedDeviceId);
-  // }, [devices, scanedDeviceId]);
+  const handleItemClick = React.useCallback(
+    (id) => {
+      const device = devices?.find((it) => it.deviceId === id);
+      if (device) {
+        setFieldValue('isEditing', false);
+        setFieldValue('deviceId', device.deviceId);
+        setDevice(device);
+      }
+    },
+    [devices, setFieldValue]
+  );
+
+  React.useEffect(() => {
+    if (scanedDeviceId) handleItemClick(scanedDeviceId);
+  }, [devices, scanedDeviceId, handleItemClick]);
 
   React.useEffect(() => {
     let mounted = true;
@@ -188,7 +191,7 @@ const FormConnectDevice = (props) => {
                   const tDeviceId = serialNumber.replace(/\W/g, '')?.slice(-4);
                   setFieldValue('deviceId', serialNumber);
                   handleItemClick(tDeviceId);
-                  //setScancedDeviceId(tDeviceId);
+                  setScancedDeviceId(tDeviceId);
                 }
               }}
               handleError={(error) => {
