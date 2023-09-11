@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import style from './FormConnectMemberSearch.module.scss';
 import { withTranslation } from 'react-i18next';
@@ -6,11 +6,15 @@ import { useMembersContext } from '../../../providers/MembersProvider';
 import SearchDropdown from '../../components/SearchDropdown';
 import useClickOutSide from '../../../hooks/useClickOutSide';
 import { useNavigate, useParams } from 'react-router-dom';
+import { uploadBulkUserList } from 'http/organization';
+import { useNotificationContext } from 'providers/NotificationProvider';
 
 const FormConnectMemberSearch = ({ t }) => {
   const { searchedOperators, keywordOnInvite, setKeywordOnInvite, searching } = useMembersContext();
+  const { addNotification } = useNotificationContext();
   const navigate = useNavigate();
   const { organizationId } = useParams();
+  const [bulkFile, setBulkFile] = useState();
 
   const noMatch = React.useMemo(() => {
     return !searching && searchedOperators?.length === 0 && keywordOnInvite;
@@ -39,6 +43,17 @@ const FormConnectMemberSearch = ({ t }) => {
     navigate('/select-mode');
   };
 
+  const handleFileChange = (event) => {
+    setBulkFile(event.target.files[0]);
+    uploadBulkUserList(organizationId, event.target.files[0])
+      .then((res) => {
+        addNotification('success', 'success');
+      })
+      .catch((e) => {
+        addNotification(e.response?.data?.message, 'error');
+      });
+  };
+
   return (
     <div className={clsx(style.Wrapper, 'form')}>
       <div className={clsx('d-flex flex-column mt-25', style.FormRow)}>
@@ -63,6 +78,17 @@ const FormConnectMemberSearch = ({ t }) => {
           noMatch={noMatch}
           noMatchText={t('no member match')}
         />
+
+        <label
+          className={
+            'button active cursor-pointer tw-mt-2 tw-box-border tw-flex tw-justify-center tw-items-center'
+          }
+          type={'button'}>
+          <span className="font-button-label text-white text-uppercase">
+            {t('Upload user/device list')}
+          </span>
+          <input type="file" hidden onChange={handleFileChange} />
+        </label>
       </div>
 
       <div className={clsx('mt-80')}>
