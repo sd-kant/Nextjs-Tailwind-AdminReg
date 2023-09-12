@@ -63,11 +63,11 @@ const FormConnectDevice = (props) => {
 
   const handleItemClick = React.useCallback(
     (id) => {
-      const device = devices?.find((it) => it.deviceId === id);
-      if (device) {
+      const scanDevice = devices?.find((it) => it.deviceId === id);
+      if (scanDevice) {
         setFieldValue('isEditing', false);
-        setFieldValue('deviceId', device.deviceId);
-        setDevice(device);
+        setFieldValue('deviceId', scanDevice.deviceId);
+        setDevice(scanDevice);
       }
     },
     [devices, setFieldValue]
@@ -192,6 +192,7 @@ const FormConnectDevice = (props) => {
               open={openQrCodeReader}
               onClose={() => setOpenQRcodeReader(false)}
               onScan={(data) => {
+                console.log('data', data);
                 if (data) {
                   //const macAddrss = data.text.split('_')[0];
                   const serialNumber = data.text.split('_')[1];
@@ -204,6 +205,7 @@ const FormConnectDevice = (props) => {
               handleError={(error) => {
                 console.log('err', error);
                 alert(error);
+                setOpenQRcodeReader(false);
               }}
             />
           </>
