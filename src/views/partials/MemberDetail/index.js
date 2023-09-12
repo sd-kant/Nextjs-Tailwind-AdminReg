@@ -111,7 +111,7 @@ const MemberDetail = ({
   let apiDevice = null;
   let kenzenDevice = null;
   if (userDevices?.length > 0) {
-    if (stat.deviceId) {
+    if (stat && stat.deviceId) {
       kenzenDevice = userDevices
         ?.filter(
           (it) =>
@@ -120,11 +120,11 @@ const MemberDetail = ({
         ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
     }
     const filterFunc = (it) => {
-      if (['', null, undefined, 'null', 'undefined', 'none'].includes(stat.sourceDeviceId)) {
+      if (['', null, undefined, 'null', 'undefined', 'none'].includes(stat?.sourceDeviceId)) {
         return it.type !== 'kenzen';
       } else {
         return (
-          it.type !== 'kenzen' && it.deviceId?.toLowerCase() === stat.sourceDeviceId?.toLowerCase()
+          it.type !== 'kenzen' && it.deviceId?.toLowerCase() === stat?.sourceDeviceId?.toLowerCase()
         );
       }
     };

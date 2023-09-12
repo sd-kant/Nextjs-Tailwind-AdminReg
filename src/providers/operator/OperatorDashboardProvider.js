@@ -46,6 +46,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
       chargingFlag: false,
       deviceId: '',
       deviceLogTs: '',
+      connected: false,
       heartRateAvg: 0,
       heartRateTs: '',
       lastTimestamp: '',
@@ -63,71 +64,131 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
     _setUserData(v);
   };
 
-  const subscribe = React.useCallback((sinceTs) => {
-    let subscribeAgain = true;
-    let ts = sinceTs;
-    subscribeDataEvents(ts)
-      .then((res) => {
-        if (res.status?.toString() === '200') {
-          const events = res.data;
-          if (events?.length > 0) {
-            const latestTs = events?.sort((a, b) => b.ts - a.ts)?.[0]?.ts;
-            if (latestTs) {
-              ts = latestTs;
-            }
-            let newAlerts = events?.filter((it) => it.type === 'Alert');
-            if (newAlerts?.length > 0) {
-              newAlerts = newAlerts?.filter((it) =>
-                ALERT_STAGE_ID_LIST.includes(it.data.alertStageId?.toString())
-              );
-              setAlerts([
-                ...newAlerts.map((it) => ({ ...it.data, ts: it.data.utcTs })),
-                ...alertsRef.current
-              ]);
-            }
-            const newActivities = events?.filter((it) => it.type === 'Event');
-            if (newActivities?.length > 0) {
-              setActivities([
-                ...newActivities.map((it) => ({ ...it.data, ts: it.data.utcTs })),
-                ...activitiesRef.current
-              ]);
-            }
+  const subscribe = React.useCallback(
+    (sinceTs) => {
+      let subscribeAgain = true;
+      let ts = sinceTs;
+      subscribeDataEvents(ts)
+        .then((res) => {
+          if (res.status?.toString() === '200') {
+            const events = res.data;
+            if (events?.length > 0) {
+              const latestTs = events?.sort((a, b) => b.ts - a.ts)?.[0]?.ts;
+              if (latestTs) {
+                ts = latestTs;
+              }
+              let newAlerts = events?.filter((it) => it.type === 'Alert');
+              if (newAlerts?.length > 0) {
+                newAlerts = newAlerts?.filter((it) =>
+                  ALERT_STAGE_ID_LIST.includes(it.data.alertStageId?.toString())
+                );
+                setAlerts([
+                  ...newAlerts.map((it) => ({ ...it.data, ts: it.data.utcTs })),
+                  ...alertsRef.current
+                ]);
+              }
+              const newActivities = events?.filter((it) => it.type === 'Event');
+              if (newActivities?.length > 0) {
+                setActivities([
+                  ...newActivities.map((it) => ({ ...it.data, ts: it.data.utcTs })),
+                  ...activitiesRef.current
+                ]);
+              }
 
-            const latestHeartRate = events
-              ?.filter((it) => it.type === 'HeartRate')
-              ?.sort(
-                (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
-              )?.[0]?.data;
+              const latestHeartRate = events
+                ?.filter((it) => it.type === 'HeartRate')
+                ?.sort(
+                  (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
+                )?.[0]?.data;
 
-            if (latestHeartRate) {
-              setUserData({
-                ...userDataRef.current,
-                ...{
-                  stat: {
-                    ...userDataRef.current.stat,
-                    ...{
-                      cbtAvg: latestHeartRate.heartCbtAvg,
-                      heartRateAvg: latestHeartRate.heartRateAvg
+              if (latestHeartRate) {
+                setUserData({
+                  ...userDataRef.current,
+                  ...{
+                    stat: {
+                      ...userDataRef.current.stat,
+                      ...{
+                        cbtAvg: latestHeartRate.heartCbtAvg,
+                        heartRateAvg: latestHeartRate.heartRateAvg,
+                        heartRateTs: latestHeartRate.utcTs
+                      }
                     }
                   }
+                });
+              }
+
+              const deviceLog = events
+                ?.filter((it) => it.type === 'DeviceLog')
+                ?.sort(
+                  (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
+                )?.[0]?.data;
+              if (deviceLog) {
+                const formatDeviceLog = {
+                  batteryPercent: deviceLog.batteryPercent,
+                  chargingFlag: deviceLog.charging,
+                  userId: deviceLog.userId,
+                  deviceId: deviceLog.deviceId,
+                  sourceDeviceId: deviceLog.source,
+                  deviceLogTs: deviceLog.utcTs,
+                  onOffFlag: deviceLog.onOff,
+                  connected: deviceLog.connected
+                };
+
+                if (deviceLog.connected) {
+                  formatDeviceLog['lastConnectedTs'] = deviceLog.utcTs;
                 }
-              });
+
+                if (deviceLog.onOff) {
+                  formatDeviceLog['lastOnTs'] = deviceLog.utcTs;
+                }
+
+                const newstat = {
+                  ...userDataRef.current.stat,
+                  ...formatDeviceLog
+                };
+
+                const connectionObj = formatConnectionStatusV2({
+                  flag: formatDeviceLog?.onOffFlag,
+                  connected: formatDeviceLog?.connected,
+                  lastTimestamp: userDataRef.current.stat.tempHumidityTs,
+                  deviceId: formatDeviceLog?.deviceId,
+                  numberOfAlerts: userDataRef.numberOfAlerts,
+                  stat: newstat,
+                  alert: userDataRef.current.alert
+                });
+
+                const updateUserData = {
+                  ...userDataRef.current,
+                  ...{
+                    connectionObj,
+                    stat: newstat
+                  }
+                };
+                setUserData(updateUserData);
+              }
+
+              // const latestTempHumidity = events
+              //   ?.filter((it) => it.type === 'TempHumidity')
+              //   ?.sort(
+              //     (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
+              //   )?.[0]?.data;
             }
+          } else if (res.status?.toString() === '204') {
+            // when there is no updates
           }
-        } else if (res.status?.toString() === '204') {
-          // when there is no updates
-        }
-      })
-      .catch((error) => {
-        console.error('user subscribe error', error);
-        // fixme check what possible error codes can be
-        subscribeAgain = false;
-      })
-      .finally(() => {
-        subscribeAgain && subscribe(ts);
-        console.log(`user last event signal received at ${new Date().toLocaleString()}`);
-      });
-  }, []);
+        })
+        .catch((error) => {
+          console.error('user subscribe error', error);
+          // fixme check what possible error codes can be
+          subscribeAgain = false;
+        })
+        .finally(() => {
+          subscribeAgain && subscribe(ts);
+          console.log(`user last event signal received at ${new Date().toLocaleString()}`);
+        });
+    },
+    [formatConnectionStatusV2]
+  );
 
   const fetchUserData = React.useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -185,22 +246,23 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
             lastSyncStr
           };
 
-          const userKenzenDevice = devices
-            ?.filter(
-              (it) =>
-                it.type === 'kenzen' && it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase()
-            )
-            ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+          // const userKenzenDevice = devices
+          //   ?.filter(
+          //     (it) =>
+          //       it.type === 'kenzen' && it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase()
+          //   )
+          //   ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
 
           const connectionObj = formatConnectionStatusV2({
             flag: stat?.onOffFlag,
-            connected: userKenzenDevice?.connected,
+            connected: stat?.connected,
             lastTimestamp: stat?.tempHumidityTs,
             deviceId: stat?.deviceId,
             numberOfAlerts: newUserData.numberOfAlerts,
             stat,
             alert
           });
+
           newUserData = {
             ...newUserData,
             connectionObj
