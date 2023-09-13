@@ -12,13 +12,13 @@ const WrappedMembersProvider = lazy(() =>
 );
 const ParamsWrapper = lazy(() => import('../partials/su-dashboard/ParamsWrapper'));
 const FormConnectMemberSearch = lazy(() =>
-  import('../partials/su-dashboard/FormConnectMemberSearch')
+  import('../partials/su-dashboard/connect-device/FormConnectMemberDevice/FormConnectMemberSearch')
 );
 const FormConnectMemberDevice = lazy(() =>
   import('../partials/su-dashboard/connect-device/FormConnectMemberDevice/FormConnectMemberDevice')
 );
 const FormConnectDeviceSuccess = lazy(() =>
-  import('../partials/su-dashboard/FormConnectDeviceSuccess')
+  import('../partials/su-dashboard/connect-device/FormConnectDevice/FormConnectDeviceSuccess')
 );
 const FormCompanySelect = lazy(() => import('../partials/su-dashboard/FormCompanySelect'));
 

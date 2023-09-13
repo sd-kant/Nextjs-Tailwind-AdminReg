@@ -1,6 +1,6 @@
 import React from 'react';
 import logo from '../../assets/images/logo_light.svg';
-import FormConnectDevice from '../partials/su-dashboard/FormConnectDevice';
+import FormConnectDevice from '../partials/su-dashboard/connect-device/FormConnectDevice/FormConnectDevice';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
