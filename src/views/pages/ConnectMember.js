@@ -15,7 +15,7 @@ const FormConnectMemberSearch = lazy(() =>
   import('../partials/su-dashboard/FormConnectMemberSearch')
 );
 const FormConnectMemberDevice = lazy(() =>
-  import('../partials/su-dashboard/FormConnectMemberDevice')
+  import('../partials/su-dashboard/connect-device/FormConnectMemberDevice/FormConnectMemberDevice')
 );
 const FormConnectDeviceSuccess = lazy(() =>
   import('../partials/su-dashboard/FormConnectDeviceSuccess')
