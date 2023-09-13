@@ -6,14 +6,14 @@ import { Form, withFormik } from 'formik';
 import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import style from './FormConnectDevice.module.scss';
-import LKenzenDeviceImg from '../../../assets/images/kenzen-device-l.png';
-import { isValidMacAddress } from '../../../utils';
-import { linkKenzenDevice, verifyKenzenDevice } from '../../../http';
-import { setLoadingAction, showErrorNotificationAction } from '../../../redux/action/ui';
-import SearchDropdown from '../../components/SearchDropdown';
-import useClickOutSide from '../../../hooks/useClickOutSide';
+import LKenzenDeviceImg from 'assets/images/kenzen-device-l.png';
+import { isValidMacAddress } from 'utils';
+import { linkKenzenDevice, verifyKenzenDevice } from 'http';
+import { setLoadingAction, showErrorNotificationAction } from 'redux/action/ui';
+import SearchDropdown from 'views/components/SearchDropdown';
+import useClickOutSide from 'hooks/useClickOutSide';
 import { useNavigate } from 'react-router-dom';
-import QRcodeReader from './QRcodeReader';
+import QRcodeReader from '../../QRcodeReader';
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -166,7 +166,7 @@ const FormConnectDevice = (props) => {
                   onClick={() => {
                     setOpenQRcodeReader(!openQrCodeReader);
                   }}
-                  className="tw-rounded-[10px] tw-w-[50px] tw-h-[50px] tw-bg-transparent tw-text-white tw-cursor-pointer">
+                  className="tw-border-none tw-w-[50px] tw-h-[50px] tw-bg-transparent tw-text-white tw-cursor-pointer">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
