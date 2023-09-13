@@ -6,12 +6,12 @@ import { Form, withFormik } from 'formik';
 import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import style from './FormConnectMemberDevice.module.scss';
-import LKenzenDeviceImg from '../../../assets/images/kenzen-device-l.png';
-import { getParamFromUrl, isValidMacAddress } from '../../../utils';
-import { linkMemberKenzenDevice, verifyKenzenDevice } from '../../../http';
-import { setLoadingAction, showErrorNotificationAction } from '../../../redux/action/ui';
-import SearchDropdown from '../../components/SearchDropdown';
-import useClickOutSide from '../../../hooks/useClickOutSide';
+import LKenzenDeviceImg from 'assets/images/kenzen-device-l.png';
+import { getParamFromUrl, isValidMacAddress } from 'utils';
+import { linkMemberKenzenDevice, verifyKenzenDevice } from 'http';
+import { setLoadingAction, showErrorNotificationAction } from 'redux/action/ui';
+import SearchDropdown from 'views/components/SearchDropdown';
+import useClickOutSide from 'hooks/useClickOutSide';
 import { useNavigate } from 'react-router-dom';
 
 export const formSchema = (t) => {
@@ -37,6 +37,7 @@ const FormConnectMemberDevice = (props) => {
   };
 
   const [visible, setVisible] = React.useState(false);
+  const [isLoadingAPI, setIsLoadingAPI] = React.useState(false);
   const dropdownRef = React.useRef(null);
   useClickOutSide(dropdownRef, () => setVisible(false));
 
@@ -45,11 +46,11 @@ const FormConnectMemberDevice = (props) => {
   }, [visible, devices?.length]);
 
   const handleItemClick = (id) => {
-    const device = devices?.find((it) => it.deviceId === id);
-    if (device) {
+    const scandevice = devices?.find((it) => it.deviceId === id);
+    if (scandevice) {
       setFieldValue('isEditing', false);
-      setFieldValue('deviceId', device.deviceId);
-      setDevice(device);
+      setFieldValue('deviceId', scandevice.deviceId);
+      setDevice(scandevice);
     }
   };
 
@@ -73,6 +74,7 @@ const FormConnectMemberDevice = (props) => {
       if (mounted) {
         setSearching(true);
       }
+      setIsLoadingAPI(true);
       verifyKenzenDevice(tDeviceId)
         .then((res) => {
           if (mounted) {
@@ -88,6 +90,7 @@ const FormConnectMemberDevice = (props) => {
           if (mounted) {
             setSearching(false);
           }
+          setIsLoadingAPI(false);
         });
     } else {
       if (mounted) {
@@ -172,19 +175,42 @@ const FormConnectMemberDevice = (props) => {
       )}
 
       <div className="mt-50">
-        {!isEditing && (
+        {!isEditing ? (
           <div>
-            <span className="font-input-label">{t('connect device member confirm')}</span>
+            <span className="font-input-label text-orange">
+              {t('connect device member confirm')}
+            </span>
+          </div>
+        ) : (
+          <div>
+            <span className="font-input-label text-orange">
+              {t('create device and pair it with memeber')}
+            </span>
           </div>
         )}
         <div className="mt-40">
-          {!isEditing && (
+          {!isEditing ? (
             <button
               className={`button ${
-                values['deviceId'] ? 'active cursor-pointer' : 'inactive cursor-default'
+                values['deviceId'] && !isLoadingAPI
+                  ? 'active cursor-pointer'
+                  : 'inactive cursor-default'
               }`}
               type={values['deviceId'] ? 'submit' : 'button'}>
               <span className="font-button-label text-white">{t('connect')}</span>
+            </button>
+          ) : (
+            <button
+              className={`button ${
+                noMatch && !isLoadingAPI ? 'active cursor-pointer' : 'inactive cursor-default'
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                setDevice({ deviceId: values['deviceId'], serialNumber: 'New Device' });
+                setFieldValue('isEditing', false);
+              }}
+              type={'button'}>
+              <span className="font-button-label text-white">{t('Yes')}</span>
             </button>
           )}
           <button
@@ -211,6 +237,7 @@ const EnhancedForm = withFormik({
   validationSchema: (props) => formSchema(props.t),
   handleSubmit: async (values, { props }) => {
     const { isEditing } = values;
+
     const { setLoading, showErrorNotification, navigate, teamId, userId } = props;
     if (!isEditing) {
       try {
