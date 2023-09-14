@@ -690,7 +690,7 @@
   "device id placeholder": "Enter the DeviceID or the device serial number",
   "device id required": "Please enter a device id",
   "device id invalid": "Please enter a valid device id",
-  "device id explanation": "Locate the 4 digits Device ID on the front of your device or the full serial number on the back of the device",
+  "device id explanation": "Locate the 4-digit Device ID on the front of the device, scan the barcode with the camera icon, or enter the serial number on the back of the device.",
   "connect device": "Connect to Device",
   "connect": "Connect",
   "connect device success": "Device Connected",

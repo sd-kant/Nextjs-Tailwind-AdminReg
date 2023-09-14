@@ -6,7 +6,7 @@ import { Form, withFormik } from 'formik';
 import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import style from './FormConnectMemberDevice.module.scss';
-import LKenzenDeviceImg from 'assets/images/kenzen-device-l.png';
+import LKenzenDeviceImg from 'assets/images/Device_Barcode_SN.png';
 import { getParamFromUrl, isValidMacAddress } from 'utils';
 import { linkMemberKenzenDevice, verifyKenzenDevice } from 'http';
 import { setLoadingAction, showErrorNotificationAction } from 'redux/action/ui';
@@ -127,103 +127,108 @@ const FormConnectMemberDevice = (props) => {
 
   return (
     <Form className={clsx(style.Wrapper, 'form')}>
-      <div className={clsx('d-flex flex-column mt-25', style.FormRow)}>
-        {isEditing ? (
-          <>
-            <label className="font-input-label" htmlFor="deviceId">
-              {t('device id label')}
-            </label>
-            <SearchDropdown
-              ref={dropdownRef}
-              renderInput={() => (
-                <input
-                  className="input input-field mt-10 font-heading-small text-white"
-                  name="deviceId"
-                  type="text"
-                  value={values['deviceId']}
-                  placeholder={t('device id placeholder')}
-                  onChange={changeFormField}
-                  onClick={() => setVisible(true)}
+      <div className="tw-flex tw-grow 2xl:tw-gap-[90px] xl:tw-gap-[80px] lg:tw-gap-[50px] md:tw-gap-[40px]">
+        <div className="tw-flex tw-flex-col tw-justify-between">
+          <div className={clsx('d-flex flex-column mt-25', style.FormRow)}>
+            {isEditing ? (
+              <>
+                <label className="font-input-label" htmlFor="deviceId">
+                  {t('device id label')}
+                </label>
+                <SearchDropdown
+                  ref={dropdownRef}
+                  renderInput={() => (
+                    <input
+                      className="input input-field mt-10 font-heading-small text-white"
+                      name="deviceId"
+                      type="text"
+                      value={values['deviceId']}
+                      placeholder={t('device id placeholder')}
+                      onChange={changeFormField}
+                      onClick={() => setVisible(true)}
+                    />
+                  )}
+                  items={dropdownItems}
+                  visibleDropdown={visibleDropdown}
+                  onItemClick={handleItemClick}
+                  noMatch={noMatch}
+                  noMatchText={t('no device match')}
                 />
-              )}
-              items={dropdownItems}
-              visibleDropdown={visibleDropdown}
-              onItemClick={handleItemClick}
-              noMatch={noMatch}
-              noMatchText={t('no device match')}
-            />
-          </>
-        ) : (
-          <>
-            <label className="font-input-label">{t('mac address found')}</label>
-            <p className="ml-15">{device['deviceId']}</p>
-            <label className="font-input-label">{t('device id sn')}</label>
-            <p className="ml-15">{device['serialNumber']}</p>
-          </>
-        )}
-
-        {errors.deviceId && touched.deviceId && (
-          <span className="font-helper-text text-error mt-10">{errors.deviceId}</span>
-        )}
-      </div>
-
-      {isEditing && (
-        <div className={clsx(style.DeviceWrapper)}>
-          <img className={clsx(style.DeviceImage)} src={LKenzenDeviceImg} alt="kenzen device" />
-          <p className={clsx(style.DeviceIDExplanation)}>{t('device id explanation')}</p>
-        </div>
-      )}
-
-      <div className="mt-50">
-        {!isEditing ? (
-          <div>
-            <span className="font-input-label text-orange">
-              {t('connect device member confirm')}
-            </span>
-          </div>
-        ) : (
-          <div>
-            <span className="font-input-label text-orange">
-              {t('create device and pair it with memeber')}
-            </span>
-          </div>
-        )}
-        <div className="mt-40">
-          {!isEditing ? (
-            <button
-              className={`button ${
-                values['deviceId'] && !isLoadingAPI
-                  ? 'active cursor-pointer'
-                  : 'inactive cursor-default'
-              }`}
-              type={values['deviceId'] ? 'submit' : 'button'}>
-              <span className="font-button-label text-white">{t('connect')}</span>
-            </button>
-          ) : (
-            <button
-              className={`button ${
-                noMatch && !isLoadingAPI ? 'active cursor-pointer' : 'inactive cursor-default'
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                setDevice({ deviceId: values['deviceId'], serialNumber: 'New Device' });
-                setFieldValue('isEditing', false);
-              }}
-              type={'button'}>
-              <span className="font-button-label text-white">{t('Yes')}</span>
-            </button>
-          )}
-          <button
-            className={clsx(
-              style.CancelBtn,
-              isEditing ? style.Alone : null,
-              `button cursor-pointer cancel`
+              </>
+            ) : (
+              <>
+                <label className="font-input-label">{t('mac address found')}</label>
+                <p className="ml-15">{device['deviceId']}</p>
+                <label className="font-input-label">{t('device id sn')}</label>
+                <p className="ml-15">{device['serialNumber']}</p>
+              </>
             )}
-            type={'button'}
-            onClick={handleCancel}>
-            <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
-          </button>
+
+            {errors.deviceId && touched.deviceId && (
+              <span className="font-helper-text text-error mt-10">{errors.deviceId}</span>
+            )}
+          </div>
+          <div className="mt-50">
+            {!isEditing ? (
+              <div>
+                <span className="font-input-label text-orange">
+                  {t('connect device member confirm')}
+                </span>
+              </div>
+            ) : (
+              <div>
+                <span className="font-input-label text-orange">
+                  {t('create device and pair it with memeber')}
+                </span>
+              </div>
+            )}
+            <div className="mt-40">
+              {!isEditing ? (
+                <button
+                  className={`button ${
+                    values['deviceId'] && !isLoadingAPI
+                      ? 'active cursor-pointer'
+                      : 'inactive cursor-default'
+                  }`}
+                  type={values['deviceId'] ? 'submit' : 'button'}>
+                  <span className="font-button-label text-white">{t('connect')}</span>
+                </button>
+              ) : (
+                <button
+                  className={`button ${
+                    noMatch && !isLoadingAPI ? 'active cursor-pointer' : 'inactive cursor-default'
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setDevice({ deviceId: values['deviceId'], serialNumber: 'New Device' });
+                    setFieldValue('isEditing', false);
+                  }}
+                  type={'button'}>
+                  <span className="font-button-label text-white">{t('Yes')}</span>
+                </button>
+              )}
+              <button
+                className={clsx(
+                  style.CancelBtn,
+                  isEditing ? style.Alone : null,
+                  `button cursor-pointer cancel`
+                )}
+                type={'button'}
+                onClick={handleCancel}>
+                <span className="font-button-label text-orange text-uppercase">{t('cancel')}</span>
+              </button>
+            </div>
+          </div>
         </div>
+
+        {isEditing && (
+          <div className={clsx(style.DeviceWrapper, 'md:tw-flex tw-hidden')}>
+            <div className="tw-z-40 2xl:tw-w-[550px] xl:tw-w-[500px] lg:tw-w-[450px] tw-w-[250px]">
+              <img className={clsx(style.DeviceImage)} src={LKenzenDeviceImg} alt="kenzen device" />
+              <p className={clsx(style.DeviceIDExplanation)}>{t('device id explanation')}</p>
+            </div>
+          </div>
+        )}
       </div>
     </Form>
   );
