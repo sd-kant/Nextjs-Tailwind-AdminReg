@@ -254,7 +254,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
     );
   }, [selectedMetric]);
 
-  const preDefinedDateRange = [
+  const dateRangPresets = [
     {
       label: 'Yesterday',
       value: {
@@ -415,15 +415,15 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
             <ResponsiveSelect
               className="mt-10 font-heading-small text-black"
               isClearable
-              options={preDefinedDateRange}
+              options={dateRangPresets}
               value={preDateRange}
               styles={customStyles()}
               placeholder={t('Select predefined date range')}
               onChange={(v) => {
                 setPreDateRange(v);
                 if (v?.value) {
-                  setStartDate(new Date(v.value.from.format()));
-                  setEndDate(new Date(v.value.to.format()));
+                  setStartDate(v.value.from.toDate());
+                  setEndDate(v.value.to.toDate());
                 }
               }}
             />
