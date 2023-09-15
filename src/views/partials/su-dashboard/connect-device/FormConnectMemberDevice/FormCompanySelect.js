@@ -4,15 +4,15 @@ import { withTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { Form, withFormik } from 'formik';
 import { bindActionCreators } from 'redux';
-import { setLoadingAction, setRestBarClassAction } from '../../../redux/action/ui';
-import { USER_TYPE_ORG_ADMIN, USER_TYPE_ADMIN } from '../../../constant';
-import { queryAllOrganizationsAction } from '../../../redux/action/base';
+import { setLoadingAction, setRestBarClassAction } from 'redux/action/ui';
+import { USER_TYPE_ORG_ADMIN, USER_TYPE_ADMIN } from 'constant';
+import { queryAllOrganizationsAction } from 'redux/action/base';
 import { get } from 'lodash';
 import clsx from 'clsx';
 import style from './FormCompanySelect.module.scss';
-import ResponsiveSelect from '../../components/ResponsiveSelect';
+import ResponsiveSelect from 'views/components/ResponsiveSelect';
 import { useNavigate } from 'react-router-dom';
-import { customStyles } from './FormCompany';
+import { customStyles } from '../../FormCompany';
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -124,7 +124,7 @@ const EnhancedForm = withFormik({
   validationSchema: (props) => formSchema(props.t),
   handleSubmit: async (values, { props }) => {
     const { navigate } = props;
-    navigate(`/connect/member/${values?.companyName?.value}/search`);
+    navigate(`/connect/member/${values?.companyName?.value}/method`);
   }
 })(FormCompanySelect);
 
