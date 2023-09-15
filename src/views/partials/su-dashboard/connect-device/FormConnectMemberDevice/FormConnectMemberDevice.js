@@ -59,17 +59,17 @@ const FormConnectMemberDevice = (props) => {
 
   const { isEditing, deviceId } = values;
 
-  const tDeviceId = React.useMemo(() => {
-    if (deviceId) {
-      const tDeviceId = deviceId.replace(/\W/g, '')?.slice(-4);
-      if (tDeviceId?.length === 4) {
-        return tDeviceId;
-      }
-      return '';
-    }
+  // const tDeviceId = React.useMemo(() => {
+  //   if (deviceId) {
+  //     const tDeviceId = deviceId.replace(/\W/g, '')?.slice(-4);
+  //     if (tDeviceId?.length === 4) {
+  //       return tDeviceId;
+  //     }
+  //     return '';
+  //   }
 
-    return '';
-  }, [deviceId]);
+  //   return '';
+  // }, [deviceId]);
 
   const handleItemClick = React.useCallback(
     (id) => {
@@ -89,12 +89,15 @@ const FormConnectMemberDevice = (props) => {
 
   React.useEffect(() => {
     let mounted = true;
-    if (tDeviceId) {
+    let last4Digits = null;
+    if (deviceId) last4Digits = deviceId.replace(/\W/g, '')?.slice(-4);
+    if (last4Digits) {
       if (mounted) {
         setSearching(true);
       }
+
       setIsLoadingAPI(true);
-      verifyKenzenDevice(tDeviceId)
+      verifyKenzenDevice(last4Digits)
         .then((res) => {
           if (mounted) {
             const deviceList = res.data;
@@ -120,11 +123,11 @@ const FormConnectMemberDevice = (props) => {
     return () => {
       mounted = false;
     };
-  }, [tDeviceId]);
+  }, [deviceId]);
 
   const noMatch = React.useMemo(() => {
-    return !searching && devices?.length === 0 && tDeviceId;
-  }, [devices, searching, tDeviceId]);
+    return !searching && deviceId && devices?.findIndex((d) => d.deviceId == deviceId) < 0;
+  }, [devices, searching, deviceId]);
 
   const dropdownItems = React.useMemo(() => {
     return (
