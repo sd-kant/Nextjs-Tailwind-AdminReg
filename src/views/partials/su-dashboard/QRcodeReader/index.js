@@ -16,7 +16,6 @@ const QRcodeReacer = ({ open, onScan, handleError }) => {
       )}>
       {open && (
         <QrReader
-          facingMode="rear"
           delay={100}
           style={{
             height: '100%',

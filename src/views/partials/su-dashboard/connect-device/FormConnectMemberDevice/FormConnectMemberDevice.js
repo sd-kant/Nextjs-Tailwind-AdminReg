@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
@@ -9,10 +9,15 @@ import style from './FormConnectMemberDevice.module.scss';
 import LKenzenDeviceImg from 'assets/images/Device_Barcode_SN.png';
 import { getParamFromUrl, isValidMacAddress } from 'utils';
 import { linkMemberKenzenDevice, verifyKenzenDevice } from 'http';
-import { setLoadingAction, showErrorNotificationAction } from 'redux/action/ui';
+import {
+  setLoadingAction,
+  showErrorNotificationAction,
+  setRestBarClassAction
+} from 'redux/action/ui';
 import SearchDropdown from 'views/components/SearchDropdown';
 import useClickOutSide from 'hooks/useClickOutSide';
 import { useNavigate } from 'react-router-dom';
+import QRcodeReader from '../../QRcodeReader';
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -26,15 +31,22 @@ export const formSchema = (t) => {
 };
 
 const FormConnectMemberDevice = (props) => {
-  const { values, errors, touched, setFieldValue, t } = props;
+  const { values, errors, touched, setFieldValue, t, setRestBarClass } = props;
   const [devices, setDevices] = React.useState([]);
   const [device, setDevice] = React.useState(null);
-  const [searching, setSearching] = React.useState(false);
+  const [searching, setSearching] = React.useState(null);
   const navigate = useNavigate();
+  const [openQrCodeReader, setOpenQRcodeReader] = React.useState(false);
+  const [scanedDeviceId, setScancedDeviceId] = React.useState();
+
   const changeFormField = (e) => {
     const { value, name } = e.target;
     setFieldValue(name, value);
   };
+
+  useEffect(() => {
+    setRestBarClass('progress-72 medical');
+  }, [setRestBarClass]);
 
   const [visible, setVisible] = React.useState(false);
   const [isLoadingAPI, setIsLoadingAPI] = React.useState(false);
@@ -44,15 +56,6 @@ const FormConnectMemberDevice = (props) => {
   const visibleDropdown = React.useMemo(() => {
     return visible && devices?.length > 0;
   }, [visible, devices?.length]);
-
-  const handleItemClick = (id) => {
-    const scandevice = devices?.find((it) => it.deviceId === id);
-    if (scandevice) {
-      setFieldValue('isEditing', false);
-      setFieldValue('deviceId', scandevice.deviceId);
-      setDevice(scandevice);
-    }
-  };
 
   const { isEditing, deviceId } = values;
 
@@ -67,6 +70,22 @@ const FormConnectMemberDevice = (props) => {
 
     return '';
   }, [deviceId]);
+
+  const handleItemClick = React.useCallback(
+    (id) => {
+      const scanDevice = devices?.find((it) => it.deviceId === id);
+      if (scanDevice) {
+        setFieldValue('isEditing', false);
+        setFieldValue('deviceId', scanDevice.deviceId);
+        setDevice(scanDevice);
+      }
+    },
+    [devices, setFieldValue]
+  );
+
+  React.useEffect(() => {
+    if (scanedDeviceId) handleItemClick(scanedDeviceId);
+  }, [devices, scanedDeviceId, handleItemClick]);
 
   React.useEffect(() => {
     let mounted = true;
@@ -127,7 +146,7 @@ const FormConnectMemberDevice = (props) => {
 
   return (
     <Form className={clsx(style.Wrapper, 'form')}>
-      <div className="tw-flex tw-grow 2xl:tw-gap-[90px] xl:tw-gap-[80px] lg:tw-gap-[50px] md:tw-gap-[40px]">
+      <div className="tw-flex tw-grow 2xl:tw-gap-[90px] xl:tw-gap-[80px] tw-gap-[70px]">
         <div className="tw-flex tw-flex-col tw-justify-between">
           <div className={clsx('d-flex flex-column mt-25', style.FormRow)}>
             {isEditing ? (
@@ -135,24 +154,70 @@ const FormConnectMemberDevice = (props) => {
                 <label className="font-input-label" htmlFor="deviceId">
                   {t('device id label')}
                 </label>
-                <SearchDropdown
-                  ref={dropdownRef}
-                  renderInput={() => (
-                    <input
-                      className="input input-field mt-10 font-heading-small text-white"
-                      name="deviceId"
-                      type="text"
-                      value={values['deviceId']}
-                      placeholder={t('device id placeholder')}
-                      onChange={changeFormField}
-                      onClick={() => setVisible(true)}
-                    />
-                  )}
-                  items={dropdownItems}
-                  visibleDropdown={visibleDropdown}
-                  onItemClick={handleItemClick}
-                  noMatch={noMatch}
-                  noMatchText={t('no device match')}
+                <div className="tw-flex tw-gap-[5px]">
+                  <SearchDropdown
+                    ref={dropdownRef}
+                    renderInput={() => (
+                      <input
+                        className="input lg:tw-w-[350px] md:tw-w-[280px] tw-w-[250px] mt-10 font-heading-small text-white"
+                        name="deviceId"
+                        type="text"
+                        value={values['deviceId']}
+                        placeholder={t('device id placeholder')}
+                        onChange={changeFormField}
+                        onClick={() => setVisible(true)}
+                      />
+                    )}
+                    items={dropdownItems}
+                    visibleDropdown={visibleDropdown}
+                    onItemClick={handleItemClick}
+                    noMatch={noMatch}
+                    noMatchText={t('no device match')}
+                  />
+                  <div className="tw-flex tw-items-start tw-pt-[14px] tw-justify-center tw-w-full">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpenQRcodeReader(!openQrCodeReader);
+                      }}
+                      className="tw-border-none tw-w-[50px] tw-h-[50px] tw-bg-transparent tw-text-white tw-cursor-pointer">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <QRcodeReader
+                  open={openQrCodeReader}
+                  onClose={() => setOpenQRcodeReader(false)}
+                  onScan={(data) => {
+                    if (data) {
+                      const macAddress = data.text.split('_')[1];
+                      setFieldValue('deviceId', macAddress);
+                      handleItemClick(macAddress);
+                      setScancedDeviceId(macAddress);
+                    }
+                  }}
+                  handleError={(error) => {
+                    console.log('err', error);
+                    alert(error);
+                    setOpenQRcodeReader(false);
+                  }}
                 />
               </>
             ) : (
@@ -176,11 +241,13 @@ const FormConnectMemberDevice = (props) => {
                 </span>
               </div>
             ) : (
-              <div>
-                <span className="font-input-label text-orange">
-                  {t('create device and pair it with memeber')}
-                </span>
-              </div>
+              noMatch && (
+                <div>
+                  <span className="font-input-label text-orange">
+                    {t('create device and pair it with memeber')}
+                  </span>
+                </div>
+              )
             )}
             <div className="mt-40">
               {!isEditing ? (
@@ -269,7 +336,8 @@ const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
       setLoading: setLoadingAction,
-      showErrorNotification: showErrorNotificationAction
+      showErrorNotification: showErrorNotificationAction,
+      setRestBarClass: setRestBarClassAction
     },
     dispatch
   );
