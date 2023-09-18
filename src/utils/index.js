@@ -4,6 +4,7 @@ import {
   INVALID_VALUES4,
   TIME_FORMAT_YYYYMDHM,
   USER_TYPE_ADMIN,
+  USER_TYPE_OPERATOR,
   USER_TYPE_ORG_ADMIN,
   USER_TYPE_TEAM_ADMIN
 } from '../constant';
@@ -81,6 +82,10 @@ export const checkPhoneNumberValidation = (value, country) => {
 export const isAdmin = (userType) => {
   const validRoles = [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN];
   return validRoles.some((it) => userType?.includes(it));
+};
+
+export const isOperator = (userType) => {
+  return userType && userType.length === 1 && userType[0] === USER_TYPE_OPERATOR;
 };
 
 export const uuidv4 = () => {
@@ -350,6 +355,6 @@ export const getHeightAsMetric = ({ measure, feet, inch, m, cm }) => {
 export const isValidMacAddress = (str) => {
   if (!str) return false;
   const tStr = str?.trim();
-  const regex = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/i;
+  const regex = /^[0-9A-Za-z-:]+$/i;
   return tStr?.match(regex);
 };

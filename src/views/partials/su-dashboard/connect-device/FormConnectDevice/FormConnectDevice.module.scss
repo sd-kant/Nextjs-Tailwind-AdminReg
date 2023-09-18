@@ -29,13 +29,13 @@
   }
 
   .DeviceWrapper {
-    display: none;
-    position: absolute;
-    width: 312px;
+    // display: none;
+    // position: absolute;
+    // width: 312px;
     text-align: center;
 
     .DeviceImage {
-      width: 216px;
+      width: 100%;
       height: auto;
     }
 
@@ -59,11 +59,6 @@
 }
 @media only screen and (min-width: 768px) {
   .Wrapper {
-    .DeviceWrapper {
-      display: block;
-      left: 450px;
-    }
-
     .CancelBtn {
       margin-top: 0;
       margin-left: 15px;
@@ -75,18 +70,18 @@
     }
   }
 }
-@media only screen and (min-width: 1024px) {
-  .Wrapper {
-    .DeviceWrapper {
-      left: 500px;
-    }
-  }
-}
+// @media only screen and (min-width: 1024px) {
+//   .Wrapper {
+//     .DeviceWrapper {
+//       left: 500px;
+//     }
+//   }
+// }
 
-@media only screen and (min-width: 1400px) {
-  .Wrapper {
-    .DeviceWrapper {
-      left: 550px;
-    }
-  }
-}
+// @media only screen and (min-width: 1400px) {
+//   .Wrapper {
+//     .DeviceWrapper {
+//       left: 550px;
+//     }
+//   }
+// }

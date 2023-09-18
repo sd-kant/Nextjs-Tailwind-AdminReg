@@ -1,6 +1,6 @@
 import React from 'react';
-import logo from '../../assets/images/logo_light.svg';
-import FormConnectDeviceSuccess from '../partials/su-dashboard/FormConnectDeviceSuccess';
+import logo from 'assets/images/logo_light.svg';
+import FormConnectDeviceSuccess from '../partials/su-dashboard/connect-device/FormConnectDevice/FormConnectDeviceSuccess';
 import { useTranslation } from 'react-i18next';
 
 const ConnectDeviceSuccess = () => {

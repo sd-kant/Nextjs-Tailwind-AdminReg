@@ -2,9 +2,9 @@ import React from 'react';
 import clsx from 'clsx';
 import style from './FormConnectMemberSearch.module.scss';
 import { withTranslation } from 'react-i18next';
-import { useMembersContext } from '../../../providers/MembersProvider';
-import SearchDropdown from '../../components/SearchDropdown';
-import useClickOutSide from '../../../hooks/useClickOutSide';
+import { useMembersContext } from 'providers/MembersProvider';
+import SearchDropdown from 'views/components/SearchDropdown';
+import useClickOutSide from 'hooks/useClickOutSide';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const FormConnectMemberSearch = ({ t }) => {
@@ -64,8 +64,7 @@ const FormConnectMemberSearch = ({ t }) => {
           noMatchText={t('no member match')}
         />
       </div>
-
-      <div className={clsx('mt-80')}>
+      <div>
         <div>
           <button className="button cursor-pointer cancel" type="button" onClick={handleCancel}>
             <span className="font-button-label text-orange text-uppercase">{'cancel'}</span>

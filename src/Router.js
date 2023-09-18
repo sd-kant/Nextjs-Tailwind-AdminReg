@@ -36,6 +36,7 @@ import Loader from './views/components/Loader';
 import News from './views/pages/News/News';
 import NewsDetail from './views/pages/News/NewsDetail';
 import AuthorDetail from './views/pages/News/AuthorDetail';
+import OperatorDashboardWrapper from './views/pages/operator/dashboard/OperatorDashboardWrapper';
 
 const Router = ({ token, loggedIn, getMyProfile, getMyOrganization }) => {
   React.useEffect(() => {
@@ -185,6 +186,19 @@ const Router = ({ token, loggedIn, getMyProfile, getMyOrganization }) => {
                       <DashboardV2Wrapper />
                     </MainLayoutV2>
                   </RequireAdminRole>
+                </RequirePasswordValid>
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/dashboard/me"
+            element={
+              <RequireAuth requireLoggedIn={true}>
+                <RequirePasswordValid>
+                  <MainLayoutV2>
+                    <OperatorDashboardWrapper />
+                  </MainLayoutV2>
                 </RequirePasswordValid>
               </RequireAuth>
             }

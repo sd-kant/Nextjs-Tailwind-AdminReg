@@ -1,6 +1,5 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import style from './ActivityLogs.module.scss';
 import { useTranslation } from 'react-i18next';
 import { useUserSubscriptionContext } from '../../../providers/UserSubscriptionProvider';
 import ActivityLog from './ActivityLog';
@@ -29,26 +28,36 @@ const ActivityLogs = ({ logs, gmt }) => {
   return (
     <React.Fragment>
       {logsLoading ? (
-        <div className={clsx(style.DataRow, style.Header, 'font-binary text-white')}>
-          <span className={clsx('text-capitalize', style.Padding)}>{t('loading')}</span>
+        <div className={clsx('tw-grid tw-grid-cols-3 mt-2', 'font-binary text-white')}>
+          <span className={clsx('text-capitalize', 'tw-py-2')}>{t('loading')}</span>
         </div>
       ) : (
         <React.Fragment>
           {logs?.length > 0 ? (
-            <div className={clsx(style.DataRow, style.Header, 'font-button-label text-orange')}>
-              <span className={clsx('font-binary', style.Padding)}>{t('details')}</span>
-              <div>
-                <span className={clsx('font-binary', style.Padding)}>{t('cbt')}</span>
-                <span className={clsx('font-binary', style.Padding, 'ml-20')}>{t('hr')}</span>
+            <div
+              className={clsx(
+                'tw-hidden tw-grid-cols-12 mt-2 tw-gap-2',
+                'font-button-label text-orange',
+                'md:tw-grid'
+              )}>
+              <span className={clsx('font-binary', 'tw-py-2 tw-col-span-6')}>{t('details')}</span>
+              <div className="tw-col-span-3 tw-grid-cols-2 tw-hidden md:tw-grid">
+                <span className={clsx('font-binary', 'tw-py-2 tw-col-span-1 tw-text-center')}>
+                  {t('cbt')}
+                </span>
+                <span className={clsx('font-binary', 'tw-py-2 tw-col-span-1 tw-text-center')}>
+                  {t('hr')}
+                </span>
               </div>
-              <span className={clsx('font-binary', style.Padding)}>
+              <span
+                className={clsx('font-binary', 'tw-py-2 tw-col-span-3', 'tw-hidden md:tw-block')}>
                 {t('datetime')}
                 {gmt ? ` (${timezone.displayName})` : ''}
               </span>
             </div>
           ) : (
-            <div className={clsx(style.DataRow, style.Header, 'font-button-label text-orange')}>
-              <span className={clsx('font-binary text-capitalize', style.Padding)}>
+            <div className={clsx('tw-grid tw-grid-cols-3 mt-2', 'font-button-label text-orange')}>
+              <span className={clsx('font-binary text-capitalize', 'tw-py-2')}>
                 {activitiesFilter?.noText}
               </span>
             </div>

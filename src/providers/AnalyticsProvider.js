@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as XLSX from 'xlsx/xlsx.mjs';
 import { queryTeamMembers, getRiskLevels } from '../http';
-import { celsiusToFahrenheit, dateFormat, numMinutesBetweenWithNow } from '../utils';
+import { celsiusToFahrenheit, numMinutesBetweenWithNow } from '../utils';
 import {
   onCalc,
   getDateList,
@@ -47,6 +47,7 @@ import { useUtilsContext } from './UtilsProvider';
 import { useTranslation } from 'react-i18next';
 import soft from 'timezone-soft';
 import spacetime from 'spacetime';
+import moment from 'moment';
 
 const AnalyticsContext = React.createContext(null);
 
@@ -55,7 +56,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   const { formatAlert, formatHeartCbt, alertPriorities } = useUtilsContext();
   const [pickedMembers, setPickedMembers] = React.useState([]);
   const [startDate, setStartDate] = React.useState('');
-  const [endDate, setEndDate] = React.useState('');
+  const [endDate, setEndDate] = React.useState(new Date());
   const { pickedTeams, organization, formattedTeams } = useBasicContext();
   const [members, _setMembers] = React.useState();
   const membersRef = React.useRef(members);
@@ -538,8 +539,8 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
             promises.push(
               api(organization, {
                 teamIds: pickedTeams,
-                startDate: dateFormat(new Date(startD)),
-                endDate: dateFormat(new Date(endD))
+                startDate: moment(startD).utc().format('YYYY-MM-DD'),
+                endDate: moment(endD).add(1, 'days').utc().format('YYYY-MM-DD')
               })
             );
           });

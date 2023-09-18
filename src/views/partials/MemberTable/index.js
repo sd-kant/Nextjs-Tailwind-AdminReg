@@ -7,7 +7,7 @@ import style from './MemberTable.module.scss';
 import { useDashboardContext } from '../../../providers/DashboardProvider';
 import TableRow from './TableRow';
 import TableHeader from './TableHeader';
-import MemberDetail from '../../modals/MemberDetail';
+import MemberDetailModal from '../../modals/MemberDetailModal';
 import { UserSubscriptionProvider } from '../../../providers/UserSubscriptionProvider';
 
 const MemberTable = ({ t, forceWidthUpdate }) => {
@@ -73,7 +73,7 @@ const MemberTable = ({ t, forceWidthUpdate }) => {
 
       {visibleMemberModal && (
         <UserSubscriptionProvider>
-          <MemberDetail
+          <MemberDetailModal
             data={member}
             open={visibleMemberModal}
             closeModal={() => setVisibleMemberModal(false)}

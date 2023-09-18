@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { getParamFromUrl } from '../../../utils';
+import { getParamFromUrl } from 'utils';
 import { useNavigate } from 'react-router-dom';
 
 const FormConnectDeviceSuccess = ({ individual }) => {
