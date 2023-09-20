@@ -4,9 +4,8 @@ import { bindActionCreators } from 'redux';
 import * as Yup from 'yup';
 import { Form, useFormikContext, withFormik } from 'formik';
 import { withTranslation, Trans } from 'react-i18next';
-import backIcon from '../../../assets/images/back.svg';
-import plusIcon from '../../../assets/images/plus-circle-fire.svg';
-import removeIcon from '../../../assets/images/remove.svg';
+import plusIcon from 'assets/images/plus-circle-fire.svg';
+import removeIcon from 'assets/images/remove.svg';
 import { get } from 'lodash';
 import {
   setLoadingAction,
@@ -14,24 +13,20 @@ import {
   setVisibleSuccessModalAction,
   showErrorNotificationAction,
   showSuccessNotificationAction
-} from '../../../redux/action/ui';
-import {
-  AVAILABLE_JOBS,
-  INVALID_VALUES1,
-  INVALID_VALUES3,
-  permissionLevels
-} from '../../../constant';
-import ConfirmModal from '../../components/ConfirmModal';
-import CustomPhoneInput from '../../components/PhoneInput';
-import { checkPhoneNumberValidation } from '../../../utils';
-import ResponsiveSelect from '../../components/ResponsiveSelect';
-import SuccessModal from '../../components/SuccessModal';
-import { logout } from '../../layouts/MainLayout';
+} from 'redux/action/ui';
+import { AVAILABLE_JOBS, INVALID_VALUES1, INVALID_VALUES3, permissionLevels } from 'constant';
+import ConfirmModal from 'views/components/ConfirmModal';
+import CustomPhoneInput from 'views/components/PhoneInput';
+import { checkPhoneNumberValidation } from 'utils';
+import ResponsiveSelect from 'views/components/ResponsiveSelect';
+import SuccessModal from 'views/components/SuccessModal';
+import { logout } from 'views/layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
-import { _handleSubmitV2, checkIfSpacesOnly } from '../../../utils/invite';
+import { _handleSubmitV2, checkIfSpacesOnly } from 'utils/invite';
 import { AsYouType } from 'libphonenumber-js';
 import style from './FormInvite.module.scss';
 import clsx from 'clsx';
+import PreviousButton from 'views/components/PreviousButton';
 
 export const defaultTeamMember = {
   email: '',
@@ -430,10 +425,8 @@ const FormInvite = (props) => {
 
       <Form className="form-group mt-57">
         <div>
-          <div className="d-flex align-center cursor-pointer" onClick={() => navigate(-1)}>
-            <img src={backIcon} alt="back" />
-            &nbsp;&nbsp;
-            <span className="font-button-label text-orange">{t('previous')}</span>
+          <div className="tw-flex">
+            <PreviousButton onClick={() => navigate(-1)}>{t('previous')}</PreviousButton>
           </div>
 
           <div className={clsx(style.FormHeader, 'd-flex flex-column')}>

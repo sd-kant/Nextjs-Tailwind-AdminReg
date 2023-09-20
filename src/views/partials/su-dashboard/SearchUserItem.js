@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { customStyles } from './FormInvite';
+import { customStyles } from './team-admin/team-create/FormInvite';
 import ResponsiveSelect from '../../components/ResponsiveSelect';
 import DropdownButton from '../../components/DropdownButton';
 import { withTranslation } from 'react-i18next';
