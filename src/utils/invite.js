@@ -203,7 +203,8 @@ export const _handleSubmitV2 = ({
       promises.push(createUserByAdmin(organizationId, it));
     });
 
-    const alreadyRegisteredUsers = [];
+    const alreadyRegisteredUsers = [],
+      succeedRegisteredUsers = [];
     let totalSuccessForInvite = 0;
 
     Promise.allSettled(promises)
@@ -211,6 +212,13 @@ export const _handleSubmitV2 = ({
         items.forEach((item, index) => {
           if (item.status === 'fulfilled') {
             totalSuccessForInvite++;
+            succeedRegisteredUsers.push({
+              firstName: item.value?.data?.firstName,
+              lastName: item.value?.data?.lastName,
+              registrationCode: item.value?.data?.registrationCode,
+              email: item.value?.data?.email,
+              phoneNumber: item.value?.data?.phoneNumber
+            });
           } else {
             const error = item.reason?.response?.data;
             console.error('creating user failed', error);
@@ -236,7 +244,8 @@ export const _handleSubmitV2 = ({
           .finally(() => {
             resolve({
               alreadyRegisteredUsers,
-              numberOfSuccess: totalSuccessForInvite
+              numberOfSuccess: totalSuccessForInvite,
+              succeedRegisteredUsers
             });
             setLoading(false);
           });

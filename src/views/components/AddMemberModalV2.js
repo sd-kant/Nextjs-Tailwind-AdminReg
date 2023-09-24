@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 import { get } from 'lodash';
 import clsx from 'clsx';
 import style from './AddMemberModalV2.module.scss';
-import { customStyles, defaultTeamMember, userSchema } from '../partials/su-dashboard/FormInvite';
+import {
+  customStyles,
+  defaultTeamMember,
+  userSchema
+} from '../partials/su-dashboard/team-admin/team-create/FormInvite';
 import { withTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { Form, withFormik } from 'formik';

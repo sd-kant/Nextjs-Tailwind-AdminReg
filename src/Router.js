@@ -293,7 +293,7 @@ const Router = ({ token, loggedIn, getMyProfile, getMyOrganization }) => {
               </SignInLayout>
             }
           />
-
+          <Route path="/registration" element={<Navigate to="/create-account/pin" />} />
           <Route
             path="/create-account/*"
             element={

@@ -2,20 +2,20 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withTranslation } from 'react-i18next';
-import backIcon from '../../../assets/images/back.svg';
-import plusIcon from '../../../assets/images/plus-circle-fire.svg';
-import editIcon from '../../../assets/images/edit.svg';
-import searchIcon from '../../../assets/images/search-orange.svg';
+import plusIcon from 'assets/images/plus-circle-fire.svg';
+import editIcon from 'assets/images/edit.svg';
+import searchIcon from 'assets/images/search-orange.svg';
 import {
   setLoadingAction,
   setRestBarClassAction,
   setVisibleSuccessModalAction,
   showErrorNotificationAction,
   showSuccessNotificationAction
-} from '../../../redux/action/ui';
+} from 'redux/action/ui';
 import { get } from 'lodash';
 import { useNavigate } from 'react-router-dom';
-import { INVALID_VALUES1 } from '../../../constant';
+import { INVALID_VALUES1 } from 'constant';
+import PreviousButton from 'views/components/PreviousButton';
 
 const FormTeamMode = (props) => {
   const { t, setRestBarClass, organizationId, myOrganizationId, isAdmin } = props;
@@ -37,12 +37,10 @@ const FormTeamMode = (props) => {
     <div className="form-group mt-57">
       <div>
         {isAdmin && (
-          <div
-            className="d-flex align-center cursor-pointer"
-            onClick={() => navigate('/invite/company')}>
-            <img src={backIcon} alt="back" />
-            &nbsp;&nbsp;
-            <span className="font-button-label text-orange">{t('previous')}</span>
+          <div className="tw-flex">
+            <PreviousButton onClick={() => navigate('/invite/company')}>
+              {t('previous')}
+            </PreviousButton>
           </div>
         )}
 

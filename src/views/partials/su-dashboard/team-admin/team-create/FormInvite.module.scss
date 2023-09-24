@@ -1,4 +1,4 @@
-@import "../../../assets/scss/colors";
+@import "src/assets/scss/colors";
 
 .FormHeader {
   position: sticky;
@@ -19,64 +19,42 @@
       display: none;
     }
 
-    .NoteWrapper {
-      display: flex;
-      justify-content: space-between;
-      padding-right: 15px;
+    .ChangeNote {
+      display: inline-block;
+      margin-top: 5px;
+      z-index: 2;
 
-      .ChangeNote {
-        display: inline-block;
-        margin-top: 5px;
-        z-index: 2;
-
-        font-family: Ubuntu-Medium, sans-serif;
-        font-size: 21px;
-        line-height: 24.13px;
-      }
-
-      .SaveIconWrapper {
-        display: flex;
-        align-items: center;
-      }
+      font-family: Ubuntu-Medium, sans-serif;
+      font-size: 21px;
+      line-height: 24.13px;
     }
   }
 
   .Tools {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
 
-    .SearchWrapper {
-      position: relative;
-      max-width: 450px;
+    .ReUploadWrapper {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
 
-      .SearchIcon {
-        position: absolute;
-        top: 50%;
-        left: 15px;
-        transform: translateY(calc(-50% + 6px));
-      }
-
-      .SearchInput {
-        padding: 0 22px 0 45px;
-        width: calc(100% - 67px);
-        font-family: Ubuntu-Regular, sans-serif;
-        font-size: 16px;
-        line-height: 18.38px;
+      .ReUpload {
+        position: relative;
+        cursor: pointer;
+        opacity: 1;
+        z-index: 1;
       }
     }
 
-    .SubmitWrapper {
+    .ButtonWrapper {
       display: none;
     }
 
-    .AddIconWrapper {
+    .LabelWrapper {
       display: flex;
-      align-items: center;
-
-      .AddIcon {
-        width: 25px;
-        cursor: pointer;
-      }
+      justify-content: space-between;
     }
   }
 
@@ -101,12 +79,10 @@
     padding: 10px;
     background: #313131;
 
-    .RemoveIconWrapper {
+    .RemoveIcon {
       position: absolute;
       top: 10px;
       right: 10px;
-      width: 24px;
-      height: 24px;
       cursor: pointer;
     }
 
@@ -119,40 +95,39 @@
         margin-top: 10px;
       }
 
+      .SelectWrapper {
+        display: flex;
+        flex-direction: column;
+
+        & > div:last-child {
+          margin-top: 10px;
+        }
+
+        .Select {
+          width: 100%;
+        }
+
+        .PermissionSelect {
+          margin-left: 0;
+        }
+      }
+
       .Input {
         width: calc(100% - 45px);
       }
 
-      .DisabledInput {
-        border: 1px solid $app-ts;
-        background-color: $app-tf;
-      }
-
-      .Select {
-        width: 100%;
-      }
-
-      .GroupWrapper {
-        display: flex;
-        flex-direction: column;
-
-        .ButtonWrapper {
-          display: flex;
-          justify-content: flex-end;
-          margin-top: 10px;
-        }
+      .PhoneNumberContainer,
+      .PhoneNumberInput {
+        border: none;
+        height: 50px;
       }
 
       .PhoneNumberContainer {
         margin-top: 10px;
-        border: none;
         width: 100%;
-        height: 50px;
       }
 
       .PhoneNumberInput {
-        border: none;
-        height: 50px;
         font-size: 21px;
         line-height: 24.13px;
         font-family: Ubuntu-Regular, sans-serif;
@@ -165,14 +140,6 @@
         color: black;
       }
     }
-  }
-
-  .Info {
-    margin-top: 5px;
-    font-family: Ubuntu-Medium, sans-serif;
-    font-size: 21px;
-    line-height: 24.13px;
-    text-transform: capitalize;
   }
 }
 
@@ -202,17 +169,9 @@
         display: flex;
       }
 
-      .NoteWrapper {
-        padding-right: 0;
-
-        .ChangeNote {
-          font-size: 27px;
-          line-height: 41px;
-        }
-
-        .SaveIconWrapper {
-          display: none;
-        }
+      .ChangeNote {
+        font-size: 27px;
+        line-height: 41px;
       }
     }
 
@@ -221,22 +180,20 @@
       grid-template-columns: 1fr auto;
       grid-column-gap: 40px;
 
-      .SearchWrapper {
-        width: 100%;
+      .ReUploadWrapper {
+        margin-bottom: 0;
+      }
 
-        .SearchInput {
-          font-size: 21px;
-          line-height: 24.13px;
+      .ButtonWrapper {
+        display: block;
+
+        .CancelBtn {
+          margin-top: 0;
+          margin-left: 15px;
         }
       }
 
-      .SubmitWrapper {
-        display: flex;
-        align-items: flex-end;
-        margin-top: 10px;
-      }
-
-      .AddIconWrapper {
+      .LabelWrapper {
         display: none;
       }
     }
@@ -244,14 +201,15 @@
     .AddButton {
       display: flex;
       justify-content: center;
+      margin-top: 10px;
       border: 1px solid #DE7D2C;
+      box-sizing: border-box;
       border-radius: 24px;
       padding: 36px;
-      box-sizing: border-box;
       text-align: center;
       cursor: pointer;
-      background-color: $app-bg;
       z-index: 1;
+      background-color: $app-bg;
 
       .PlusIcon {
         margin-right: 24px;
@@ -266,23 +224,25 @@
       border-radius: 24px;
       padding: 40px;
 
-      .RemoveIconWrapper {
+      .RemoveIcon {
+        position: absolute;
         top: 20px;
         right: 40px;
+        cursor: pointer;
       }
 
       .UserRow {
-        .GroupWrapper {
+        .SelectWrapper {
           display: grid;
           grid-template-columns: 1fr 1fr;
           grid-column-gap: 40px;
 
-          .Select {
-            width: 100%;
+          & > div:last-child {
+            margin-top: 0;
           }
 
-          .ButtonWrapper {
-            margin-top: 0;
+          .Select {
+            width: 100%;
           }
         }
       }
@@ -295,7 +255,8 @@
 }
 
 @media only screen and (min-width: 1024px) {
-  .FormHeader {
+  .FormHeader,
+  .FormBody {
     width: calc(100vw - 210px);
   }
 
@@ -304,9 +265,11 @@
       border-radius: 12px;
       padding: 20px;
 
-      .RemoveIconWrapper {
+      .RemoveIcon {
+        position: absolute;
         top: 20px;
         right: 20px;
+        cursor: pointer;
       }
 
       .UserRow {
@@ -316,13 +279,9 @@
           width: calc(350px - 22px);
         }
 
-        .GroupWrapper {
+        .SelectWrapper {
           width: 50%;
           max-width: 370px;
-        }
-
-        .Select {
-          width: 372px;
         }
       }
 
@@ -334,20 +293,21 @@
 }
 
 @media only screen and (min-width: 1400px) {
-  .FormHeader {
+  .FormHeader,
+  .FormBody {
     width: 910px;
   }
 
   .FormBody {
-    width: 910px;
-
     .User {
       border-radius: 24px;
       padding: 40px;
 
-      .RemoveIconWrapper {
+      .RemoveIcon {
+        position: absolute;
         top: 20px;
         right: 40px;
+        cursor: pointer;
       }
 
       .UserRow {
@@ -357,13 +317,9 @@
           width: calc(375px - 22px);
         }
 
-        .GroupWrapper {
+        .SelectWrapper {
           width: 50%;
           max-width: 397px;
-        }
-
-        .Select {
-          width: 397px;
         }
       }
     }
