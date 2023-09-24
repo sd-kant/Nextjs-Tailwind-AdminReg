@@ -57,6 +57,7 @@ const FormInviteModify = (props) => {
   const [newChanges, setNewChanges] = useState(0);
   const [visibleAddModal, setVisibleAddModal] = useState(false);
   const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
+  const [addMemberSuccessResult, setAddMemberSuccessResult] = useState([]);
   const {
     apiLoading,
     setPage,
@@ -126,17 +127,24 @@ const FormInviteModify = (props) => {
         navigate('/invite/company');
         return;
       }
-      const { numberOfSuccess } = await _handleSubmitV2({
-        users,
-        setLoading,
-        organizationId,
-        teamId: id,
-        showErrorNotification,
-        isAdmin,
-        t
-      });
+      const { numberOfSuccess, alreadyRegisteredUsers, succeedRegisteredUsers } =
+        await _handleSubmitV2({
+          users,
+          setLoading,
+          organizationId,
+          teamId: id,
+          showErrorNotification,
+          isAdmin,
+          t
+        });
       initializeMembers();
       if (numberOfSuccess === 1) {
+        setAddMemberSuccessResult([
+          {
+            alreadyRegisteredUsers,
+            succeedRegisteredUsers
+          }
+        ]);
         setVisibleAddModal(false);
         setVisibleAddMemberSuccessModal(true);
       }
@@ -170,6 +178,7 @@ const FormInviteModify = (props) => {
       />
       <ConfirmModal
         show={visibleAddMemberSuccessModal}
+        data={addMemberSuccessResult}
         header={t('new team member added header')}
         subheader={t('new team member added description 2')}
         onOk={() => {

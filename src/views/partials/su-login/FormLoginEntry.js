@@ -168,11 +168,14 @@ const FormLoginEntry = (props) => {
           )}
         </div>
 
-        <div className="mt-40 d-block">
+        <div className="tw-mt-[40px] tw-flex tw-flex-col tw-gap-[20px]">
           <Link
             to={`/forgot-username?from=${fromMobile ? 'mobile' : 'web'}`}
             className="font-input-label text-orange no-underline">
             {t('forgot your username')}
+          </Link>
+          <Link to={`/create-account/pin`} className="font-input-label text-orange no-underline">
+            {t('create new account')}
           </Link>
         </div>
       </div>

@@ -17,7 +17,6 @@ import {
   recoverUsername,
   recoverUsernameByPhoneNumber
 } from '../../../http';
-import backIcon from '../../../assets/images/back.svg';
 import { useNavigate } from 'react-router-dom';
 import { apiBaseUrl } from '../../../config';
 import { getParamFromUrl } from '../../../utils';
@@ -25,6 +24,7 @@ import { checkPhoneNumberValidation } from '../../../utils';
 import CustomPhoneInput from '../../components/PhoneInput';
 import clsx from 'clsx';
 import style from './FormForgotUsername.module.scss';
+import PreviousButton from 'views/components/PreviousButton';
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -90,12 +90,8 @@ const FormForgotUsername = (props) => {
   return (
     <Form className="form-group mt-57">
       <div>
-        <div className="d-flex align-center cursor-pointer">
-          <img src={backIcon} alt="back" />
-          &nbsp;&nbsp;
-          <span className="font-button-label text-orange" onClick={handlePrevious}>
-            {t('previous')}
-          </span>
+        <div className="tw-flex">
+          <PreviousButton onClick={handlePrevious}>{t('previous')}</PreviousButton>
         </div>
 
         <div className="grouped-form mt-25">

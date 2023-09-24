@@ -11,7 +11,6 @@ import {
 } from '../../../redux/action/ui';
 import ConfirmModal from '../../components/ConfirmModal';
 import { instance, lookupByUsername, requestResetPassword } from '../../../http';
-import backIcon from '../../../assets/images/back.svg';
 import {
   checkUsernameValidation2,
   checkUsernameValidation1,
@@ -19,6 +18,7 @@ import {
 } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 import { apiBaseUrl } from '../../../config';
+import PreviousButton from 'views/components/PreviousButton';
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -56,12 +56,8 @@ const FormForgotPassword = (props) => {
   return (
     <Form className="form-group mt-57">
       <div>
-        <div className="d-flex align-center cursor-pointer">
-          <img src={backIcon} alt="back" />
-          &nbsp;&nbsp;
-          <span className="font-button-label text-orange" onClick={handlePrevious}>
-            {t('previous')}
-          </span>
+        <div className="tw-flex">
+          <PreviousButton onClick={handlePrevious}>{t('previous')}</PreviousButton>
         </div>
 
         <div className="grouped-form mt-25">

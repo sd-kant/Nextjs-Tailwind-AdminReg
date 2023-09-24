@@ -43,13 +43,11 @@ export const defaultTeamMember = {
 export const userSchema = (t) => {
   return Yup.object()
     .shape({
-      email: Yup.string()
-        .email(t('email invalid'))
-        .max(1024, t('email max error'))
-        .test('required', t('email or phone number required'), function (value) {
-          if (value) return true;
-          return !!this.parent.phoneNumber.value;
-        }),
+      email: Yup.string().email(t('email invalid')).max(1024, t('email max error')),
+      // .test('required', t('email or phone number required'), function (value) {
+      //   if (value) return true;
+      //   return !!this.parent.phoneNumber.value;
+      // }),
       firstName: Yup.string()
         .test('is-valid', t('firstName required'), function (value) {
           return !checkIfSpacesOnly(value);
@@ -65,10 +63,10 @@ export const userSchema = (t) => {
       userType: Yup.object().required(t('permission level required')),
       job: Yup.object().required(t('role required')),
       phoneNumber: Yup.object()
-        .test('required', t('email or phone number required'), function (obj) {
-          if (obj?.value) return true;
-          return !!this.parent.email;
-        })
+        // .test('required', t('email or phone number required'), function (obj) {
+        //   if (obj?.value) return true;
+        //   return !!this.parent.email;
+        // })
         .test('is-valid', t('phone number invalid'), function (obj) {
           if (!obj?.value) return true;
           return checkPhoneNumberValidation(obj.value, obj.countryCode);
@@ -413,6 +411,7 @@ const FormInvite = (props) => {
 
       <SuccessModal
         show={status?.visibleSuccessModal}
+        data={status?.succeedRegisteredUsers}
         onCancel={() => {
           setStatus({ visibleSuccessModal: false });
           navigate(`/invite/${organizationId}/team-mode`);
@@ -574,19 +573,23 @@ const EnhancedForm = withFormik({
           lastName: it?.lastName?.trim() ?? 'last name'
         }));
 
-        const { numberOfSuccess } = await _handleSubmitV2({
-          users,
-          setLoading,
-          organizationId,
-          teamId,
-          isAdmin,
-          showErrorNotification,
-          t
-        });
+        const { numberOfSuccess, alreadyRegisteredUsers, succeedRegisteredUsers } =
+          await _handleSubmitV2({
+            users,
+            setLoading,
+            organizationId,
+            teamId,
+            isAdmin,
+            showErrorNotification,
+            t
+          });
+
+        console.log('users 5', alreadyRegisteredUsers, numberOfSuccess, succeedRegisteredUsers);
 
         if (numberOfSuccess > 0) {
           setStatus({
-            visibleSuccessModal: true
+            visibleSuccessModal: true,
+            succeedRegisteredUsers
           });
         }
       }
