@@ -45,7 +45,7 @@ const OtpInput = ({ length = 6, onOTPChange }) => {
                 'tw-text-6xl',
                 'md:tw-w-16',
                 'sm:tw-w-12',
-                'tw-w-8',
+                'tw-w-5',
                 'tw-transition',
                 'tw-text-center'
               )}
