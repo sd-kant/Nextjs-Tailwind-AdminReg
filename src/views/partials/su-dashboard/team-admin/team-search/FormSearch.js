@@ -37,13 +37,11 @@ export const defaultTeamMember = {
 export const userSchema = (t) => {
   return Yup.object()
     .shape({
-      email: Yup.string()
-        .email(t('email invalid'))
-        .max(1024, t('email max error'))
-        .test('required', t('unable to remove email'), function (value) {
-          if (value) return true;
-          return !!this.parent.phoneNumber?.value;
-        }),
+      email: Yup.string().email(t('email invalid')).max(1024, t('email max error')),
+      // .test('required', t('unable to remove email'), function (value) {
+      //   if (value) return true;
+      //   return !!this.parent.phoneNumber?.value;
+      // }),
       firstName: Yup.string()
         .test('is-valid', t('firstName required'), function (value) {
           return !checkIfSpacesOnly(value);
