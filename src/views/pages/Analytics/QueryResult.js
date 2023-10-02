@@ -40,7 +40,7 @@ const QueryResult = ({ metric }) => {
     organizationAnalytics
   } = useAnalyticsContext();
   const { t } = useTranslation();
-  const ableToExport = visibleExport && Boolean(exportOption);
+  const ableToExport = visibleExport > 0 && Boolean(exportOption);
 
   const ChartComponent = React.useMemo(() => {
     if (
@@ -118,7 +118,7 @@ const QueryResult = ({ metric }) => {
       </div>
 
       <div className={clsx(style.StatsSelectWrapper)}>
-        <div>
+        <div className="tw-flex tw-justify-center tw-items-center">
           <Toggle
             on={statsBy === 'team'}
             titleOn={t('user')}
@@ -128,7 +128,7 @@ const QueryResult = ({ metric }) => {
             }}
           />
         </div>
-        {visibleExport && (
+        {visibleExport > 0 && (
           <div className={clsx(style.ExportWrapper)}>
             <ResponsiveSelect
               className="font-heading-small text-black"
