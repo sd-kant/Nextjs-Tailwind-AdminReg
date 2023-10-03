@@ -166,6 +166,20 @@ const FormInviteModify = (props) => {
     return (teams || []).find((it) => it.value?.toString() === id?.toString())?.label ?? '';
   }, [id, teams]);
 
+  const getSuccessMessageForInvite = () => {
+    if (addMemberSuccessResult?.length > 0) {
+      if (
+        addMemberSuccessResult[0].succeedRegisteredUsers[0]?.email ||
+        addMemberSuccessResult[0].succeedRegisteredUsers[0]?.phoneNumber
+      ) {
+        return t('new team member added description 2');
+      } else if (addMemberSuccessResult[0].succeedRegisteredUsers[0]?.registrationCode) {
+        return t('new team member added description 2 without pin');
+      }
+    }
+    return '';
+  };
+
   return (
     <>
       <ConfirmModal
@@ -180,7 +194,7 @@ const FormInviteModify = (props) => {
         show={visibleAddMemberSuccessModal}
         data={addMemberSuccessResult}
         header={t('new team member added header')}
-        subheader={t('new team member added description 2')}
+        subheader={getSuccessMessageForInvite()}
         onOk={() => {
           setVisibleAddMemberSuccessModal(false);
         }}
