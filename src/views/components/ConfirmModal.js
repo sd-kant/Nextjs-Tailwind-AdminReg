@@ -42,10 +42,12 @@ const ConfirmModal = ({
                 {data[0]?.succeedRegisteredUsers?.length > 0 &&
                   data[0]?.succeedRegisteredUsers.map((item, index) => (
                     <tr key={index}>
-                      <td>
+                      <td className="tw-whitespace-nowrap">
                         {item.firstName} {item.lastName}
                       </td>
-                      <td>{item.email ?? item.phoneNumber ?? item.registrationCode}</td>
+                      <td className="tw-whitespace-nowrap">
+                        {item.email ?? item.phoneNumber ?? item.registrationCode}
+                      </td>
                     </tr>
                   ))}
               </tbody>
