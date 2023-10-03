@@ -37,6 +37,7 @@ const ParamsWrapper = lazy(() => import('../partials/su-dashboard/ParamsWrapper'
 const FormSSOAuth = lazy(() => import('../partials/create-account/FormSSOAuth'));
 const FormUsername = lazy(() => import('../partials/create-account/FormUsername'));
 import Loader from '../components/Loader';
+import FormPin from 'views/partials/create-account/FormPin';
 
 const CreateAccount = ({ ...props }) => {
   const { t } = useTranslation();
@@ -69,6 +70,7 @@ const CreateAccount = ({ ...props }) => {
 
       <Suspense fallback={<Loader />}>
         <Routes>
+          <Route path="/pin" element={<FormPin {...props} />} />
           <Route path="/password" element={<FormSSOAuth navigate={navigate} {...props} />} />
 
           <Route path="/username" element={<FormUsername navigate={navigate} {...props} />} />

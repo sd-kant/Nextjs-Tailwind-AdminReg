@@ -8,13 +8,21 @@ import Loader from '../components/Loader';
 
 const FormCompany = lazy(() => import('../partials/su-dashboard/FormCompany'));
 const FormRepresentative = lazy(() => import('../partials/su-dashboard/FormRepresentative'));
-const FormTeam = lazy(() => import('../partials/su-dashboard/FormTeamCreate'));
-const FormUploadSelect = lazy(() => import('../partials/su-dashboard/FormUploadSelect'));
-const FormInvite = lazy(() => import('../partials/su-dashboard/FormInvite'));
-const FormTeamMode = lazy(() => import('../partials/su-dashboard/FormTeamMode'));
+const FormTeam = lazy(() =>
+  import('../partials/su-dashboard/team-admin/team-create/FormTeamCreate')
+);
+const FormUploadSelect = lazy(() =>
+  import('../partials/su-dashboard/team-admin/team-create/FormUploadSelect')
+);
+const FormInvite = lazy(() => import('../partials/su-dashboard/team-admin/team-create/FormInvite'));
+const FormTeamMode = lazy(() => import('../partials/su-dashboard/team-admin/FormTeamMode'));
 const FormUpload = lazy(() => import('../partials/su-dashboard/FormUpload'));
-const FormTeamModify = lazy(() => import('../partials/su-dashboard/FormTeamModify'));
-const FormInviteModify = lazy(() => import('../partials/su-dashboard/FormInviteModify'));
+const FormTeamModify = lazy(() =>
+  import('../partials/su-dashboard/team-admin/team-modify/FormTeamModify')
+);
+const FormInviteModify = lazy(() =>
+  import('../partials/su-dashboard/team-admin/team-modify/FormInviteModify')
+);
 const WrappedMembersProvider = lazy(() =>
   import('../../providers/MembersProvider').then((module) => ({
     default: module.WrappedMembersProvider
@@ -26,7 +34,7 @@ const WrappedOrganizationProvider = lazy(() =>
   }))
 );
 const ParamsWrapper = lazy(() => import('../partials/su-dashboard/ParamsWrapper'));
-const FormSearch = lazy(() => import('../partials/su-dashboard/FormSearch'));
+const FormSearch = lazy(() => import('../partials/su-dashboard/team-admin/team-search/FormSearch'));
 
 const Invite = ({ userType }) => {
   const isSuperAdmin = userType?.includes(USER_TYPE_ADMIN);

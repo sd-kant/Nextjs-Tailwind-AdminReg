@@ -67,7 +67,7 @@ const FormConnectMemberUpload = ({ t, setRestBarClass, setLoading }) => {
               a: (
                 <a
                   className="tw-text-orange-400 tw-underline-offset-0 tw-cursor-pointer"
-                  href="https://kenzen0.sharepoint.com/:x:/s/Marketing/EWMoBTc5y85Bp_nkLy7CM54BpfGha7tGsbFox_axLVmQpA"
+                  href="https://kenzen0.sharepoint.com/:x:/s/Marketing/Ed9L62jV8D9CjphB9B_f-xIB868pgRm6BaF-bH6nkNwG1A"
                   target="_blank"
                   rel="noreferrer"
                 />

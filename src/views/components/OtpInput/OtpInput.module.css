@@ -1,0 +1,4 @@
+.SpinButton::-webkit-outer-spin-button,
+.SpinButton::-webkit-inner-spin-button {
+  appearance: none;
+}

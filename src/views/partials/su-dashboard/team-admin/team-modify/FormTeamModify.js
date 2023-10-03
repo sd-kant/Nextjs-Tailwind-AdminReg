@@ -10,19 +10,19 @@ import {
   setLoadingAction,
   setRestBarClassAction,
   showErrorNotificationAction
-} from '../../../redux/action/ui';
-import { queryAllTeamsAction } from '../../../redux/action/base';
+} from 'redux/action/ui';
+import { queryAllTeamsAction } from 'redux/action/base';
 import { get } from 'lodash';
-import { customStyles } from './FormCompany';
-import backIcon from '../../../assets/images/back.svg';
-import ResponsiveSelect from '../../components/ResponsiveSelect';
-import { getUsersUnderOrganization, queryTeamMembers, removeTeam, updateTeam } from '../../../http';
-import { useOrganizationContext } from '../../../providers/OrganizationProvider';
-import { INVALID_VALUES1 } from '../../../constant';
+import { customStyles } from '../../FormCompany';
+import ResponsiveSelect from 'views/components/ResponsiveSelect';
+import { getUsersUnderOrganization, queryTeamMembers, removeTeam, updateTeam } from 'http';
+import { useOrganizationContext } from 'providers/OrganizationProvider';
+import { INVALID_VALUES1 } from 'constant';
 import countryRegions from 'country-region-data/data.json';
-import ConfirmModal from '../../components/ConfirmModal';
-import ConfirmModalV2 from '../../components/ConfirmModalV2';
-import { checkIfSpacesOnly } from '../../../utils/invite';
+import ConfirmModal from 'views/components/ConfirmModal';
+import ConfirmModalV2 from 'views/components/ConfirmModalV2';
+import { checkIfSpacesOnly } from 'utils/invite';
+import PreviousButton from 'views/components/PreviousButton';
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -275,12 +275,11 @@ const FormTeamModify = (props) => {
 
       <Form className="form mt-57">
         <div>
-          <div
-            className="d-inline-flex align-center cursor-pointer"
-            onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
-            <img src={backIcon} alt="back" />
-            &nbsp;&nbsp;
-            <span className="font-button-label text-orange">{t('previous')}</span>
+          <div className="tw-flex">
+            <PreviousButton
+              onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
+              {t('previous')}
+            </PreviousButton>
           </div>
 
           <div className="grouped-form mt-40">

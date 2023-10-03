@@ -15,7 +15,13 @@ import {
   TimeScale
 } from 'chart.js';
 import 'chartjs-adapter-spacetime';
-import { METRIC_USER_CHART_VALUES, TYPES, INIT_USER_CHART_ALERT_DATA } from '../../../../constant';
+import {
+  METRIC_USER_CHART_VALUES,
+  TYPES,
+  INIT_USER_CHART_ALERT_DATA,
+  VISIBLE_EXPORT_DATA,
+  CHART_DATASET
+} from '../../../../constant';
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
@@ -56,7 +62,10 @@ const ChartUserAlert = ({ metric: unit }) => {
     chartData,
     timeZone,
     chartRef,
-    setIsEnablePrint
+    setIsEnablePrint,
+    chartDatasets,
+    setChartDatasets,
+    visibleExport
   } = useAnalyticsContext();
   const { t } = useTranslation();
   const { formatHeartCbt } = useUtilsContext();
@@ -121,7 +130,7 @@ const ChartUserAlert = ({ metric: unit }) => {
    ],
    datasets -> data: [ 0, 36.8, 36.5, ... , 38.5, 37.7 ]
    */
-  const [data, setData] = React.useState(INIT_USER_CHART_ALERT_DATA);
+  //const [data, setData] = React.useState(INIT_USER_CHART_ALERT_DATA);
   const isCbt = React.useMemo(() => {
     return selectedMetric?.value === METRIC_USER_CHART_VALUES.CBT;
   }, [selectedMetric]);
@@ -187,8 +196,8 @@ const ChartUserAlert = ({ metric: unit }) => {
           });
         }
       });
-
-      setData(datasets ? { datasets } : INIT_USER_CHART_ALERT_DATA);
+      setChartDatasets(datasets ? { datasets } : INIT_USER_CHART_ALERT_DATA);
+      //setData(datasets ? { datasets } : INIT_USER_CHART_ALERT_DATA);
     }
   }, [
     chartData,
@@ -201,12 +210,13 @@ const ChartUserAlert = ({ metric: unit }) => {
     timeZone,
     formatHeartCbt,
     isCbt,
-    members
+    members,
+    setChartDatasets
   ]);
 
   React.useEffect(() => {
-    setIsEnablePrint(!checkEmptyData(data?.datasets, 1));
-  }, [data, setIsEnablePrint]);
+    setIsEnablePrint(!checkEmptyData(chartDatasets?.datasets, 1));
+  }, [chartDatasets, setIsEnablePrint]);
 
   const chartTitle = React.useMemo(() => {
     return isCbt ? 'Core Body Temperature' : 'Heart Rate';
@@ -280,45 +290,51 @@ const ChartUserAlert = ({ metric: unit }) => {
         </div>
 
         <div className={clsx(style.FlexSpace)}>
-          <Line
-            options={{
-              pointRadius: 1,
-              scales: {
-                x: {
-                  type: 'time',
-                  title: {
-                    display: true,
-                    text: xLabel
+          {visibleExport === VISIBLE_EXPORT_DATA[CHART_DATASET] ? (
+            <Line
+              options={{
+                pointRadius: 1,
+                scales: {
+                  x: {
+                    type: 'time',
+                    title: {
+                      display: true,
+                      text: xLabel
+                    },
+                    min: `${selectedDate?.label}T00:00`,
+                    max: `${selectedDate?.label}T23:59`,
+                    suggestedMin: `${selectedDate?.label}T00:00`,
+                    suggestedMax: `${selectedDate?.label}T23:59`,
+                    time: {
+                      unit: 'minute',
+                      displayFormats: {
+                        minute: 'HH:mm'
+                      }
+                    },
+                    ticks: {
+                      autoSkip: false,
+                      stepSize: 15
+                    }
                   },
-                  min: `${selectedDate?.label}T00:00`,
-                  max: `${selectedDate?.label}T23:59`,
-                  suggestedMin: `${selectedDate?.label}T00:00`,
-                  suggestedMax: `${selectedDate?.label}T23:59`,
-                  autoSkip: false,
-                  time: {
-                    unit: 'minute',
-                    stepSize: 15,
-                    displayFormats: {
-                      minute: 'HH:mm'
+                  y: {
+                    title: {
+                      display: true,
+                      text: yAxisLabel
+                    },
+                    min: yAxisMin,
+                    max: yAxisMax,
+                    ticks: {
+                      stepSize: yAxisStepSize
                     }
                   }
-                },
-                y: {
-                  title: {
-                    display: true,
-                    text: yAxisLabel
-                  },
-                  min: yAxisMin,
-                  max: yAxisMax,
-                  ticks: {
-                    stepSize: yAxisStepSize
-                  }
                 }
-              }
-            }}
-            data={data}
-            plugins={chartPlugins(`line`, t(`no data to display`))}
-          />
+              }}
+              data={chartDatasets}
+              plugins={chartPlugins(`line`, t(`no data to display`))}
+            />
+          ) : (
+            <p>{t('loading')}</p>
+          )}
         </div>
       </div>
     </div>

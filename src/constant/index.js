@@ -296,6 +296,14 @@ export const INIT_USER_CHART_ALERT_DATA = {
     }
   ]
 };
+export const CHART_DATASET = 'Chart Dataset';
+export const TABLE_DATA = 'Table Data';
+export const NO_EXPORT_DATA = 'No Export Data';
+export const VISIBLE_EXPORT_DATA = {
+  [NO_EXPORT_DATA]: 0,
+  [TABLE_DATA]: 1,
+  [CHART_DATASET]: 2
+};
 export const TYPES = [
   {
     value: 1,

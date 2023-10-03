@@ -2,17 +2,17 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withTranslation } from 'react-i18next';
-import backIcon from '../../../assets/images/back.svg';
-import editIcon from '../../../assets/images/edit-fire.svg';
-import uploadIcon from '../../../assets/images/upload-fire.svg';
+import editIcon from 'assets/images/edit-fire.svg';
+import uploadIcon from 'assets/images/upload-fire.svg';
 import {
   setLoadingAction,
   setRestBarClassAction,
   setVisibleSuccessModalAction,
   showErrorNotificationAction,
   showSuccessNotificationAction
-} from '../../../redux/action/ui';
+} from 'redux/action/ui';
 import { useNavigate } from 'react-router-dom';
+import PreviousButton from 'views/components/PreviousButton';
 
 const FormUploadSelect = (props) => {
   const { t, setRestBarClass, id, organizationId } = props;
@@ -26,14 +26,11 @@ const FormUploadSelect = (props) => {
   return (
     <div className="form-group mt-57">
       <div>
-        <div
-          className="d-flex align-center cursor-pointer"
-          onClick={() => navigate(`/invite/${organizationId}/team-create`)}>
-          <img src={backIcon} alt="back" />
-          &nbsp;&nbsp;
-          <span className="font-button-label text-orange">{t('previous')}</span>
+        <div className="tw-flex">
+          <PreviousButton onClick={() => navigate(`/invite/${organizationId}/team-create`)}>
+            {t('previous')}
+          </PreviousButton>
         </div>
-
         <div className="mt-28 form-header-medium">
           <span className="font-header-medium d-block">{t('add way header')}</span>
         </div>

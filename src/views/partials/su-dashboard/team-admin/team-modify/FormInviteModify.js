@@ -4,30 +4,30 @@ import { bindActionCreators } from 'redux';
 import * as Yup from 'yup';
 import { Form, withFormik, useFormikContext } from 'formik';
 import { withTranslation } from 'react-i18next';
-import backIcon from '../../../assets/images/back.svg';
-import plusIcon from '../../../assets/images/plus-circle-fire.svg';
-import searchIcon from '../../../assets/images/search.svg';
+import plusIcon from 'assets/images/plus-circle-fire.svg';
+import searchIcon from 'assets/images/search.svg';
 import {
   setLoadingAction,
   setRestBarClassAction,
   setVisibleSuccessModalAction,
   showErrorNotificationAction,
   showSuccessNotificationAction
-} from '../../../redux/action/ui';
-import { INVALID_VALUES1, permissionLevels } from '../../../constant';
-import { deleteUserAction, queryAllTeamsAction } from '../../../redux/action/base';
+} from 'redux/action/ui';
+import { INVALID_VALUES1, permissionLevels } from 'constant';
+import { deleteUserAction, queryAllTeamsAction } from 'redux/action/base';
 import { get } from 'lodash';
-import SearchUserItem from './SearchUserItem';
-import ConfirmModal from '../../components/ConfirmModal';
-import AddMemberModalV2 from '../../components/AddMemberModalV2';
-import InviteModal from './modify/InviteModal';
-import { useMembersContext } from '../../../providers/MembersProvider';
+import SearchUserItem from '../../SearchUserItem';
+import ConfirmModal from 'views/components/ConfirmModal';
+import AddMemberModalV2 from 'views/components/AddMemberModalV2';
+import InviteModal from '../../modify/InviteModal';
+import { useMembersContext } from 'providers/MembersProvider';
 import { useNavigate } from 'react-router-dom';
-import { defaultTeamMember, userSchema } from './FormSearch';
-import { _handleSubmitV2, handleModifyUsers } from '../../../utils/invite';
-import { ScrollToFieldError } from '../../components/ScrollToFieldError';
+import { defaultTeamMember, userSchema } from '../team-search/FormSearch';
+import { _handleSubmitV2, handleModifyUsers } from 'utils/invite';
+import { ScrollToFieldError } from 'views/components/ScrollToFieldError';
 import style from './FormInviteModify.module.scss';
 import clsx from 'clsx';
+import PreviousButton from 'views/components/PreviousButton';
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -57,6 +57,7 @@ const FormInviteModify = (props) => {
   const [newChanges, setNewChanges] = useState(0);
   const [visibleAddModal, setVisibleAddModal] = useState(false);
   const [visibleAddMemberSuccessModal, setVisibleAddMemberSuccessModal] = useState(false);
+  const [addMemberSuccessResult, setAddMemberSuccessResult] = useState([]);
   const {
     apiLoading,
     setPage,
@@ -126,17 +127,24 @@ const FormInviteModify = (props) => {
         navigate('/invite/company');
         return;
       }
-      const { numberOfSuccess } = await _handleSubmitV2({
-        users,
-        setLoading,
-        organizationId,
-        teamId: id,
-        showErrorNotification,
-        isAdmin,
-        t
-      });
+      const { numberOfSuccess, alreadyRegisteredUsers, succeedRegisteredUsers } =
+        await _handleSubmitV2({
+          users,
+          setLoading,
+          organizationId,
+          teamId: id,
+          showErrorNotification,
+          isAdmin,
+          t
+        });
       initializeMembers();
       if (numberOfSuccess === 1) {
+        setAddMemberSuccessResult([
+          {
+            alreadyRegisteredUsers,
+            succeedRegisteredUsers
+          }
+        ]);
         setVisibleAddModal(false);
         setVisibleAddMemberSuccessModal(true);
       }
@@ -158,6 +166,20 @@ const FormInviteModify = (props) => {
     return (teams || []).find((it) => it.value?.toString() === id?.toString())?.label ?? '';
   }, [id, teams]);
 
+  const getSuccessMessageForInvite = () => {
+    if (addMemberSuccessResult?.length > 0) {
+      if (
+        addMemberSuccessResult[0].succeedRegisteredUsers[0]?.email ||
+        addMemberSuccessResult[0].succeedRegisteredUsers[0]?.phoneNumber
+      ) {
+        return t('new team member added description 2');
+      } else if (addMemberSuccessResult[0].succeedRegisteredUsers[0]?.registrationCode) {
+        return t('new team member added description 2 without pin');
+      }
+    }
+    return '';
+  };
+
   return (
     <>
       <ConfirmModal
@@ -170,8 +192,9 @@ const FormInviteModify = (props) => {
       />
       <ConfirmModal
         show={visibleAddMemberSuccessModal}
+        data={addMemberSuccessResult}
         header={t('new team member added header')}
-        subheader={t('new team member added description 2')}
+        subheader={getSuccessMessageForInvite()}
         onOk={() => {
           setVisibleAddMemberSuccessModal(false);
         }}
@@ -199,7 +222,7 @@ const FormInviteModify = (props) => {
       />
       <Form className="form-group mt-57">
         <div>
-          <div className="d-flex align-center">
+          {/* <div className="d-flex align-center">
             <img
               src={backIcon}
               alt="back"
@@ -212,6 +235,11 @@ const FormInviteModify = (props) => {
               onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
               {t('previous')}
             </span>
+          </div> */}
+          <div className="tw-flex">
+            <PreviousButton onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
+              {t('previous')}
+            </PreviousButton>
           </div>
 
           <div className={clsx(style.FormHeader, 'd-flex flex-column')}>

@@ -4,21 +4,21 @@ import { withTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { Form, withFormik } from 'formik';
 import { bindActionCreators } from 'redux';
-import { createTeam, getCompanyById } from '../../../http';
+import { createTeam, getCompanyById } from 'http';
 import {
   setLoadingAction,
   setRestBarClassAction,
   showErrorNotificationAction
-} from '../../../redux/action/ui';
-import backIcon from '../../../assets/images/back.svg';
+} from 'redux/action/ui';
 import { get } from 'lodash';
-import ResponsiveSelect from '../../components/ResponsiveSelect';
+import ResponsiveSelect from 'views/components/ResponsiveSelect';
 import countryRegions from 'country-region-data/data.json';
-import { customStyles } from './FormCompany';
+import { customStyles } from '../../FormCompany';
 import CreatableSelect from 'react-select/creatable';
 import { useNavigate } from 'react-router-dom';
-import { INVALID_VALUES1 } from '../../../constant';
-import { checkIfSpacesOnly } from '../../../utils/invite';
+import { INVALID_VALUES1 } from 'constant';
+import { checkIfSpacesOnly } from 'utils/invite';
+import PreviousButton from 'views/components/PreviousButton';
 
 const formSchema = (t) => {
   return Yup.object().shape({
@@ -104,12 +104,11 @@ const FormTeamCreate = (props) => {
   return (
     <Form className="form mt-57">
       <div>
-        <div
-          className="d-flex align-center cursor-pointer"
-          onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
-          <img src={backIcon} alt="back" />
-          &nbsp;&nbsp;
-          <span className="font-button-label text-orange">{t('previous')}</span>
+        <div className="tw-flex">
+          <PreviousButton
+            onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
+            {t('previous')}
+          </PreviousButton>
         </div>
 
         <div className="grouped-form mt-40">

@@ -39,7 +39,12 @@ import {
   LABELS_SWEAT_DOUGHNUT,
   INVALID_VALUES2,
   LABELS_CBT_ZONES_DOUGHNUT,
-  SWEAT_PRIORITIES
+  SWEAT_PRIORITIES,
+  INIT_USER_CHART_ALERT_DATA,
+  VISIBLE_EXPORT_DATA,
+  NO_EXPORT_DATA,
+  CHART_DATASET,
+  TABLE_DATA
 } from '../constant';
 import { useBasicContext } from './BasicProvider';
 import { formatHeartRate, literToQuart } from '../utils/dashboard';
@@ -60,7 +65,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   const { pickedTeams, organization, formattedTeams } = useBasicContext();
   const [members, _setMembers] = React.useState();
   const membersRef = React.useRef(members);
-  const [visibleExport, setVisibleExport] = React.useState(false);
+  const [visibleExport, setVisibleExport] = React.useState(VISIBLE_EXPORT_DATA[NO_EXPORT_DATA]);
   const [exportOption, setExportOption] = React.useState(null);
   const setMembers = (v) => {
     _setMembers(v);
@@ -73,6 +78,9 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   const [users, setUsers] = React.useState([]);
   const [detailCbt, setDetailCbt] = React.useState(null); // {dayIndex: 4, timeIndex: 5}
   const chartRef = React.useRef(null); // for chart print
+
+  // Chart Datasets
+  const [chartDatasets, setChartDatasets] = React.useState(INIT_USER_CHART_ALERT_DATA);
 
   React.useEffect(() => {
     let mounted = true;
@@ -1464,9 +1472,16 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         return 0;
       });
     }
-
-    if (headers?.length > 0) {
-      setVisibleExport(ret?.length > 0);
+    if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) {
+      setVisibleExport(
+        chartDatasets.datasets[0].data.length > 0 && chartDatasets.datasets[0].label !== ''
+          ? VISIBLE_EXPORT_DATA[CHART_DATASET]
+          : VISIBLE_EXPORT_DATA[NO_EXPORT_DATA]
+      );
+    } else if (headers?.length > 0) {
+      setVisibleExport(
+        ret?.length > 0 ? VISIBLE_EXPORT_DATA[TABLE_DATA] : VISIBLE_EXPORT_DATA[NO_EXPORT_DATA]
+      );
     }
 
     return ret;
@@ -1481,7 +1496,8 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     unitMetric,
     headers,
     sort,
-    detailCbt
+    detailCbt,
+    chartDatasets
   ]);
 
   const pageData = React.useMemo(() => {
@@ -1532,23 +1548,77 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   }, [selectedMembers, formattedMembers, organization]);
 
   const handleExport = () => {
-    if (visibleExport) {
+    if (visibleExport > 0) {
       if ([`xlsx`, `csv`].includes(exportOption?.value)) {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.json_to_sheet(data, {
-          origin: `A2`,
-          skipHeader: true
-        });
-        XLSX.utils.sheet_add_aoa(ws, [headers]);
         const sheetLabel = (metrics?.findIndex((it) => it.value === metric) ?? 0).toString();
-        XLSX.utils.book_append_sheet(wb, ws, sheetLabel + 1);
-        XLSX.writeFile(
-          wb,
-          `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
-          {
-            bookType: exportOption.value
+        if (visibleExport === VISIBLE_EXPORT_DATA[TABLE_DATA]) {
+          const wb = XLSX.utils.book_new();
+          const ws = XLSX.utils.json_to_sheet(data, {
+            origin: `A2`,
+            skipHeader: true
+          });
+          XLSX.utils.sheet_add_aoa(ws, [headers]);
+
+          XLSX.utils.book_append_sheet(wb, ws, sheetLabel + 1);
+          XLSX.writeFile(
+            wb,
+            `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
+            {
+              bookType: exportOption.value
+            }
+          );
+        } else {
+          if (exportOption?.value === 'xlsx') {
+            const wb = XLSX.utils.book_new();
+            for (const chartDataset of chartDatasets.datasets) {
+              const ws = XLSX.utils.aoa_to_sheet(
+                chartDataset.data.map((v) => [v.x, v.y]),
+                {
+                  origin: `A2`,
+                  skipHeader: true
+                }
+              );
+              const temp = chartDataset.label.split(' : ');
+              const tzName = temp[0];
+              const memberName = temp[1];
+              XLSX.utils.sheet_add_aoa(ws, [[tzName, memberName]]);
+              XLSX.utils.book_append_sheet(
+                wb,
+                ws,
+                memberName.length > 30 ? memberName.slice(0, 30) + '...' : memberName
+              );
+            }
+            XLSX.writeFile(
+              wb,
+              `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
+              {
+                bookType: exportOption.value
+              }
+            );
+          } else {
+            const wb = XLSX.utils.book_new();
+            const values = [];
+            for (const chartDataset of chartDatasets.datasets) {
+              const temp = chartDataset.label.split(' : ');
+              const tzName = temp[0];
+              const memberName = temp[1];
+              values.push([tzName, memberName]);
+              values.push(...chartDataset.data.map((v) => [v.x, v.y]));
+            }
+            const ws = XLSX.utils.aoa_to_sheet(values, {
+              origin: `A1`,
+              skipHeader: true
+            });
+            XLSX.utils.book_append_sheet(wb, ws, sheetLabel + 1);
+            XLSX.writeFile(
+              wb,
+              `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
+              {
+                bookType: exportOption.value
+              }
+            );
           }
-        );
+        }
       }
     }
   };
@@ -1600,7 +1670,9 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     chartRef,
     setLoading,
     isEnablePrint,
-    setIsEnablePrint
+    setIsEnablePrint,
+    chartDatasets,
+    setChartDatasets
   };
 
   return <AnalyticsContext.Provider value={providerValue}>{children}</AnalyticsContext.Provider>;

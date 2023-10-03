@@ -9,8 +9,9 @@ import TableRow from './TableRow';
 import TableHeader from './TableHeader';
 import MemberDetailModal from '../../modals/MemberDetailModal';
 import { UserSubscriptionProvider } from '../../../providers/UserSubscriptionProvider';
+import { get } from 'lodash';
 
-const MemberTable = ({ t, forceWidthUpdate }) => {
+const MemberTable = ({ t, forceWidthUpdate, isLoading }) => {
   const {
     paginatedMembers: members,
     member,
@@ -67,7 +68,7 @@ const MemberTable = ({ t, forceWidthUpdate }) => {
         </table>
       ) : (
         <div className={clsx(style.NoMatches, 'font-heading-small text-capitalize mt-25')}>
-          <span>{t('no matches found')}</span>
+          {isLoading ? <span>{t('loading')}</span> : <span>{t('no matches found')}</span>}
         </div>
       )}
 
@@ -84,6 +85,8 @@ const MemberTable = ({ t, forceWidthUpdate }) => {
   );
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state) => ({
+  isLoading: get(state, 'ui.loading')
+});
 
 export default connect(mapStateToProps, null)(withTranslation()(React.memo(MemberTable)));

@@ -4,26 +4,26 @@ import { bindActionCreators } from 'redux';
 import * as Yup from 'yup';
 import { Form, useFormikContext, withFormik } from 'formik';
 import { withTranslation } from 'react-i18next';
-import backIcon from '../../../assets/images/back.svg';
-import searchIcon from '../../../assets/images/search.svg';
+import searchIcon from 'assets/images/search.svg';
 import {
   setLoadingAction,
   setRestBarClassAction,
   setVisibleSuccessModalAction,
   showErrorNotificationAction,
   showSuccessNotificationAction
-} from '../../../redux/action/ui';
-import { queryAllTeamsAction } from '../../../redux/action/base';
+} from 'redux/action/ui';
+import { queryAllTeamsAction } from 'redux/action/base';
 import { get } from 'lodash';
-import SearchUserItem from './SearchUserItem';
-import ConfirmModal from '../../components/ConfirmModal';
-import { useMembersContext } from '../../../providers/MembersProvider';
+import SearchUserItem from '../../SearchUserItem';
+import ConfirmModal from 'views/components/ConfirmModal';
+import { useMembersContext } from 'providers/MembersProvider';
 import { useNavigate } from 'react-router-dom';
-import { handleModifyUsers, checkIfSpacesOnly } from '../../../utils/invite';
-import { ScrollToFieldError } from '../../components/ScrollToFieldError';
+import { handleModifyUsers, checkIfSpacesOnly } from 'utils/invite';
+import { ScrollToFieldError } from 'views/components/ScrollToFieldError';
 import style from './FormSearch.module.scss';
 import clsx from 'clsx';
-import { getParamFromUrl } from '../../../utils';
+import { getParamFromUrl } from 'utils';
+import PreviousButton from 'views/components/PreviousButton';
 
 export const defaultTeamMember = {
   email: '',
@@ -37,13 +37,11 @@ export const defaultTeamMember = {
 export const userSchema = (t) => {
   return Yup.object()
     .shape({
-      email: Yup.string()
-        .email(t('email invalid'))
-        .max(1024, t('email max error'))
-        .test('required', t('unable to remove email'), function (value) {
-          if (value) return true;
-          return !!this.parent.phoneNumber?.value;
-        }),
+      email: Yup.string().email(t('email invalid')).max(1024, t('email max error')),
+      // .test('required', t('unable to remove email'), function (value) {
+      //   if (value) return true;
+      //   return !!this.parent.phoneNumber?.value;
+      // }),
       firstName: Yup.string()
         .test('is-valid', t('firstName required'), function (value) {
           return !checkIfSpacesOnly(value);
@@ -136,19 +134,11 @@ const FormSearch = (props) => {
       />
       <Form className="form-group mt-57">
         <div>
-          <div className="d-flex align-center">
-            <img
-              src={backIcon}
-              alt="back"
-              className={'cursor-pointer'}
-              onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}
-            />
-            &nbsp;&nbsp;
-            <span
-              className="font-button-label text-orange cursor-pointer"
+          <div className="tw-flex">
+            <PreviousButton
               onClick={() => navigate(`/invite/${isAdmin ? organizationId : -1}/team-mode`)}>
               {t('previous')}
-            </span>
+            </PreviousButton>
           </div>
 
           <div className={clsx(style.FormHeader, 'mt-40 d-flex flex-column')}>
