@@ -70,9 +70,9 @@ const AddMemberModalV2 = ({
               {t('enter new team member information')}
             </span>
             <br />
-            <span className={'font-modal-header text-white'}>
+            {/* <span className={'font-modal-header text-white'}>
               {t('must include email or phone')}
-            </span>
+            </span> */}
           </div>
           <div className={clsx(style.User)}>
             <div className={clsx(style.UserRow)}>
