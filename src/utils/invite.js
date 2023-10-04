@@ -232,6 +232,12 @@ export const _handleSubmitV2 = ({
                 userTypes: users[index]?.userTypes,
                 mode: error?.error === 'error.email.exists' ? 'email' : 'phoneNumber'
               });
+            } else if (
+              error?.status?.toString() === '400' &&
+              error?.error === 'error.validation.failure' &&
+              error?.message === 'Validation of userDto failed'
+            ) {
+              showErrorNotification(t('error.identity.missing'));
             }
           }
         });
