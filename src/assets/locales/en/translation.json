@@ -560,6 +560,7 @@
   "language": "Language",
   "msg email belongs other org": "The user associated with {{email}} exists but belongs to a different organization",
   "msg phone belongs other org": "The user associated with {{phone}} exists but belongs to a different organization",
+  "error.identity.missing": "An email address or a phone number must be provided to identify the user",
   "select metric": "Select Metric",
   "all users": "All Users",
   "select user": "Select User",
