@@ -32,7 +32,7 @@ import {
   showErrorNotificationAction,
   showSuccessNotificationAction
 } from '../redux/action/ui';
-import { updateUrlParam } from '../utils';
+import { getParamFromUrl, updateUrlParam } from '../utils';
 import ConfirmModal from '../views/components/ConfirmModal';
 import { useParams } from 'react-router-dom';
 import { checkIfHigherThanMe, getPermissionLevelFromUserTypes } from '../utils/members';
@@ -52,7 +52,8 @@ const MembersProvider = ({
   showSuccessNotification
 }) => {
   const { organizationId, id } = useParams();
-  const [keyword, setKeyword] = React.useState('');
+  const keywordFromQuery = getParamFromUrl('keyword');
+  const [keyword, setKeyword] = React.useState(keywordFromQuery ?? '');
   const [keywordOnInvite, setKeywordOnInvite] = React.useState('');
   const [searchedUsers, setSearchedUsers] = React.useState([]);
   const [members, setMembers] = React.useState([]);
@@ -223,39 +224,39 @@ const MembersProvider = ({
   };
 
   const isUpdated = (user) => {
-    const origins = members?.filter((it) => it.index === user.index) ?? [];
-    if (origins?.length > 0) {
+    const originUsers = members?.filter((it) => it.index === user.index) ?? [];
+    if (originUsers?.length > 0) {
       // todo optimize this logic
       const keysInOrigin = ['firstName', 'lastName', 'email'];
       const keys = ['firstName', 'lastName', 'email'];
       let shouldSkip = false;
       let ret = false;
-      origins?.forEach((origin) => {
+      originUsers?.forEach((originUser) => {
         ret = false;
         if (shouldSkip) {
           return;
         }
         keys.forEach((key, index) => {
           const valueInUser = get(user, key);
-          const valueInOrigin = get(origin, keysInOrigin[index]);
+          const valueInOrigin = get(originUser, keysInOrigin[index]);
           if (valueInUser?.toString() !== valueInOrigin?.toString()) {
             ret = true;
           }
         });
-        if (!isEqual(get(user, 'userTypes')?.sort(), get(origin, 'userTypes')?.sort())) {
+        if (!isEqual(get(user, 'userTypes')?.sort(), get(originUser, 'userTypes')?.sort())) {
           ret = true;
         }
         if (
-          !isEqual(get(user, 'accessibleTeams')?.sort(), get(origin, 'accessibleTeams')?.sort())
+          !isEqual(get(user, 'accessibleTeams')?.sort(), get(originUser, 'accessibleTeams')?.sort())
         ) {
           ret = true;
         }
         // No Role Defined will be selected as default when user's job role is null, and this will not be considered as updated
-        if (get(user, 'job.value') !== get(origin, 'job')) {
+        if (get(user, 'job.value') !== get(originUser, 'job')) {
           if (
             !(
               get(user, 'job.value') === 'no-role' &&
-              [null, undefined, ''].includes(get(origin, 'job'))
+              [null, undefined, ''].includes(get(originUser, 'job'))
             )
           ) {
             ret = true;

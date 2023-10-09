@@ -1,7 +1,7 @@
 import React from 'react';
-import logo from '../../assets/images/logo_light.svg';
+import logo from 'assets/images/logo_light.svg';
 import { useTranslation } from 'react-i18next';
-import FormSULogin from '../partials/su-login/FormSULogin';
+import FormSULogin from 'views/partials/su-login/FormSULogin';
 import { useNavigate } from 'react-router-dom';
 
 const SULogin = () => {

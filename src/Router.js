@@ -6,7 +6,7 @@ import { get } from 'lodash';
 import { getMyOrganizationAction, getMyProfileAction } from './redux/action/profile';
 
 const Dashboard = lazy(() => import('./views/pages/Dashboard'));
-const SULogin = lazy(() => import('./views/pages/SULogin'));
+const SULogin = lazy(() => import('./views/pages/auth/SULogin'));
 const ForgotPassword = lazy(() => import('./views/pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./views/pages/ResetPassword'));
 const PhoneVerification = lazy(() => import('./views/pages/PhoneVerification'));
@@ -30,7 +30,7 @@ const DashboardV2Wrapper = lazy(() => import('./views/pages/DashboardV2Wrapper')
 const Invite = lazy(() => import('./views/pages/Invite'));
 const ConnectMember = lazy(() => import('./views/pages/ConnectMember'));
 const CreateAccount = lazy(() => import('./views/pages/CreateAccount'));
-const LoginEntry = lazy(() => import('./views/pages/LoginEntry'));
+const LoginEntry = lazy(() => import('./views/pages/auth/LoginEntry'));
 const Analytics = lazy(() => import('./views/pages/Analytics'));
 import Loader from './views/components/Loader';
 import News from './views/pages/News/News';

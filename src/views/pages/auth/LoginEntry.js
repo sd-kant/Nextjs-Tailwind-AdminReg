@@ -1,11 +1,11 @@
 import React from 'react';
-import logo from '../../assets/images/logo_light.svg';
+import logo from 'assets/images/logo_light.svg';
 import { Trans, useTranslation } from 'react-i18next';
-import FormLoginEntry from '../partials/su-login/FormLoginEntry';
+import FormLoginEntry from 'views/partials/su-login/FormLoginEntry';
 import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import style from './LoginEntry.module.scss';
-import { isProductionMode } from '../../App';
+import { isProductionMode } from 'App';
 
 const LoginEntry = ({ mobile }) => {
   const { t } = useTranslation();
