@@ -26,12 +26,13 @@ import ResponsiveSelect from '../../../components/ResponsiveSelect';
 import {
   chartPlugins,
   checkEmptyData,
-  getWeeksInMonth,
+  getDaysBetweenDates,
   getRandomLightColor
 } from '../../../../utils/anlytics';
 import MultiSelectPopup from '../../../components/MultiSelectPopup';
 import { useUtilsContext } from '../../../../providers/UtilsProvider';
 import { formatHeartRate } from '../../../../utils/dashboard';
+import moment from 'moment-timezone';
 
 ChartJS.register(
   CategoryScale,
@@ -58,7 +59,9 @@ const ChartUserAlert = ({ metric: unit }) => {
     chartRef,
     setIsEnablePrint,
     chartDatasets,
-    setChartDatasets
+    setChartDatasets,
+    startDate,
+    endDate
   } = useAnalyticsContext();
   const { t } = useTranslation();
   const { formatHeartCbt } = useUtilsContext();
@@ -85,12 +88,15 @@ const ChartUserAlert = ({ metric: unit }) => {
    * @type {{label: string, value: number} | {label: string, value: number}}
    */
   const selectedType = React.useMemo(() => {
-    let dateList = getWeeksInMonth(timeZone);
+    let dateList = getDaysBetweenDates(
+      moment(startDate).tz(timeZone.name),
+      moment(endDate).tz(timeZone.name)
+    );
     dateList = type === 1 ? dateList.dates : type === 2 ? dateList.weeks : [];
     setDates(dateList);
     setDate(dateList?.length > 0 ? dateList[0].value : null);
     return TYPES?.find((it) => it.value?.toString() === type?.toString());
-  }, [type, timeZone]);
+  }, [type, timeZone, startDate, endDate]);
 
   /**
    selected start date from date range options

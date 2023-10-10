@@ -174,14 +174,91 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
       return 'Hr-Chart';
   }, [selectedMetric]);
 
+  const dateRangPresets = React.useMemo(
+    () => [
+      {
+        label: 'Yesterday',
+        value: {
+          from: moment().subtract(1, 'day').startOf('day'),
+          to: moment().subtract(1, 'day').endOf('day')
+        }
+      },
+      {
+        label: 'This Week',
+        value: {
+          from: moment().startOf('week'),
+          to: moment()
+        }
+      },
+      {
+        label: 'Last Week',
+        value: {
+          from: moment().subtract(1, 'week').startOf('week'),
+          to: moment().subtract(1, 'week').endOf('week')
+        }
+      },
+      {
+        label: 'This Month',
+        value: {
+          from: moment().startOf('month'),
+          to: moment()
+        }
+      },
+      {
+        label: 'Last Month',
+        value: {
+          from: moment().subtract(1, 'month').startOf('month'),
+          to: moment().subtract(1, 'month').endOf('month')
+        }
+      },
+      {
+        label: 'Past 60 Days',
+        value: {
+          from: moment().subtract(60, 'days'),
+          to: moment()
+        }
+      },
+      {
+        label: 'This Quarter',
+        value: {
+          from: moment().startOf('quarter'),
+          to: moment()
+        }
+      },
+      {
+        label: 'Last Quarter',
+        value: {
+          from: moment().subtract(1, 'quarter').startOf('quarter'),
+          to: moment().subtract(1, 'quarter').endOf('quarter')
+        }
+      },
+      {
+        label: 'This year',
+        value: {
+          from: moment().startOf('year'),
+          to: moment()
+        }
+      },
+      {
+        label: 'Last year',
+        value: {
+          from: moment().subtract(1, 'year').startOf('year'),
+          to: moment().subtract(1, 'year').endOf('year')
+        }
+      }
+    ],
+    []
+  );
+
   React.useEffect(() => {
     if (!selectedMetric) return;
     if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) {
       // local time
-      setEndDate(new Date());
-      const start = new Date();
-      start.setMonth(start.getMonth() - 1);
-      setStartDate(start);
+      // setEndDate(new Date());
+      // const start = new Date();
+      // start.setMonth(start.getMonth() - 1);
+      // setStartDate(start);
+      setPreDateRange(dateRangPresets[5]);
     } else if (
       METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
       METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK === selectedMetric?.value
@@ -190,7 +267,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
       setStartDate(week.startDate);
       setEndDate(week.endDate);
     }
-  }, [selectedMetric, setStartDate, setEndDate]);
+  }, [selectedMetric, dateRangPresets, setStartDate, setEndDate, setPreDateRange]);
 
   /**
    * print chart
@@ -254,71 +331,12 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
     );
   }, [selectedMetric]);
 
-  const dateRangPresets = [
-    {
-      label: 'Yesterday',
-      value: {
-        from: moment().subtract(1, 'day').startOf('day'),
-        to: moment().subtract(1, 'day').endOf('day')
-      }
-    },
-    {
-      label: 'This Week',
-      value: {
-        from: moment().startOf('week'),
-        to: moment()
-      }
-    },
-    {
-      label: 'Last Week',
-      value: {
-        from: moment().subtract(1, 'week').startOf('week'),
-        to: moment().subtract(1, 'week').endOf('week')
-      }
-    },
-    {
-      label: 'This Month',
-      value: {
-        from: moment().startOf('month'),
-        to: moment()
-      }
-    },
-    {
-      label: 'Last Month',
-      value: {
-        from: moment().subtract(1, 'month').startOf('month'),
-        to: moment().subtract(1, 'month').endOf('month')
-      }
-    },
-    {
-      label: 'This Quarter',
-      value: {
-        from: moment().startOf('quarter'),
-        to: moment()
-      }
-    },
-    {
-      label: 'Last Quarter',
-      value: {
-        from: moment().subtract(1, 'quarter').startOf('quarter'),
-        to: moment().subtract(1, 'quarter').endOf('quarter')
-      }
-    },
-    {
-      label: 'This year',
-      value: {
-        from: moment().startOf('year'),
-        to: moment()
-      }
-    },
-    {
-      label: 'Last year',
-      value: {
-        from: moment().subtract(1, 'year').startOf('year'),
-        to: moment().subtract(1, 'year').endOf('year')
-      }
+  React.useEffect(() => {
+    if (preDateRange?.value) {
+      setStartDate(preDateRange.value.from.toDate());
+      setEndDate(preDateRange.value.to.toDate());
     }
-  ];
+  }, [preDateRange, setStartDate, setEndDate]);
 
   return (
     <div>
@@ -412,25 +430,17 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
             </div>
           </div>
           <div>
-            {![METRIC_USER_CHART_VALUES.CBT, METRIC_USER_CHART_VALUES.HR].includes(
-              selectedMetric?.value
-            ) && (
-              <ResponsiveSelect
-                className="mt-10 font-heading-small text-black"
-                isClearable
-                options={dateRangPresets}
-                value={preDateRange}
-                styles={customStyles()}
-                placeholder={t('Select predefined date range')}
-                onChange={(v) => {
-                  setPreDateRange(v);
-                  if (v?.value) {
-                    setStartDate(v.value.from.toDate());
-                    setEndDate(v.value.to.toDate());
-                  }
-                }}
-              />
-            )}
+            <ResponsiveSelect
+              className="mt-10 font-heading-small text-black"
+              isClearable
+              options={dateRangPresets}
+              value={preDateRange}
+              styles={customStyles()}
+              placeholder={t('Select predefined date range')}
+              onChange={(v) => {
+                setPreDateRange(v);
+              }}
+            />
           </div>
         </div>
 
