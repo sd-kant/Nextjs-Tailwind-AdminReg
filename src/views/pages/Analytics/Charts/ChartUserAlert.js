@@ -15,13 +15,7 @@ import {
   TimeScale
 } from 'chart.js';
 import 'chartjs-adapter-spacetime';
-import {
-  METRIC_USER_CHART_VALUES,
-  TYPES,
-  INIT_USER_CHART_ALERT_DATA,
-  VISIBLE_EXPORT_DATA,
-  CHART_DATASET
-} from '../../../../constant';
+import { METRIC_USER_CHART_VALUES, TYPES, INIT_USER_CHART_ALERT_DATA } from '../../../../constant';
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
@@ -64,8 +58,7 @@ const ChartUserAlert = ({ metric: unit }) => {
     chartRef,
     setIsEnablePrint,
     chartDatasets,
-    setChartDatasets,
-    visibleExport
+    setChartDatasets
   } = useAnalyticsContext();
   const { t } = useTranslation();
   const { formatHeartCbt } = useUtilsContext();
