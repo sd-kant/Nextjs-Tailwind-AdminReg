@@ -225,6 +225,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
             alertsPromises.push(getTeamAlerts(team, since));
             devicePromises.push(getTeamDevices(team));
           });
+          // Member List API Promises
           const a = () =>
             new Promise((resolve) => {
               Promise.allSettled(membersPromises)
@@ -247,7 +248,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                 })
                 .finally(() => resolve());
             });
-
+          // Stat List API Promises
           const b = () =>
             new Promise((resolve) => {
               Promise.allSettled(statsPromises)
@@ -268,6 +269,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                   resolve();
                 });
             });
+          // Alerts List API Promises
           const c = () =>
             new Promise((resolve) => {
               Promise.allSettled(alertsPromises)
@@ -309,6 +311,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                   resolve();
                 });
             });
+          // Device List API Promies
           const e = () =>
             new Promise((resolve) => {
               Promise.allSettled(devicePromises)

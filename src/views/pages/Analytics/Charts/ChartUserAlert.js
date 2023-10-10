@@ -27,7 +27,7 @@ import clsx from 'clsx';
 import style from './Chart.module.scss';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
-import { customStyles } from '../../DashboardV2';
+import { customStyles } from '../../team/DashboardV2';
 import ResponsiveSelect from '../../../components/ResponsiveSelect';
 import {
   chartPlugins,
@@ -290,51 +290,47 @@ const ChartUserAlert = ({ metric: unit }) => {
         </div>
 
         <div className={clsx(style.FlexSpace)}>
-          {visibleExport === VISIBLE_EXPORT_DATA[CHART_DATASET] ? (
-            <Line
-              options={{
-                pointRadius: 1,
-                scales: {
-                  x: {
-                    type: 'time',
-                    title: {
-                      display: true,
-                      text: xLabel
-                    },
-                    min: `${selectedDate?.label}T00:00`,
-                    max: `${selectedDate?.label}T23:59`,
-                    suggestedMin: `${selectedDate?.label}T00:00`,
-                    suggestedMax: `${selectedDate?.label}T23:59`,
-                    time: {
-                      unit: 'minute',
-                      displayFormats: {
-                        minute: 'HH:mm'
-                      }
-                    },
-                    ticks: {
-                      autoSkip: false,
-                      stepSize: 15
+          <Line
+            options={{
+              pointRadius: 1,
+              scales: {
+                x: {
+                  type: 'time',
+                  title: {
+                    display: true,
+                    text: xLabel
+                  },
+                  min: `${selectedDate?.label}T00:00`,
+                  max: `${selectedDate?.label}T23:59`,
+                  suggestedMin: `${selectedDate?.label}T00:00`,
+                  suggestedMax: `${selectedDate?.label}T23:59`,
+                  time: {
+                    unit: 'minute',
+                    displayFormats: {
+                      minute: 'HH:mm'
                     }
                   },
-                  y: {
-                    title: {
-                      display: true,
-                      text: yAxisLabel
-                    },
-                    min: yAxisMin,
-                    max: yAxisMax,
-                    ticks: {
-                      stepSize: yAxisStepSize
-                    }
+                  ticks: {
+                    autoSkip: false,
+                    stepSize: 15
+                  }
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: yAxisLabel
+                  },
+                  min: yAxisMin,
+                  max: yAxisMax,
+                  ticks: {
+                    stepSize: yAxisStepSize
                   }
                 }
-              }}
-              data={chartDatasets}
-              plugins={chartPlugins(`line`, t(`no data to display`))}
-            />
-          ) : (
-            <p>{t('loading')}</p>
-          )}
+              }
+            }}
+            data={chartDatasets}
+            plugins={chartPlugins(`line`, t(`no data to display`))}
+          />
         </div>
       </div>
     </div>

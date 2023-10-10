@@ -1474,7 +1474,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     }
     if (checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) {
       setVisibleExport(
-        chartDatasets.datasets[0].data.length > 0 && chartDatasets.datasets[0].label !== ''
+        chartDatasets.datasets[0]?.data.length > 0 && chartDatasets.datasets[0]?.label !== ''
           ? VISIBLE_EXPORT_DATA[CHART_DATASET]
           : VISIBLE_EXPORT_DATA[NO_EXPORT_DATA]
       );

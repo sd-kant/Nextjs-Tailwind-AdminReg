@@ -7,6 +7,7 @@
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
     "axios": "^1.4.0",
+    "axios-concurrency": "^1.0.4",
     "buffer": "^6.0.3",
     "chart.js": "^4.3.0",
     "chartjs-adapter-spacetime": "^1.0.1",

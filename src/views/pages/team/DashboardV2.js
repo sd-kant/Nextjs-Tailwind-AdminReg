@@ -5,13 +5,13 @@ import clsx from 'clsx';
 import style from './DashboardV2.module.scss';
 // import Statistics from "../partials/Statistics";
 // import RestBar from "../partials/RestBar";
-import MemberTable from '../partials/MemberTable';
-import Header from '../partials/Header';
-import { MembersProviderV2 } from '../../providers/MembersProviderV2';
-import MemberOperation from '../partials/MemberOperation';
-import StickyComponents from '../partials/StickyComponents';
-import useElementSize from '../../hooks/useElementSize';
-import { useWidthContext } from '../../providers/WidthProvider';
+import MemberTable from '../../partials/MemberTable';
+import Header from 'views/partials/Header';
+import { MembersProviderV2 } from 'providers/MembersProviderV2';
+import MemberOperation from 'views/partials/MemberOperation';
+import StickyComponents from 'views/partials/StickyComponents';
+import useElementSize from 'hooks/useElementSize';
+import { useWidthContext } from 'providers/WidthProvider';
 
 export const customStyles = (disabled = false) => ({
   menu: (provided) => {

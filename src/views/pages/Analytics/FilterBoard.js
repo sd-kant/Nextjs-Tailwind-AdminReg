@@ -5,7 +5,7 @@ import ReactToPrint from 'react-to-print';
 import { useTranslation } from 'react-i18next';
 
 import style from './FilterBoard.module.scss';
-import { customStyles } from '../DashboardV2';
+import { customStyles } from '../team/DashboardV2';
 import ResponsiveSelect from '../../components/ResponsiveSelect';
 import MultiSelectPopup from '../../components/MultiSelectPopup';
 import { useBasicContext } from '../../../providers/BasicProvider';
@@ -412,21 +412,25 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
             </div>
           </div>
           <div>
-            <ResponsiveSelect
-              className="mt-10 font-heading-small text-black"
-              isClearable
-              options={dateRangPresets}
-              value={preDateRange}
-              styles={customStyles()}
-              placeholder={t('Select predefined date range')}
-              onChange={(v) => {
-                setPreDateRange(v);
-                if (v?.value) {
-                  setStartDate(v.value.from.toDate());
-                  setEndDate(v.value.to.toDate());
-                }
-              }}
-            />
+            {![METRIC_USER_CHART_VALUES.CBT, METRIC_USER_CHART_VALUES.HR].includes(
+              selectedMetric?.value
+            ) && (
+              <ResponsiveSelect
+                className="mt-10 font-heading-small text-black"
+                isClearable
+                options={dateRangPresets}
+                value={preDateRange}
+                styles={customStyles()}
+                placeholder={t('Select predefined date range')}
+                onChange={(v) => {
+                  setPreDateRange(v);
+                  if (v?.value) {
+                    setStartDate(v.value.from.toDate());
+                    setEndDate(v.value.to.toDate());
+                  }
+                }}
+              />
+            )}
           </div>
         </div>
 
