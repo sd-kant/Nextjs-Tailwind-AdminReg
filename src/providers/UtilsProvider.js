@@ -86,15 +86,17 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
           label: t('check device'),
           value: 7
         };
-      } else if (
-        !connected &&
-        numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20
-      ) {
-        return {
-          label: t('check app'),
-          value: 7
-        };
-      } else {
+      }
+      // else if (
+      //   !connected &&
+      //   numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20
+      // ) {
+      //   return {
+      //     label: t('check app'),
+      //     value: 7
+      //   };
+      // }
+      else {
         return {
           label: t('no connection'),
           value: 8
