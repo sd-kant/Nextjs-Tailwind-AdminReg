@@ -149,8 +149,8 @@ const MembersProvider = ({
     if (userType?.includes(USER_TYPE_ADMIN)) {
       return permissionLevels;
     } else if (userType?.includes(USER_TYPE_ORG_ADMIN)) {
-      // only org admin
-      return permissionLevels.filter((it) => it.value === 4);
+      // org admin, admin, operator
+      return permissionLevels.filter((it) => [1, 2, 4].includes(it.value));
     } else if (userType?.includes(USER_TYPE_TEAM_ADMIN)) {
       return permissionLevels.filter((it) => [1, 2].includes(it.value));
     } else {
