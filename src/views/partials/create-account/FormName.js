@@ -53,7 +53,9 @@ const FormName = (props) => {
   return (
     <Form className="form-group mt-57">
       <div>
-        <div className="d-flex align-center cursor-pointer" onClick={() => navigate(-1)}>
+        <div
+          className="d-flex align-center cursor-pointer"
+          onClick={() => navigate('/create-account/password-v2')}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>
