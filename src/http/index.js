@@ -4,6 +4,7 @@ import { apiBaseUrl as baseUrl } from '../config';
 import { toastr } from 'react-redux-toastr';
 import i18n from '../i18nextInit';
 import { logout } from '../views/layouts/MainLayout';
+const { ConcurrencyManager } = require('axios-concurrency');
 
 const showErrorAndLogout = () => {
   toastr.error(i18n.t('msg token expired'), i18n.t('msg login again'));
@@ -22,6 +23,15 @@ export const instance = axios.create({
   baseURL: cachedBaseUrl ?? baseUrl,
   timeout: 60000 // set 60s for long-polling
 });
+
+const MAX_CONCURRENT_REQUESTS = 200;
+
+// init your manager.
+const manager = ConcurrencyManager(instance, MAX_CONCURRENT_REQUESTS);
+
+export function stopConcurrencyManager() {
+  manager.detach();
+}
 
 // Request interceptor for API calls
 instance.interceptors.request.use(

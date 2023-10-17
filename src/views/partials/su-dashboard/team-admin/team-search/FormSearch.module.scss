@@ -6,9 +6,9 @@
   padding: 20px 14px 20px 0;
   width: 100%;
   max-width: 924px;
-  // background: $app-bg;
+  background: $app-bg;
   z-index: 30;
-
+  border-radius: 0 25px 25px 0;
   .Header {
     display: flex;
     justify-content: space-between;

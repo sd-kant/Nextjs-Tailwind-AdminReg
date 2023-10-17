@@ -15,29 +15,24 @@ import {
   TimeScale
 } from 'chart.js';
 import 'chartjs-adapter-spacetime';
-import {
-  METRIC_USER_CHART_VALUES,
-  TYPES,
-  INIT_USER_CHART_ALERT_DATA,
-  VISIBLE_EXPORT_DATA,
-  CHART_DATASET
-} from '../../../../constant';
+import { METRIC_USER_CHART_VALUES, TYPES, INIT_USER_CHART_ALERT_DATA } from '../../../../constant';
 
 import clsx from 'clsx';
 import style from './Chart.module.scss';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
-import { customStyles } from '../../DashboardV2';
+import { customStyles } from '../../team/DashboardV2';
 import ResponsiveSelect from '../../../components/ResponsiveSelect';
 import {
   chartPlugins,
   checkEmptyData,
-  getWeeksInMonth,
+  getDaysBetweenDates,
   getRandomLightColor
 } from '../../../../utils/anlytics';
 import MultiSelectPopup from '../../../components/MultiSelectPopup';
 import { useUtilsContext } from '../../../../providers/UtilsProvider';
 import { formatHeartRate } from '../../../../utils/dashboard';
+import moment from 'moment-timezone';
 
 ChartJS.register(
   CategoryScale,
@@ -65,7 +60,8 @@ const ChartUserAlert = ({ metric: unit }) => {
     setIsEnablePrint,
     chartDatasets,
     setChartDatasets,
-    visibleExport
+    startDate,
+    endDate
   } = useAnalyticsContext();
   const { t } = useTranslation();
   const { formatHeartCbt } = useUtilsContext();
@@ -92,12 +88,15 @@ const ChartUserAlert = ({ metric: unit }) => {
    * @type {{label: string, value: number} | {label: string, value: number}}
    */
   const selectedType = React.useMemo(() => {
-    let dateList = getWeeksInMonth(timeZone);
+    let dateList = getDaysBetweenDates(
+      moment(startDate).tz(timeZone.name),
+      moment(endDate).tz(timeZone.name)
+    );
     dateList = type === 1 ? dateList.dates : type === 2 ? dateList.weeks : [];
     setDates(dateList);
     setDate(dateList?.length > 0 ? dateList[0].value : null);
     return TYPES?.find((it) => it.value?.toString() === type?.toString());
-  }, [type, timeZone]);
+  }, [type, timeZone, startDate, endDate]);
 
   /**
    selected start date from date range options
@@ -290,51 +289,47 @@ const ChartUserAlert = ({ metric: unit }) => {
         </div>
 
         <div className={clsx(style.FlexSpace)}>
-          {visibleExport === VISIBLE_EXPORT_DATA[CHART_DATASET] ? (
-            <Line
-              options={{
-                pointRadius: 1,
-                scales: {
-                  x: {
-                    type: 'time',
-                    title: {
-                      display: true,
-                      text: xLabel
-                    },
-                    min: `${selectedDate?.label}T00:00`,
-                    max: `${selectedDate?.label}T23:59`,
-                    suggestedMin: `${selectedDate?.label}T00:00`,
-                    suggestedMax: `${selectedDate?.label}T23:59`,
-                    time: {
-                      unit: 'minute',
-                      displayFormats: {
-                        minute: 'HH:mm'
-                      }
-                    },
-                    ticks: {
-                      autoSkip: false,
-                      stepSize: 15
+          <Line
+            options={{
+              pointRadius: 1,
+              scales: {
+                x: {
+                  type: 'time',
+                  title: {
+                    display: true,
+                    text: xLabel
+                  },
+                  min: `${selectedDate?.label}T00:00`,
+                  max: `${selectedDate?.label}T23:59`,
+                  suggestedMin: `${selectedDate?.label}T00:00`,
+                  suggestedMax: `${selectedDate?.label}T23:59`,
+                  time: {
+                    unit: 'minute',
+                    displayFormats: {
+                      minute: 'HH:mm'
                     }
                   },
-                  y: {
-                    title: {
-                      display: true,
-                      text: yAxisLabel
-                    },
-                    min: yAxisMin,
-                    max: yAxisMax,
-                    ticks: {
-                      stepSize: yAxisStepSize
-                    }
+                  ticks: {
+                    autoSkip: false,
+                    stepSize: 15
+                  }
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: yAxisLabel
+                  },
+                  min: yAxisMin,
+                  max: yAxisMax,
+                  ticks: {
+                    stepSize: yAxisStepSize
                   }
                 }
-              }}
-              data={chartDatasets}
-              plugins={chartPlugins(`line`, t(`no data to display`))}
-            />
-          ) : (
-            <p>{t('loading')}</p>
-          )}
+              }
+            }}
+            data={chartDatasets}
+            plugins={chartPlugins(`line`, t(`no data to display`))}
+          />
         </div>
       </div>
     </div>

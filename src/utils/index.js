@@ -328,9 +328,12 @@ export const setStorageAfterLogin = ({ token, refreshToken, userType, orgId, bas
   localStorage.setItem('kop-v2-base-url', baseUrl);
 };
 
-export const setStorageAfterRegisterLogin = ({ token, baseUrl }) => {
+export const setStorageAfterRegisterLogin = ({ token, baseUrl, username = null }) => {
   localStorage.setItem('kop-v2-register-token', token);
   localStorage.setItem('kop-v2-base-url', baseUrl);
+  if (username) {
+    localStorage.setItem('kop-v2-register-username', username);
+  }
 };
 
 export const dateFormat = (d) => {

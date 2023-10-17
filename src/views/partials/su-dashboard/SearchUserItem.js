@@ -218,7 +218,7 @@ const SearchUserItem = ({ user, index, isAdmin, id, errorField, touchField, t })
             className={clsx(style.Select, 'mt-10 font-heading-small text-black')}
             isClearable
             options={newlyFormattedTeams}
-            value={selectedTeam}
+            value={selectedTeam ?? { value: -1, label: t('no team assigned').toUpperCase() }}
             styles={customStyles(!hasRightToEdit)}
             placeholder={t('team name select')}
             menuPortalTarget={document.body}

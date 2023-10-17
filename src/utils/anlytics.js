@@ -171,6 +171,76 @@ export const getWeeksInMonth = (timezone) => {
   };
 };
 
+export const getDaysBetweenDates = (startDateTz, endDateTz) => {
+  let weeks = [],
+    dates = [],
+    value = 0;
+  // let timeLocal = new Date(); // 2022-11-24 05:40:00
+  // let endD = spacetime(timeLocal, timezone.name);
+  // let startMonthD = endD; // 2022-11-24 05:40:00
+
+  // // 2022-10-24 00:00:00
+  // startMonthD = startMonthD.subtract(1, `month`).time('12:00am');
+
+  // day list of month
+  //let endMonthD = endD;
+  const startMonthD = startDateTz.clone();
+  let endMonthD = endDateTz.clone();
+
+  while (endMonthD.isAfter(startMonthD)) {
+    dates.push({
+      value: value,
+      label: endMonthD.format('YYYY-MM-DD')
+    });
+    endMonthD = endMonthD.subtract(1, 'day');
+    value += 1;
+  }
+
+  value = 0;
+
+  // 2022-11-24 00:00:00, Thur -> 2022-11-20 00:00:00, Sun
+  let endWeekD = endDateTz.subtract(endDateTz.day(), `day`).startOf('day');
+
+  while (endWeekD.isAfter(startMonthD)) {
+    weeks.push({
+      value: value,
+      label: endWeekD.format('YYYY-MM-DD')
+    });
+    value += 1;
+
+    // 2022-11-13 00:00:00, Sun
+    endWeekD = endWeekD.subtract(7, 'day');
+  }
+  if (!endWeekD.isSame(startMonthD)) {
+    weeks.push({
+      value: value,
+      label: startMonthD.format('YYYY-MM-DD')
+    });
+  }
+
+  /**
+   dates = [
+   {value: 0, label: 2022-11-24},
+   {value: 1, label: 2022-11-23},
+   {value: 2, label: 2022-11-22},
+   ... ,
+   {value: 21, label: 2022-10-24}
+   ]
+
+   weeks = [
+   {value: 0, label: 2022-11-20},
+   {value: 1, label: 2022-11-13},
+   {value: 2, label: 2022-11-06},
+   {value: 3, label: 2022-10-30},
+   {value: 4, label: 2022-10-24},
+   ]
+   */
+  return {
+    dates: dates,
+    weeks: weeks
+  };
+};
+
 export const onFilterData = (data, key, userIds, members) => {
   if (!key) return [];
   if (!Object.keys(data).includes(key)) return [];

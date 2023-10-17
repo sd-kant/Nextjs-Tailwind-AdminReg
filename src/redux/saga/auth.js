@@ -80,7 +80,11 @@ function* loginSaga({
       });
 
       if (fromRegister) {
-        setStorageAfterRegisterLogin({ token, baseUrl: instance.defaults.baseURL });
+        setStorageAfterRegisterLogin({
+          token,
+          baseUrl: instance.defaults.baseURL,
+          username: username
+        });
 
         if (!mfa) {
           // if multi-factor authentication off
