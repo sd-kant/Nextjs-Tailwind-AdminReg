@@ -438,7 +438,7 @@ const EnhancedForm = withFormik({
   validationSchema: (props) => formSchema(props.t),
   handleSubmit: async (values, { props, setFieldValue }) => {
     const teamId = values?.name?.value;
-    const { setLoading, showErrorNotification } = props;
+    const { setLoading, showErrorNotification, t } = props;
     const { organizationId, navigate } = props;
 
     if (teamId?.toString() === '-1') {
@@ -470,7 +470,13 @@ const EnhancedForm = withFormik({
           }
         }
       } catch (e) {
-        showErrorNotification(e.response?.data?.message);
+        if (e.response?.data.error === 'error.validation.failure') {
+          for (const error of e.response.data.validationErrors ?? []) {
+            showErrorNotification(t(error?.message));
+          }
+        } else {
+          showErrorNotification(e.response?.data?.message);
+        }
       } finally {
         setLoading(false);
       }
