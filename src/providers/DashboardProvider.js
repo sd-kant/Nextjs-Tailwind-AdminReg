@@ -126,7 +126,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           // todo show error
         });
     }
-  }, [isAdmin]);
+  }, [isAdmin, refreshCount]);
 
   React.useEffect(() => {
     if (!isAdmin && myOrganization?.id) {
