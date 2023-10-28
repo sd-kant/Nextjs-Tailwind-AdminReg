@@ -149,7 +149,7 @@ const MemberDetailModal = ({ t, open = false, closeModal = () => {}, data: origi
           'tw-rounded-[30px]'
         )}
         overlayClassName={clsx(
-          'tw-fixed tw-top-0 tw-w-full tw-h-full tw-bg-transparent tw-backdrop-blur-[2px] tw-z-[100] tw-overflow-auto lg:tw-overflow-hidden'
+          'tw-fixed tw-top-0 tw-w-full tw-h-full tw-bg-transparent tw-backdrop-blur-[2px] tw-z-[100] tw-overflow-auto'
         )}
         onRequestClose={closeModal}
         preventScroll={true}
