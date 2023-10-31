@@ -58,7 +58,7 @@ const EnhancedForm = withFormik({
   }),
   validationSchema: (props) => formSchema(props.t),
   handleSubmit: (values) => {
-    window.location.href = `/create-account/password?token=${values.otpCode}`;
+    window.location.href = `/create-account/password?token=${values.otpCode}&source=create-account-pin`;
   }
 })(FormPin);
 
