@@ -42,4 +42,4 @@ const mapDispatchToProps = (dispatch) =>
     dispatch
   );
 
-export default connect(mapDispatchToProps)(FormSSOAuth);
+export default connect(null, mapDispatchToProps)(FormSSOAuth);
