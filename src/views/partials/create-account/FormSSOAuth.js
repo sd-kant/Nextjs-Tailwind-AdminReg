@@ -12,13 +12,16 @@ const FormSSOAuth = ({ setLoading }) => {
   const navigate = useNavigate();
   useEffect(() => {
     const tokenFromUrl = getTokenFromUrl();
+    const source = getParamFromUrl('source');
     if (!tokenFromUrl) {
       navigate('/');
     } else {
       // sso flow
       const deviceId = `web:${getDeviceId()}`;
       // todo encodeURIComponent
-      window.location.href = `${apiBaseUrl}/master/token?token=${tokenFromUrl}&deviceId=${deviceId}&source=create-account&minPasswordLength=${pwMinLength}`;
+      window.location.href = `${apiBaseUrl}/master/token?token=${tokenFromUrl}&deviceId=${deviceId}&source=${
+        source ?? 'create-account'
+      }&minPasswordLength=${pwMinLength}`;
       setLoading(true);
     }
 

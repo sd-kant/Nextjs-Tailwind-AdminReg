@@ -52,7 +52,7 @@ const FormSULogin = (props) => {
     const pwMinLength = getParamFromUrl('minPasswordLength') ?? 10;
     if (username) setFieldValue('username', username);
     // todo encodeURIComponent
-    if (source === 'create-account') {
+    if (source.startsWith('create-account')) {
       const token = getParamFromUrl('token');
       const baseUri = getParamFromUrl('baseUri');
       localStorage.setItem('kop-v2-base-url', baseUri);

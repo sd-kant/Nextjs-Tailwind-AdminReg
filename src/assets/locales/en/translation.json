@@ -111,6 +111,8 @@
   "n password rule": "Passwords must contain: At least {{n}} characters, one uppercase character, one lowercase character, one number, one special character",
   "create team": "Create a Team",
   "create new account": "Create a new account",
+  "register with pin":"Register with a PIN",
+  "the token was not found pin": "Incorrect PIN, please try again",
   "required pin": "Please enter the registration PIN number provided by your adminstrator",
   "admin provide pin": "Please provide the PIN number(s) to users invited without an email or phone number",
   "not receive pin": "If you did not receive a registration PIN, please contact your administrator or a Kenzen representative support@kenzen.com",
