@@ -65,7 +65,6 @@ const QueryResult = ({ metric }) => {
       // 40, 41
       return <ChartUserAlert />;
     else if (METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT === selectedMetric?.value) {
-      console.log('2');
       return <ChartMaximumCBT />;
     } else return <div />;
   }, [selectedMetric]);
