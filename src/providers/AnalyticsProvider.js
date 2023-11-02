@@ -1208,7 +1208,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
           it.data?.type ?? '',
           it.data?.osVersion ?? '',
           it.data?.version ?? '',
-          a,
+          formatHeartCbt(a),
           b,
           new Date(it.ts).toLocaleString() ?? ''
         ];
