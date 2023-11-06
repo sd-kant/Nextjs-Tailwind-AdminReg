@@ -36,22 +36,18 @@ const ConfirmModal = ({
         <div className={clsx(style.ModalBody, 'mt-25')}>{content}</div>
 
         {data.length > 0 ? (
-          <div className="tw-flex tw-w-full tw-justify-center tw-text-2xl">
-            <table className="tw-table-auto tw-font-medium tw-border-spacing-10">
-              <tbody>
-                {data[0]?.succeedRegisteredUsers?.length > 0 &&
-                  data[0]?.succeedRegisteredUsers.map((item, index) => (
-                    <tr key={index}>
-                      <td className="tw-whitespace-nowrap">
-                        {item.firstName} {item.lastName}
-                      </td>
-                      <td className="tw-whitespace-nowrap">
-                        {item.email ?? item.phoneNumber ?? item.registrationCode}
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
+          <div className="tw-flex tw-w-full tw-justify-center tw-text-2xl tw-mt-5 tw-mb-5 tw-gap-5 tw-flex-col">
+            {data[0]?.succeedRegisteredUsers?.length > 0 &&
+              data[0]?.succeedRegisteredUsers.map((item, index) => (
+                <div className="tw-flex tw-flex-wrap tw-justify-between" key={index}>
+                  <div className="tw-whitespace-nowrap">
+                    {item.firstName} {item.lastName}
+                  </div>
+                  <div className="tw-whitespace-nowrap">
+                    {item.email ?? item.phoneNumber ?? item.registrationCode}
+                  </div>
+                </div>
+              ))}
           </div>
         ) : (
           <div className="tw-mt-16"></div>
