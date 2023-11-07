@@ -35,8 +35,8 @@ const MemberTable = ({ t, forceWidthUpdate, isLoading }) => {
     connection: t('connection'),
     heatRisk: t('heat risk'),
     alerts: t('alerts'),
-    heatSusceptibility: t('heat susceptibility'),
-    lastDataSync: t('last data sync')
+    lastDataSync: t('last data sync'),
+    heatSusceptibility: t('heat susceptibility')
   };
 
   React.useEffect(() => {

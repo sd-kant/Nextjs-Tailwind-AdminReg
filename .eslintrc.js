@@ -62,7 +62,8 @@ module.exports = {
     'react/jsx-no-target-blank': 'warn',
     'react/prop-types': 0,
     'react-hooks/exhaustive-deps': 'warn',
-    'require-yield': 'warn'
+    'require-yield': 'warn',
+    'jsx-a11y/label-has-associated-control': 0
   },
   settings: {
     react: {
