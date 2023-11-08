@@ -140,7 +140,7 @@ const MemberDetailModal = ({ t, open = false, closeModal = () => {}, data: origi
         className={clsx(
           'tw-shadow-[0_25px_50px_0px_rgba(0,0,0,0.5)]',
           'tw-absolute',
-          'tw-w-full md:tw-top-[80px] md:tw-left-1/2 md:tw-w-[calc(100%-30px)]',
+          'tw-w-full md:tw-top-[80px] md:tw-left-1/2 md:tw-w-[85%]',
           'tw-max-w-8xl',
           'tw-bg-app-list-bg',
           'md:tw-transform md:-tw-translate-x-1/2',
@@ -159,6 +159,8 @@ const MemberDetailModal = ({ t, open = false, closeModal = () => {}, data: origi
           closeModal={closeModal}
           handleClickMoveTeam={handleClickMoveTeam}
           handleClickUnlock={handleClickUnlock}
+          team={team}
+          setTeam={setTeam}
         />
       </Modal>
       <ConfirmModalV2
