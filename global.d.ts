@@ -1,5 +1,4 @@
 declare global {
-  
   interface T_ApiValidationError {
     field: string;
     messageCode: string;
@@ -127,6 +126,13 @@ declare global {
     userId: number;
     userTypes: string[];
   }
+
+  type T_METRIC = {
+    label: string;
+    value: number;
+    type: 'user' | 'team';
+    category: number;
+  };
 }
 
 export {};

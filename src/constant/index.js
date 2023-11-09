@@ -347,8 +347,8 @@ export const ANALYTICS_API_KEYS = {
 export const METRIC_USER_TABLE_VALUES = {
   WEAR_TIME: 1,
   ALERTS: 2,
-  MAX_HEART_CBT: 3,
-  SWR_ACCLIM_SWEAT: 4,
+  MAX_HEART_CBT: 3, // No usage
+  SWR_ACCLIM_SWEAT: 4, // Deprecated
   SWR_ACCLIM_HEAT: 5,
   TIME_SPENT_IN_CBT_ZONES: 6,
   DEVICE_DATA: 7,
@@ -495,6 +495,136 @@ export const TEAM_STATUS_METRICS = [
   {
     label: 'Maximum CBT Time of Day',
     value: METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT
+  }
+];
+
+export const KA_CATEGORY_VALUES = {
+  DASHBOARD_SUMMARY: 100,
+  WEAR_TIME: 101,
+  ALERTS: 102,
+  CORE_BODY_TEMPERATURE: 103,
+  HEART_RATE: 104
+};
+
+export const KA_CATEGORY_SELECT_OPTIONS = [
+  {
+    label: 'Dashboard Summary',
+    value: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
+  },
+  {
+    label: 'Wear Time',
+    value: KA_CATEGORY_VALUES.WEAR_TIME
+  },
+  {
+    label: 'Alerts',
+    value: KA_CATEGORY_VALUES.ALERTS
+  },
+  {
+    label: 'Core Body Temperature',
+    value: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+  },
+  {
+    label: 'Heart Rate',
+    value: KA_CATEGORY_VALUES.HEART_RATE
+  }
+];
+
+export const KA_METRIC_SELECT_OPTIONS = [
+  {
+    label: 'Team Usage Summary',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
+  },
+  {
+    label: 'Heat Susceptibiliy',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
+  },
+  {
+    label: 'Sweat Rate',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
+  },
+  {
+    label: 'User Summary',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
+  },
+  {
+    label: 'Total and Average Wear Time Per Team',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.WEAR_TIME
+  },
+  {
+    label: 'Total and Average Wear Time Per User',
+    value: METRIC_USER_TABLE_VALUES.WEAR_TIME,
+    type: 'user',
+    category: KA_CATEGORY_VALUES.WEAR_TIME
+  },
+  {
+    label: 'Total Number of Alerts',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.ALERTS
+  },
+  {
+    label: 'Percent of Workers with Alerts',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.ALERTS
+  },
+  {
+    label: 'List of Alerts',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.ALERTS
+  },
+  {
+    label: 'List of Alerts by Specific User',
+    value: METRIC_USER_TABLE_VALUES.ALERTS,
+    type: 'user',
+    category: KA_CATEGORY_VALUES.ALERTS
+  },
+  {
+    label: 'Percent of Time Spent in Each Core Body Temperature Zone',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+  },
+  {
+    label: 'Maximum Core Body Temperature',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+  },
+  {
+    label: 'Core Body Temperature Graph',
+    value: 0,
+    type: 'user',
+    category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+  },
+  {
+    label: 'Core Body Temperature Percent of Time',
+    value: 0,
+    type: 'user',
+    category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+  },
+  {
+    label: 'Users Who Reached Identified Heart Rate',
+    value: 0,
+    type: 'team',
+    category: KA_CATEGORY_VALUES.HEART_RATE
+  },
+  {
+    label: 'Heart Rate Graph',
+    value: 0,
+    type: 'user',
+    category: KA_CATEGORY_VALUES.HEART_RATE
   }
 ];
 
