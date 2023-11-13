@@ -47,7 +47,7 @@ module.exports = {
     'no-unused-vars': 'warn',
     'no-unreachable': 'warn',
     'prettier/prettier': [
-      'error',
+      'off',
       {
         endOfLine: 'auto'
       }

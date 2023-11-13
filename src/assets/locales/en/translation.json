@@ -356,6 +356,7 @@
   "alert(24hr)": "ALERTS (24 HR)",
   "cbt": "CBT",
   "alerts": "Alerts",
+  "list alerts by user": "List of Alerts by Specific User",
   "filter by": "Filter By",
   "activity": "Activity",
   "work site": "Work Site",

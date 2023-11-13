@@ -347,8 +347,8 @@ export const ANALYTICS_API_KEYS = {
 export const METRIC_USER_TABLE_VALUES = {
   WEAR_TIME: 1,
   ALERTS: 2,
-  MAX_HEART_CBT: 3,
-  SWR_ACCLIM_SWEAT: 4,
+  MAX_HEART_CBT: 3, // No usage
+  SWR_ACCLIM_SWEAT: 4, // Deprecated
   SWR_ACCLIM_HEAT: 5,
   TIME_SPENT_IN_CBT_ZONES: 6,
   DEVICE_DATA: 7,
@@ -413,66 +413,88 @@ export const TIME_LIST = [
 export const HIGHEST_CHART_CELSIUS_MAX = 101.8;
 export const HIGHEST_CHART_CELSIUS_MIN = 98.5;
 
+export const KA_CATEGORY_VALUES = {
+  DASHBOARD_SUMMARY: 100,
+  WEAR_TIME: 101,
+  ALERTS: 102,
+  CORE_BODY_TEMPERATURE: 103,
+  HEART_RATE: 104
+};
+
 export const USER_STATUS_METRICS = [
   {
     label: `${i18n.t('table')} - ${i18n.t('wear time')}`,
-    value: METRIC_USER_TABLE_VALUES.WEAR_TIME // 1
+    value: METRIC_USER_TABLE_VALUES.WEAR_TIME, // 1,
+    category: KA_CATEGORY_VALUES.WEAR_TIME
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('alerts')}`,
-    value: METRIC_USER_TABLE_VALUES.ALERTS // 2
+    value: METRIC_USER_TABLE_VALUES.ALERTS, // 2
+    category: KA_CATEGORY_VALUES.ALERTS
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('swr')}`,
-    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT // 4
+    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT, // 4
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('heat susceptibility')}`,
-    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT // 5
+    value: METRIC_USER_TABLE_VALUES.SWR_ACCLIM_HEAT, // 5
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('time spent in cbt zones')}`,
-    value: METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES // 6
+    value: METRIC_USER_TABLE_VALUES.TIME_SPENT_IN_CBT_ZONES, // 6
+    category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('device data')}`,
-    value: METRIC_USER_TABLE_VALUES.DEVICE_DATA // 7
+    value: METRIC_USER_TABLE_VALUES.DEVICE_DATA, // 7
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
   },
   {
     // label: `${i18n.t('table')} - ${i18n.t('users in various cbt zones')}`,
     label: `${i18n.t('table')} - Percent of Time in CBT Zones`,
-    value: METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES // 8
+    value: METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES, // 8
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
   },
   {
     label: `${i18n.t('chart')} - ${i18n.t('cbt')}`,
-    value: METRIC_USER_CHART_VALUES.CBT // 40
+    value: METRIC_USER_CHART_VALUES.CBT, // 40
+    category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
   },
   {
     label: `${i18n.t('chart')} - ${i18n.t('hr')}`,
-    value: METRIC_USER_CHART_VALUES.HR // 41
+    value: METRIC_USER_CHART_VALUES.HR, // 41
+    category: KA_CATEGORY_VALUES.HEART_RATE
   }
 ];
 
 export const TEAM_STATUS_METRICS = [
   {
     label: `${i18n.t('table')} - ${i18n.t('ambient temp/humidity')}`,
-    value: METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY // 20
+    value: METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY, // 20
+    category: KA_CATEGORY_VALUES.ALERTS
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('% of workers with alerts')}`,
-    value: METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS // 21
+    value: METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS, // 21
+    category: KA_CATEGORY_VALUES.ALERTS
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('active users')}`,
-    value: METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS // 22
+    value: METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS, // 22
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('no. of users in swr categories')}`,
-    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE // 23
+    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE, // 23
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
   },
   {
     label: `${i18n.t('table')} - ${i18n.t('no. of users in heat susceptibility categories')}`,
-    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE // 24
+    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE, // 24
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
   },
   // {
   //   label: `${i18n.t('table')} - ${i18n.t('no. of users in cbt zones')}`,
@@ -482,7 +504,8 @@ export const TEAM_STATUS_METRICS = [
     label: `${i18n.t('table')} - ${i18n.t(
       'no. of users unacclimated, acclimated and previous illness'
     )}`,
-    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED // 26
+    value: METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED, // 26
+    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
   },
   // {
   //   label: `${i18n.t('chart')} - ${i18n.t('number of alerts by week')}`,
@@ -490,13 +513,136 @@ export const TEAM_STATUS_METRICS = [
   // },
   {
     label: `${i18n.t('chart')} - ${i18n.t('highest cbt by time of day and day of week')}`,
-    value: METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK // 32
+    value: METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK, // 32
+    category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
   },
   {
     label: 'Maximum CBT Time of Day',
-    value: METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT
+    value: METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT,
+    category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
   }
 ];
+export const KA_CATEGORY_SELECT_OPTIONS = [
+  {
+    label: 'Dashboard Summary',
+    value: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
+  },
+  {
+    label: 'Wear Time',
+    value: KA_CATEGORY_VALUES.WEAR_TIME
+  },
+  {
+    label: 'Alerts',
+    value: KA_CATEGORY_VALUES.ALERTS
+  },
+  {
+    label: 'Core Body Temperature',
+    value: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+  },
+  {
+    label: 'Heart Rate',
+    value: KA_CATEGORY_VALUES.HEART_RATE
+  }
+];
+
+// export const KA_METRIC_SELECT_OPTIONS = [
+//   {
+//     label: 'Team Usage Summary',
+//     value: METRIC_TEAM_TABLE_VALUES.ACTIVE_USERS,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
+//   },
+//   {
+//     label: 'Heat Susceptibiliy',
+//     value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_HEAT_CATE,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
+//   },
+//   {
+//     label: 'Sweat Rate',
+//     value: METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_SWR_CATE,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
+//   },
+//   {
+//     label: 'User Summary',
+//     value: 0,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
+//   },
+//   {
+//     label: 'Total and Average Wear Time Per Team',
+//     value: 0,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.WEAR_TIME
+//   },
+//   {
+//     label: 'Total and Average Wear Time Per User',
+//     value: METRIC_USER_TABLE_VALUES.WEAR_TIME,
+//     type: 'user',
+//     category: KA_CATEGORY_VALUES.WEAR_TIME
+//   },
+//   {
+//     label: 'Total Number of Alerts',
+//     value: 0,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.ALERTS
+//   },
+//   {
+//     label: 'Percent of Workers with Alerts',
+//     value: METRIC_TEAM_TABLE_VALUES.PERCENT_WORKERS_ALERTS,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.ALERTS
+//   },
+//   {
+//     label: 'List of Alerts',
+//     value: 0,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.ALERTS
+//   },
+//   {
+//     label: 'List of Alerts by Specific User',
+//     value: METRIC_USER_TABLE_VALUES.ALERTS,
+//     type: 'user',
+//     category: KA_CATEGORY_VALUES.ALERTS
+//   },
+//   {
+//     label: 'Percent of Time Spent in Each Core Body Temperature Zone',
+//     value: 0,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+//   },
+//   {
+//     label: 'Maximum Core Body Temperature',
+//     value: METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+//   },
+//   {
+//     label: 'Core Body Temperature Graph',
+//     value: METRIC_USER_CHART_VALUES.CBT,
+//     type: 'user',
+//     category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+//   },
+//   {
+//     label: 'Core Body Temperature Percent of Time',
+//     value: METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES,
+//     type: 'user',
+//     category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+//   },
+//   {
+//     label: 'Users Who Reached Identified Heart Rate',
+//     value: 0,
+//     type: 'team',
+//     category: KA_CATEGORY_VALUES.HEART_RATE
+//   },
+//   {
+//     label: 'Heart Rate Graph',
+//     value: METRIC_USER_CHART_VALUES.HR,
+//     type: 'user',
+//     category: KA_CATEGORY_VALUES.HEART_RATE
+//   }
+// ];
 
 export const SORT_TITLES = [
   i18n.t('a - z'),

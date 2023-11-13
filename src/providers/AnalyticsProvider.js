@@ -44,7 +44,10 @@ import {
   VISIBLE_EXPORT_DATA,
   NO_EXPORT_DATA,
   CHART_DATASET,
-  TABLE_DATA
+  TABLE_DATA,
+  // KA_METRIC_SELECT_OPTIONS,
+  KA_CATEGORY_SELECT_OPTIONS,
+  KA_CATEGORY_VALUES
 } from '../constant';
 import { useBasicContext } from './BasicProvider';
 import { formatHeartRate, literToQuart } from '../utils/dashboard';
@@ -73,11 +76,13 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   };
   const [analytics, setAnalytics] = React.useState(null); // { 1: {wearTime: [], alertMetrics: []} }
   const [statsBy, setStatsBy] = React.useState('user'); // user | team
+  const [statsRemoveFlag, setStatsRemoveFlag] = React.useState(false);
   const [page, setPage] = React.useState(null);
   const [sizePerPage, setSizePerPage] = React.useState(10);
   const [users, setUsers] = React.useState([]);
   const [detailCbt, setDetailCbt] = React.useState(null); // {dayIndex: 4, timeIndex: 5}
   const chartRef = React.useRef(null); // for chart print
+  const [category, setCategory] = React.useState(null);
 
   // Chart Datasets
   const [chartDatasets, setChartDatasets] = React.useState(INIT_USER_CHART_ALERT_DATA);
@@ -139,10 +144,12 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   }, [pickedTeams]);
 
   const metrics = React.useMemo(() => {
-    return statsBy === `user` ? USER_STATUS_METRICS : TEAM_STATUS_METRICS;
-  }, [statsBy]);
+    const _m = statsBy === `user` ? USER_STATUS_METRICS : TEAM_STATUS_METRICS;
+    return _m.filter((o) => o.category === category);
+  }, [statsBy, category]);
 
   const [metric, setMetric] = React.useState(null);
+  //const [metricV2, setMetricV2] = React.useState(null);
   const [sort, setSort] = React.useState([]);
   React.useEffect(() => {
     setSort(null);
@@ -612,6 +619,36 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     return _metric;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metric, metrics]);
+
+  const selectedCategory = React.useMemo(() => {
+    let _option = KA_CATEGORY_SELECT_OPTIONS?.find(
+      (it) => it.value?.toString() === category?.toString()
+    );
+    if (
+      _option?.value === KA_CATEGORY_VALUES.WEAR_TIME ||
+      _option?.value === KA_CATEGORY_VALUES.HEART_RATE
+    ) {
+      setStatsRemoveFlag(true);
+      setStatsBy('user');
+    } else {
+      setStatsRemoveFlag(false);
+      setStatsBy('team');
+    }
+    return _option;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category]);
+
+  // const selectedMetricV2 = React.useMemo(() => {
+  //   const _option = metricsV2?.find((it) => it.value === metric);
+  //   if (
+  //     checkMetric(METRIC_USER_CHART_VALUES, _option?.value) &&
+  //     selectedMembers.filter((it) => users.includes(it.value))?.length === 0
+  //   ) {
+  //     setUsers(selectedMembers.map((it) => it.value));
+  //   }
+  //   return _option;
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [metric, metricsV2]);
 
   React.useEffect(() => {
     if (
@@ -1634,9 +1671,13 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     endDate,
     setEndDate,
     metrics,
+    // metricsV2,
     metric,
+    // metricV2,
+    // setMetricV2,
     setMetric,
     selectedMetric,
+    // selectedMetricV2,
     selectedTeams,
     selectedMembers,
     analytics,
@@ -1672,7 +1713,10 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     isEnablePrint,
     setIsEnablePrint,
     chartDatasets,
-    setChartDatasets
+    setChartDatasets,
+    setCategory,
+    selectedCategory,
+    statsRemoveFlag
   };
 
   return <AnalyticsContext.Provider value={providerValue}>{children}</AnalyticsContext.Provider>;
