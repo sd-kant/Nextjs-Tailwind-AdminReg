@@ -45,7 +45,7 @@ import {
   NO_EXPORT_DATA,
   CHART_DATASET,
   TABLE_DATA,
-  KA_METRIC_SELECT_OPTIONS,
+  // KA_METRIC_SELECT_OPTIONS,
   KA_CATEGORY_SELECT_OPTIONS,
   KA_CATEGORY_VALUES
 } from '../constant';
@@ -144,15 +144,12 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   }, [pickedTeams]);
 
   const metrics = React.useMemo(() => {
-    return statsBy === `user` ? USER_STATUS_METRICS : TEAM_STATUS_METRICS;
-  }, [statsBy]);
-
-  const metricsV2 = React.useMemo(() => {
-    return KA_METRIC_SELECT_OPTIONS.filter((o) => o.category === category && o.type === statsBy);
+    const _m = statsBy === `user` ? USER_STATUS_METRICS : TEAM_STATUS_METRICS;
+    return _m.filter((o) => o.category === category);
   }, [statsBy, category]);
 
   const [metric, setMetric] = React.useState(null);
-  const [metricV2, setMetricV2] = React.useState(null);
+  //const [metricV2, setMetricV2] = React.useState(null);
   const [sort, setSort] = React.useState([]);
   React.useEffect(() => {
     setSort(null);
@@ -627,9 +624,12 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     let _option = KA_CATEGORY_SELECT_OPTIONS?.find(
       (it) => it.value?.toString() === category?.toString()
     );
-    if (_option?.value === KA_CATEGORY_VALUES.DASHBOARD_SUMMARY) {
+    if (
+      _option?.value === KA_CATEGORY_VALUES.WEAR_TIME ||
+      _option?.value === KA_CATEGORY_VALUES.HEART_RATE
+    ) {
       setStatsRemoveFlag(true);
-      setStatsBy('team');
+      setStatsBy('user');
     } else {
       setStatsRemoveFlag(false);
       setStatsBy('team');
@@ -638,17 +638,17 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
 
-  const selectedMetricV2 = React.useMemo(() => {
-    const _option = metricsV2?.find((it) => it.value === metricV2);
-    if (
-      checkMetric(METRIC_USER_CHART_VALUES, _option?.value) &&
-      selectedMembers.filter((it) => users.includes(it.value))?.length === 0
-    ) {
-      setUsers(selectedMembers.map((it) => it.value));
-    }
-    return _option;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [metricV2, metricsV2]);
+  // const selectedMetricV2 = React.useMemo(() => {
+  //   const _option = metricsV2?.find((it) => it.value === metric);
+  //   if (
+  //     checkMetric(METRIC_USER_CHART_VALUES, _option?.value) &&
+  //     selectedMembers.filter((it) => users.includes(it.value))?.length === 0
+  //   ) {
+  //     setUsers(selectedMembers.map((it) => it.value));
+  //   }
+  //   return _option;
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [metric, metricsV2]);
 
   React.useEffect(() => {
     if (
@@ -1671,13 +1671,13 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     endDate,
     setEndDate,
     metrics,
-    metricsV2,
+    // metricsV2,
     metric,
-    metricV2,
+    // metricV2,
+    // setMetricV2,
     setMetric,
-    setMetricV2,
     selectedMetric,
-    selectedMetricV2,
+    // selectedMetricV2,
     selectedTeams,
     selectedMembers,
     analytics,

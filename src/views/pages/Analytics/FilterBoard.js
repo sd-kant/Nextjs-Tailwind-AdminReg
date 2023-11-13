@@ -61,18 +61,18 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
     setStartDate,
     endDate,
     setEndDate,
-    // metrics,
-    // metric,
-    metricV2,
-    metricsV2,
-    // setMetric,
-    setMetricV2,
+    metrics,
+    metric,
+    setMetric,
+    // metricsV2,
+    // metricV2,
+    // setMetricV2,
     formattedMembers: members,
     setPickedMembers,
     processQuery,
     statsBy,
     selectedMetric,
-    selectedMetricV2,
+    // selectedMetricV2,
     selectedTeams,
     selectedMembers,
     pickedMembers,
@@ -96,28 +96,18 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
 
   const [preDateRange, setPreDateRange] = React.useState();
 
-  // const submitActivated = React.useMemo(() => {
-  //   return (
-  //     organization &&
-  //     selectedTeams?.length > 0 &&
-  //     (statsBy === 'team' ||
-  //       (statsBy === 'user' &&
-  //         (checkMetric(METRIC_USER_TABLE_VALUES, metric) ||
-  //           (checkMetric(METRIC_USER_CHART_VALUES, metric) &&
-  //             pickedMembers?.length > 0 &&
-  //             selectedUsers?.length > 0))))
-  //   );
-  // }, [organization, selectedTeams, statsBy, pickedMembers, selectedUsers, metric]);
-
   const submitActivated = React.useMemo(() => {
-    const _flag =
+    return (
       organization &&
-      metricV2 > 0 &&
       selectedTeams?.length > 0 &&
-      pickedMembers?.length > 0 &&
-      selectedUsers?.length > 0;
-    return _flag;
-  }, [organization, selectedTeams, pickedMembers, selectedUsers, metricV2]);
+      (statsBy === 'team' ||
+        (statsBy === 'user' &&
+          (checkMetric(METRIC_USER_TABLE_VALUES, metric) ||
+            (checkMetric(METRIC_USER_CHART_VALUES, metric) &&
+              pickedMembers?.length > 0 &&
+              selectedUsers?.length > 0))))
+    );
+  }, [organization, selectedTeams, statsBy, pickedMembers, selectedUsers, metric]);
 
   const submit = () => {
     if (!submitActivated && !errors.metric && !errors.dateRange) return;
@@ -127,29 +117,6 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
     }
   };
 
-  // const errors = React.useMemo(() => {
-  //   const errors = {
-  //     dateRange: null,
-  //     metric: null
-  //   };
-  //   if (!startDate || !endDate || startDate > endDate) {
-  //     errors.dateRange = t('date range invalid');
-  //   }
-  //   if (
-  //     !metric ||
-  //     (metric &&
-  //       ((statsBy === 'user' &&
-  //         !checkMetric(METRIC_USER_TABLE_VALUES, metric) &&
-  //         !checkMetric(METRIC_USER_CHART_VALUES, metric)) ||
-  //         (statsBy === 'team' &&
-  //           !checkMetric(METRIC_TEAM_TABLE_VALUES, metric) &&
-  //           !checkMetric(METRIC_TEAM_CHART_VALUES, metric))))
-  //   ) {
-  //     errors.metric = t('metric required');
-  //   }
-  //   return errors;
-  // }, [startDate, endDate, metric, statsBy, t]);
-
   const errors = React.useMemo(() => {
     const errors = {
       dateRange: null,
@@ -158,11 +125,20 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
     if (!startDate || !endDate || startDate > endDate) {
       errors.dateRange = t('date range invalid');
     }
-    if (!metricV2) {
+    if (
+      !metric ||
+      (metric &&
+        ((statsBy === 'user' &&
+          !checkMetric(METRIC_USER_TABLE_VALUES, metric) &&
+          !checkMetric(METRIC_USER_CHART_VALUES, metric)) ||
+          (statsBy === 'team' &&
+            !checkMetric(METRIC_TEAM_TABLE_VALUES, metric) &&
+            !checkMetric(METRIC_TEAM_CHART_VALUES, metric))))
+    ) {
       errors.metric = t('metric required');
     }
     return errors;
-  }, [startDate, endDate, metricV2, t]);
+  }, [startDate, endDate, metric, statsBy, t]);
 
   const showChart = React.useCallback(() => {
     if (!selectedMetric) return false;
@@ -398,7 +374,13 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               </div>
             )}
           </div>
-          <div className="tw-flex tw-flex-col sm:tw-flex-row sm:tw-gap-4">
+          <div
+            className={clsx(
+              'tw-flex tw-flex-col sm:tw-flex-row sm:tw-gap-4',
+              teams?.length > 0 || members?.length > 0
+                ? ''
+                : 'tw-grow tw-border tw-border-gray-700 tw-border-dashed tw-mt-2'
+            )}>
             {teams?.length > 0 ? (
               <div className={'tw-flex tw-flex-col tw-min-w-[240px]'}>
                 <label className="font-input-label mb-10">{t('team')}</label>
@@ -516,7 +498,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
           <div className="tw-flex tw-flex-col">
             <label className="font-input-label">{t('select metric')}</label>
 
-            {/* <ResponsiveSelect
+            <ResponsiveSelect
               className="mt-10 font-heading-small text-black"
               isClearable
               options={metrics}
@@ -524,15 +506,6 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               styles={customStyles()}
               placeholder={t('select metric')}
               onChange={(v) => setMetric(v?.value)}
-            /> */}
-            <ResponsiveSelect
-              className="mt-10 font-heading-small text-black"
-              isClearable
-              options={metricsV2}
-              value={selectedMetricV2}
-              styles={customStyles()}
-              placeholder={t('select metric')}
-              onChange={(v) => setMetricV2(v?.value)}
             />
 
             {submitTried && errors?.metric && (
