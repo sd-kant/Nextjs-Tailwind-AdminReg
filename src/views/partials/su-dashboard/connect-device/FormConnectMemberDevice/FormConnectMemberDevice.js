@@ -251,7 +251,7 @@ const FormConnectMemberDevice = (props) => {
               noMatch && (
                 <div>
                   <span className="font-input-label text-orange">
-                    {t('create device and pair it with memeber')}
+                    {t('create device and pair it')}
                   </span>
                 </div>
               )

@@ -718,7 +718,7 @@
   "device connected member description": "You’ve successfully connected {{name}} to Device ID:",
   "connect device confirm": "Connect to your device?",
   "connect device member confirm": "Connect your team member to this device?",
-  "create device and pair it with memeber": "Create a new device and continue to connect?",
+  "create device and pair it": "Create a new device and continue to connect?",
   "no device match": "No Device ID match found",
   "no member match": "No team member found",
   "username invalid 3": "Please check Username, email is not a valid Username",

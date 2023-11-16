@@ -49,6 +49,7 @@ const FormConnectDevice = (props) => {
   }, [setRestBarClass]);
 
   const [visible, setVisible] = React.useState(false);
+  const [isLoadingAPI, setIsLoadingAPI] = React.useState(false);
   const dropdownRef = React.useRef(null);
   useClickOutSide(dropdownRef, () => setVisible(false));
 
@@ -94,6 +95,7 @@ const FormConnectDevice = (props) => {
       if (mounted) {
         setSearching(true);
       }
+      setIsLoadingAPI(true);
       verifyKenzenDevice(last4Digits)
         .then((res) => {
           if (mounted) {
@@ -109,6 +111,7 @@ const FormConnectDevice = (props) => {
           if (mounted) {
             setSearching(false);
           }
+          setIsLoadingAPI(false);
         });
     } else {
       if (mounted) {
@@ -141,6 +144,10 @@ const FormConnectDevice = (props) => {
     } else {
       setFieldValue('isEditing', true);
     }
+  };
+
+  const isValidDeviceId = () => {
+    return isValidMacAddress(values['deviceId']);
   };
 
   return (
@@ -233,19 +240,45 @@ const FormConnectDevice = (props) => {
             )}
           </div>
           <div className="mt-50">
-            {!isEditing && (
+            {!isEditing ? (
               <div>
                 <span className="font-input-label">{t('connect device confirm')}</span>
               </div>
+            ) : (
+              noMatch && (
+                <div>
+                  <span className="font-input-label text-orange">
+                    {t('create device and pair it')}
+                  </span>
+                </div>
+              )
             )}
             <div className="mt-40">
-              {!isEditing && (
+              {!isEditing ? (
                 <button
                   className={`button ${
-                    values['deviceId'] ? 'active cursor-pointer' : 'inactive cursor-default'
+                    values['deviceId'] && !isLoadingAPI
+                      ? 'active cursor-pointer'
+                      : 'inactive cursor-default'
                   }`}
                   type={values['deviceId'] ? 'submit' : 'button'}>
                   <span className="font-button-label text-white">{t('connect')}</span>
+                </button>
+              ) : (
+                <button
+                  className={`button ${
+                    noMatch && !isLoadingAPI && isValidDeviceId()
+                      ? 'active cursor-pointer'
+                      : 'inactive cursor-default'
+                  }`}
+                  disabled={!isValidDeviceId()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setDevice({ deviceId: values['deviceId'], serialNumber: 'New Device' });
+                    setFieldValue('isEditing', false);
+                  }}
+                  type={'button'}>
+                  <span className="font-button-label text-white">{t('Yes')}</span>
                 </button>
               )}
               <button
