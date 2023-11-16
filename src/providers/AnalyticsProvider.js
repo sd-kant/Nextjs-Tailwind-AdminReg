@@ -632,7 +632,6 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       setStatsBy('user');
     } else {
       setStatsRemoveFlag(false);
-      setStatsBy('team');
     }
     return _option;
     // eslint-disable-next-line react-hooks/exhaustive-deps

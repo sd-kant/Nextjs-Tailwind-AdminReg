@@ -358,6 +358,13 @@ export const getHeightAsMetric = ({ measure, feet, inch, m, cm }) => {
 export const isValidMacAddress = (str) => {
   if (!str) return false;
   const tStr = str?.trim();
-  const regex = /^[0-9A-Za-z-:]+$/i;
-  return tStr?.match(regex);
+  const regexMacAddress = /^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/i;
+  return tStr?.match(regexMacAddress);
+};
+
+export const isValidSerialNumber = (str) => {
+  if (!str) return false;
+  const tStr = str?.trim();
+  const regexSerialNumber = /^([0-9A-Za-z]{4})[-]([0-9A-Za-z]{5})[-]([0-9A-Za-z]{4})$/i;
+  return tStr?.match(regexSerialNumber);
 };

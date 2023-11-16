@@ -147,6 +147,10 @@ const FormConnectMemberDevice = (props) => {
     }
   };
 
+  const isValidDeviceId = () => {
+    return isValidMacAddress(values['deviceId']);
+  };
+
   return (
     <Form className={clsx(style.Wrapper, 'form')}>
       <div className="tw-flex tw-grow 2xl:tw-gap-[90px] xl:tw-gap-[80px] tw-gap-[70px]">
@@ -266,8 +270,11 @@ const FormConnectMemberDevice = (props) => {
               ) : (
                 <button
                   className={`button ${
-                    noMatch && !isLoadingAPI ? 'active cursor-pointer' : 'inactive cursor-default'
+                    noMatch && !isLoadingAPI && isValidDeviceId()
+                      ? 'active cursor-pointer'
+                      : 'inactive cursor-default'
                   }`}
+                  disabled={!isValidDeviceId()}
                   onClick={(e) => {
                     e.preventDefault();
                     setDevice({ deviceId: values['deviceId'], serialNumber: 'New Device' });
