@@ -17,7 +17,9 @@ import {
 import SearchDropdown from 'views/components/SearchDropdown';
 import useClickOutSide from 'hooks/useClickOutSide';
 import { useNavigate } from 'react-router-dom';
-import QRcodeReader from '../../QRcodeReader';
+// import QRcodeReader from '../../QRcodeReader';
+import Html5QrcodePlugin from 'plugins/Html5QrcodePlugin';
+// import { Html5QrcodeSupportedFormats } from 'html5-qrcode';
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -73,7 +75,7 @@ const FormConnectDevice = (props) => {
 
   const handleItemClick = React.useCallback(
     (id) => {
-      const scanDevice = devices?.find((it) => it.deviceId === id);
+      const scanDevice = devices?.find((it) => it.deviceId === id || it.serialNumber === id);
       if (scanDevice) {
         setFieldValue('isEditing', false);
         setFieldValue('deviceId', scanDevice.deviceId);
@@ -125,7 +127,7 @@ const FormConnectDevice = (props) => {
   }, [deviceId]);
 
   const noMatch = React.useMemo(() => {
-    return !searching && deviceId && devices?.findIndex((d) => d.deviceId == deviceId) < 0;
+    return !searching && deviceId && devices?.findIndex((d) => d.deviceId == deviceId || d.serialNumber === deviceId) < 0;
   }, [devices, searching, deviceId]);
 
   const dropdownItems = React.useMemo(() => {
@@ -150,6 +152,21 @@ const FormConnectDevice = (props) => {
     return isValidMacAddress(values['deviceId']);
   };
 
+  const onScanResult = (decodedText, decodedResult) => {
+    console.log('scan result', decodedText, decodedResult);
+    let macAddress = null;
+    if(decodedText.includes('_')){
+      macAddress = decodedText.split('_')[1];
+    }else{
+      macAddress = decodedText;
+    }
+    if(macAddress){
+      setFieldValue('deviceId', macAddress);
+      handleItemClick(macAddress);
+      setScancedDeviceId(macAddress);
+    }
+  }
+  
   return (
     <Form className={clsx(style.Wrapper, 'form')}>
       <div className="tw-flex tw-grow 2xl:tw-gap-[90px] xl:tw-gap-[80px] tw-gap-[70px]">
@@ -208,7 +225,21 @@ const FormConnectDevice = (props) => {
                     </button>
                   </div>
                 </div>
-                <QRcodeReader
+                {openQrCodeReader && (
+                  <div className='tw-mt-4 tw-bg-gray-500'>
+                    <Html5QrcodePlugin
+                      // formatsToSupport={[Html5QrcodeSupportedFormats.QR_CODE, Html5QrcodeSupportedFormats.CODE_39]}
+                      useBarCodeDetectorIfSupported={true}
+                      fps={30}
+                      qrbox={250}
+                      disableFlip={false}
+                      qrCodeSuccessCallback={onScanResult} 
+                      videoConstraints={{facingMode: 'environment'}}
+                    />
+                  </div>
+                )}
+                
+                {/* <QRcodeReader
                   open={openQrCodeReader}
                   onClose={() => setOpenQRcodeReader(false)}
                   onScan={(data) => {
@@ -224,7 +255,7 @@ const FormConnectDevice = (props) => {
                     alert(error);
                     setOpenQRcodeReader(false);
                   }}
-                />
+                /> */}
               </>
             ) : (
               <>
