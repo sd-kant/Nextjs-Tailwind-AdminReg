@@ -131,14 +131,15 @@ const EnhancedForm = withFormik({
       const { baseUri } = res.data;
 
       const loginRes = await axios.post(`${baseUri}/auth/login`, values);
-      const { mfa, havePhone, accessToken, refreshToken } = loginRes.data;
+      const { mfa, havePhone, accessToken, refreshToken, secret } = loginRes.data;
       if (!mfa) {
         // deliver token to app
         const payload = {
           command: 'login',
           baseUri: baseUri,
           accessToken: accessToken,
-          refreshToken: refreshToken
+          refreshToken: refreshToken,
+          secret
         };
 
         // eslint-disable-next-line no-prototype-builtins
