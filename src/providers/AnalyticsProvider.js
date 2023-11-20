@@ -541,8 +541,9 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
           let endD = new Date(endDate); // e.g. 2022-11-24
 
           if (
-            checkMetric(METRIC_TEAM_CHART_VALUES, metric) || // team chart only
-            metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA // user Device_Data
+            checkMetric(METRIC_TEAM_CHART_VALUES, metric)
+            // || // team chart only
+            // metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA // user Device_Data
           ) {
             startD.setDate(startD.getDate() - 1); // e.g. 2022-04-04
             endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
