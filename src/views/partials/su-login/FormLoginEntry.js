@@ -80,7 +80,8 @@ const FormLoginEntry = (props) => {
       if (data) {
         const decoded = Buffer.from(data, 'base64').toString('utf-8');
         try {
-          const { accessToken, refreshToken, orgId, userType, baseUri } = JSON.parse(decoded);
+          const { accessToken, refreshToken, orgId, userType, baseUri, secret } =
+            JSON.parse(decoded);
           if (source.startsWith('create-account')) {
             // if from onboarding
             const token = getParamFromUrl('token');
@@ -98,7 +99,8 @@ const FormLoginEntry = (props) => {
               command: 'login',
               baseUri: baseUri,
               accessToken: accessToken,
-              refreshToken: refreshToken
+              refreshToken: refreshToken,
+              secret
             };
             // eslint-disable-next-line no-prototype-builtins
             if (window.hasOwnProperty('kenzenAndroidClient')) {
