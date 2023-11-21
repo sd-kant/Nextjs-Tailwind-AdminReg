@@ -341,14 +341,18 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               subscribe(d, source.token);
               setPage(1);
             })
+            .catch((err) => {
+              console.error('initial loading error', err);
+              source.cancel('cancel by user');
+            })
             .finally(() => {
               setLoading(false);
             });
         }
 
-        return () => {
-          source.cancel('cancel by user');
-        };
+        // return () => {
+        //   source.cancel('cancel by user');
+        // };
       }
     } else {
       setValuesV2({

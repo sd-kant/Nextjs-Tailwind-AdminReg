@@ -24,7 +24,7 @@ export const instance = axios.create({
   timeout: 60000 // set 60s for long-polling
 });
 
-const MAX_CONCURRENT_REQUESTS = 200;
+const MAX_CONCURRENT_REQUESTS = 50;
 
 // init your manager.
 const manager = ConcurrencyManager(instance, MAX_CONCURRENT_REQUESTS);
