@@ -17,7 +17,8 @@ import {
 import SearchDropdown from 'views/components/SearchDropdown';
 import useClickOutSide from 'hooks/useClickOutSide';
 import { useNavigate } from 'react-router-dom';
-import QRcodeReader from '../../QRcodeReader';
+// import QRcodeReader from '../../QRcodeReader';
+import Html5QrcodePlugin from 'plugins/Html5QrcodePlugin';
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -73,7 +74,7 @@ const FormConnectMemberDevice = (props) => {
 
   const handleItemClick = React.useCallback(
     (id) => {
-      const scanDevice = devices?.find((it) => it.deviceId === id);
+      const scanDevice = devices?.find((it) => it.deviceId === id || it.serialNumber === id);
       if (scanDevice) {
         setFieldValue('isEditing', false);
         setFieldValue('deviceId', scanDevice.deviceId);
@@ -126,7 +127,7 @@ const FormConnectMemberDevice = (props) => {
   }, [deviceId]);
 
   const noMatch = React.useMemo(() => {
-    return !searching && deviceId && devices?.findIndex((d) => d.deviceId == deviceId) < 0;
+    return !searching && deviceId && devices?.findIndex((d) => d.deviceId == deviceId || d.serialNumber === deviceId) < 0;
   }, [devices, searching, deviceId]);
 
   const dropdownItems = React.useMemo(() => {
@@ -146,6 +147,25 @@ const FormConnectMemberDevice = (props) => {
       setFieldValue('isEditing', true);
     }
   };
+
+  const isValidDeviceId = () => {
+    return isValidMacAddress(values['deviceId']);
+  };
+
+  const onScanResult = (decodedText, decodedResult) => {
+    console.log('scan result', decodedText, decodedResult);
+    let macAddress = null;
+    if(decodedText.includes('_')){
+      macAddress = decodedText.split('_')[1];
+    }else{
+      macAddress = decodedText;
+    }
+    if(macAddress){
+      setFieldValue('deviceId', macAddress);
+      handleItemClick(macAddress);
+      setScancedDeviceId(macAddress);
+    }
+  }
 
   return (
     <Form className={clsx(style.Wrapper, 'form')}>
@@ -205,7 +225,20 @@ const FormConnectMemberDevice = (props) => {
                     </button>
                   </div>
                 </div>
-                <QRcodeReader
+                {openQrCodeReader && (
+                  <div className='tw-mt-4 tw-bg-gray-500'>
+                    <Html5QrcodePlugin
+                      // formatsToSupport={[Html5QrcodeSupportedFormats.QR_CODE, Html5QrcodeSupportedFormats.CODE_39]}
+                      useBarCodeDetectorIfSupported={true}
+                      fps={30}
+                      qrbox={250}
+                      disableFlip={false}
+                      qrCodeSuccessCallback={onScanResult} 
+                      videoConstraints={{facingMode: 'environment'}}
+                    />
+                  </div>
+                )}
+                {/* <QRcodeReader
                   open={openQrCodeReader}
                   onClose={() => setOpenQRcodeReader(false)}
                   onScan={(data) => {
@@ -221,7 +254,7 @@ const FormConnectMemberDevice = (props) => {
                     alert(error);
                     setOpenQRcodeReader(false);
                   }}
-                />
+                /> */}
               </>
             ) : (
               <>
@@ -247,7 +280,7 @@ const FormConnectMemberDevice = (props) => {
               noMatch && (
                 <div>
                   <span className="font-input-label text-orange">
-                    {t('create device and pair it with memeber')}
+                    {t('create device and pair it')}
                   </span>
                 </div>
               )
@@ -266,8 +299,11 @@ const FormConnectMemberDevice = (props) => {
               ) : (
                 <button
                   className={`button ${
-                    noMatch && !isLoadingAPI ? 'active cursor-pointer' : 'inactive cursor-default'
+                    noMatch && !isLoadingAPI && isValidDeviceId()
+                      ? 'active cursor-pointer'
+                      : 'inactive cursor-default'
                   }`}
+                  disabled={!isValidDeviceId()}
                   onClick={(e) => {
                     e.preventDefault();
                     setDevice({ deviceId: values['deviceId'], serialNumber: 'New Device' });

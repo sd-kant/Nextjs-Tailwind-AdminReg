@@ -95,8 +95,8 @@ const formSchema = (t) => {
       .test('is-valid', t('company country required'), function (value) {
         return value?.length > 0;
       })
-      .test('is-valid', t('up to n countries', { n: 10 }), function (value) {
-        return value?.length <= 10;
+      .test('is-valid', t('up to n countries', { n: 25 }), function (value) {
+        return value?.length <= 25;
       }),
     // regions: Yup.array().required(t('company region required')),
     twoFA: Yup.boolean(),
@@ -397,8 +397,8 @@ const FormCompany = (props) => {
               {values.isEditing
                 ? t('edit company')
                 : isSuperAdmin
-                ? t('create or select company')
-                : t('welcome')}
+                  ? t('create or select company')
+                  : t('welcome')}
             </label>
           </div>
 

@@ -20,7 +20,7 @@ import {
   updateUrlParam
 } from '../utils';
 import { withTranslation } from 'react-i18next';
-import { get } from 'lodash';
+import { get, unionBy } from 'lodash';
 import {
   ALERT_STAGE_ID_LIST,
   USER_TYPE_ADMIN,
@@ -240,7 +240,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                         const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
                         setValuesV2({
                           ...prev,
-                          members: [...prev.members, ...operators]
+                          members: unionBy(prev.members, operators, 'userId')
                         });
                       }
                     }
@@ -341,14 +341,18 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               subscribe(d, source.token);
               setPage(1);
             })
+            .catch((err) => {
+              console.error('initial loading error', err);
+              source.cancel('cancel by user');
+            })
             .finally(() => {
               setLoading(false);
             });
         }
 
-        return () => {
-          source.cancel('cancel by user');
-        };
+        // return () => {
+        //   source.cancel('cancel by user');
+        // };
       }
     } else {
       setValuesV2({

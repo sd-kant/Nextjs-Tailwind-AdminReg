@@ -73,14 +73,15 @@ const FormMobilePhoneVerification = (props) => {
         loginCode: code,
         deviceId
       });
-      const { mfa, accessToken, refreshToken } = loginRes.data;
+      const { mfa, accessToken, refreshToken, secret } = loginRes.data;
       if (!mfa) {
         // deliver token to app
         const payload = {
           command: 'login',
           baseUri: baseUri,
           accessToken: accessToken,
-          refreshToken: refreshToken
+          refreshToken: refreshToken,
+          secret
         };
         console.log('mobile login success!');
         // eslint-disable-next-line no-prototype-builtins

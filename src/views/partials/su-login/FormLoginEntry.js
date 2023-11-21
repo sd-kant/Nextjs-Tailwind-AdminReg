@@ -61,11 +61,17 @@ const FormLoginEntry = (props) => {
   useEffect(() => {
     setClassName();
     const error = getParamFromUrl('error');
+    const source = getParamFromUrl('source');
     if (error) {
       const decoded = Buffer.from(error, 'base64').toString('utf-8');
       try {
         const { message } = JSON.parse(decoded);
-        showErrorNotification(message);
+        if (source === 'create-account-pin') {
+          showErrorNotification(t(message.toLowerCase() + ' pin'));
+          navigate(`/create-account/pin`);
+        } else {
+          showErrorNotification(message);
+        }
       } catch (e) {
         console.error('sso error response decode error', e);
       }
@@ -74,9 +80,9 @@ const FormLoginEntry = (props) => {
       if (data) {
         const decoded = Buffer.from(data, 'base64').toString('utf-8');
         try {
-          const { accessToken, refreshToken, orgId, userType, baseUri } = JSON.parse(decoded);
-          const source = getParamFromUrl('source');
-          if (source === 'create-account') {
+          const { accessToken, refreshToken, orgId, userType, baseUri, secret } =
+            JSON.parse(decoded);
+          if (source.startsWith('create-account')) {
             // if from onboarding
             const token = getParamFromUrl('token');
             setRegisterLoginSuccess({ token: accessToken, userType, organizationId: orgId });
@@ -93,7 +99,8 @@ const FormLoginEntry = (props) => {
               command: 'login',
               baseUri: baseUri,
               accessToken: accessToken,
-              refreshToken: refreshToken
+              refreshToken: refreshToken,
+              secret
             };
             // eslint-disable-next-line no-prototype-builtins
             if (window.hasOwnProperty('kenzenAndroidClient')) {
@@ -175,7 +182,7 @@ const FormLoginEntry = (props) => {
             {t('forgot your username')}
           </Link>
           <Link to={`/create-account/pin`} className="font-input-label text-orange no-underline">
-            {t('create new account')}
+            {t('register with pin')}
           </Link>
         </div>
       </div>

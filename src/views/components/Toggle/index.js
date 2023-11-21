@@ -16,13 +16,23 @@ const Toggle = ({
   on = false,
   handleSwitch = () => {},
   titleOn = 'Imperial',
-  titleOff = 'Metric'
+  titleOff = 'Metric',
+  remove = false
 }) => {
   return (
     <div className={clsx(style.Wrapper)}>
-      <ToggleButton selected={!on} title={titleOn} handleClick={() => handleSwitch(!on)} />
-
-      <ToggleButton selected={on} title={titleOff} handleClick={() => handleSwitch(!on)} />
+      {remove && on && (
+        <ToggleButton selected={on} title={titleOff} handleClick={() => handleSwitch(!on)} />
+      )}
+      {remove && !on && (
+        <ToggleButton selected={!on} title={titleOn} handleClick={() => handleSwitch(!on)} />
+      )}
+      {!remove && (
+        <>
+          <ToggleButton selected={!on} title={titleOn} handleClick={() => handleSwitch(!on)} />
+          <ToggleButton selected={on} title={titleOff} handleClick={() => handleSwitch(!on)} />
+        </>
+      )}
     </div>
   );
 };

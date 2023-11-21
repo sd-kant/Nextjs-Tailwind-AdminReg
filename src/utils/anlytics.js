@@ -571,7 +571,7 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('platform'),
         i18n.t('os version'),
         i18n.t('app version'),
-        'Max Core Body Temperature',
+        `${i18n.t('max cbt full')} ${unitMetric ? '˚C' : '˚F'}`,
         // i18n.t('max cbt'),
         'Max Heart Rate',
         // i18n.t('max hr'),

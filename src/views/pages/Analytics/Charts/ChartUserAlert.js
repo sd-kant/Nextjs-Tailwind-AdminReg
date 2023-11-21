@@ -164,7 +164,7 @@ const ChartUserAlert = ({ metric: unit }) => {
             }) ?? [];
 
         userChartData?.forEach((u) => {
-          const stStr = spacetime(u.utcTs).goto(memberTz).unixFmt('yyyy.MM.dd HH:mm');
+          const stStr = spacetime(u.utcTs).goto(memberTz).unixFmt('yyyy.MM.dd HH:mm:ss');
           if (temp.findIndex((a) => a.time === stStr) === -1) {
             temp.push({
               time: stStr,
@@ -173,8 +173,8 @@ const ChartUserAlert = ({ metric: unit }) => {
                   ? formatHeartCbt(u.cbt)
                   : ''
                 : u.hr
-                ? formatHeartRate(u.hr)
-                : ''
+                  ? formatHeartRate(u.hr)
+                  : ''
             });
           }
         });

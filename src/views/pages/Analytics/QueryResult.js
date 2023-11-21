@@ -6,7 +6,7 @@ import style from './QueryResult.module.scss';
 import ResultTableHeader from './ResultTableHeader';
 import ResultTableBody from './ResultTableBody';
 import { get } from 'lodash';
-import Toggle from '../../components/Toggle';
+// import Toggle from '../../components/Toggle';
 import { useAnalyticsContext } from '../../../providers/AnalyticsProvider';
 import ResponsiveSelect from '../../components/ResponsiveSelect';
 import { customStyles } from '../team/DashboardV2';
@@ -30,8 +30,8 @@ import ChartMaximumCBT from './Charts/ChartMaximumCBT';
 
 const QueryResult = ({ metric }) => {
   const {
-    statsBy,
-    setStatsBy,
+    // statsBy,
+    // setStatsBy,
     visibleExport,
     exportOption,
     setExportOption,
@@ -65,7 +65,6 @@ const QueryResult = ({ metric }) => {
       // 40, 41
       return <ChartUserAlert />;
     else if (METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT === selectedMetric?.value) {
-      console.log('2');
       return <ChartMaximumCBT />;
     } else return <div />;
   }, [selectedMetric]);
@@ -118,7 +117,7 @@ const QueryResult = ({ metric }) => {
       </div>
 
       <div className={clsx(style.StatsSelectWrapper)}>
-        <div className="tw-flex tw-justify-center tw-items-center">
+        {/* <div className="tw-flex tw-justify-center tw-items-center">
           <Toggle
             on={statsBy === 'team'}
             titleOn={t('user')}
@@ -127,7 +126,7 @@ const QueryResult = ({ metric }) => {
               setStatsBy(v ? 'team' : 'user');
             }}
           />
-        </div>
+        </div> */}
         {visibleExport > 0 && (
           <div className={clsx(style.ExportWrapper)}>
             <ResponsiveSelect

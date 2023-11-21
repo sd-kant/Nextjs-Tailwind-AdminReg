@@ -43,7 +43,9 @@ const MemberDetail = ({
   data: origin,
   metric,
   handleClickMoveTeam,
-  handleClickUnlock
+  handleClickUnlock,
+  team,
+  setTeam
 }) => {
   const {
     getHeartRateZone,
@@ -95,7 +97,7 @@ const MemberDetail = ({
     connectStatus = 'sleep';
   }
 
-  const [team, setTeam] = React.useState(null);
+  // const [team, setTeam] = React.useState(null);
   React.useEffect(() => {
     if (data?.teamId) {
       setTeam(formattedTeams?.find((it) => it.value?.toString() === data?.teamId?.toString()));
@@ -275,15 +277,6 @@ const MemberDetail = ({
                     </div>
                   )}
                 </div>
-
-                {/* <div>
-                  <div>
-                    <span className="font-helper-text tw-text-app-ns">{t('last sync')}</span>
-                  </div>
-                  <div>
-                    <span className={clsx('font-input-label')}>{lastSyncStr}</span>
-                  </div>
-                </div> */}
               </div>
             </div>
 
@@ -331,19 +324,6 @@ const MemberDetail = ({
                     <span className={clsx('font-input-label')}>{numberOfAlerts ?? 0}</span>
                   </div>
                 </div>
-
-                {/* <div className="tw-mt-2">
-                  <div>
-                    <span className="tw-text-app-ns font-helper-text tw-uppercase">
-                      {t('connection status')}
-                    </span>
-                  </div>
-                  <div className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
-                    <span className={clsx('font-input-label')} title={connectionObj?.label}>
-                      {connectionObj?.label}
-                    </span>
-                  </div>
-                </div> */}
               </div>
             </div>
             <div className={'tw-py-4'}>{renderActionContent()}</div>

@@ -70,8 +70,8 @@ const CreateAccount = ({ ...props }) => {
 
       <Suspense fallback={<Loader />}>
         <Routes>
-          <Route path="/pin" element={<FormPin {...props} />} />
           <Route path="/password" element={<FormSSOAuth navigate={navigate} {...props} />} />
+          <Route path="/pin" element={<FormPin navigate={navigate} {...props} />} />
 
           <Route path="/username" element={<FormUsername navigate={navigate} {...props} />} />
 
