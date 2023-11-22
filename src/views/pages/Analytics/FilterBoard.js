@@ -21,7 +21,7 @@ import {
   METRIC_TEAM_CHART_VALUES,
   KA_CATEGORY_SELECT_OPTIONS
 } from '../../../constant';
-import { checkMetric, getKeyApiCall, getThisWeek } from '../../../utils/anlytics';
+import { checkMetric, getKeyApiCall } from '../../../utils/anlytics';
 import moment from 'moment';
 import Toggle from 'views/components/Toggle';
 
@@ -255,6 +255,13 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
           from: moment().subtract(1, 'year').startOf('year'),
           to: moment().subtract(1, 'year').endOf('year')
         }
+      },
+      {
+        label: 'Past 7 days',
+        value: {
+          from: moment().subtract(6, 'days').startOf('day'),
+          to: moment()
+        }
       }
     ],
     []
@@ -273,9 +280,12 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
       METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK === selectedMetric?.value ||
       METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK === selectedMetric?.value
     ) {
-      const week = getThisWeek();
-      setStartDate(week.startDate);
-      setEndDate(week.endDate);
+      // const week = getThisWeek();
+      // setStartDate(week.startDate);
+      // setEndDate(week.endDate);
+      // setEndDate(moment().toDate());
+      // setStartDate(moment().subtract(6, 'days').startOf('day').toDate());
+      setPreDateRange(dateRangPresets[10]);
     }
   }, [selectedMetric, dateRangPresets, setStartDate, setEndDate, setPreDateRange]);
 
