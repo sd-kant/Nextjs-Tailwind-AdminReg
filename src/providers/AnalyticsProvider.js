@@ -12,7 +12,7 @@ import {
   getTimeSpentFromUserId,
   onFilterData,
   onFilterDataByOrganization,
-  getThisWeekByTeam,
+  // getThisWeekByTeam,
   checkMetric,
   getKeyApiCall,
   getHeaderMetrics
@@ -537,17 +537,17 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         let apiCalls = keyApiCall.apiCalls;
 
         if (apiCalls?.length && keys?.length) {
-          let startD = new Date(startDate); // e.g. 2022-04-05
-          let endD = new Date(endDate); // e.g. 2022-11-24
+          // let startD = new Date(startDate); // e.g. 2022-04-05
+          // let endD = new Date(endDate); // e.g. 2022-11-24
 
-          if (
-            checkMetric(METRIC_TEAM_CHART_VALUES, metric)
-            // || // team chart only
-            // metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA // user Device_Data
-          ) {
-            startD.setDate(startD.getDate() - 1); // e.g. 2022-04-04
-            endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
-          }
+          // if (
+          //   checkMetric(METRIC_TEAM_CHART_VALUES, metric)
+          //   // || // team chart only
+          //   // metric === METRIC_USER_TABLE_VALUES.DEVICE_DATA // user Device_Data
+          // ) {
+          //   startD.setDate(startD.getDate() - 1); // e.g. 2022-04-04
+          //   endD.setDate(endD.getDate() + 2); // e.g. 2022-11-26
+          // }
 
           setLoading(true);
           const promises = [];
@@ -555,8 +555,8 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
             promises.push(
               api(organization, {
                 teamIds: pickedTeams,
-                startDate: moment(startD).utc().format('YYYY-MM-DD'),
-                endDate: moment(endD).add(1, 'days').utc().format('YYYY-MM-DD')
+                startDate: moment(startDate).utc().format('YYYY-MM-DD'),
+                endDate: moment(endDate).utc().add(1, 'days').format('YYYY-MM-DD')
               })
             );
           });
@@ -637,18 +637,6 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     return _option;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
-
-  // const selectedMetricV2 = React.useMemo(() => {
-  //   const _option = metricsV2?.find((it) => it.value === metric);
-  //   if (
-  //     checkMetric(METRIC_USER_CHART_VALUES, _option?.value) &&
-  //     selectedMembers.filter((it) => users.includes(it.value))?.length === 0
-  //   ) {
-  //     setUsers(selectedMembers.map((it) => it.value));
-  //   }
-  //   return _option;
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [metric, metricsV2]);
 
   React.useEffect(() => {
     if (
@@ -991,36 +979,39 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         datasets: dataSet
       };
     } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK) {
-      const thisWeek = getThisWeekByTeam(timeZone);
-      const endD = thisWeek.endDate;
-      let startD = thisWeek.startDate;
-      // 32
-      while (startD.isBefore(endD)) {
-        const subList = [];
-        const endDByOneDay = startD.add(1, `day`);
+      // const thisWeek = getThisWeekByTeam(timeZone);
+      // const endD = thisWeek.endDate;
+      // let startD = thisWeek.startDate;
+      const endDate = moment();
+      let startDate = moment().subtract(6, 'day').startOf('day');
 
+      // 32
+      while (startDate.isBefore(endDate)) {
+        const subList = [];
+        const endDByOneDay = startDate.clone().add(1, `day`);
         const dailyData = onFilterData(
           organizationAnalytics,
           ANALYTICS_API_KEYS.MAX_CBT,
-          null,
-          null
+          pickedMembers,
+          members
         )?.filter(
           (it) =>
-            selectedMembers?.findIndex((a) => a?.value === it?.userId) > -1 &&
-            spacetime(it.utcTs).isBefore(endDByOneDay) &&
-            spacetime(it.utcTs).isAfter(startD)
+            // selectedMembers?.findIndex((a) => a?.value === it?.userId) > -1 &&
+            // spacetime(it.utcTs).isBefore(endDByOneDay) &&
+            // spacetime(it.utcTs).isAfter(startD)
+            moment.utc(it.utcTs).isBefore(endDByOneDay) && moment.utc(it.utcTs).isAfter(startDate)
         );
 
-        let startHour = startD;
+        let startHour = startDate.clone();
 
         while (startHour.isBefore(endDByOneDay)) {
-          let endHour = startHour.add(1, `hour`);
+          let endHour = startHour.clone().add(1, `hour`);
           const hourlyData = [];
           const tempData = [];
           dailyData
             ?.filter((it) => {
               return (
-                spacetime(it.utcTs).isBefore(endHour) && spacetime(it.utcTs).isAfter(startHour)
+                moment.utc(it.utcTs).isBefore(endHour) && moment.utc(it.utcTs).isAfter(startHour)
               );
             })
             .sort((a, b) => {
@@ -1063,9 +1054,12 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
           startHour = startHour.add(1, 'hour');
         }
         list.unshift(subList);
+        const dL =
+          DAY_LIST[startDate.day()] + `, ` + (startDate.month() + 1) + `/` + startDate.date();
 
-        dayList.unshift(DAY_LIST[startD.day()] + `, ` + (startD.month() + 1) + `/` + startD.date());
-        startD = endDByOneDay;
+        dayList.unshift(dL);
+
+        startDate = endDByOneDay;
       }
 
       return {
@@ -1118,29 +1112,28 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         ANALYTICS_API_KEYS.ALERT_METRICS,
         pickedMembers,
         members
-      )?.map((it) => [
-        getUserNameFromUserId(members, it.userId),
-        getTeamNameFromUserId(members, formattedTeams, it.userId),
-        it.ts ? new Date(it.ts)?.toLocaleString() : ``,
-        it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
-        it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
-        it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
-        formatNumber(it.humidity) ?? '',
-        it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``
-      ]);
+      )
+        ?.filter((it) => moment(it.ts).isBetween(startDate, endDate, undefined, '[]'))
+        ?.map((it) => [
+          getUserNameFromUserId(members, it.userId),
+          getTeamNameFromUserId(members, formattedTeams, it.userId),
+          it.ts ? new Date(it.ts)?.toLocaleString() : ``,
+          it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
+          it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
+          it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
+          formatNumber(it.humidity) ?? '',
+          it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``
+        ]);
     } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && !detailCbt) {
       // 32
-      ret = onFilterData(
-        organizationAnalytics,
-        ANALYTICS_API_KEYS.MAX_CBT,
-        pickedMembers,
-        members
-      )?.map((it) => [
-        getUserNameFromUserId(members, it.userId),
-        getTeamNameFromUserId(members, formattedTeams, it.userId),
-        it.utcTs ? new Date(it.utcTs)?.toLocaleString() : ``,
-        it.maxCbt ? formatHeartCbt(it.maxCbt) : ``
-      ]);
+      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, pickedMembers, members)
+        ?.filter((it) => moment(it.utcTs).isBetween(startDate, endDate, undefined, '[]'))
+        ?.map((it) => [
+          getUserNameFromUserId(members, it.userId),
+          getTeamNameFromUserId(members, formattedTeams, it.userId),
+          it.utcTs ? new Date(it.utcTs)?.toLocaleString() : ``,
+          it.maxCbt ? formatHeartCbt(it.maxCbt) : ``
+        ]);
     } else if (METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT === metric) {
       // 4
       ret = onFilterData(
@@ -1229,27 +1222,29 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         }
       });
 
-      ret = tempRet?.map((it) => {
-        let a = organizationAnalytics?.[ANALYTICS_API_KEYS.MAX_CBT]?.find(
-          (e) => e?.userId === it.userId
-        )?.maxCbt;
-        a = formatNumber(a);
-        let b = organizationAnalytics?.[ANALYTICS_API_KEYS.MAX_HR_ALL]
-          ?.filter((e) => e?.userId === it.userId)
-          ?.sort((i, j) => j?.maxHr - i?.maxHr)?.[0]?.maxHr;
-        b = formatNumber(b);
-        return [
-          it.fullname ?? '',
-          getTeamNameFromTeamId(formattedTeams, it.teamId),
-          it.kenzen?.version ?? '',
-          it.data?.type ?? '',
-          it.data?.osVersion ?? '',
-          it.data?.version ?? '',
-          formatHeartCbt(a),
-          b,
-          new Date(it.ts).toLocaleString() ?? ''
-        ];
-      });
+      ret = tempRet
+        ?.filter((it) => moment(it.ts).isBetween(startDate, endDate, undefined, '[]'))
+        ?.map((it) => {
+          let a = organizationAnalytics?.[ANALYTICS_API_KEYS.MAX_CBT]?.find(
+            (e) => e?.userId === it.userId
+          )?.maxCbt;
+          a = formatNumber(a);
+          let b = organizationAnalytics?.[ANALYTICS_API_KEYS.MAX_HR_ALL]
+            ?.filter((e) => e?.userId === it.userId)
+            ?.sort((i, j) => j?.maxHr - i?.maxHr)?.[0]?.maxHr;
+          b = formatNumber(b);
+          return [
+            it.fullname ?? '',
+            getTeamNameFromTeamId(formattedTeams, it.teamId),
+            it.kenzen?.version ?? '',
+            it.data?.type ?? '',
+            it.data?.osVersion ?? '',
+            it.data?.version ?? '',
+            formatHeartCbt(a),
+            b,
+            new Date(it.ts).toLocaleString() ?? ''
+          ];
+        });
     } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) {
       // 8
       ret = onFilterData(
