@@ -1112,16 +1112,18 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         ANALYTICS_API_KEYS.ALERT_METRICS,
         pickedMembers,
         members
-      )?.map((it) => [
-        getUserNameFromUserId(members, it.userId),
-        getTeamNameFromUserId(members, formattedTeams, it.userId),
-        it.ts ? new Date(it.ts)?.toLocaleString() : ``,
-        it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
-        it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
-        it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
-        formatNumber(it.humidity) ?? '',
-        it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``
-      ]);
+      )
+        ?.filter((it) => moment(it.ts).isBetween(startDate, endDate, undefined, '[]'))
+        ?.map((it) => [
+          getUserNameFromUserId(members, it.userId),
+          getTeamNameFromUserId(members, formattedTeams, it.userId),
+          it.ts ? new Date(it.ts)?.toLocaleString() : ``,
+          it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
+          it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
+          it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
+          formatNumber(it.humidity) ?? '',
+          it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``
+        ]);
     } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && !detailCbt) {
       // 32
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, pickedMembers, members)
