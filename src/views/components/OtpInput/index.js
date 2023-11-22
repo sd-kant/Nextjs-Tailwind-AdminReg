@@ -16,6 +16,15 @@ const OtpInput = ({ length = 6, onOTPChange }) => {
     onOTPChange(newOTP.join(''));
   };
 
+  const handleOnPaste = (e) => {
+    e.preventDefault();
+    let paste = (e.clipboardData || window.clipboardData).getData('text')?.trim();
+    if (/^\d+$/.test(paste) & (paste.length === 6)) {
+      setOtp(paste.split(''));
+      onOTPChange(paste);
+    }
+  };
+
   const handleOnKeyDown = ({ key }, index) => {
     currentOTPIndex = index;
     if (key === 'Backspace') setActiveOTPIndex(currentOTPIndex - 1);
@@ -51,6 +60,7 @@ const OtpInput = ({ length = 6, onOTPChange }) => {
                 'tw-text-center'
               )}
               onChange={handleOnChange}
+              onPaste={handleOnPaste}
               onKeyDown={(e) => handleOnKeyDown(e, index)}
               value={otp[index]}
             />
