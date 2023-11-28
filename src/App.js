@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './App.scss';
-import Router from './Router';
+import AppRouter from './Router';
 import './i18nextInit';
 import Backdrop from './views/components/Backdrop';
 import Loader from './views/components/Loader';
@@ -25,7 +25,7 @@ function App({ loading }) {
             <Loader />
           </>
         )}
-        <Router />
+        <AppRouter />
       </div>
     </WidthProvider>
   );

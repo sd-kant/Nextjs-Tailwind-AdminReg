@@ -38,7 +38,7 @@ import NewsDetail from './views/pages/News/NewsDetail';
 import AuthorDetail from './views/pages/News/AuthorDetail';
 import OperatorDashboardWrapper from './views/pages/operator/dashboard/OperatorDashboardWrapper';
 
-const Router = ({ token, loggedIn, getMyProfile, getMyOrganization }) => {
+const AppRouter = ({ token, loggedIn, getMyProfile, getMyOrganization }) => {
   React.useEffect(() => {
     if (token && loggedIn) {
       getMyProfile();
@@ -378,4 +378,4 @@ const mapDispatchToProps = (dispatch) =>
     dispatch
   );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Router);
+export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);
