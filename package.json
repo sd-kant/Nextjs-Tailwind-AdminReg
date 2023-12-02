@@ -11,7 +11,7 @@
     "buffer": "^6.0.3",
     "chart.js": "^4.3.0",
     "chartjs-adapter-spacetime": "^1.0.1",
-    "clsx": "^1.2.1",
+    "clsx": "^2.0.0",
     "country-region-data": "^2.7.0",
     "formik": "^2.4.2",
     "gsap": "^3.12.2",
