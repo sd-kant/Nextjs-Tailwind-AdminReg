@@ -368,3 +368,7 @@ export const isValidSerialNumber = (str) => {
   const regexSerialNumber = /^([0-9A-Za-z]{4})[-]([0-9A-Za-z]{5})[-]([0-9A-Za-z]{4})$/i;
   return tStr?.match(regexSerialNumber);
 };
+
+export const getLastDigitsOfDeviceId = (deviceId, digits = 4) => {
+  return deviceId.replace(/\W/g, '')?.slice(-digits);
+};

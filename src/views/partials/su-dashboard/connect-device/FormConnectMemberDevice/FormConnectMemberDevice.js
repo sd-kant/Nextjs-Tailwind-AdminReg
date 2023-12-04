@@ -7,7 +7,7 @@ import { withTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import style from './FormConnectMemberDevice.module.scss';
 import LKenzenDeviceImg from 'assets/images/Device_Barcode_SN.png';
-import { getParamFromUrl, isValidMacAddress } from 'utils';
+import { getLastDigitsOfDeviceId, getParamFromUrl, isValidMacAddress } from 'utils';
 import { linkMemberKenzenDevice, verifyKenzenDevice } from 'http';
 import {
   setLoadingAction,
@@ -91,7 +91,7 @@ const FormConnectMemberDevice = (props) => {
   React.useEffect(() => {
     let mounted = true;
     let last4Digits = null;
-    if (deviceId) last4Digits = deviceId.replace(/\W/g, '')?.slice(-4);
+    if (deviceId) last4Digits = getLastDigitsOfDeviceId(deviceId);
     if (last4Digits) {
       if (mounted) {
         setSearching(true);
@@ -127,7 +127,11 @@ const FormConnectMemberDevice = (props) => {
   }, [deviceId]);
 
   const noMatch = React.useMemo(() => {
-    return !searching && deviceId && devices?.findIndex((d) => d.deviceId == deviceId || d.serialNumber === deviceId) < 0;
+    return (
+      !searching &&
+      deviceId &&
+      devices?.findIndex((d) => d.deviceId == deviceId || d.serialNumber === deviceId) < 0
+    );
   }, [devices, searching, deviceId]);
 
   const dropdownItems = React.useMemo(() => {
@@ -155,17 +159,17 @@ const FormConnectMemberDevice = (props) => {
   const onScanResult = (decodedText, decodedResult) => {
     console.log('scan result', decodedText, decodedResult);
     let macAddress = null;
-    if(decodedText.includes('_')){
+    if (decodedText.includes('_')) {
       macAddress = decodedText.split('_')[1];
-    }else{
+    } else {
       macAddress = decodedText;
     }
-    if(macAddress){
+    if (macAddress) {
       setFieldValue('deviceId', macAddress);
       handleItemClick(macAddress);
       setScancedDeviceId(macAddress);
     }
-  }
+  };
 
   return (
     <Form className={clsx(style.Wrapper, 'form')}>
@@ -226,15 +230,15 @@ const FormConnectMemberDevice = (props) => {
                   </div>
                 </div>
                 {openQrCodeReader && (
-                  <div className='tw-mt-4 tw-bg-gray-500'>
+                  <div className="tw-mt-4 tw-bg-gray-500">
                     <Html5QrcodePlugin
                       // formatsToSupport={[Html5QrcodeSupportedFormats.QR_CODE, Html5QrcodeSupportedFormats.CODE_39]}
                       useBarCodeDetectorIfSupported={true}
                       fps={30}
                       qrbox={250}
                       disableFlip={false}
-                      qrCodeSuccessCallback={onScanResult} 
-                      videoConstraints={{facingMode: 'environment'}}
+                      qrCodeSuccessCallback={onScanResult}
+                      videoConstraints={{ facingMode: 'environment' }}
                     />
                   </div>
                 )}
