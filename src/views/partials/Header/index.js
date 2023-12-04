@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import clsx from 'clsx';
 import style from './Header.module.scss';
 import Button from '../../components/Button';
-import { customStyles } from '../../pages/team/DashboardV2';
+import { customStyles } from '../../pages/team/dashboard/DashboardV2';
 import { withTranslation } from 'react-i18next';
 import { useStickyComponentsContext } from '../../../providers/StickyComponentsProvider';
 import { useDashboardContext } from '../../../providers/DashboardProvider';

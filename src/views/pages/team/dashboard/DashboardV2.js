@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import style from './DashboardV2.module.scss';
 // import Statistics from "../partials/Statistics";
 // import RestBar from "../partials/RestBar";
-import MemberTable from '../../partials/MemberTable';
+import MemberTable from 'views/partials/MemberTable';
 import Header from 'views/partials/Header';
 import { MembersProviderV2 } from 'providers/MembersProviderV2';
 import MemberOperation from 'views/partials/MemberOperation';
@@ -25,8 +25,8 @@ export const customStyles = (disabled = false) => ({
     backgroundColor: state.isSelected
       ? '#DE7D2C'
       : state.isFocused
-      ? '#5BAEB6'
-      : state.data.color ?? 'white',
+        ? '#5BAEB6'
+        : state.data.color ?? 'white',
     zIndex: 6,
     color: 'black',
     fontSize: '21px',

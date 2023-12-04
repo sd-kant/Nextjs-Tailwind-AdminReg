@@ -21,7 +21,7 @@ import clsx from 'clsx';
 import style from './Chart.module.scss';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
-import { customStyles } from '../../team/DashboardV2';
+import { customStyles } from '../../team/dashboard/DashboardV2';
 import ResponsiveSelect from '../../../components/ResponsiveSelect';
 import {
   chartPlugins,
