@@ -5,7 +5,7 @@ import ReactToPrint from 'react-to-print';
 import { useTranslation } from 'react-i18next';
 
 import style from './FilterBoard.module.scss';
-import { customStyles } from '../team/DashboardV2';
+import { customStyles } from '../team/dashboard/DashboardV2';
 import ResponsiveSelect from '../../components/ResponsiveSelect';
 import MultiSelectPopup from '../../components/MultiSelectPopup';
 import { useBasicContext } from '../../../providers/BasicProvider';

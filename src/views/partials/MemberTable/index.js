@@ -18,6 +18,7 @@ const MemberTable = ({ t, forceWidthUpdate, isLoading }) => {
     visibleMemberModal,
     setVisibleMemberModal
   } = useDashboardContext();
+
   const storedVisibleColumns = localStorage.getItem('visibleColumns');
   const parsedVisibleColumns = storedVisibleColumns ? JSON.parse(storedVisibleColumns) : null;
   const validVisibleColumns = parsedVisibleColumns ?? [

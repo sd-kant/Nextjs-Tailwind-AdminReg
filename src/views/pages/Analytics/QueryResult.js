@@ -9,7 +9,7 @@ import { get } from 'lodash';
 // import Toggle from '../../components/Toggle';
 import { useAnalyticsContext } from '../../../providers/AnalyticsProvider';
 import ResponsiveSelect from '../../components/ResponsiveSelect';
-import { customStyles } from '../team/DashboardV2';
+import { customStyles } from '../team/dashboard/DashboardV2';
 import exportIcon from '../../../assets/images/export.svg';
 import Toolbar from './Toolbar';
 import { useTranslation } from 'react-i18next';

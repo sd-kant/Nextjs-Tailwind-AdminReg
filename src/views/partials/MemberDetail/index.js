@@ -12,7 +12,7 @@ import thermometer from 'assets/images/thermometer-orange.svg';
 import heart from 'assets/images/heart.svg';
 import { get } from 'lodash';
 import ResponsiveSelect from 'views/components/ResponsiveSelect';
-import { customStyles } from 'views/pages/team/DashboardV2';
+import { customStyles } from 'views/pages/team/dashboard/DashboardV2';
 import { numMinutesBetweenWithNow as numMinutesBetween } from 'utils';
 import BatteryV3 from 'views/components/BatteryV3';
 import { formatHeartRate } from 'utils/dashboard';
