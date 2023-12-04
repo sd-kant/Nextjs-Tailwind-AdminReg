@@ -14,6 +14,7 @@ import {
 } from '../http';
 import axios from 'axios';
 import {
+  getLastDigitsOfDeviceId,
   getLatestDateBeforeNow as getLatestDate,
   getParamFromUrl,
   numMinutesBetweenWithNow as numMinutesBetween,
@@ -60,7 +61,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   const [page, setPage] = React.useState(null);
   const [sizePerPage, setSizePerPage] = React.useState(10);
   const [keyword, setKeyword] = React.useState(keywordInUrl ?? '');
-  const trimmedKeyword = React.useMemo(() => keyword.trim(), [keyword]);
+  const trimmedKeyword = React.useMemo(() => keyword?.trim(), [keyword]);
   const [count, setCount] = React.useState(0);
 
   const [valuesV2, _setValuesV2] = React.useState({
@@ -477,10 +478,21 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       if (['', null, undefined].includes(trimmedKeyword)) {
         return true;
       }
+      const lowerCaseKeyword = trimmedKeyword.toLowerCase();
+
+      const isFirstValid =
+        it.firstName?.toLowerCase()?.includes(lowerCaseKeyword) ||
+        it.lastName?.toLowerCase()?.includes(lowerCaseKeyword) ||
+        it.email?.toLowerCase()?.includes(lowerCaseKeyword) ||
+        (!isNaN(lowerCaseKeyword) && it.userId == lowerCaseKeyword);
+      if (isFirstValid) return true;
+
       return (
-        it.firstName?.toLowerCase()?.includes(trimmedKeyword?.toLowerCase()) ||
-        it.lastName?.toLowerCase()?.includes(trimmedKeyword?.toLowerCase()) ||
-        it.email?.toLowerCase()?.includes(trimmedKeyword?.toLowerCase())
+        lowerCaseKeyword.length >= 4 &&
+        it.stat?.deviceId &&
+        it.stat?.deviceId !== '<none>' &&
+        getLastDigitsOfDeviceId(it.stat?.deviceId).toLowerCase() ===
+          getLastDigitsOfDeviceId(lowerCaseKeyword).toLowerCase()
       );
     });
   }, [formattedMembers, trimmedKeyword]);

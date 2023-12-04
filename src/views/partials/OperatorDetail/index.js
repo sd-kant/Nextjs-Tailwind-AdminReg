@@ -21,7 +21,7 @@ import ResponsiveSelect from 'views/components/ResponsiveSelect';
 import BatteryV3 from 'views/components/BatteryV3';
 import Button from 'views/components/Button';
 
-import { customStyles } from 'views/pages/team/DashboardV2';
+import { customStyles } from 'views/pages/team/dashboard/DashboardV2';
 
 import MetricLogs from './MetricLogs';
 import ActivityLogs from './ActivityLogs';

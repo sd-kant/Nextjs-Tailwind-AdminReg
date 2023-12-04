@@ -133,6 +133,42 @@ declare global {
     type: 'user' | 'team';
     category: number;
   };
+
+  interface TeamV2TableRow {
+    alert: unknown;
+    alertObj: { label: string; value: unknown };
+    alertsForMe: unknown[];
+    connectionObj: { label: string; value: number };
+    dateOfBirth: string;
+    email: string;
+    firstName: string;
+    gmt: string;
+    heatSusceptibility: string;
+    invisibleAlerts: boolean;
+    invisibleBattery: boolean;
+    invisibleDeviceMac: boolean;
+    invisibleHeatRisk: boolean;
+    invisibleLastSync: boolean;
+    invisibleLastUpdates: boolean;
+    job: string;
+    lastName: string;
+    lastSync: Date;
+    lastSyncStr: string;
+    locale: string;
+    locked: boolean;
+    numberOfAlerts: number;
+    orgId: number;
+    phoneNumber: string;
+    settings: {
+      hideCbtHR: boolean;
+      teamAlerts: { enabled: boolean; notificationLevels: number[]; teamId: number }[];
+    };
+    stat: T_MemberStat[];
+    teamId: number;
+    teams: T_Team[];
+    userId: number;
+    userTypes: string; // Operator, TeamAdmin, ...
+  }
 }
 
 export {};

@@ -12,7 +12,7 @@ import Toggle from '../../components/Toggle';
 import { filters } from '../../modals/MemberDetailModal';
 import RestBarSetting from '../../modals/RestBarSetting';
 import RoundIcon from '../../components/RoundIcon';
-import { customStyles } from '../../pages/team/DashboardV2';
+import { customStyles } from '../../pages/team/dashboard/DashboardV2';
 
 const RestBar = ({ t, boxShadow = false }) => {
   const [outdoor, setOutdoor] = React.useState(false);
