@@ -123,3 +123,9 @@
     }
   }
 }
+
+@media only screen and (min-width: 1110px) {
+  .Row {
+    grid-template-columns: 200px 200px 200px;
+  }
+}
