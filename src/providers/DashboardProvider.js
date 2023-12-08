@@ -17,6 +17,7 @@ import {
   getLastDigitsOfDeviceId,
   getLatestDateBeforeNow as getLatestDate,
   getParamFromUrl,
+  hasStatusValue,
   numMinutesBetweenWithNow as numMinutesBetween,
   updateUrlParam
 } from '../utils';
@@ -24,6 +25,7 @@ import { withTranslation } from 'react-i18next';
 import { get, unionBy } from 'lodash';
 import {
   ALERT_STAGE_ID_LIST,
+  ALERT_STAGE_STATUS,
   USER_TYPE_ADMIN,
   USER_TYPE_OPERATOR,
   USER_TYPE_ORG_ADMIN,
@@ -351,9 +353,9 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
             });
         }
 
-        // return () => {
-        //   source.cancel('cancel by user');
-        // };
+        return () => {
+          source.cancel('cancel by user');
+        };
       }
     } else {
       setValuesV2({
@@ -405,12 +407,19 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           (!(it?.alertStageId?.toString() === '5') ||
             numMinutesBetween(new Date(), new Date(it.utcTs)) <= 1)
       );
+      // get a latest alert
       const alert = alertsForMe?.sort(function (a, b) {
         return new Date(b.utcTs) - new Date(a.utcTs);
       })?.[0];
 
       const numberOfAlerts = (
-        alertsForMe?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? []
+        alertsForMe?.filter((it) =>
+          hasStatusValue(it?.alertStageId, [
+            ALERT_STAGE_STATUS.AT_RISK,
+            ALERT_STAGE_STATUS.ELEVATED_RISK,
+            ALERT_STAGE_STATUS.SAFE
+          ])
+        ) ?? []
       )?.length;
       const alertObj = formatAlert(alert?.alertStageId);
       const connectionObj = formatConnectionStatusV2({

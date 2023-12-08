@@ -5,7 +5,7 @@ import Settings from '../components/Settings';
 
 import clsx from 'clsx';
 import style from './MainLayoutV2.module.scss';
-import { useWidthContext } from '../../providers/WidthProvider';
+// import { useWidthContext } from '../../providers/WidthProvider';
 import { useLocation } from 'react-router-dom';
 
 const MenuContent = () => {
@@ -23,12 +23,12 @@ const MenuContent = () => {
 };
 
 const MainLayoutV2 = ({ children }) => {
-  const { tableWidth } = useWidthContext();
+  // const { tableWidth } = useWidthContext();
 
   return (
     <div className={clsx(style.Wrapper, 'content')}>
       <div className={clsx(style.Navbar)}>
-        <div className={clsx(style.NavbarMain)} style={{ width: `${tableWidth}px` }}>
+        <div className={clsx(style.NavbarMain)}>
           <img src={logo} alt="logo" />
 
           <div className={clsx(style.RightArea)}>
@@ -38,7 +38,6 @@ const MainLayoutV2 = ({ children }) => {
           </div>
         </div>
       </div>
-
       <div className={clsx(style.Content, 'content--inner')}>{children}</div>
     </div>
   );

@@ -372,3 +372,11 @@ export const isValidSerialNumber = (str) => {
 export const getLastDigitsOfDeviceId = (deviceId, digits = 4) => {
   return deviceId.replace(/\W/g, '')?.slice(-digits);
 };
+
+export const hasStatusValue = (value, statusValues) => {
+  if (value === null || value === undefined) return false;
+
+  return statusValues
+    .map((it) => it.toString().trim().toLowerCase())
+    .includes(value.toString().trim().toLowerCase());
+};
