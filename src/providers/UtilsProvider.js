@@ -4,12 +4,18 @@ import { withTranslation } from 'react-i18next';
 import { get } from 'lodash';
 import { celsiusToFahrenheit, numMinutesBetweenWithNow as numMinutesBetween } from '../utils';
 import { isProductionMode } from '../App';
-import { HEART_CBT_VALUES, HEART_RATE_VALUES, INVALID_VALUES2, STAGE_VALUES } from '../constant';
+import {
+  DEVICE_CONNECTION_STATUS,
+  HEART_CBT_VALUES,
+  HEART_RATE_VALUES,
+  INVALID_VALUES2,
+  STAGE_VALUES
+} from '../constant';
 
 const UtilsContext = React.createContext(null);
 
 export const UtilsProviderDraft = ({ t, metric, children }) => {
-  const formatConnectionStatusV2 = ({ flag, deviceId, connected, stat, alert }) => {
+  const formatConnectionStatusV2 = ({ flag: onOffFlag, deviceId, connected, stat, alert }) => {
     const calc = () => {
       if (
         numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 60 ||
@@ -18,12 +24,12 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 20) {
           return {
             label: t('device connected'),
-            value: 3
+            value: DEVICE_CONNECTION_STATUS.CONNECTED
           };
         } else {
           return {
             label: t('limited connectivity'),
-            value: 4
+            value: DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION
           };
         }
       } else if (
@@ -34,7 +40,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
       ) {
         return {
           label: t('limited connectivity'),
-          value: 4
+          value: DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION
         };
       } else if (
         (numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 90 &&
@@ -43,12 +49,12 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
       ) {
         return {
           label: t('no connection'),
-          value: 7
+          value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
         };
       } else {
         return {
           label: t('no connection'),
-          value: 8
+          value: DEVICE_CONNECTION_STATUS.NO_CONNECTION
         };
       }
     };
@@ -57,23 +63,23 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
       // if no device
       return {
         label: t('never connected'),
-        value: 1
+        value: DEVICE_CONNECTION_STATUS.NEVER_CONNECTION
       };
     }
     if (stat?.chargingFlag) {
       if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 2) {
         return {
           label: t('charging'),
-          value: 2
+          value: DEVICE_CONNECTION_STATUS.CHARGING
         };
       }
       return {
         label: t('no connection'),
-        value: 8
+        value: DEVICE_CONNECTION_STATUS.NO_CONNECTION
       };
     }
 
-    if (connected && flag) {
+    if (connected && onOffFlag) {
       return calc();
     } else {
       if (
@@ -81,25 +87,28 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         numMinutesBetween(new Date(), new Date(stat?.lastOnTs)) <= 5
       ) {
         return calc();
-      } else if (!flag && numMinutesBetween(new Date(), new Date(stat?.lastOnTs)) <= 20) {
+      } else if (
+        connected &&
+        !onOffFlag &&
+        numMinutesBetween(new Date(), new Date(stat?.lastOnTs)) <= 20
+      ) {
         return {
           label: t('check device'),
-          value: 7
+          value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
         };
-      }
-      // else if (
-      //   !connected &&
-      //   numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20
-      // ) {
-      //   return {
-      //     label: t('check app'),
-      //     value: 7
-      //   };
-      // }
-      else {
+      } else if (
+        onOffFlag &&
+        !connected &&
+        numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20
+      ) {
+        return {
+          label: t('check app'),
+          value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
+        };
+      } else {
         return {
           label: t('no connection'),
-          value: 8
+          value: DEVICE_CONNECTION_STATUS.NO_CONNECTION
         };
       }
     }

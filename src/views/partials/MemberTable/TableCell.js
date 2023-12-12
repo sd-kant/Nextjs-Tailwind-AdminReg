@@ -7,8 +7,8 @@ import style from './TableCell.module.scss';
 import { formatDevice4Digits, formatHeartRate } from '../../../utils/dashboard';
 import BatteryV3 from '../../components/BatteryV3';
 import { useTranslation } from 'react-i18next';
-import { TIME_FORMAT_YYYYMDHM } from '../../../constant';
-import { numMinutesBetweenWithNow as numMinutesBetween } from '../../../utils';
+import { DEVICE_CONNECTION_STATUS, TIME_FORMAT_YYYYMDHM } from '../../../constant';
+import { hasStatusValue, numMinutesBetweenWithNow as numMinutesBetween } from '../../../utils';
 
 const TableCell = ({ value, member, metric, hideCbtHR }) => {
   const {
@@ -36,7 +36,11 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
   // fixme duplicated
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
-  const cellGray = ['1', '2', '8'].includes(connectionObj?.value?.toString())
+  const cellGray = hasStatusValue(connectionObj?.value, [
+    DEVICE_CONNECTION_STATUS.NEVER_CONNECTION,
+    DEVICE_CONNECTION_STATUS.CHARGING,
+    DEVICE_CONNECTION_STATUS.NO_CONNECTION
+  ])
     ? style.NoConnection
     : null;
   const { t } = useTranslation();

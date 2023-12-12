@@ -682,6 +682,13 @@ export const INVALID_VALUES2 = [null, undefined, '0', ''];
 export const INVALID_VALUES3 = [null, undefined, 'null', 'undefined', ''];
 export const INVALID_VALUES4 = ['', null, undefined];
 export const MINUTE_OPTIONS = ['00', '15', '30', '45'];
+export const ALERT_STAGE_STATUS = {
+  AT_RISK: 1,
+  ELEVATED_RISK: 2,
+  SAFE: 3,
+  SAFE_4: 4,
+  MANUAL_TEST_ALERT: 5
+};
 export const STAGE_VALUES = [
   {
     label: 'N/A',
@@ -795,3 +802,33 @@ export const CM_OPTIONS = Array.from(Array(101).keys()).reverse();
 
 export const NEWS_PAGINATION = 10;
 export const NEWS_RECENT_PAGINATION = 5;
+
+export const DEVICE_CONNECTION_STATUS = {
+  NEVER_CONNECTION: 1, // deviceId includes none
+  CHARGING: 2, // chargingFlag == true && stat.deviceLogTs << 2 mins
+  CONNECTED: 3, // ( alert.utcTs << 60 mins || stat.heartRateTs << 60 mins ) && stat.deviceLogTs << 20 mins
+  LIMITED_CONNECTION: 4, // stat.deviceLogTs >> 20 mins
+  CHECK_DEVICE: 7, // onOff == false && lastOnTs << 20 mins
+  NO_CONNECTION: 8 // ( chargingFlag == true && stat.deviceLogTs >> 2 mins ) || ( connected == false && onOff == false)
+};
+
+export const ACME_INSTANCE_BASE_URI = 'api.acme.dev.kenzen.com';
+
+export const DEMO_DATA_MINUTE = {
+  FULL_CYCLE: 0,
+  FIRST: 1,
+  FIFTH: 5,
+  NONE: -1,
+  WITHIN_24_HR: 1140,
+  WITHIN_20_MINUTES: 20,
+  WITHIN_AN_HOUR: 60,
+  OUT_20_MINUTES: -20,
+  OUT_24_HR: -1140
+};
+
+export const SUBSCRIBE_EVENT_DATA_TYPE = {
+  ALERT: 'Alert',
+  HEART_RATE: 'HeartRate',
+  DEVICE_LOG: 'DeviceLog',
+  TEMP_HUMIDITY: 'TempHumidity'
+};

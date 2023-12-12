@@ -169,6 +169,12 @@ declare global {
     userId: number;
     userTypes: string; // Operator, TeamAdmin, ...
   }
+
+  interface EVENT_HEART_RATE {
+    utcTs: string;
+    heartCbtAvg: number;
+    heartRateAvg: number;
+  }
 }
 
 export {};

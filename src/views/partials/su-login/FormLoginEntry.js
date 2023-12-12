@@ -17,6 +17,7 @@ import {
 import { apiBaseUrl } from '../../../config';
 import { Buffer } from 'buffer';
 import {
+  setBaseUriAction,
   setLoggedInAction,
   setLoginSuccessAction,
   setPasswordExpiredAction,
@@ -54,6 +55,7 @@ const FormLoginEntry = (props) => {
     setPasswordExpired,
     showErrorNotification,
     setRegisterLoginSuccess,
+    setBaseUri,
     mobile // true when rendering from /mobile-login
   } = props;
   const navigate = useNavigate();
@@ -87,6 +89,7 @@ const FormLoginEntry = (props) => {
             const token = getParamFromUrl('token');
             setRegisterLoginSuccess({ token: accessToken, userType, organizationId: orgId });
             setLoggedIn({ loggedIn: true });
+            setBaseUri(baseUri);
             setStorageAfterRegisterLogin({
               token: accessToken,
               baseUrl: baseUri
@@ -117,6 +120,7 @@ const FormLoginEntry = (props) => {
             setPasswordExpired(false);
             setLoggedIn({ loggedIn: true });
             localStorage.setItem('kop-v2-logged-in', 'true');
+            setBaseUri(baseUri);
             setStorageAfterLogin({
               token: accessToken,
               refreshToken,
@@ -236,7 +240,8 @@ const mapDispatchToProps = (dispatch) =>
       setLoginSuccess: setLoginSuccessAction,
       setRegisterLoginSuccess: setRegisterLoginSuccessAction,
       setLoggedIn: setLoggedInAction,
-      setPasswordExpired: setPasswordExpiredAction
+      setPasswordExpired: setPasswordExpiredAction,
+      setBaseUri: setBaseUriAction
     },
     dispatch
   );

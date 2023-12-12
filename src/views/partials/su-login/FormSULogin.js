@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { Form, withFormik } from 'formik';
 import { bindActionCreators } from 'redux';
 import { setRestBarClassAction, showErrorNotificationAction } from '../../../redux/action/ui';
-import { loginAction } from '../../../redux/action/auth';
+import { loginAction, setBaseUriAction } from '../../../redux/action/auth';
 import {
   checkPasswordValidation,
   checkUsernameValidation1,
@@ -41,7 +41,7 @@ export const formSchema = (t) => {
 };
 
 const FormSULogin = (props) => {
-  const { values, errors, touched, t, setFieldValue, setRestBarClass } = props;
+  const { values, errors, touched, t, setFieldValue, setRestBarClass, setBaseUri } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,6 +56,7 @@ const FormSULogin = (props) => {
       const token = getParamFromUrl('token');
       const baseUri = getParamFromUrl('baseUri');
       localStorage.setItem('kop-v2-base-url', baseUri);
+      setBaseUri(baseUri);
       // set api base url
       instance.defaults.baseURL = baseUri;
 
@@ -179,7 +180,8 @@ const mapDispatchToProps = (dispatch) =>
     {
       setRestBarClass: setRestBarClassAction,
       loginAction: loginAction,
-      showErrorNotification: showErrorNotificationAction
+      showErrorNotification: showErrorNotificationAction,
+      setBaseUri: setBaseUriAction
     },
     dispatch
   );

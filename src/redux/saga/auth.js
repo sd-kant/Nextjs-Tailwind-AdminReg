@@ -78,7 +78,12 @@ function* loginSaga({
           loggedIn: !mfa
         }
       });
-
+      yield put({
+        type: actionTypes.SET_BASE_URI,
+        payload: {
+          baseUri: instance.defaults.baseURL
+        }
+      });
       if (fromRegister) {
         setStorageAfterRegisterLogin({
           token,

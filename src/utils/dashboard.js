@@ -136,8 +136,8 @@ export const sortMembers = ({ arrOrigin, filter }) => {
           ? a.firstName?.localeCompare(b.firstName)
           : a.lastName?.localeCompare(b.lastName)
         : b.lastName?.localeCompare(a.lastName) === 0
-        ? b.firstName?.localeCompare(a.firstName)
-        : b.lastName?.localeCompare(a.lastName);
+          ? b.firstName?.localeCompare(a.firstName)
+          : b.lastName?.localeCompare(a.lastName);
     });
   }
   if ([1, 2].includes(filter?.heatRisk)) {
