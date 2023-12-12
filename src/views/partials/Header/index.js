@@ -20,10 +20,11 @@ const Header = ({ t, myOrganization }) => {
   const {
     pickedTeams,
     setPickedTeams,
-    organization,
     setOrganization,
     formattedTeams,
+    selectedTeams,
     formattedOrganizations,
+    selectedOrganization,
     isAdmin,
     filteredMembers,
     formattedMembers,
@@ -142,9 +143,7 @@ const Header = ({ t, myOrganization }) => {
               styles={customStyles()}
               options={formattedOrganizations}
               maxMenuHeight={190}
-              value={formattedOrganizations?.find(
-                (it) => it.value?.toString() === organization?.toString()
-              )}
+              value={selectedOrganization}
               onChange={(v) => {
                 setOrganization(v.value);
                 setPickedTeams([]);
@@ -159,9 +158,7 @@ const Header = ({ t, myOrganization }) => {
             <MultiSelectPopup
               label={label}
               options={formattedTeams}
-              value={formattedTeams?.filter((it) =>
-                pickedTeams.some((ele) => ele.toString() === it.value?.toString())
-              )}
+              value={selectedTeams}
               onChange={(v) => {
                 setPickedTeams(v?.map((it) => it.value));
               }}

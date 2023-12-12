@@ -22,10 +22,13 @@ import {
   updateUrlParam
 } from '../utils';
 import { withTranslation } from 'react-i18next';
-import { get, unionBy } from 'lodash';
+import _, { get, unionBy } from 'lodash';
 import {
+  ACME_INSTANCE_BASE_URI,
   ALERT_STAGE_ID_LIST,
   ALERT_STAGE_STATUS,
+  DEMO_DATA_MINUTE,
+  SUBSCRIBE_EVENT_DATA_TYPE,
   USER_TYPE_ADMIN,
   USER_TYPE_OPERATOR,
   USER_TYPE_ORG_ADMIN,
@@ -36,10 +39,12 @@ import { useNotificationContext } from './NotificationProvider';
 import { formatLastSync, sortMembers } from '../utils/dashboard';
 import { setLoadingAction } from '../redux/action/ui';
 import { useUtilsContext } from './UtilsProvider';
+import { TEAM_ALERT_API_DATA, TEAM_DEVICE_API_DATA } from '../constant/demoDashboard';
+import moment from 'moment';
 
 const DashboardContext = React.createContext(null);
 
-const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganization }) => {
+const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganization, baseUri }) => {
   const [isAdmin, setIsAdmin] = React.useState(false);
 
   const sortBy = getParamFromUrl('sortBy');
@@ -88,6 +93,109 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   const { formatAlert, formatConnectionStatusV2 } = useUtilsContext();
 
   const forceUpdate = useForceUpdate();
+
+  const intervalDemoDataRef = React.useRef(0);
+  const demoEventData = React.useRef(null);
+
+  const numMinutesDemoData = React.useRef(0);
+
+  const generateDemoData = () => {
+    // ...
+    let tempAlerts = [],
+      tempDevices = [];
+    const currentTIme = new Date().getTime();
+
+    tempAlerts = _.chain(TEAM_ALERT_API_DATA)
+      .filter((it) => {
+        const ts = it.ts(numMinutesDemoData.current);
+        if (numMinutesDemoData.current === 0) {
+          return (
+            ts !== DEMO_DATA_MINUTE.NONE &&
+            [DEMO_DATA_MINUTE.WITHIN_AN_HOUR, DEMO_DATA_MINUTE.WITHIN_24_HR].includes(ts)
+          );
+        } else {
+          return ts !== DEMO_DATA_MINUTE.NONE;
+        }
+      })
+      .map((it) => {
+        const type = it.ts(numMinutesDemoData.current);
+        let ts = moment();
+        switch (type) {
+          case DEMO_DATA_MINUTE.FIRST:
+            ts.subtract(30, 'seconds');
+            break;
+          case DEMO_DATA_MINUTE.FIFTH:
+            ts.subtract(1, 'minutes');
+            break;
+          case DEMO_DATA_MINUTE.FULL_CYCLE:
+            ts.subtract(2, 'minutes');
+            break;
+          case DEMO_DATA_MINUTE.WITHIN_AN_HOUR:
+            ts.subtract(40, 'minutes');
+            break;
+          case DEMO_DATA_MINUTE.WITHIN_24_HR:
+            ts.subtract(20, 'hours');
+            break;
+        }
+
+        return {
+          ...it,
+          utcTs: ts.toISOString(),
+          alertStageId:
+            typeof it.alertStageId === 'function' ? it.alertStageId(type) : it.alertStageId,
+          heartCbtAvg: typeof it.heartCbtAvg === 'function' ? it.heartCbtAvg(type) : it.heartCbtAvg,
+          heartRateAvg:
+            typeof it.heartRateAvg === 'function' ? it.heartRateAvg(type) : it.heartRateAvg
+        };
+      })
+      .groupBy('userId')
+      .map((items, userId) => {
+        return {
+          userId,
+          data: items[0],
+          ts: currentTIme,
+          type: SUBSCRIBE_EVENT_DATA_TYPE.ALERT
+        };
+      })
+      .value();
+
+    tempDevices = _.chain(TEAM_DEVICE_API_DATA)
+      .map((it) => {
+        let ts = moment();
+        switch (it.utcTs) {
+          case DEMO_DATA_MINUTE.WITHIN_20_MINUTES:
+            ts.subtract(13, 'minutes');
+            break;
+          case DEMO_DATA_MINUTE.OUT_20_MINUTES:
+            ts.subtract(25, 'minutes');
+            break;
+          case DEMO_DATA_MINUTE.OUT_24_HR:
+            ts.subtract(30, 'hours');
+        }
+        const stat = valuesV2Ref.current.stats?.find((d) => d.userId === it.userId);
+        return { ...it, utcTs: ts.toISOString(), deviceId: stat?.deviceId };
+      })
+      .groupBy('userId')
+      .map((items, userId) => {
+        return {
+          userId,
+          data: items[0],
+          type: SUBSCRIBE_EVENT_DATA_TYPE.DEVICE_LOG,
+          ts: currentTIme
+        };
+      })
+      .value();
+
+    demoEventData.current = [
+      ...tempAlerts,
+      ...tempAlerts.map((it) => {
+        return { ...it, type: SUBSCRIBE_EVENT_DATA_TYPE.HEART_RATE };
+      }),
+      ...tempDevices
+    ];
+
+    numMinutesDemoData.current = numMinutesDemoData.current + 1;
+  };
 
   React.useEffect(() => {
     queryTeams()
@@ -138,12 +246,33 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   }, [myOrganization?.id, isAdmin]);
 
   React.useEffect(() => {
+    function startDemoData() {
+      numMinutesDemoData.current = 0;
+      const intervalId = setInterval(generateDemoData, 60 * 1000);
+      intervalDemoDataRef.current = intervalId;
+    }
+
+    function stopDemoData() {
+      const intervalId = intervalDemoDataRef.current;
+      if (intervalId) clearInterval(intervalId);
+    }
+
     updateUrlParam({ param: { key: 'organization', value: organization } });
     localStorage.setItem('kop-params', location.search);
+
+    if (organization < 0) {
+      startDemoData();
+    } else {
+      stopDemoData();
+    }
+
+    return () => {
+      stopDemoData();
+    };
   }, [organization]);
 
   const hideCbtHR = React.useMemo(() => {
-    const item = organizations?.find((it) => it.id?.toString() === organization?.toString());
+    const item = organizations?.find((it) => it.id == Math.abs(organization));
     return item?.settings?.hideCbtHR;
   }, [organization, organizations]);
 
@@ -162,8 +291,15 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     const ret = [];
     teams?.forEach((team) => {
       if (isAdmin) {
-        if (organization) {
+        if (organization > 0) {
           if (team?.orgId?.toString() === organization?.toString()) {
+            ret.push({
+              value: team.id,
+              label: team.name
+            });
+          }
+        } else if (baseUri?.includes(ACME_INSTANCE_BASE_URI) && organization < 0) {
+          if (team?.orgId == Math.abs(organization)) {
             ret.push({
               value: team.id,
               label: team.name
@@ -179,7 +315,13 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     });
 
     return ret;
-  }, [organization, teams, isAdmin]);
+  }, [organization, teams, isAdmin, baseUri]);
+
+  const selectedTeams = React.useMemo(() => {
+    return formattedTeams?.filter((it) =>
+      pickedTeams.some((ele) => ele.toString() === it.value?.toString())
+    );
+  }, [formattedTeams, pickedTeams]);
 
   React.useEffect(() => {
     if (formattedTeams?.length === 1 && pickedTeams?.length === 0) {
@@ -240,10 +382,10 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                           result.value?.data?.members?.filter(
                             (it) => it.teamId?.toString() === validPickedTeams?.[index]?.toString()
                           ) ?? [];
-                        const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                        //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
                         setValuesV2({
-                          ...prev,
-                          members: unionBy(prev.members, operators, 'userId')
+                          ...valuesV2Ref.current,
+                          members: unionBy(valuesV2Ref.current?.members, operators, 'userId')
                         });
                       }
                     }
@@ -259,10 +401,10 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                   results?.forEach((result) => {
                     if (result.status === 'fulfilled') {
                       if (result.value?.data?.length > 0) {
-                        const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                        // const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
                         setValuesV2({
-                          ...prev,
-                          stats: [...prev.stats, ...result.value?.data]
+                          ...valuesV2Ref.current,
+                          stats: [...valuesV2Ref.current?.stats, ...result.value?.data]
                         });
                       }
                     }
@@ -280,30 +422,44 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                   results?.forEach((result) => {
                     if (result.status === 'fulfilled') {
                       if (result.value?.data?.length > 0) {
-                        const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                        const updated = [
-                          ...prev.alerts,
-                          ...result.value?.data?.map((it) => ({
-                            ...it,
-                            utcTs: it.ts
-                          }))
-                        ];
-                        let uniqueUpdated = [];
-                        for (const entry of updated) {
-                          if (
-                            !uniqueUpdated.some(
-                              (x) => entry.utcTs === x.utcTs && entry.userId === x.userId
-                            )
-                          ) {
-                            uniqueUpdated.push(entry);
-                          }
-                        }
-                        uniqueUpdated = uniqueUpdated?.filter((it) =>
-                          ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString())
-                        );
+                        //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                        // const updated = [
+                        //   ...valuesV2Ref.current?.alerts,
+                        //   ...result.value?.data?.map((it) => ({
+                        //     ...it,
+                        //     utcTs: it.ts
+                        //   }))
+                        // ];
+                        // let uniqueUpdated = [];
+                        // for (const entry of updated) {
+                        //   if (
+                        //     !uniqueUpdated.some(
+                        //       (x) => entry.utcTs === x.utcTs && entry.userId === x.userId
+                        //     )
+                        //   ) {
+                        //     uniqueUpdated.push(entry);
+                        //   }
+                        // }
+                        // uniqueUpdated = uniqueUpdated?.filter((it) =>
+                        //   ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString())
+                        // );
+
+                        const uniqueUpdated = _.chain(valuesV2Ref.current?.alerts)
+                          .concat(
+                            result.value?.data?.map((it) => {
+                              return { ...it, utcTs: it.ts };
+                            })
+                          )
+                          .uniqBy(function (_alert) {
+                            return _alert.utcTs + _alert.userId;
+                          })
+                          .filter(function (_alert) {
+                            return hasStatusValue(_alert.alertStageId, ALERT_STAGE_ID_LIST);
+                          })
+                          .value();
 
                         setValuesV2({
-                          ...prev,
+                          ...valuesV2Ref.current,
                           alerts: uniqueUpdated
                         });
                       }
@@ -322,10 +478,10 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                   results?.forEach((result) => {
                     if (result.status === 'fulfilled') {
                       if (result.value?.data?.length > 0) {
-                        const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                        //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
                         setValuesV2({
-                          ...prev,
-                          devices: [...prev.devices, ...result.value?.data]
+                          ...valuesV2Ref.current,
+                          devices: [...valuesV2Ref.current?.devices, ...result.value?.data]
                         });
                       }
                     }
@@ -338,6 +494,12 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           setLoading(true);
           Promise.allSettled([a(), b(), c(), e()])
             .then(() => {
+              if (organization < 0) {
+                //
+                generateDemoData();
+                console.log('first demo event data', demoEventData.current);
+                updateDataFromDemoEvent(demoEventData.current);
+              }
               // fixme there might be new events between the time when api returned and now
               const d = new Date().getTime();
               setHorizon(d);
@@ -369,12 +531,26 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   }, [pickedTeams, refreshCount, formattedTeams]);
 
   const formattedOrganizations = React.useMemo(() => {
-    return organizations?.map((organization) => ({
+    let orgs = organizations?.map((organization) => ({
       value: organization.id,
       label: organization.name,
       country: organization.country
     }));
-  }, [organizations]);
+    if (baseUri?.includes(ACME_INSTANCE_BASE_URI)) {
+      let kenzenOrg = organizations?.find((org) => org.name == 'Kenzen');
+      if (kenzenOrg) {
+        orgs.push({
+          value: -kenzenOrg.id,
+          label: 'Demo Kenzen'
+        });
+      }
+    }
+    return orgs;
+  }, [organizations, baseUri]);
+
+  const selectedOrganization = React.useMemo(() => {
+    return formattedOrganizations?.find((it) => it.value == organization);
+  }, [formattedOrganizations, organization]);
 
   React.useEffect(() => {
     if (
@@ -550,195 +726,201 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     }
   }, [paginatedMembers, member]);
 
+  const updateDataFromDemoEvent = React.useCallback(
+    (events) => {
+      if (events?.length > 0) {
+        const latestTs = events?.sort((a, b) => b.ts - a.ts)?.[0]?.ts;
+        if (latestTs) {
+          setHorizon(latestTs);
+          // sinceTs = horizonRef.current;
+        }
+        const alerts = events?.filter((it) => it.type === SUBSCRIBE_EVENT_DATA_TYPE.ALERT);
+        if (alerts?.length > 0) {
+          // const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+          // const updated = [...prev.alerts, ...alerts?.map((it) => it.data)];
+          // let uniqueUpdated = [];
+          // for (const entry of updated) {
+          //   if (
+          //     !uniqueUpdated.some(
+          //       (x) => entry.utcTs === x.utcTs && entry.userId === x.userId
+          //     )
+          //   ) {
+          //     uniqueUpdated.push(entry);
+          //   }
+          // }
+          // uniqueUpdated = uniqueUpdated?.filter((it) =>
+          //   ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString())
+          // );
+          const uniqueUpdated = _.chain(valuesV2Ref.current.alerts)
+            .concat(alerts?.map((it) => it.data))
+            .uniqBy(function (_alert) {
+              return _alert.utcTs + _alert.userId;
+            })
+            .filter(function (_alert) {
+              return hasStatusValue(_alert.alertStageId, ALERT_STAGE_ID_LIST);
+            })
+            .value();
+
+          setValuesV2({
+            ...valuesV2Ref.current,
+            alerts: uniqueUpdated
+          });
+        }
+
+        let valuesV2Temp = JSON.parse(JSON.stringify(valuesV2Ref.current));
+
+        valuesV2Temp?.members?.forEach((member, memberIndex) => {
+          const memberEvents = events?.filter(
+            (it) => it.userId?.toString() === member.userId.toString()
+          );
+          const latestHeartRate = memberEvents
+            ?.filter((it) => it.type === SUBSCRIBE_EVENT_DATA_TYPE.HEART_RATE)
+            ?.sort(
+              (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
+            )?.[0]?.data;
+          // update member's devices list
+          const memberDeviceLogs = memberEvents?.filter(
+            (it) => it.type === SUBSCRIBE_EVENT_DATA_TYPE.DEVICE_LOG
+          );
+          const latestDeviceLog = memberDeviceLogs?.sort(
+            (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
+          )?.[0]?.data;
+
+          if (latestHeartRate) {
+            const membersTemp = JSON.parse(JSON.stringify(valuesV2Temp?.members));
+            const updatedMember = {
+              ...member,
+              heatSusceptibility: latestHeartRate.heatSusceptibility
+            };
+            membersTemp.splice(memberIndex, 1, updatedMember);
+            valuesV2Temp = {
+              ...valuesV2Temp,
+              members: membersTemp
+            };
+          }
+
+          if (memberDeviceLogs?.length > 0) {
+            const devicesTemp = JSON.parse(JSON.stringify(valuesV2Temp?.devices));
+            const devicesMemberIndex =
+              devicesTemp.findIndex((it) => it.userId?.toString() === member.userId?.toString()) ??
+              [];
+            const memberDeviceLogsData = memberDeviceLogs?.map((it) => ({
+              ...it.data,
+              ts: it.data?.utcTs
+            }));
+            let memberDevices = [];
+            if (devicesMemberIndex !== -1) {
+              memberDevices = devicesTemp[devicesMemberIndex].devices ?? [];
+            }
+            // fixme I assumed all device logs as kenzen device logs
+            memberDeviceLogsData?.forEach((it) => {
+              const index = memberDevices.findIndex(
+                (ele) => ele.deviceId?.toLowerCase() === it.deviceId?.toLowerCase()
+              );
+              if (index !== -1) {
+                memberDevices.splice(index, 1, {
+                  ...it,
+                  type: 'kenzen',
+                  version: memberDevices[index].version
+                });
+              } else {
+                memberDevices.push({ ...it, type: 'kenzen' });
+              }
+            });
+            if (devicesMemberIndex !== -1) {
+              devicesTemp.splice(devicesMemberIndex, 1, {
+                userId: member.userId,
+                devices: memberDevices
+              });
+            } else {
+              devicesTemp.push({ userId: member.userId, devices: memberDevices });
+            }
+            valuesV2Temp = {
+              ...valuesV2Temp,
+              devices: devicesTemp
+            };
+          }
+
+          const latestTempHumidity = memberEvents
+            ?.filter((it) => it.type === SUBSCRIBE_EVENT_DATA_TYPE.TEMP_HUMIDITY)
+            ?.sort(
+              (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
+            )?.[0]?.data;
+          const prev = JSON.parse(JSON.stringify(valuesV2Temp));
+          const statIndex = prev.stats?.findIndex(
+            (it) => it.userId?.toString() === member?.userId?.toString()
+          );
+          if (statIndex !== -1) {
+            const temp = JSON.parse(JSON.stringify(prev.stats));
+            let updatedLastConnectedTs = temp[statIndex].lastConnectedTs;
+            let updatedLastOnTs = temp[statIndex].lastOnTs;
+
+            if (latestDeviceLog) {
+              if (latestDeviceLog.onOff === true) {
+                updatedLastOnTs = latestDeviceLog.utcTs;
+              }
+              if (latestDeviceLog.connected === true) {
+                updatedLastConnectedTs = latestDeviceLog.utcTs;
+              }
+            }
+            const newEle = {
+              ...temp[statIndex],
+              batteryPercent: latestDeviceLog
+                ? latestDeviceLog?.batteryPercent
+                : temp[statIndex].batteryPercent,
+              chargingFlag: latestDeviceLog
+                ? latestDeviceLog?.charging
+                : temp[statIndex].chargingFlag,
+              cbtAvg: latestHeartRate ? latestHeartRate?.heartCbtAvg : temp[statIndex].cbtAvg,
+              deviceId: latestDeviceLog ? latestDeviceLog?.deviceId : temp[statIndex].deviceId,
+              deviceLogTs: latestDeviceLog ? latestDeviceLog?.utcTs : temp[statIndex].deviceLogTs,
+              heartRateAvg: latestHeartRate
+                ? latestHeartRate?.heartRateAvg
+                : temp[statIndex].heartRateAvg,
+              heartRateTs: latestHeartRate ? latestHeartRate?.utcTs : temp[statIndex].heartRateTs,
+              onOffFlag: latestDeviceLog ? latestDeviceLog?.onOff : temp[statIndex].onOffFlag,
+              skinTemp: latestTempHumidity
+                ? latestTempHumidity?.skinTemp
+                : temp[statIndex].skinTemp,
+              tempHumidityTs: latestTempHumidity
+                ? latestTempHumidity?.utcTs
+                : temp[statIndex].tempHumidityTs,
+              userId: member.userId,
+              lastConnectedTs: updatedLastConnectedTs,
+              lastOnTs: updatedLastOnTs
+            };
+            temp.splice(statIndex, 1, newEle);
+            valuesV2Temp = {
+              ...valuesV2Temp,
+              stats: temp
+            };
+          }
+        });
+
+        setValuesV2(valuesV2Temp);
+      }
+    },
+    [valuesV2Ref]
+  );
+
   const subscribe = React.useCallback(
     (ts, cancelToken) => {
       // fixme check whether the function that removes previous subscribe is correct
+      //let sinceTs = horizonRef.current;
       if (pickedTeams?.length > 0) {
-        let sinceTs = horizonRef.current;
         let subscribeAgain = true;
         subscribeDataEvents({
           filter: {
             teamIds: pickedTeams ?? []
           },
-          orgId: organization,
+          orgId: Math.abs(organization),
           horizon: ts,
           cancelToken
         })
           .then((res) => {
-            if (res.status?.toString() === '200') {
-              const events = res.data;
-              if (events?.length > 0) {
-                const latestTs = events?.sort((a, b) => b.ts - a.ts)?.[0]?.ts;
-                if (latestTs) {
-                  setHorizon(latestTs);
-                  sinceTs = latestTs;
-                }
-                const alerts = events?.filter((it) => it.type === 'Alert');
-                if (alerts?.length > 0) {
-                  const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                  const updated = [...prev.alerts, ...alerts?.map((it) => it.data)];
-                  let uniqueUpdated = [];
-                  for (const entry of updated) {
-                    if (
-                      !uniqueUpdated.some(
-                        (x) => entry.utcTs === x.utcTs && entry.userId === x.userId
-                      )
-                    ) {
-                      uniqueUpdated.push(entry);
-                    }
-                  }
-                  uniqueUpdated = uniqueUpdated?.filter((it) =>
-                    ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString())
-                  );
-                  setValuesV2({
-                    ...prev,
-                    alerts: uniqueUpdated
-                  });
-                }
-
-                let valuesV2Temp = JSON.parse(JSON.stringify(valuesV2Ref.current));
-
-                valuesV2Temp?.members?.forEach((member, memberIndex) => {
-                  const memberEvents = events?.filter(
-                    (it) => it.userId?.toString() === member.userId.toString()
-                  );
-                  const latestHeartRate = memberEvents
-                    ?.filter((it) => it.type === 'HeartRate')
-                    ?.sort(
-                      (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
-                    )?.[0]?.data;
-
-                  // update member's devices list
-                  const memberDeviceLogs = memberEvents?.filter((it) => it.type === 'DeviceLog');
-                  const latestDeviceLog = memberDeviceLogs?.sort(
-                    (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
-                  )?.[0]?.data;
-
-                  if (latestHeartRate) {
-                    const membersTemp = JSON.parse(JSON.stringify(valuesV2Temp?.members));
-                    const updatedMember = {
-                      ...member,
-                      heatSusceptibility: latestHeartRate.heatSusceptibility
-                    };
-                    membersTemp.splice(memberIndex, 1, updatedMember);
-                    valuesV2Temp = {
-                      ...valuesV2Temp,
-                      members: membersTemp
-                    };
-                  }
-
-                  if (memberDeviceLogs?.length > 0) {
-                    const devicesTemp = JSON.parse(JSON.stringify(valuesV2Temp?.devices));
-                    const devicesMemberIndex =
-                      devicesTemp.findIndex(
-                        (it) => it.userId?.toString() === member.userId?.toString()
-                      ) ?? [];
-                    const memberDeviceLogsData = memberDeviceLogs?.map((it) => ({
-                      ...it.data,
-                      ts: it.data?.utcTs
-                    }));
-                    let memberDevices = [];
-                    if (devicesMemberIndex !== -1) {
-                      memberDevices = devicesTemp[devicesMemberIndex].devices ?? [];
-                    }
-                    // fixme I assumed all device logs as kenzen device logs
-                    memberDeviceLogsData?.forEach((it) => {
-                      const index = memberDevices.findIndex(
-                        (ele) => ele.deviceId?.toLowerCase() === it.deviceId?.toLowerCase()
-                      );
-                      if (index !== -1) {
-                        memberDevices.splice(index, 1, {
-                          ...it,
-                          type: 'kenzen',
-                          version: memberDevices[index].version
-                        });
-                      } else {
-                        memberDevices.push({ ...it, type: 'kenzen' });
-                      }
-                    });
-                    if (devicesMemberIndex !== -1) {
-                      devicesTemp.splice(devicesMemberIndex, 1, {
-                        userId: member.userId,
-                        devices: memberDevices
-                      });
-                    } else {
-                      devicesTemp.push({ userId: member.userId, devices: memberDevices });
-                    }
-
-                    valuesV2Temp = {
-                      ...valuesV2Temp,
-                      devices: devicesTemp
-                    };
-                  }
-
-                  const latestTempHumidity = memberEvents
-                    ?.filter((it) => it.type === 'TempHumidity')
-                    ?.sort(
-                      (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
-                    )?.[0]?.data;
-                  const prev = JSON.parse(JSON.stringify(valuesV2Temp));
-                  const statIndex = prev.stats?.findIndex(
-                    (it) => it.userId?.toString() === member?.userId?.toString()
-                  );
-                  if (statIndex !== -1) {
-                    const temp = JSON.parse(JSON.stringify(prev.stats));
-                    let updatedLastConnectedTs = temp[statIndex].lastConnectedTs;
-                    let updatedLastOnTs = temp[statIndex].lastOnTs;
-
-                    if (latestDeviceLog) {
-                      if (latestDeviceLog.onOff === true) {
-                        updatedLastOnTs = latestDeviceLog.utcTs;
-                      }
-                      if (latestDeviceLog.connected === true) {
-                        updatedLastConnectedTs = latestDeviceLog.utcTs;
-                      }
-                    }
-                    const newEle = {
-                      ...temp[statIndex],
-                      batteryPercent: latestDeviceLog
-                        ? latestDeviceLog?.batteryPercent
-                        : temp[statIndex].batteryPercent,
-                      chargingFlag: latestDeviceLog
-                        ? latestDeviceLog?.charging
-                        : temp[statIndex].chargingFlag,
-                      cbtAvg: latestHeartRate
-                        ? latestHeartRate?.heartCbtAvg
-                        : temp[statIndex].cbtAvg,
-                      deviceId: latestDeviceLog
-                        ? latestDeviceLog?.deviceId
-                        : temp[statIndex].deviceId,
-                      deviceLogTs: latestDeviceLog
-                        ? latestDeviceLog?.utcTs
-                        : temp[statIndex].deviceLogTs,
-                      heartRateAvg: latestHeartRate
-                        ? latestHeartRate?.heartRateAvg
-                        : temp[statIndex].heartRateAvg,
-                      heartRateTs: latestHeartRate
-                        ? latestHeartRate?.utcTs
-                        : temp[statIndex].heartRateTs,
-                      onOffFlag: latestDeviceLog
-                        ? latestDeviceLog?.onOff
-                        : temp[statIndex].onOffFlag,
-                      skinTemp: latestTempHumidity
-                        ? latestTempHumidity?.skinTemp
-                        : temp[statIndex].skinTemp,
-                      tempHumidityTs: latestTempHumidity
-                        ? latestTempHumidity?.utcTs
-                        : temp[statIndex].tempHumidityTs,
-                      userId: member.userId,
-                      lastConnectedTs: updatedLastConnectedTs,
-                      lastOnTs: updatedLastOnTs
-                    };
-                    temp.splice(statIndex, 1, newEle);
-                    valuesV2Temp = {
-                      ...valuesV2Temp,
-                      stats: temp
-                    };
-                  }
-                });
-
-                setValuesV2(valuesV2Temp);
-              }
+            if (res.status?.toString() === '200' && organization > 0) {
+              //
+              updateDataFromDemoEvent(res.data);
             } else if (res.status?.toString() === '204') {
               // when there is no updates
             }
@@ -749,14 +931,19 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
             subscribeAgain = false;
           })
           .finally(() => {
-            subscribeAgain && subscribe(sinceTs, cancelToken);
+            if (organization < 0) {
+              //
+              console.log('demo event data', demoEventData.current);
+              updateDataFromDemoEvent(demoEventData.current);
+            }
+            subscribeAgain && subscribe(horizonRef.current, cancelToken);
             forceUpdate();
             setCount((prev) => (prev + 1) % 100);
             console.log(`last signal received at ${new Date().toLocaleString()}`);
           });
       }
     },
-    [organization, pickedTeams, forceUpdate]
+    [organization, pickedTeams, forceUpdate, updateDataFromDemoEvent]
   );
 
   const removeMember = React.useCallback(
@@ -933,7 +1120,9 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     visibleMemberModal,
     setVisibleMemberModal,
     formattedTeams,
+    selectedTeams,
     formattedOrganizations,
+    selectedOrganization,
     isAdmin,
     formattedMembers,
     filteredMembers,
@@ -959,7 +1148,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
 
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
-  myOrganization: get(state, 'profile.organization')
+  myOrganization: get(state, 'profile.organization'),
+  baseUri: get(state, 'auth.baseUri')
 });
 
 const mapDispatchToProps = (dispatch) =>

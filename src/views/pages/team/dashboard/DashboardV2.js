@@ -12,6 +12,11 @@ import MemberOperation from 'views/partials/MemberOperation';
 import StickyComponents from 'views/partials/StickyComponents';
 import useElementSize from 'hooks/useElementSize';
 import { useWidthContext } from 'providers/WidthProvider';
+import Banner from '../../../components/Banner';
+// import { get } from 'lodash';
+import { connect } from 'react-redux';
+// import { ACME_INSTANCE_BASE_URI } from '../../../../constant';
+import { useDashboardContext } from '../../../../providers/DashboardProvider';
 
 export const customStyles = (disabled = false) => ({
   menu: (provided) => {
@@ -56,6 +61,7 @@ export const customStyles = (disabled = false) => ({
 const DashboardV2 = () => {
   const [setRef, { width }, forceUpdate] = useElementSize();
   const { setTableWidth } = useWidthContext();
+  const { organization } = useDashboardContext();
   React.useEffect(() => {
     return () => {
       localStorage.setItem('kop-params', location.search);
@@ -67,36 +73,43 @@ const DashboardV2 = () => {
   }, [width]);
 
   return (
-    <div className={clsx(style.Wrapper)}>
-      <Header />
+    <div>
+      {organization < 0 && <Banner label={'Demo Mode'} />}
+      <div className={clsx(style.Wrapper)}>
+        <Header />
 
-      <div className={clsx(style.Content)}>
-        {/*<div className={clsx(style.InformationalBoard)}>
+        <div className={clsx(style.Content)}>
+          {/*<div className={clsx(style.InformationalBoard)}>
           <Statistics/>
         </div>*/}
 
-        {/*<div className={clsx(style.RestBar)}>
+          {/*<div className={clsx(style.RestBar)}>
           <RestBar/>
         </div>*/}
 
-        <div className={clsx(style.Table)} ref={setRef}>
-          <MembersProviderV2>
-            <>
-              <MemberTable forceWidthUpdate={forceUpdate} />
-              <MemberOperation />
-            </>
-          </MembersProviderV2>
+          <div className={clsx(style.Table)} ref={setRef}>
+            <MembersProviderV2>
+              <>
+                <MemberTable forceWidthUpdate={forceUpdate} />
+                <MemberOperation />
+              </>
+            </MembersProviderV2>
+          </div>
         </div>
+
+        <StickyComponents />
+
+        <div
+          className={clsx(style.StripeWrapper)}
+          style={{ width: `calc(100% - ${width + 40}px)` }}
+        />
       </div>
-
-      <StickyComponents />
-
-      <div
-        className={clsx(style.StripeWrapper)}
-        style={{ width: `calc(100% - ${width + 40}px)` }}
-      />
     </div>
   );
 };
 
-export default withTranslation()(DashboardV2);
+// const mapStateToProps = (state) => ({
+//   baseUri: get(state, 'auth.baseUri')
+// });
+
+export default connect(null, null)(withTranslation()(DashboardV2));

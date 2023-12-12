@@ -133,7 +133,7 @@ export const UserSubscriptionProvider = ({ children }) => {
           filter: {
             userIds: user?.userId ? [user?.userId] : []
           },
-          orgId: organization,
+          orgId: Math.abs(organization),
           horizon: ts,
           cancelToken
         })
