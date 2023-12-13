@@ -111,7 +111,11 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         if (numMinutesDemoData.current === 0) {
           return (
             ts !== DEMO_DATA_MINUTE.NONE &&
-            [DEMO_DATA_MINUTE.WITHIN_AN_HOUR, DEMO_DATA_MINUTE.WITHIN_24_HR].includes(ts)
+            [
+              DEMO_DATA_MINUTE.WITHIN_AN_HOUR,
+              DEMO_DATA_MINUTE.WITHIN_24_HR,
+              DEMO_DATA_MINUTE.OUT_AN_HOUR
+            ].includes(ts)
           );
         } else {
           return ts !== DEMO_DATA_MINUTE.NONE;
@@ -136,6 +140,9 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           case DEMO_DATA_MINUTE.WITHIN_24_HR:
             ts.subtract(20, 'hours');
             break;
+          case DEMO_DATA_MINUTE.OUT_AN_HOUR:
+            ts.subtract(70, 'minutes');
+            break;
         }
 
         return {
@@ -151,7 +158,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       .groupBy('userId')
       .map((items, userId) => {
         return {
-          userId,
+          userId: parseInt(userId),
           data: items[0],
           ts: currentTIme,
           type: SUBSCRIBE_EVENT_DATA_TYPE.ALERT
@@ -178,7 +185,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       .groupBy('userId')
       .map((items, userId) => {
         return {
-          userId,
+          userId: parseInt(userId),
           data: items[0],
           type: SUBSCRIBE_EVENT_DATA_TYPE.DEVICE_LOG,
           ts: currentTIme
@@ -498,7 +505,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                 //
                 generateDemoData();
                 console.log('first demo event data', demoEventData.current);
-                updateDataFromDemoEvent(demoEventData.current);
+                updateDataFromEvents(demoEventData.current);
               }
               // fixme there might be new events between the time when api returned and now
               const d = new Date().getTime();
@@ -726,7 +733,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     }
   }, [paginatedMembers, member]);
 
-  const updateDataFromDemoEvent = React.useCallback(
+  const updateDataFromEvents = React.useCallback(
     (events) => {
       if (events?.length > 0) {
         const latestTs = events?.sort((a, b) => b.ts - a.ts)?.[0]?.ts;
@@ -918,11 +925,14 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           cancelToken
         })
           .then((res) => {
-            if (res.status?.toString() === '200' && organization > 0) {
-              //
-              updateDataFromDemoEvent(res.data);
-            } else if (res.status?.toString() === '204') {
-              // when there is no updates
+            if (organization > 0) {
+              if (res.status?.toString() === '200') {
+                // update data with events
+                updateDataFromEvents(res.data);
+              }
+              // else if (res.status?.toString() === '204') {
+              //   // when there is no updates
+              // }
             }
           })
           .catch((error) => {
@@ -934,7 +944,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
             if (organization < 0) {
               //
               console.log('demo event data', demoEventData.current);
-              updateDataFromDemoEvent(demoEventData.current);
+              updateDataFromEvents(demoEventData.current);
             }
             subscribeAgain && subscribe(horizonRef.current, cancelToken);
             forceUpdate();
@@ -943,7 +953,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           });
       }
     },
-    [organization, pickedTeams, forceUpdate, updateDataFromDemoEvent]
+    [organization, pickedTeams, forceUpdate, updateDataFromEvents]
   );
 
   const removeMember = React.useCallback(
@@ -1140,7 +1150,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     removeMember,
     unlockMember,
     hideCbtHR,
-    columnStats
+    columnStats,
+    demoEventData
   };
 
   return <DashboardContext.Provider value={providerValue}>{children}</DashboardContext.Provider>;

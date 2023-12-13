@@ -74,6 +74,28 @@ export const TEAM_ALERT_API_DATA = [
     alertCounter: 0,
     heartCbtAvg: 38.2,
     heartRateAvg: 37.2
+  },
+  {
+    userId: 1010040,
+    teamId: 5,
+    ts: () => DEMO_DATA_MINUTE.OUT_AN_HOUR,
+    gmt: 'GMT-4:00',
+    alertStageId: ALERT_STAGE_STATUS.SAFE,
+    alertResponseId: 0,
+    alertCounter: 0,
+    heartCbtAvg: 38.2,
+    heartRateAvg: 37.2
+  },
+  {
+    userId: 1010042,
+    teamId: 4,
+    ts: () => DEMO_DATA_MINUTE.WITHIN_AN_HOUR,
+    gmt: 'GMT-4:00',
+    alertStageId: ALERT_STAGE_STATUS.SAFE,
+    alertResponseId: 0,
+    alertCounter: 0,
+    heartCbtAvg: 38.2,
+    heartRateAvg: 37.2
   }
 ];
 
