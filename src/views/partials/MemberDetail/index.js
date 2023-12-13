@@ -25,6 +25,7 @@ import MetricLogs from './MetricLogs';
 import Card from './Card';
 import Divider from './Divider';
 import Badge from './Badge';
+import { EVENT_DATA_TYPE } from '../../../constant';
 
 export const filters = [
   {
@@ -69,6 +70,9 @@ const MemberDetail = ({
     metricsFilter,
     setMetricsFilter
   } = useUserSubscriptionContext();
+  const numberOfAlerts = React.useMemo(() => {
+    return logs.filter((it) => it.type === EVENT_DATA_TYPE.ALERT)?.length;
+  }, [logs]);
   const memberId = React.useRef(origin?.userId);
   const data = React.useMemo(() => {
     return origin
@@ -76,14 +80,12 @@ const MemberDetail = ({
       : formattedMembers.find((it) => it.userId?.toString() === memberId.current?.toString());
   }, [formattedMembers, origin]);
 
-  const { stat, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk } =
-    data ?? {
-      stat: null,
-      alertsForMe: null,
-      lastSyncStr: null,
-      numberOfAlerts: null,
-      settings: { hideCbtHR: false }
-    };
+  const { stat, alertObj, lastSyncStr, connectionObj, invisibleHeatRisk } = data ?? {
+    stat: null,
+    alertsForMe: null,
+    lastSyncStr: null,
+    settings: { hideCbtHR: false }
+  };
   const hideCbtHR = data?.settings?.hideCbtHR;
 
   let connectStatus = 'off';

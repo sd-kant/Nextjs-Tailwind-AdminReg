@@ -827,9 +827,10 @@ export const DEMO_DATA_MINUTE = {
   OUT_AN_HOUR: -60
 };
 
-export const SUBSCRIBE_EVENT_DATA_TYPE = {
+export const EVENT_DATA_TYPE = {
   ALERT: 'Alert',
   HEART_RATE: 'HeartRate',
   DEVICE_LOG: 'DeviceLog',
-  TEMP_HUMIDITY: 'TempHumidity'
+  TEMP_HUMIDITY: 'TempHumidity',
+  EVENT: 'Event'
 };

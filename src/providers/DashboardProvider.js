@@ -28,7 +28,7 @@ import {
   ALERT_STAGE_ID_LIST,
   ALERT_STAGE_STATUS,
   DEMO_DATA_MINUTE,
-  SUBSCRIBE_EVENT_DATA_TYPE,
+  EVENT_DATA_TYPE,
   USER_TYPE_ADMIN,
   USER_TYPE_OPERATOR,
   USER_TYPE_ORG_ADMIN,
@@ -161,7 +161,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           userId: parseInt(userId),
           data: items[0],
           ts: currentTIme,
-          type: SUBSCRIBE_EVENT_DATA_TYPE.ALERT
+          type: EVENT_DATA_TYPE.ALERT
         };
       })
       .value();
@@ -187,7 +187,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         return {
           userId: parseInt(userId),
           data: items[0],
-          type: SUBSCRIBE_EVENT_DATA_TYPE.DEVICE_LOG,
+          type: EVENT_DATA_TYPE.DEVICE_LOG,
           ts: currentTIme
         };
       })
@@ -196,7 +196,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     demoEventData.current = [
       ...tempAlerts,
       ...tempAlerts.map((it) => {
-        return { ...it, type: SUBSCRIBE_EVENT_DATA_TYPE.HEART_RATE };
+        return { ...it, type: EVENT_DATA_TYPE.HEART_RATE };
       }),
       ...tempDevices
     ];
@@ -741,7 +741,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           setHorizon(latestTs);
           // sinceTs = horizonRef.current;
         }
-        const alerts = events?.filter((it) => it.type === SUBSCRIBE_EVENT_DATA_TYPE.ALERT);
+        const alerts = events?.filter((it) => it.type === EVENT_DATA_TYPE.ALERT);
         if (alerts?.length > 0) {
           // const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
           // const updated = [...prev.alerts, ...alerts?.map((it) => it.data)];
@@ -781,13 +781,13 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
             (it) => it.userId?.toString() === member.userId.toString()
           );
           const latestHeartRate = memberEvents
-            ?.filter((it) => it.type === SUBSCRIBE_EVENT_DATA_TYPE.HEART_RATE)
+            ?.filter((it) => it.type === EVENT_DATA_TYPE.HEART_RATE)
             ?.sort(
               (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
             )?.[0]?.data;
           // update member's devices list
           const memberDeviceLogs = memberEvents?.filter(
-            (it) => it.type === SUBSCRIBE_EVENT_DATA_TYPE.DEVICE_LOG
+            (it) => it.type === EVENT_DATA_TYPE.DEVICE_LOG
           );
           const latestDeviceLog = memberDeviceLogs?.sort(
             (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
@@ -849,7 +849,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           }
 
           const latestTempHumidity = memberEvents
-            ?.filter((it) => it.type === SUBSCRIBE_EVENT_DATA_TYPE.TEMP_HUMIDITY)
+            ?.filter((it) => it.type === EVENT_DATA_TYPE.TEMP_HUMIDITY)
             ?.sort(
               (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
             )?.[0]?.data;

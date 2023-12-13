@@ -2,9 +2,15 @@ import * as React from 'react';
 import { getTeamMemberEvents, getTeamMemberAlerts, subscribeDataEvents } from '../http';
 import axios from 'axios';
 import { useDashboardContext } from './DashboardProvider';
-import { ACTIVITIES_FILTERS, ALERT_STAGE_ID_LIST } from '../constant';
+import {
+  ACTIVITIES_FILTERS,
+  ALERT_STAGE_ID_LIST,
+  ALERT_STAGE_STATUS,
+  EVENT_DATA_TYPE
+} from '../constant';
 import { useUtilsContext } from './UtilsProvider';
 import { formatHeartRate } from '../utils/dashboard';
+import { hasStatusValue } from '../utils';
 
 const UserSubscriptionContext = React.createContext(null);
 
@@ -211,9 +217,9 @@ export const UserSubscriptionProvider = ({ children }) => {
 
   const logs = React.useMemo(() => {
     let merged = [
-      ...(alertsForMe ?? []).map((it) => ({ ...it, type: 'Alert' })),
-      ...(alerts?.map((it) => ({ ...it, type: 'Alert' })) ?? []),
-      ...(activities?.map((it) => ({ ...it, type: 'Event' })) ?? [])
+      ...(alertsForMe ?? []).map((it) => ({ ...it, type: EVENT_DATA_TYPE.ALERT })),
+      ...(alerts?.map((it) => ({ ...it, type: EVENT_DATA_TYPE.ALERT })) ?? []),
+      ...(activities?.map((it) => ({ ...it, type: EVENT_DATA_TYPE.EVENT })) ?? [])
     ];
     const d = new Date();
     d.setDate(d.getDate() - (activitiesFilter?.value ?? 1));
@@ -231,26 +237,37 @@ export const UserSubscriptionProvider = ({ children }) => {
   }, [alerts, activities, activitiesFilter?.value, alertsForMe]);
 
   const metricStats = React.useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - (metricsFilter?.value ?? 1));
-    let tempAlerts = [...alerts]
-      ?.filter((it) => new Date(it.utcTs).getTime() > d.getTime())
-      ?.sort((a, b) => new Date(b.utcTs).getTime() - new Date(a.utcTs).getTime());
+    // const d = new Date();
+    // d.setDate(d.getDate() - (metricsFilter?.value ?? 1));
+    // let tempAlerts = [...alerts]
+    //   ?.filter((it) => new Date(it.utcTs).getTime() > d.getTime())
+    //   ?.sort((a, b) => new Date(b.utcTs).getTime() - new Date(a.utcTs).getTime());
 
-    const unique = [];
-    for (const entry of tempAlerts) {
-      if (!unique.some((x) => entry.utcTs === x.utcTs)) {
-        unique.push(entry);
-      }
-    }
+    // const unique = [];
+    // for (const entry of tempAlerts) {
+    //   if (!unique.some((x) => entry.utcTs === x.utcTs)) {
+    //     unique.push(entry);
+    //   }
+    // }
+    const unique = logs.filter((it) => it.type === EVENT_DATA_TYPE.ALERT);
 
     const validAlerts =
-      unique?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? [];
+      unique?.filter((it) =>
+        hasStatusValue(it?.alertStageId, [
+          ALERT_STAGE_STATUS.AT_RISK,
+          ALERT_STAGE_STATUS.ELEVATED_RISK,
+          ALERT_STAGE_STATUS.SAFE
+        ])
+      ) ?? [];
 
     return {
       totalAlerts: validAlerts?.length || 0,
-      stopAlerts: validAlerts?.filter((it) => ['1', '2'].includes(it?.alertStageId?.toString()))
-        ?.length,
+      stopAlerts: validAlerts?.filter((it) =>
+        hasStatusValue(it?.alertStageId, [
+          ALERT_STAGE_STATUS.AT_RISK,
+          ALERT_STAGE_STATUS.ELEVATED_RISK
+        ])
+      )?.length,
       highestCbt:
         validAlerts?.length > 0
           ? formatHeartCbt(
@@ -267,7 +284,7 @@ export const UserSubscriptionProvider = ({ children }) => {
           : 0
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alerts, metricsFilter?.value]);
+  }, [alerts, metricsFilter?.value, logs]);
 
   const getDateStr = (date) => {
     const d = new Date(date);
