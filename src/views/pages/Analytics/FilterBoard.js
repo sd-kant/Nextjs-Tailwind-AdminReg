@@ -23,7 +23,7 @@ import {
 } from '../../../constant';
 import { checkMetric, getKeyApiCall } from '../../../utils/anlytics';
 import moment from 'moment';
-import Toggle from 'views/components/Toggle';
+import Toggle from 'views/components/Toggle/NewToggle';
 
 const CustomInput = React.forwardRef(({ value, onClick, readOnly }, ref) => {
   return (
@@ -477,8 +477,8 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
           </div>
         </div>
 
-        <div className="tw-flex tw-flex-col tw-min-w-[480px]">
-          <div className="tw-flex tw-flex-col sm:tw-flex-row tw-gap-4">
+        <div className="tw-flex tw-flex-col md:tw-flex-row 2xl:tw-flex-col tw-gap-0 md:tw-gap-4 2xl:tw-gap-0 sm:tw-min-w-[480px]">
+          <div className="tw-flex tw-flex-col lg:tw-flex-row tw-gap-4">
             <div className="tw-flex tw-flex-col tw-grow">
               <label className="font-input-label">{t('select category')}</label>
               <ResponsiveSelect
@@ -505,7 +505,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               />
             </div>
           </div>
-          <div className="tw-flex tw-flex-col">
+          <div className="tw-flex tw-flex-col sm:tw-min-w-[480px]">
             <label className="font-input-label">{t('select metric')}</label>
 
             <ResponsiveSelect
