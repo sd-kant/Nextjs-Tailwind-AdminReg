@@ -113,7 +113,7 @@ const FormSelectMode = (props) => {
                   <span className={clsx('font-button-label')}>{t('analytics')}</span>
                 </div>
 
-                <div className={clsx(style.ImageWrapper)}>
+                <div className={clsx(style.ImageWrapper, 'tw-w-full')}>
                   <img src={graphBar} className="tw-w-full tw-h-[94px]" alt="analytics" />
                 </div>
 
