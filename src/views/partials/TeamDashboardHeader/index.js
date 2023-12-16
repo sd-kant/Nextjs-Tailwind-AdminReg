@@ -16,7 +16,7 @@ import SearchInput from '../../components/SearchInput';
 import Pagination from '../../components/Pagination';
 import refreshIcon from '../../../assets/images/refresh.svg';
 
-const Header = ({ t, myOrganization }) => {
+const TeamDashboardHeader = ({ t, myOrganization }) => {
   const {
     pickedTeams,
     setPickedTeams,
@@ -262,4 +262,4 @@ const mapStateToProps = (state) => ({
   myOrganization: get(state, 'profile.organization')
 });
 
-export default connect(mapStateToProps, null)(withTranslation()(Header));
+export default connect(mapStateToProps, null)(withTranslation()(TeamDashboardHeader));

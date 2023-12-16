@@ -6,7 +6,7 @@ import style from './DashboardV2.module.scss';
 // import Statistics from "../partials/Statistics";
 // import RestBar from "../partials/RestBar";
 import MemberTable from 'views/partials/MemberTable';
-import Header from 'views/partials/Header';
+import Header from 'views/partials/TeamDashboardHeader';
 import { MembersProviderV2 } from 'providers/MembersProviderV2';
 import MemberOperation from 'views/partials/MemberOperation';
 import StickyComponents from 'views/partials/StickyComponents';

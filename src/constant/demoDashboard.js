@@ -19,7 +19,7 @@ export const TEAM_ALERT_API_DATA = [
       return _ts ? 38.5 : 37.8;
     },
     heartRateAvg: (_ts) => {
-      return _ts ? 73.9 : 35;
+      return _ts ? 165 : 95;
     }
   },
   {
@@ -48,9 +48,9 @@ export const TEAM_ALERT_API_DATA = [
       else if (_ts === DEMO_DATA_MINUTE.FULL_CYCLE) return 37.8;
     },
     heartRateAvg: (_ts) => {
-      if (_ts === DEMO_DATA_MINUTE.FIRST) return 76.7;
-      else if (_ts === DEMO_DATA_MINUTE.FIFTH) return 68.3;
-      else if (_ts === DEMO_DATA_MINUTE.FULL_CYCLE) return 35;
+      if (_ts === DEMO_DATA_MINUTE.FIRST) return 77;
+      else if (_ts === DEMO_DATA_MINUTE.FIFTH) return 155;
+      else if (_ts === DEMO_DATA_MINUTE.FULL_CYCLE) return 95;
     }
   },
   {
@@ -62,7 +62,7 @@ export const TEAM_ALERT_API_DATA = [
     alertResponseId: 0,
     alertCounter: 0,
     heartCbtAvg: 38.1,
-    heartRateAvg: 36.7
+    heartRateAvg: 98
   },
   {
     userId: 1010039,
@@ -73,7 +73,7 @@ export const TEAM_ALERT_API_DATA = [
     alertResponseId: 0,
     alertCounter: 0,
     heartCbtAvg: 38.2,
-    heartRateAvg: 37.2
+    heartRateAvg: 96
   },
   {
     userId: 1010040,
@@ -84,7 +84,7 @@ export const TEAM_ALERT_API_DATA = [
     alertResponseId: 0,
     alertCounter: 0,
     heartCbtAvg: 38.2,
-    heartRateAvg: 37.2
+    heartRateAvg: 96
   },
   {
     userId: 1010042,
@@ -95,7 +95,7 @@ export const TEAM_ALERT_API_DATA = [
     alertResponseId: 0,
     alertCounter: 0,
     heartCbtAvg: 38.2,
-    heartRateAvg: 37.2
+    heartRateAvg: 96
   }
 ];
 
