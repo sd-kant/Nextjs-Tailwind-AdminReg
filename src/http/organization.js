@@ -5,3 +5,7 @@ export const uploadBulkUserList = (orgId, file) => {
   form.append('data', file);
   return post(`/organization/${orgId}/pair`, form);
 };
+
+export const queryCreateHubProfile = (orgId, deviceId) => {
+  return post(`/organization/${orgId}/hub/${deviceId}`);
+};

@@ -726,5 +726,10 @@
   "username invalid 3": "Please check Username, email is not a valid Username",
   "unable to remove email": "Unable to remove email. Email or phone number is required",
   "msg credentials invalid": "You entered an incorrect username, password, or both",
-  "email description": "What is your email?"
+  "email description": "What is your email?",
+  "bluetooth hub": "Bluetooth Hub",
+  "add bluetooth hub": "Add a Bluetooth Hub",
+  "add another bluetooth hub": "Add Another Bluetooth Hub",
+  "enter bluetooth hub id": "Enter the Bluetooth Hub MAC address",
+  "copy token": "Copy Token"
 }
