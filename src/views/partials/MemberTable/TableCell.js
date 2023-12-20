@@ -7,7 +7,11 @@ import style from './TableCell.module.scss';
 import { formatDevice4Digits, formatHeartRate } from '../../../utils/dashboard';
 import BatteryV3 from '../../components/BatteryV3';
 import { useTranslation } from 'react-i18next';
-import { DEVICE_CONNECTION_STATUS, TIME_FORMAT_YYYYMDHM } from '../../../constant';
+import {
+  ALERT_STAGE_STATUS,
+  DEVICE_CONNECTION_STATUS,
+  TIME_FORMAT_YYYYMDHM
+} from '../../../constant';
 import { hasStatusValue, numMinutesBetweenWithNow as numMinutesBetween } from '../../../utils';
 
 const TableCell = ({ value, member, metric, hideCbtHR }) => {
@@ -28,10 +32,10 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
   } = member;
   const {
     formatHeartCbt,
-    heartCBTZoneStyles,
+    // heartCBTZoneStyles,
     heartRateZoneStyles,
-    getHeartRateZone,
-    getHeartCBTZone
+    getHeartRateZone
+    // getHeartCBTZone
   } = useUtilsContext();
   // fixme duplicated
   const visibleHeartStats =
@@ -45,7 +49,19 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
     : null;
   const { t } = useTranslation();
   const heartRateZone = getHeartRateZone(member?.dateOfBirth, stat?.heartRateAvg);
-  const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
+  //const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
+  const alertStatusColor = React.useMemo(() => {
+    if (connectionObj?.value != DEVICE_CONNECTION_STATUS.CONNECTED) return null;
+    if (alertObj?.value == ALERT_STAGE_STATUS.SAFE) return '#35EA6C';
+    else if (
+      hasStatusValue(alertObj?.value, [
+        ALERT_STAGE_STATUS.AT_RISK,
+        ALERT_STAGE_STATUS.ELEVATED_RISK
+      ])
+    )
+      return '#F1374E';
+    return null;
+  }, [alertObj, connectionObj]);
 
   switch (value) {
     case 'connection':
@@ -109,9 +125,9 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
               {!hideCbtHR && !invisibleLastUpdates && (
                 <div>
                   <span
-                    style={
-                      visibleHeartStats ? heartCBTZoneStyles[heartCBTZone?.value?.toString()] : null
-                    }>
+                    style={{
+                      color: visibleHeartStats ? alertStatusColor : null
+                    }}>
                     {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
                     {metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;
                   </span>
