@@ -64,17 +64,17 @@ export const TEAM_ALERT_API_DATA = [
     heartCbtAvg: 38.1,
     heartRateAvg: 98
   },
-  {
-    userId: 1010039,
-    teamId: 5,
-    ts: () => DEMO_DATA_MINUTE.WITHIN_24_HR,
-    gmt: 'GMT-4:00',
-    alertStageId: ALERT_STAGE_STATUS.SAFE,
-    alertResponseId: 0,
-    alertCounter: 0,
-    heartCbtAvg: 38.2,
-    heartRateAvg: 96
-  },
+  // {
+  //   userId: 1010039,
+  //   teamId: 5,
+  //   ts: () => DEMO_DATA_MINUTE.WITHIN_24_HR,
+  //   gmt: 'GMT-4:00',
+  //   alertStageId: ALERT_STAGE_STATUS.SAFE,
+  //   alertResponseId: 0,
+  //   alertCounter: 0,
+  //   heartCbtAvg: 38.2,
+  //   heartRateAvg: 96
+  // },
   {
     userId: 1010040,
     teamId: 5,
