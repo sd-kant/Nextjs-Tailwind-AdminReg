@@ -48,7 +48,7 @@ export const TEAM_ALERT_API_DATA = [
       else if (_ts === DEMO_DATA_MINUTE.FULL_CYCLE) return 37.8;
     },
     heartRateAvg: (_ts) => {
-      if (_ts === DEMO_DATA_MINUTE.FIRST) return 77;
+      if (_ts === DEMO_DATA_MINUTE.FIRST) return 170;
       else if (_ts === DEMO_DATA_MINUTE.FIFTH) return 155;
       else if (_ts === DEMO_DATA_MINUTE.FULL_CYCLE) return 95;
     }
