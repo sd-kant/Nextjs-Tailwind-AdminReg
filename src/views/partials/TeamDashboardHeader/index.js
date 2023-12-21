@@ -9,7 +9,7 @@ import { withTranslation } from 'react-i18next';
 // import { useStickyComponentsContext } from '../../../providers/StickyComponentsProvider';
 import { useDashboardContext } from '../../../providers/DashboardProvider';
 import ResponsiveSelect from '../../components/ResponsiveSelect';
-// import { useWidthContext } from '../../../providers/WidthProvider';
+import { useWidthContext } from '../../../providers/WidthProvider';
 import MultiSelectPopup from '../../components/MultiSelectPopup';
 import { get } from 'lodash';
 import SearchInput from '../../components/SearchInput';
@@ -41,7 +41,7 @@ const TeamDashboardHeader = ({ t, myOrganization }) => {
   // eslint-disable-next-line no-unused-vars
   // const [visibleWorkRestButton, setVisibleWorkRestButton] = React.useState(false);
   // const [visibleStatisticsButton, setVisibleStatisticsButton] = React.useState(false);
-  // const { tableWidth } = useWidthContext();
+  const { tableWidth } = useWidthContext();
   const [orgLabel, setOrgLabel] = React.useState(null);
   const [isOpenGlobalSearchResult, setIsOpenGlobalSearchResult] = React.useState(false);
   // React.useEffect(() => {
@@ -136,7 +136,7 @@ const TeamDashboardHeader = ({ t, myOrganization }) => {
   );
 
   return (
-    <div className={clsx(style.Header)}>
+    <div className={clsx(style.Header)} style={{ width: `${tableWidth}px` }}>
       <div className={clsx(style.First)}>
         <div className={clsx(style.DropdownWrapper)}>
           {isAdmin ? (
