@@ -68,7 +68,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   const [page, setPage] = React.useState(null);
   const [sizePerPage, setSizePerPage] = React.useState(10);
   const [keyword, setKeyword] = React.useState(keywordInUrl ?? '');
-  const trimmedKeyword = React.useMemo(() => keyword?.trim(), [keyword]);
+  // const trimmedKeyword = React.useMemo(() => keyword?.trim(), [keyword]);
   const [count, setCount] = React.useState(0);
 
   const [valuesV2, _setValuesV2] = React.useState({
@@ -220,10 +220,10 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   }, []);
 
   React.useEffect(() => {
-    updateUrlParam({ param: { key: 'keyword', value: trimmedKeyword } });
+    updateUrlParam({ param: { key: 'keyword', value: keyword } });
     localStorage.setItem('kop-params', location.search);
     setPage(1);
-  }, [trimmedKeyword]);
+  }, [keyword]);
 
   React.useEffect(() => {
     setIsAdmin(userType?.some((it) => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it)));
@@ -667,10 +667,10 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       if (it.hidden) {
         return false;
       }
-      if (['', null, undefined].includes(trimmedKeyword)) {
+      if (['', null, undefined].includes(keyword)) {
         return true;
       }
-      const lowerCaseKeyword = trimmedKeyword.toLowerCase();
+      const lowerCaseKeyword = keyword.toLowerCase();
 
       const isFirstValid =
         it.firstName?.toLowerCase()?.includes(lowerCaseKeyword) ||
@@ -687,7 +687,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           getLastDigitsOfDeviceId(lowerCaseKeyword).toLowerCase()
       );
     });
-  }, [formattedMembers, trimmedKeyword]);
+  }, [formattedMembers, keyword]);
 
   const columnStats = React.useMemo(() => {
     let connectedUsers = 0;
@@ -1130,8 +1130,10 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     visibleMemberModal,
     setVisibleMemberModal,
     formattedTeams,
+    teams,
     selectedTeams,
     formattedOrganizations,
+    organizations,
     selectedOrganization,
     isAdmin,
     formattedMembers,

@@ -731,5 +731,7 @@
   "add bluetooth hub": "Add a Bluetooth Hub",
   "add another bluetooth hub": "Add Another Bluetooth Hub",
   "enter bluetooth hub id": "Enter the Bluetooth Hub MAC address",
-  "copy token": "Copy Token"
+  "copy token": "Copy Token",
+  "global search": "Global Search",
+  "go to": "Go To"
 }
