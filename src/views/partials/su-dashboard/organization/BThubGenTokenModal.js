@@ -49,15 +49,10 @@ const BThubGenTokenModal = ({
       isOpen={isOpen}
       className={clsx('tw-relative', 'tw-bg-neutral-700', 'tw-p-2', 'sm:tw-p-6', 'tw-rounded-lg')}
       overlayClassName={clsx(
-        // 'tw-hidden',
-        // 'tw-overflow-y-auto',
-        // 'tw-overflow-x-hidden',
         'tw-flex',
         'tw-fixed',
         'tw-inset-0',
         'tw-z-50',
-        // 'tw-top-0',
-        // 'tw-left-0',
         'tw-justify-center',
         'tw-items-center',
         'tw-w-full',
