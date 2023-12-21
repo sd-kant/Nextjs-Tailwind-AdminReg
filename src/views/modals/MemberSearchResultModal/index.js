@@ -102,7 +102,7 @@ const MemberSearchResultModal = ({ t, isOpen = false, onClose }) => {
           <img src={removeIcon} alt="remove icon" />
         </div>
         <h2 className="tw-m-0">{t(`Search Keyword`) + ` "${keyword}"`}</h2>
-        <table className="tw-table-auto tw-text-left tw-border-spacing-4">
+        <table className="tw-table-auto tw-text-left tw-border-spacing-4 tw-bg-neutral-800 tw-rounded-md">
           <thead>
             <tr>
               <th>{t('user name')}</th>
