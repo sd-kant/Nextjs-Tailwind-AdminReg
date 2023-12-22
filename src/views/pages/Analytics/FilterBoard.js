@@ -461,11 +461,12 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               </div>
             </div>
           </div>
-          <div className="tw-flex tw-flex-col">
+          <div className={clsx('tw-flex tw-flex-col', datePickerReadOnly ? 'tw-opacity-50' : '')}>
             <label className="font-input-label">{t('date range')}</label>
             <ResponsiveSelect
               className="mt-10 font-heading-small text-black"
               isClearable
+              isDisabled={datePickerReadOnly}
               options={dateRangPresets}
               value={preDateRange}
               styles={customStyles()}
