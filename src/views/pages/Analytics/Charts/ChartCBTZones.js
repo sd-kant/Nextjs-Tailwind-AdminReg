@@ -33,7 +33,7 @@ const ChartCBTZones = () => {
               legend: {
                 display: true,
                 labels: {
-                  color: 'white'
+                  color: 'gray'
                 },
                 position: 'bottom'
               },
