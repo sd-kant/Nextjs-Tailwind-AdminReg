@@ -40,6 +40,7 @@ import ConfirmModal from '../../components/ConfirmModal';
 import { checkIfSpacesOnly } from '../../../utils/invite';
 import { isValidMacAddress } from 'utils';
 import BThubGenTokenModal from './organization/BThubGenTokenModal';
+import { queryGetAllHubProfiles } from 'http/organization';
 
 export const customStyles = () => ({
   option: (provided, state) => ({
@@ -206,6 +207,7 @@ const FormCompany = (props) => {
     setFieldValue('bluetoothTokens', []);
     if (!values.companyName?.__isNew__ && values.companyName?.value) {
       fetchOrgAdmins(values.companyName?.value);
+      fetchOrgHubProfiles(values.companyName?.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.companyName?.value, values.isEditing]);
@@ -220,6 +222,25 @@ const FormCompany = (props) => {
       })
       .catch((e) => {
         console.error('get org admin error', e);
+      });
+  };
+
+  const fetchOrgHubProfiles = (organizationId) => {
+    queryGetAllHubProfiles(organizationId)
+      .then((res) => {
+        console.log(res);
+        setFieldValue(
+          'bluetoothTokens',
+          res.data?.map((it) => {
+            return {
+              macAddress: it.deviceId,
+              refreshToken: it.refreshToken
+            };
+          })
+        );
+      })
+      .catch((e) => {
+        console.error('get org hub profiles error', e);
       });
   };
   useEffect(() => {

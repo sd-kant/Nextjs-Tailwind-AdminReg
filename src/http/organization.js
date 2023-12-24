@@ -1,4 +1,4 @@
-import { post } from './index';
+import { post, get } from './index';
 
 export const uploadBulkUserList = (orgId, file) => {
   const form = new FormData();
@@ -8,4 +8,8 @@ export const uploadBulkUserList = (orgId, file) => {
 
 export const queryCreateHubProfile = (orgId, deviceId) => {
   return post(`/organization/${orgId}/hub/${deviceId}`);
+};
+
+export const queryGetAllHubProfiles = (orgId) => {
+  return get(`/organization/${orgId}/hub`);
 };
