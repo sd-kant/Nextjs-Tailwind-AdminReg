@@ -39,8 +39,9 @@ import { useNavigate } from 'react-router-dom';
 import ConfirmModal from '../../components/ConfirmModal';
 import { checkIfSpacesOnly } from '../../../utils/invite';
 import { isValidMacAddress } from 'utils';
-import BThubGenTokenModal from './organization/BThubGenTokenModal';
+import BThubGenTokenModal from '../../modals/organization/BThubGenTokenModal';
 import { queryGetAllHubProfiles } from 'http/organization';
+import OkModal from 'views/modals/OkModal';
 
 export const customStyles = () => ({
   option: (provided, state) => ({
@@ -201,6 +202,7 @@ const FormCompany = (props) => {
   );
   const [orgAdmins, setOrgAdmins] = React.useState([]);
   const [isOpenBThubGentTokenModal, setIsOpenBThubGentTokenModal] = React.useState(false);
+  const [isOpenSuccessCopyToken, setIsOpenSuccessCopyToken] = React.useState(false);
   const navigate = useNavigate();
   React.useEffect(() => {
     setFieldValue('users', []);
@@ -791,6 +793,7 @@ const FormCompany = (props) => {
 
                               // Copy the text inside the text field
                               navigator.clipboard.writeText(token.refreshToken);
+                              setIsOpenSuccessCopyToken(true);
                             }}>
                             {t('copy token')}
                           </button>
@@ -800,6 +803,12 @@ const FormCompany = (props) => {
                   );
                 })}
               </div>
+              <OkModal
+                isOpen={isOpenSuccessCopyToken}
+                onClose={() => {
+                  setIsOpenSuccessCopyToken(false);
+                }}
+              />
               <BThubGenTokenModal
                 isOpen={isOpenBThubGentTokenModal}
                 onClose={() => {

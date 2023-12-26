@@ -733,5 +733,6 @@
   "enter bluetooth hub id": "Enter the Bluetooth Hub MAC address",
   "copy token": "Copy Token",
   "global search": "Global Search",
-  "go to": "Go To"
+  "go to": "Go To",
+  "copy token success": "Token Copied Successfully!"
 }
