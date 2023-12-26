@@ -6,6 +6,7 @@ import removeIcon from 'assets/images/remove.svg';
 import { useDashboardContext } from 'providers/DashboardProvider';
 import { searchMembers } from 'http';
 import { useNotificationContext } from 'providers/NotificationProvider';
+import Pagination from 'views/components/Pagination';
 
 const MemberSearchResultModal = ({ t, isOpen = false, onClose }) => {
   const {
@@ -17,13 +18,17 @@ const MemberSearchResultModal = ({ t, isOpen = false, onClose }) => {
     setPickedTeams,
     pickedTeams
   } = useDashboardContext();
+  const [page, setPage] = React.useState(1);
+  const sizePerPage = 10;
+
   const { addNotification } = useNotificationContext();
   const [searchResult, setSearchResult] = React.useState([]);
   const [isApiLoading, setIsApiLoading] = React.useState([]);
+
   const formattedSearchResult = React.useMemo(() => {
     return searchResult
       .filter((it) =>
-        it.orgId == organization ? !pickedTeams?.includes(it.teamId.toString()) : true
+        it.orgId == organization ? !pickedTeams?.includes(it.teamId?.toString()) : true
       )
       .map((item) => {
         return {
@@ -36,6 +41,26 @@ const MemberSearchResultModal = ({ t, isOpen = false, onClose }) => {
         };
       });
   }, [searchResult, organizations, teams, pickedTeams, organization]);
+
+  const handleClickEnd = React.useCallback(() => {
+    setPage(Math.ceil(formattedSearchResult?.length / sizePerPage));
+  }, [setPage, sizePerPage, formattedSearchResult]);
+
+  const handleClickNext = React.useCallback(() => {
+    setPage((prev) => prev + 1);
+  }, [setPage]);
+
+  const handleClickPrev = React.useCallback(() => {
+    setPage((prev) => prev - 1);
+  }, [setPage]);
+
+  const handleClickStart = React.useCallback(() => {
+    setPage(1);
+  }, [setPage]);
+
+  const pageData = React.useMemo(() => {
+    return formattedSearchResult?.slice((page - 1) * sizePerPage, page * sizePerPage);
+  }, [formattedSearchResult, page, sizePerPage]);
 
   React.useEffect(() => {
     const handleGlobalSearch = () => {
@@ -101,7 +126,25 @@ const MemberSearchResultModal = ({ t, isOpen = false, onClose }) => {
           onClick={onClose}>
           <img src={removeIcon} alt="remove icon" />
         </div>
-        <h2 className="tw-m-0">{t(`Search Keyword`) + ` "${keyword}"`}</h2>
+        <div className="tw-flex tw-justify-between tw-gap-8">
+          <h2 className="tw-m-0">{t(`Search Keyword`) + ` "${keyword}"`}</h2>
+          <div className="tw-flex tw-gap-2 tw-justify-center tw-items-center">
+            {formattedSearchResult?.length > 0 ? (
+              <React.Fragment>
+                <Pagination
+                  page={page}
+                  size={sizePerPage}
+                  length={formattedSearchResult?.length}
+                  onClickEnd={handleClickEnd}
+                  onClickNext={handleClickNext}
+                  onClickPrev={handleClickPrev}
+                  onClickStart={handleClickStart}
+                />
+              </React.Fragment>
+            ) : null}
+          </div>
+        </div>
+
         <table className="tw-table-auto tw-text-left tw-border-spacing-4 tw-bg-neutral-800 tw-rounded-md">
           <thead>
             <tr>
@@ -112,8 +155,8 @@ const MemberSearchResultModal = ({ t, isOpen = false, onClose }) => {
             </tr>
           </thead>
           <tbody>
-            {formattedSearchResult?.length > 0 ? (
-              formattedSearchResult?.map((it, index) => {
+            {pageData?.length > 0 ? (
+              pageData?.map((it, index) => {
                 return (
                   <tr key={index}>
                     <td>{it.userName}</td>
@@ -123,7 +166,7 @@ const MemberSearchResultModal = ({ t, isOpen = false, onClose }) => {
                       <button
                         onClick={() => {
                           setOrganization(it.orgId);
-                          setPickedTeams([it.teamId.toString()]);
+                          setPickedTeams([it.teamId?.toString()]);
                           onClose();
                         }}
                         className={clsx(
