@@ -1093,7 +1093,8 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       )?.map((it) => {
         const daysWorn = it.avgWearTime ? Math.round(it.wearTime / it.avgWearTime) : ``;
         const total = formatNumber(it.wearTime / 240) ?? '';
-        const avg = daysWorn && total ? formatNumber(total / daysWorn) : '';
+        const _avg = daysWorn && total ? formatNumber(total / daysWorn) : '';
+        const avg = _avg > 24 ? 24 : _avg;
         return [
           getUserNameFromUserId(members, it.userId),
           getTeamNameFromUserId(members, formattedTeams, it.userId),

@@ -5,7 +5,7 @@ import ReactToPrint from 'react-to-print';
 import { useTranslation } from 'react-i18next';
 
 import style from './FilterBoard.module.scss';
-import { customStyles } from '../team/DashboardV2';
+import { customStyles } from '../team/dashboard/DashboardV2';
 import ResponsiveSelect from '../../components/ResponsiveSelect';
 import MultiSelectPopup from '../../components/MultiSelectPopup';
 import { useBasicContext } from '../../../providers/BasicProvider';
@@ -23,7 +23,7 @@ import {
 } from '../../../constant';
 import { checkMetric, getKeyApiCall } from '../../../utils/anlytics';
 import moment from 'moment';
-import Toggle from 'views/components/Toggle';
+import Toggle from 'views/components/Toggle/NewToggle';
 
 const CustomInput = React.forwardRef(({ value, onClick, readOnly }, ref) => {
   return (
@@ -461,11 +461,12 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               </div>
             </div>
           </div>
-          <div className="tw-flex tw-flex-col">
+          <div className={clsx('tw-flex tw-flex-col', datePickerReadOnly ? 'tw-opacity-50' : '')}>
             <label className="font-input-label">{t('date range')}</label>
             <ResponsiveSelect
               className="mt-10 font-heading-small text-black"
               isClearable
+              isDisabled={datePickerReadOnly}
               options={dateRangPresets}
               value={preDateRange}
               styles={customStyles()}
@@ -477,8 +478,8 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
           </div>
         </div>
 
-        <div className="tw-flex tw-flex-col tw-min-w-[480px]">
-          <div className="tw-flex tw-flex-col sm:tw-flex-row tw-gap-4">
+        <div className="tw-flex tw-flex-col md:tw-flex-row 2xl:tw-flex-col tw-gap-0 md:tw-gap-4 2xl:tw-gap-0 sm:tw-min-w-[480px]">
+          <div className="tw-flex tw-flex-col lg:tw-flex-row tw-gap-4">
             <div className="tw-flex tw-flex-col tw-grow">
               <label className="font-input-label">{t('select category')}</label>
               <ResponsiveSelect
@@ -505,7 +506,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               />
             </div>
           </div>
-          <div className="tw-flex tw-flex-col">
+          <div className="tw-flex tw-flex-col sm:tw-min-w-[480px]">
             <label className="font-input-label">{t('select metric')}</label>
 
             <ResponsiveSelect

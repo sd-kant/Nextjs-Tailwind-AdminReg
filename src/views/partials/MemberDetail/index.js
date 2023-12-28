@@ -12,8 +12,8 @@ import thermometer from 'assets/images/thermometer-orange.svg';
 import heart from 'assets/images/heart.svg';
 import { get } from 'lodash';
 import ResponsiveSelect from 'views/components/ResponsiveSelect';
-import { customStyles } from 'views/pages/team/DashboardV2';
-import { numMinutesBetweenWithNow as numMinutesBetween } from 'utils';
+import { customStyles } from 'views/pages/team/dashboard/DashboardV2';
+import { hasStatusValue, numMinutesBetweenWithNow as numMinutesBetween } from 'utils';
 import BatteryV3 from 'views/components/BatteryV3';
 import { formatHeartRate } from 'utils/dashboard';
 import { useUtilsContext } from 'providers/UtilsProvider';
@@ -25,6 +25,7 @@ import MetricLogs from './MetricLogs';
 import Card from './Card';
 import Divider from './Divider';
 import Badge from './Badge';
+import { ALERT_STAGE_STATUS, DEVICE_CONNECTION_STATUS, EVENT_DATA_TYPE } from '../../../constant';
 
 export const filters = [
   {
@@ -50,8 +51,8 @@ const MemberDetail = ({
   const {
     getHeartRateZone,
     formatHeartCbt,
-    getHeartCBTZone,
-    heartCBTZoneStyles,
+    // getHeartCBTZone,
+    // heartCBTZoneStyles,
     heartRateZoneStyles
   } = useUtilsContext();
   const {
@@ -69,6 +70,9 @@ const MemberDetail = ({
     metricsFilter,
     setMetricsFilter
   } = useUserSubscriptionContext();
+  const numberOfAlerts = React.useMemo(() => {
+    return logs.filter((it) => it.type === EVENT_DATA_TYPE.ALERT)?.length;
+  }, [logs]);
   const memberId = React.useRef(origin?.userId);
   const data = React.useMemo(() => {
     return origin
@@ -76,26 +80,42 @@ const MemberDetail = ({
       : formattedMembers.find((it) => it.userId?.toString() === memberId.current?.toString());
   }, [formattedMembers, origin]);
 
-  const { stat, alertObj, lastSyncStr, numberOfAlerts, connectionObj, invisibleHeatRisk } =
-    data ?? {
-      stat: null,
-      alertsForMe: null,
-      lastSyncStr: null,
-      numberOfAlerts: null,
-      settings: { hideCbtHR: false }
-    };
+  const { stat, alertObj, lastSyncStr, connectionObj, invisibleHeatRisk } = data ?? {
+    stat: null,
+    alertsForMe: null,
+    lastSyncStr: null,
+    settings: { hideCbtHR: false }
+  };
   const hideCbtHR = data?.settings?.hideCbtHR;
 
   let connectStatus = 'off';
-  if (connectionObj?.value?.toString() === '3') {
-    if (['1', '2'].includes(alertObj?.value?.toString())) {
+  if (connectionObj?.value == DEVICE_CONNECTION_STATUS.CONNECTED) {
+    if (
+      hasStatusValue(alertObj?.value, [
+        ALERT_STAGE_STATUS.AT_RISK,
+        ALERT_STAGE_STATUS.ELEVATED_RISK
+      ])
+    ) {
       connectStatus = 'risk';
     } else {
       connectStatus = 'safe';
     }
-  } else if (connectionObj?.value?.toString() === '4') {
+  } else if (connectionObj?.value == DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION) {
     connectStatus = 'sleep';
   }
+
+  const alertStatusColor = React.useMemo(() => {
+    if (connectionObj?.value != DEVICE_CONNECTION_STATUS.CONNECTED) return null;
+    if (alertObj?.value == ALERT_STAGE_STATUS.SAFE) return '#35EA6C';
+    else if (
+      hasStatusValue(alertObj?.value, [
+        ALERT_STAGE_STATUS.AT_RISK,
+        ALERT_STAGE_STATUS.ELEVATED_RISK
+      ])
+    )
+      return '#F1374E';
+    return null;
+  }, [alertObj, connectionObj]);
 
   // const [team, setTeam] = React.useState(null);
   React.useEffect(() => {
@@ -142,7 +162,7 @@ const MemberDetail = ({
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
-  const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
+  //const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
 
   const renderActionContent = () => {
     return (
@@ -350,11 +370,13 @@ const MemberDetail = ({
               </div>
 
               {!hideCbtHR && visibleHeartStats && (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div className="tw-flex tw-justify-center">
                   <span
                     className={clsx('font-binary')}
-                    style={heartCBTZoneStyles[heartCBTZone?.value?.toString()]}>
-                    {heartCBTZone?.label}
+                    style={{
+                      color: alertStatusColor
+                    }}>
+                    {alertObj?.label}
                   </span>
                 </div>
               )}
@@ -380,7 +402,7 @@ const MemberDetail = ({
                 )}
               </div>
               {!hideCbtHR && visibleHeartStats && (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div className="tw-flex tw-justify-center">
                   <span
                     className={clsx('font-binary')}
                     style={heartRateZoneStyles[heartRateZone?.value?.toString()]}>
@@ -412,11 +434,13 @@ const MemberDetail = ({
                 </div>
 
                 {!hideCbtHR && visibleHeartStats && (
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <div className="tw-flex tw-justify-center">
                     <span
                       className={clsx('font-binary')}
-                      style={heartCBTZoneStyles[heartCBTZone?.value?.toString()]}>
-                      {heartCBTZone?.label}
+                      style={{
+                        color: alertStatusColor
+                      }}>
+                      {alertObj?.label}
                     </span>
                   </div>
                 )}

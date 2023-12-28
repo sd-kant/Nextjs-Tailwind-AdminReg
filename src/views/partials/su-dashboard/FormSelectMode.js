@@ -4,11 +4,12 @@ import { get } from 'lodash';
 import { withTranslation } from 'react-i18next';
 import { bindActionCreators } from 'redux';
 import { setRestBarClassAction, showErrorNotificationAction } from '../../../redux/action/ui';
-import workerOrange from '../../../assets/images/worker-orange-2.svg';
-import workerOrange1 from '../../../assets/images/worker-orange.svg';
-import settings from '../../../assets/images/settings-orange.svg';
-import ArrowIcon from '../../../assets/images/arrow.svg';
-import KenzenDeviceImg from '../../../assets/images/kenzen-device.png';
+import workerOrange from 'assets/images/worker-orange-2.svg';
+import workerOrange1 from 'assets/images/worker-orange.svg';
+import graphBar from 'assets/images/graph-bars.svg';
+import settings from 'assets/images/settings-orange.svg';
+import ArrowIcon from 'assets/images/arrow.svg';
+import KenzenDeviceImg from 'assets/images/kenzen-device.png';
 import clsx from 'clsx';
 import style from './FormSelectMode.module.scss';
 import { concatAsUrlParam, getUrlParamAsJson, isAdmin, isOperator } from '../../../utils';
@@ -31,13 +32,13 @@ const FormSelectMode = (props) => {
   };
 
   return (
-    <div className="form-group mt-25">
+    <div className="tw-mt-6">
       <div>
         <div>
           <span className="font-big text-uppercase text-orange">{t('welcome to kenzen')}</span>
         </div>
 
-        <div className="mt-25">
+        <div className="tw-mt-6">
           <span className="font-binary">{t('select option')}</span>
         </div>
 
@@ -97,6 +98,27 @@ const FormSelectMode = (props) => {
 
                 <div className={clsx(style.DescriptionDiv)}>
                   <span className={clsx('font-small')}>{t('monitor your team')}</span>
+                </div>
+              </div>
+            </>
+          )}
+
+          {hasAdminRole && (
+            <>
+              <div
+                className={clsx(style.OptionWrapper)}
+                // todo encodeURIComponent
+                onClick={() => openInNewTab(`/analytics`)}>
+                <div>
+                  <span className={clsx('font-button-label')}>{t('analytics')}</span>
+                </div>
+
+                <div className={clsx(style.ImageWrapper, 'tw-w-full')}>
+                  <img src={graphBar} className="tw-w-full tw-h-[94px]" alt="analytics" />
+                </div>
+
+                <div className={clsx(style.DescriptionDiv)}>
+                  <span className={clsx('font-small')}>{t('analytics')}</span>
                 </div>
               </div>
             </>
@@ -185,8 +207,6 @@ const FormSelectMode = (props) => {
           </div>
         </div>
       </div>
-
-      <div />
     </div>
   );
 };

@@ -7,8 +7,12 @@ import style from './TableCell.module.scss';
 import { formatDevice4Digits, formatHeartRate } from '../../../utils/dashboard';
 import BatteryV3 from '../../components/BatteryV3';
 import { useTranslation } from 'react-i18next';
-import { TIME_FORMAT_YYYYMDHM } from '../../../constant';
-import { numMinutesBetweenWithNow as numMinutesBetween } from '../../../utils';
+import {
+  ALERT_STAGE_STATUS,
+  DEVICE_CONNECTION_STATUS,
+  TIME_FORMAT_YYYYMDHM
+} from '../../../constant';
+import { hasStatusValue, numMinutesBetweenWithNow as numMinutesBetween } from '../../../utils';
 
 const TableCell = ({ value, member, metric, hideCbtHR }) => {
   const {
@@ -28,20 +32,36 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
   } = member;
   const {
     formatHeartCbt,
-    heartCBTZoneStyles,
+    // heartCBTZoneStyles,
     heartRateZoneStyles,
-    getHeartRateZone,
-    getHeartCBTZone
+    getHeartRateZone
+    // getHeartCBTZone
   } = useUtilsContext();
   // fixme duplicated
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
-  const cellGray = ['1', '2', '8'].includes(connectionObj?.value?.toString())
+  const cellGray = hasStatusValue(connectionObj?.value, [
+    DEVICE_CONNECTION_STATUS.NEVER_CONNECTION,
+    DEVICE_CONNECTION_STATUS.CHARGING,
+    DEVICE_CONNECTION_STATUS.NO_CONNECTION
+  ])
     ? style.NoConnection
     : null;
   const { t } = useTranslation();
   const heartRateZone = getHeartRateZone(member?.dateOfBirth, stat?.heartRateAvg);
-  const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
+  //const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
+  const alertStatusColor = React.useMemo(() => {
+    if (connectionObj?.value != DEVICE_CONNECTION_STATUS.CONNECTED) return null;
+    if (alertObj?.value == ALERT_STAGE_STATUS.SAFE) return '#35EA6C';
+    else if (
+      hasStatusValue(alertObj?.value, [
+        ALERT_STAGE_STATUS.AT_RISK,
+        ALERT_STAGE_STATUS.ELEVATED_RISK
+      ])
+    )
+      return '#F1374E';
+    return null;
+  }, [alertObj, connectionObj]);
 
   switch (value) {
     case 'connection':
@@ -105,9 +125,9 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
               {!hideCbtHR && !invisibleLastUpdates && (
                 <div>
                   <span
-                    style={
-                      visibleHeartStats ? heartCBTZoneStyles[heartCBTZone?.value?.toString()] : null
-                    }>
+                    style={{
+                      color: visibleHeartStats ? alertStatusColor : null
+                    }}>
                     {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
                     {metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;
                   </span>

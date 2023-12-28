@@ -38,6 +38,10 @@ import { defaultMember, lowercaseEmail, setUserTypeToUsers } from './FormReprese
 import { useNavigate } from 'react-router-dom';
 import ConfirmModal from '../../components/ConfirmModal';
 import { checkIfSpacesOnly } from '../../../utils/invite';
+import { isValidMacAddress } from 'utils';
+import BThubGenTokenModal from '../../modals/organization/BThubGenTokenModal';
+import { queryGetAllHubProfiles } from 'http/organization';
+import OkModal from 'views/modals/OkModal';
 
 export const customStyles = () => ({
   option: (provided, state) => ({
@@ -125,6 +129,18 @@ const formSchema = (t) => {
         })
         .required()
     ),
+    bluetoothTokens: Yup.array().of(
+      Yup.object()
+        .shape({
+          macAddress: Yup.string()
+            .required(t('device id required'))
+            .test('is-valid', t('device id invalid'), function (value) {
+              return isValidMacAddress(value);
+            }),
+          refreshToken: Yup.string().required()
+        })
+        .required()
+    ),
     sso: Yup.boolean(),
     samlUrl: Yup.string()
       .url(t('saml url invalid'))
@@ -185,11 +201,15 @@ const FormCompany = (props) => {
     [countryRegions]
   );
   const [orgAdmins, setOrgAdmins] = React.useState([]);
+  const [isOpenBThubGentTokenModal, setIsOpenBThubGentTokenModal] = React.useState(false);
+  const [isOpenSuccessCopyToken, setIsOpenSuccessCopyToken] = React.useState(false);
   const navigate = useNavigate();
   React.useEffect(() => {
     setFieldValue('users', []);
+    setFieldValue('bluetoothTokens', []);
     if (!values.companyName?.__isNew__ && values.companyName?.value) {
       fetchOrgAdmins(values.companyName?.value);
+      fetchOrgHubProfiles(values.companyName?.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.companyName?.value, values.isEditing]);
@@ -204,6 +224,25 @@ const FormCompany = (props) => {
       })
       .catch((e) => {
         console.error('get org admin error', e);
+      });
+  };
+
+  const fetchOrgHubProfiles = (organizationId) => {
+    queryGetAllHubProfiles(organizationId)
+      .then((res) => {
+        console.log(res);
+        setFieldValue(
+          'bluetoothTokens',
+          res.data?.map((it) => {
+            return {
+              macAddress: it.deviceId,
+              refreshToken: it.refreshToken
+            };
+          })
+        );
+      })
+      .catch((e) => {
+        console.error('get org hub profiles error', e);
       });
   };
   useEffect(() => {
@@ -225,6 +264,9 @@ const FormCompany = (props) => {
     const data = JSON.parse(JSON.stringify(values['users']));
     data.push(defaultMember);
     setFieldValue('users', data);
+  };
+  const addBluetoothTokens = (newToken) => {
+    setFieldValue('bluetoothTokens', [...values['bluetoothTokens'], newToken]);
   };
   const changeHandler = (key, value) => {
     if (key === 'companyName') {
@@ -673,6 +715,128 @@ const FormCompany = (props) => {
                   {values.users?.length > 0 || orgAdmins?.length > 0
                     ? t('add another company admin')
                     : t('add company admin')}
+                </span>
+              </div>
+            </React.Fragment>
+          )}
+
+          {values.isEditing && (
+            <React.Fragment>
+              <div className="grouped-form mt-40">
+                <label className="font-header-medium">{t('bluetooth hub')}</label>
+              </div>
+              <div
+                className="grouped-form mt-25 tw-gap-2"
+                style={{ maxWidth: '700px', overFlowY: 'auto' }}>
+                {values['bluetoothTokens']?.map((token, index) => {
+                  return (
+                    <div
+                      className="tw-flex tw-flex-col md:tw-flex-row md:tw-justify-between tw-gap-2"
+                      key={`bt-token-box-${index}`}>
+                      <div>
+                        <span
+                          className={clsx(
+                            'tw-rounded-lg',
+                            'tw-bg-neutral-800',
+                            'tw-border-none',
+                            'tw-outline-none',
+                            'tw-z-1',
+                            'tw-px-2',
+                            'tw-text-xl',
+                            'tw-text-zinc-300'
+                          )}
+                          id={`bt-mac-address-${index}`}>
+                          {token.macAddress}
+                        </span>
+                      </div>
+                      <div className="tw-flex tw-flex-col tw-gap-2">
+                        <div>
+                          <input
+                            className={clsx(
+                              'tw-rounded-lg',
+                              'tw-bg-neutral-800',
+                              'tw-border-none',
+                              'tw-outline-none',
+                              'tw-z-1',
+                              'tw-text-base',
+                              'tw-text-zinc-300',
+                              'tw-w-[300px]'
+                            )}
+                            id={`bt-token-${index}`}
+                            readOnly={true}
+                            value={
+                              '*'.repeat(43) +
+                              token.refreshToken?.slice(token.refreshToken.length - 4)
+                            }
+                          />
+                        </div>
+                        <div className="tw-flex tw-justify-end">
+                          <button
+                            type="button"
+                            className={clsx(
+                              'tw-rounded-lg',
+                              'tw-bg-neutral-800',
+                              'tw-border-none',
+                              'tw-outline-none',
+                              'tw-z-1',
+                              'tw-px-2',
+                              'tw-text-base',
+                              'tw-text-zinc-300',
+                              'tw-uppercase'
+                            )}
+                            onClick={() => {
+                              const copyText = document.getElementById(`bt-token-${index}`);
+
+                              // Select the text field
+                              copyText.select();
+                              copyText.setSelectionRange(0, 99999); // For mobile devices
+
+                              // Copy the text inside the text field
+                              navigator.clipboard.writeText(token.refreshToken);
+                              setIsOpenSuccessCopyToken(true);
+                            }}>
+                            {t('copy token')}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <OkModal
+                isOpen={isOpenSuccessCopyToken}
+                onClose={() => {
+                  setIsOpenSuccessCopyToken(false);
+                }}
+              />
+              <BThubGenTokenModal
+                isOpen={isOpenBThubGentTokenModal}
+                onClose={() => {
+                  setIsOpenBThubGentTokenModal(false);
+                }}
+                orgId={values.selectedItem}
+                addOn={addBluetoothTokens}
+              />
+              <div
+                className={`d-flex align-center mt-15 mb-15`}
+                style={{ zIndex: 1, position: 'relative' }}>
+                <img
+                  src={plusCircleFire}
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setIsOpenBThubGentTokenModal(true);
+                  }}
+                  alt="add icon"
+                />
+                <span
+                  className="font-binary cursor-pointer"
+                  onClick={() => {
+                    setIsOpenBThubGentTokenModal(true);
+                  }}>
+                  &nbsp;&nbsp;
+                  {values.users?.length > 0 || orgAdmins?.length > 0
+                    ? t('add another bluetooth hub')
+                    : t('add bluetooth hub')}
                 </span>
               </div>
             </React.Fragment>

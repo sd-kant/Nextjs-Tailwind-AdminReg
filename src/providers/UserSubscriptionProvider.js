@@ -2,14 +2,21 @@ import * as React from 'react';
 import { getTeamMemberEvents, getTeamMemberAlerts, subscribeDataEvents } from '../http';
 import axios from 'axios';
 import { useDashboardContext } from './DashboardProvider';
-import { ACTIVITIES_FILTERS, ALERT_STAGE_ID_LIST } from '../constant';
+import {
+  ACTIVITIES_FILTERS,
+  ALERT_STAGE_ID_LIST,
+  ALERT_STAGE_STATUS,
+  EVENT_DATA_TYPE
+} from '../constant';
 import { useUtilsContext } from './UtilsProvider';
 import { formatHeartRate } from '../utils/dashboard';
+import { hasStatusValue } from '../utils';
 
 const UserSubscriptionContext = React.createContext(null);
 
 export const UserSubscriptionProvider = ({ children }) => {
-  const { organization } = useDashboardContext();
+  const { organization, formattedMembers, demoEventData } = useDashboardContext();
+
   const { formatHeartCbt } = useUtilsContext();
   const [duration] = React.useState(30); // 1, 7, or 30 days
   const activitiesFilters = ACTIVITIES_FILTERS;
@@ -19,11 +26,16 @@ export const UserSubscriptionProvider = ({ children }) => {
   const [horizon, _setHorizon] = React.useState(null);
   const horizonRef = React.useRef(horizon);
   const [loading, setLoading] = React.useState(false);
+
+  const { alertsForMe } = React.useMemo(() => {
+    return user && user.userId ? formattedMembers.find((it) => it.userId == user.userId) : [];
+  }, [formattedMembers, user]);
   const setHorizon = (v) => {
     horizonRef.current = v;
     _setHorizon(v);
   };
   const [alerts, _setAlerts] = React.useState([]);
+
   const alertsRef = React.useRef(alerts);
   const setAlerts = (v) => {
     alertsRef.current = v;
@@ -113,6 +125,14 @@ export const UserSubscriptionProvider = ({ children }) => {
             });
           })
           .finally(() => {
+            if (organization < 0) {
+              const userDemoEventData = demoEventData.current?.filter(
+                (it) => it.userId === user?.userId
+              );
+              console.log('first user demo event data', userDemoEventData);
+              updateDataFromEvents(userDemoEventData);
+            }
+
             setLoading(false);
           });
       }
@@ -124,43 +144,53 @@ export const UserSubscriptionProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.userId, user?.teamId]);
 
+  const updateDataFromEvents = React.useCallback(
+    (events) => {
+      if (events?.length > 0) {
+        const latestTs = events?.sort((a, b) => b.ts - a.ts)?.[0]?.ts;
+        if (latestTs) {
+          setHorizon(latestTs);
+          // sinceTs = horizonRef.current;
+        }
+
+        let newAlerts = events?.filter((it) => it.type === 'Alert');
+        if (newAlerts?.length > 0) {
+          newAlerts = newAlerts?.filter((it) =>
+            ALERT_STAGE_ID_LIST.includes(it.data.alertStageId?.toString())
+          );
+          setAlerts([...newAlerts.map((it) => it.data), ...alertsRef.current]);
+        }
+        const newActivities = events?.filter((it) => it.type === 'Event');
+        if (newActivities?.length > 0) {
+          setActivities([...newActivities.map((it) => it.data), ...activitiesRef.current]);
+        }
+      }
+    },
+    [alertsRef, activitiesRef]
+  );
+
   const subscribe = React.useCallback(
     (ts, cancelToken) => {
       if (organization) {
-        let sinceTs = horizonRef.current;
+        // let sinceTs = horizonRef.current;
         let subscribeAgain = true;
         subscribeDataEvents({
           filter: {
             userIds: user?.userId ? [user?.userId] : []
           },
-          orgId: organization,
+          orgId: Math.abs(organization),
           horizon: ts,
           cancelToken
         })
           .then((res) => {
-            if (res.status?.toString() === '200') {
-              const events = res.data;
-              if (events?.length > 0) {
-                const latestTs = events?.sort((a, b) => b.ts - a.ts)?.[0]?.ts;
-                if (latestTs) {
-                  setHorizon(latestTs);
-                  sinceTs = latestTs;
-                }
-
-                let newAlerts = events?.filter((it) => it.type === 'Alert');
-                if (newAlerts?.length > 0) {
-                  newAlerts = newAlerts?.filter((it) =>
-                    ALERT_STAGE_ID_LIST.includes(it.data.alertStageId?.toString())
-                  );
-                  setAlerts([...newAlerts.map((it) => it.data), ...alertsRef.current]);
-                }
-                const newActivities = events?.filter((it) => it.type === 'Event');
-                if (newActivities?.length > 0) {
-                  setActivities([...newActivities.map((it) => it.data), ...activitiesRef.current]);
-                }
+            if (organization > 0) {
+              if (res.status?.toString() === '200') {
+                // update data with events
+                updateDataFromEvents(res.data);
               }
-            } else if (res.status?.toString() === '204') {
-              // when there is no updates
+              // else if (res.status?.toString() === '204') {
+              //   // when there is no updates
+              // }
             }
           })
           .catch((error) => {
@@ -169,18 +199,27 @@ export const UserSubscriptionProvider = ({ children }) => {
             subscribeAgain = false;
           })
           .finally(() => {
-            subscribeAgain && subscribe(sinceTs, cancelToken);
+            if (organization < 0) {
+              //
+              const userDemoEventData = demoEventData.current?.filter(
+                (it) => it.userId === user?.userId
+              );
+              console.log('user demo event data', userDemoEventData);
+              updateDataFromEvents(userDemoEventData);
+            }
+            subscribeAgain && subscribe(horizonRef.current, cancelToken);
             console.log(`user last event signal received at ${new Date().toLocaleString()}`);
           });
       }
     },
-    [organization, user?.userId]
+    [organization, user?.userId, updateDataFromEvents, demoEventData]
   );
 
   const logs = React.useMemo(() => {
     let merged = [
-      ...(alerts?.map((it) => ({ ...it, type: 'Alert' })) ?? []),
-      ...(activities?.map((it) => ({ ...it, type: 'Event' })) ?? [])
+      ...(alertsForMe ?? []).map((it) => ({ ...it, type: EVENT_DATA_TYPE.ALERT })),
+      ...(alerts?.map((it) => ({ ...it, type: EVENT_DATA_TYPE.ALERT })) ?? []),
+      ...(activities?.map((it) => ({ ...it, type: EVENT_DATA_TYPE.EVENT })) ?? [])
     ];
     const d = new Date();
     d.setDate(d.getDate() - (activitiesFilter?.value ?? 1));
@@ -195,29 +234,40 @@ export const UserSubscriptionProvider = ({ children }) => {
     }
 
     return unique;
-  }, [alerts, activities, activitiesFilter?.value]);
+  }, [alerts, activities, activitiesFilter?.value, alertsForMe]);
 
   const metricStats = React.useMemo(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - (metricsFilter?.value ?? 1));
-    let tempAlerts = [...alerts]
-      ?.filter((it) => new Date(it.utcTs).getTime() > d.getTime())
-      ?.sort((a, b) => new Date(b.utcTs).getTime() - new Date(a.utcTs).getTime());
+    // const d = new Date();
+    // d.setDate(d.getDate() - (metricsFilter?.value ?? 1));
+    // let tempAlerts = [...alerts]
+    //   ?.filter((it) => new Date(it.utcTs).getTime() > d.getTime())
+    //   ?.sort((a, b) => new Date(b.utcTs).getTime() - new Date(a.utcTs).getTime());
 
-    const unique = [];
-    for (const entry of tempAlerts) {
-      if (!unique.some((x) => entry.utcTs === x.utcTs)) {
-        unique.push(entry);
-      }
-    }
+    // const unique = [];
+    // for (const entry of tempAlerts) {
+    //   if (!unique.some((x) => entry.utcTs === x.utcTs)) {
+    //     unique.push(entry);
+    //   }
+    // }
+    const unique = logs.filter((it) => it.type === EVENT_DATA_TYPE.ALERT);
 
     const validAlerts =
-      unique?.filter((it) => ['1', '2', '3'].includes(it?.alertStageId?.toString())) ?? [];
+      unique?.filter((it) =>
+        hasStatusValue(it?.alertStageId, [
+          ALERT_STAGE_STATUS.AT_RISK,
+          ALERT_STAGE_STATUS.ELEVATED_RISK,
+          ALERT_STAGE_STATUS.SAFE
+        ])
+      ) ?? [];
 
     return {
       totalAlerts: validAlerts?.length || 0,
-      stopAlerts: validAlerts?.filter((it) => ['1', '2'].includes(it?.alertStageId?.toString()))
-        ?.length,
+      stopAlerts: validAlerts?.filter((it) =>
+        hasStatusValue(it?.alertStageId, [
+          ALERT_STAGE_STATUS.AT_RISK,
+          ALERT_STAGE_STATUS.ELEVATED_RISK
+        ])
+      )?.length,
       highestCbt:
         validAlerts?.length > 0
           ? formatHeartCbt(
@@ -234,7 +284,7 @@ export const UserSubscriptionProvider = ({ children }) => {
           : 0
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alerts, metricsFilter?.value]);
+  }, [alerts, metricsFilter?.value, logs]);
 
   const getDateStr = (date) => {
     const d = new Date(date);

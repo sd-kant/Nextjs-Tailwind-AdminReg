@@ -7,6 +7,8 @@ import Checkbox from '../../components/Checkbox';
 import { useWidthContext } from '../../../providers/WidthProvider';
 import avatar from '../../../assets/images/logo_round.png';
 import TableCell from './TableCell';
+import { DEVICE_CONNECTION_STATUS } from '../../../constant';
+import { hasStatusValue } from '../../../utils';
 
 const TableRow = ({ member, visibleColumns, columnsMap }) => {
   const { width } = useWidthContext();
@@ -29,7 +31,9 @@ const TableRow = ({ member, visibleColumns, columnsMap }) => {
   } else if (['4', '7'].includes(connectionValue?.toString())) {
     badgeColorStyle = style.Yellow;
   }
-  const userNameGray = ['1'].includes(connectionValue?.toString()) ? style.NoConnection : null;
+  const userNameGray = hasStatusValue(connectionValue, [DEVICE_CONNECTION_STATUS.NEVER_CONNECTION])
+    ? style.NoConnection
+    : null;
 
   const handleSetChecked = React.useCallback(() => {
     if (checked) {

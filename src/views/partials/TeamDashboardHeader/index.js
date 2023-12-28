@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import clsx from 'clsx';
 import style from './Header.module.scss';
 import Button from '../../components/Button';
-import { customStyles } from '../../pages/team/DashboardV2';
+import { customStyles } from '../../pages/team/dashboard/DashboardV2';
 import { withTranslation } from 'react-i18next';
-import { useStickyComponentsContext } from '../../../providers/StickyComponentsProvider';
+// import { useStickyComponentsContext } from '../../../providers/StickyComponentsProvider';
 import { useDashboardContext } from '../../../providers/DashboardProvider';
 import ResponsiveSelect from '../../components/ResponsiveSelect';
 import { useWidthContext } from '../../../providers/WidthProvider';
@@ -15,18 +15,20 @@ import { get } from 'lodash';
 import SearchInput from '../../components/SearchInput';
 import Pagination from '../../components/Pagination';
 import refreshIcon from '../../../assets/images/refresh.svg';
+import MemberSearchResultModal from 'views/modals/MemberSearchResultModal';
 
-const Header = ({ t, myOrganization }) => {
+const TeamDashboardHeader = ({ t, myOrganization }) => {
   const {
     pickedTeams,
     setPickedTeams,
-    organization,
     setOrganization,
     formattedTeams,
+    selectedTeams,
     formattedOrganizations,
+    selectedOrganization,
     isAdmin,
     filteredMembers,
-    formattedMembers,
+    // formattedMembers,
     page,
     setPage,
     sizePerPage,
@@ -35,26 +37,28 @@ const Header = ({ t, myOrganization }) => {
     setKeyword,
     setRefreshCount
   } = useDashboardContext();
-  const { visible, setVisible } = useStickyComponentsContext();
+  // const { visible, setVisible } = useStickyComponentsContext();
   // eslint-disable-next-line no-unused-vars
-  const [visibleWorkRestButton, setVisibleWorkRestButton] = React.useState(false);
-  const [visibleStatisticsButton, setVisibleStatisticsButton] = React.useState(false);
+  // const [visibleWorkRestButton, setVisibleWorkRestButton] = React.useState(false);
+  // const [visibleStatisticsButton, setVisibleStatisticsButton] = React.useState(false);
   const { tableWidth } = useWidthContext();
   const [orgLabel, setOrgLabel] = React.useState(null);
-  React.useEffect(() => {
-    /*window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };*/
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  React.useEffect(() => {
-    setVisible({
-      workRestBar: false,
-      statistics: visibleStatisticsButton
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleStatisticsButton]);
+  const [isOpenGlobalSearchResult, setIsOpenGlobalSearchResult] = React.useState(false);
+  // React.useEffect(() => {
+  //   /*window.addEventListener('scroll', handleScroll);
+  //   return () => {
+  //     window.removeEventListener('scroll', handleScroll);
+  //   };*/
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  // }, []);
+  // React.useEffect(() => {
+  //   setVisible({
+  //     workRestBar: false,
+  //     statistics: visibleStatisticsButton
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [visibleStatisticsButton]);
   React.useEffect(() => {
     if (!isAdmin && myOrganization?.name) {
       setOrgLabel(myOrganization?.name);
@@ -62,34 +66,34 @@ const Header = ({ t, myOrganization }) => {
   }, [isAdmin, myOrganization?.name]);
 
   // eslint-disable-next-line no-unused-vars
-  const handleScroll = () => {
-    let scrollTop = window.pageYOffset;
-    let valueForStatisticsVisible = 180;
-    let valueForWorkRestVisible = 280;
-    if (window.innerWidth < 1024) {
-      valueForStatisticsVisible = 380;
-      // eslint-disable-next-line no-unused-vars
-      valueForWorkRestVisible = 700;
-    }
-    if (scrollTop > valueForStatisticsVisible) {
-      setVisibleStatisticsButton(true);
-    } else {
-      setVisibleStatisticsButton(false);
-      setVisible({
-        ...visible,
-        statistics: false
-      });
-    }
-    // if (scrollTop > valueForWorkRestVisible) {
-    //   setVisibleWorkRestButton(true);
-    // } else {
-    //   setVisibleWorkRestButton(false);
-    //   setVisible({
-    //     ...visible,
-    //     workRestBar: false,
-    //   });
-    // }
-  };
+  // const handleScroll = () => {
+  //   let scrollTop = window.pageYOffset;
+  //   let valueForStatisticsVisible = 180;
+  //   let valueForWorkRestVisible = 280;
+  //   if (window.innerWidth < 1024) {
+  //     valueForStatisticsVisible = 380;
+  //     // eslint-disable-next-line no-unused-vars
+  //     valueForWorkRestVisible = 700;
+  //   }
+  //   if (scrollTop > valueForStatisticsVisible) {
+  //     setVisibleStatisticsButton(true);
+  //   } else {
+  //     setVisibleStatisticsButton(false);
+  //     setVisible({
+  //       ...visible,
+  //       statistics: false
+  //     });
+  //   }
+  //   // if (scrollTop > valueForWorkRestVisible) {
+  //   //   setVisibleWorkRestButton(true);
+  //   // } else {
+  //   //   setVisibleWorkRestButton(false);
+  //   //   setVisible({
+  //   //     ...visible,
+  //   //     workRestBar: false,
+  //   //   });
+  //   // }
+  // };
 
   const label = React.useMemo(() => {
     if (pickedTeams?.length > 0) {
@@ -142,9 +146,7 @@ const Header = ({ t, myOrganization }) => {
               styles={customStyles()}
               options={formattedOrganizations}
               maxMenuHeight={190}
-              value={formattedOrganizations?.find(
-                (it) => it.value?.toString() === organization?.toString()
-              )}
+              value={selectedOrganization}
               onChange={(v) => {
                 setOrganization(v.value);
                 setPickedTeams([]);
@@ -159,9 +161,7 @@ const Header = ({ t, myOrganization }) => {
             <MultiSelectPopup
               label={label}
               options={formattedTeams}
-              value={formattedTeams?.filter((it) =>
-                pickedTeams.some((ele) => ele.toString() === it.value?.toString())
-              )}
+              value={selectedTeams}
               onChange={(v) => {
                 setPickedTeams(v?.map((it) => it.value));
               }}
@@ -170,7 +170,7 @@ const Header = ({ t, myOrganization }) => {
         </div>
 
         <div className={clsx(style.Additional)}>
-          {visibleWorkRestButton && (
+          {/* {visibleWorkRestButton && (
             <Button
               bgColor={visible.workRestBar ? 'orange' : 'gray'}
               color="white"
@@ -183,7 +183,7 @@ const Header = ({ t, myOrganization }) => {
                 })
               }
             />
-          )}
+          )} */}
           {/*{
           visibleStatisticsButton && (
             <>
@@ -211,52 +211,76 @@ const Header = ({ t, myOrganization }) => {
           </div>
         )}
       </div>
-      {formattedMembers?.length > 0 ? (
-        <div className={clsx(style.Second)}>
-          <div className={clsx(style.SearchInputWrapper)}>
-            <SearchInput
-              keyword={keyword}
-              visibleClearIcon={keyword?.trim() !== ''}
-              onChange={(e) => setKeyword(e.target.value)}
-              onClear={() => setKeyword('')}
-            />
 
-            <img
-              src={refreshIcon}
-              className={clsx(style.RefreshIcon)}
-              alt="refresh"
-              onClick={() => setRefreshCount((prev) => prev + 1)}
-            />
-          </div>
+      <div className={clsx(style.Second, 'tw-gap-2')}>
+        <div className={clsx(style.SearchInputWrapper)}>
+          <div className="tw-flex tw-flex-col sm:tw-flex-row tw-gap-2 sm:tw-gap-4 tw-w-full">
+            <div className="tw-flex tw-justify-between tw-items-center">
+              <SearchInput
+                keyword={keyword}
+                visibleClearIcon={keyword !== ''}
+                onChange={(e) => setKeyword(e.target.value?.trim())}
+                onClear={() => setKeyword('')}
+              />
+              <img
+                src={refreshIcon}
+                className={clsx(style.RefreshIcon)}
+                alt="refresh"
+                onClick={() => setRefreshCount((prev) => prev + 1)}
+              />
+            </div>
 
-          <div className={clsx(style.PaginationWrapper)}>
-            {filteredMembers?.length > 0 ? (
-              <React.Fragment>
-                <Pagination
-                  page={page}
-                  size={sizePerPage}
-                  length={filteredMembers?.length}
-                  onClickEnd={handleClickEnd}
-                  onClickNext={handleClickNext}
-                  onClickPrev={handleClickPrev}
-                  onClickStart={handleClickStart}
+            {isAdmin && (
+              <div className="tw-flex tw-justify-start tw-items-center">
+                <MemberSearchResultModal
+                  isOpen={isOpenGlobalSearchResult}
+                  onClose={() => {
+                    setIsOpenGlobalSearchResult(false);
+                  }}
                 />
-                <div className={clsx(style.SelectorWrapper)}>
-                  <select
-                    className={clsx(style.Selector, 'font-input-label text-white')}
-                    value={sizePerPage}
-                    onChange={handleChangePageSize}>
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                  </select>
-                </div>
-              </React.Fragment>
-            ) : null}
+                <button
+                  onClick={() => {
+                    if (keyword) setIsOpenGlobalSearchResult(true);
+                  }}
+                  disabled={!keyword}
+                  className={clsx(
+                    'font-button-label-sm tw-py-2 tw-uppercase tw-outline-none tw-border-none tw-rounded-lg tw-px-4 tw-cursor-pointer',
+                    keyword ? 'k-bg-orange tw-text-white' : 'tw-bg-neutral-800 tw-text-zinc-400'
+                  )}>
+                  {t('global search')}
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      ) : null}
+
+        <div className={clsx(style.PaginationWrapper)}>
+          {filteredMembers?.length > 0 ? (
+            <React.Fragment>
+              <Pagination
+                page={page}
+                size={sizePerPage}
+                length={filteredMembers?.length}
+                onClickEnd={handleClickEnd}
+                onClickNext={handleClickNext}
+                onClickPrev={handleClickPrev}
+                onClickStart={handleClickStart}
+              />
+              <div className={clsx(style.SelectorWrapper)}>
+                <select
+                  className={clsx(style.Selector, 'font-input-label text-white')}
+                  value={sizePerPage}
+                  onChange={handleChangePageSize}>
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+              </div>
+            </React.Fragment>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 };
@@ -265,4 +289,4 @@ const mapStateToProps = (state) => ({
   myOrganization: get(state, 'profile.organization')
 });
 
-export default connect(mapStateToProps, null)(withTranslation()(Header));
+export default connect(mapStateToProps, null)(withTranslation()(TeamDashboardHeader));
