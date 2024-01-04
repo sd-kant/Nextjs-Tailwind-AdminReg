@@ -38,7 +38,7 @@ import { defaultMember, lowercaseEmail, setUserTypeToUsers } from './FormReprese
 import { useNavigate } from 'react-router-dom';
 import ConfirmModal from '../../components/ConfirmModal';
 import { checkIfSpacesOnly } from '../../../utils/invite';
-import { isValidMacAddress } from 'utils';
+// import { isValidMacAddress } from 'utils';
 import BThubGenTokenModal from '../../modals/organization/BThubGenTokenModal';
 import { queryGetAllHubProfiles } from 'http/organization';
 import OkModal from 'views/modals/OkModal';
@@ -129,18 +129,18 @@ const formSchema = (t) => {
         })
         .required()
     ),
-    bluetoothTokens: Yup.array().of(
-      Yup.object()
-        .shape({
-          macAddress: Yup.string()
-            .required(t('device id required'))
-            .test('is-valid', t('device id invalid'), function (value) {
-              return isValidMacAddress(value);
-            }),
-          refreshToken: Yup.string().required()
-        })
-        .required()
-    ),
+    // bluetoothTokens: Yup.array().of(
+    //   Yup.object()
+    //     .shape({
+    //       macAddress: Yup.string()
+    //         .required(t('device id required'))
+    //         .test('is-valid', t('device id invalid'), function (value) {
+    //           return isValidMacAddress(value);
+    //         }),
+    //       refreshToken: Yup.string().required()
+    //     })
+    //     .required()
+    // ),
     sso: Yup.boolean(),
     samlUrl: Yup.string()
       .url(t('saml url invalid'))
@@ -201,12 +201,14 @@ const FormCompany = (props) => {
     [countryRegions]
   );
   const [orgAdmins, setOrgAdmins] = React.useState([]);
+  const [bluetoothTokens, setBluetoothTokens] = React.useState([]);
   const [isOpenBThubGentTokenModal, setIsOpenBThubGentTokenModal] = React.useState(false);
   const [isOpenSuccessCopyToken, setIsOpenSuccessCopyToken] = React.useState(false);
   const navigate = useNavigate();
   React.useEffect(() => {
     setFieldValue('users', []);
-    setFieldValue('bluetoothTokens', []);
+    // setFieldValue('bluetoothTokens', []);
+    setBluetoothTokens([]);
     if (!values.companyName?.__isNew__ && values.companyName?.value) {
       fetchOrgAdmins(values.companyName?.value);
       fetchOrgHubProfiles(values.companyName?.value);
@@ -230,9 +232,16 @@ const FormCompany = (props) => {
   const fetchOrgHubProfiles = (organizationId) => {
     queryGetAllHubProfiles(organizationId)
       .then((res) => {
-        console.log(res);
-        setFieldValue(
-          'bluetoothTokens',
+        // setFieldValue(
+        //   'bluetoothTokens',
+        //   res.data?.map((it) => {
+        //     return {
+        //       macAddress: it.deviceId,
+        //       refreshToken: it.refreshToken
+        //     };
+        //   })
+        // );
+        setBluetoothTokens(
           res.data?.map((it) => {
             return {
               macAddress: it.deviceId,
@@ -266,7 +275,8 @@ const FormCompany = (props) => {
     setFieldValue('users', data);
   };
   const addBluetoothTokens = (newToken) => {
-    setFieldValue('bluetoothTokens', [...values['bluetoothTokens'], newToken]);
+    // setFieldValue('bluetoothTokens', [...values['bluetoothTokens'], newToken]);
+    setBluetoothTokens([...bluetoothTokens, newToken]);
   };
   const changeHandler = (key, value) => {
     if (key === 'companyName') {
@@ -728,7 +738,7 @@ const FormCompany = (props) => {
               <div
                 className="grouped-form mt-25 tw-gap-2"
                 style={{ maxWidth: '700px', overFlowY: 'auto' }}>
-                {values['bluetoothTokens']?.map((token, index) => {
+                {bluetoothTokens?.map((token, index) => {
                   return (
                     <div
                       className="tw-flex tw-flex-col md:tw-flex-row md:tw-justify-between tw-gap-2"
@@ -1091,7 +1101,7 @@ const EnhancedForm = withFormik({
         hideCbtHR: values.hideCbtHR
       }
     };
-
+    console.log('valuse', values);
     if (values.isEditing) {
       const initialize = () => {
         setFieldValue('isEditing', false);

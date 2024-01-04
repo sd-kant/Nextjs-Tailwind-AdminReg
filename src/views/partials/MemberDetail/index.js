@@ -74,6 +74,8 @@ const MemberDetail = ({
     return logs.filter((it) => it.type === EVENT_DATA_TYPE.ALERT)?.length;
   }, [logs]);
   const memberId = React.useRef(origin?.userId);
+  const teamId = React.useRef(origin?.teamId);
+  const orgId = React.useRef(origin?.orgId);
   const data = React.useMemo(() => {
     return origin
       ? origin
@@ -548,19 +550,35 @@ const MemberDetail = ({
               <MetricLogs metricStats={metricStats} />
             </div>
           </Card>
-          <div className={clsx('tw-flex')}>
-            <div className={clsx('tw-p-4')}>
-              <div className="d-flex justify-end">
+          <div className={clsx('tw-flex', 'tw-grow', 'tw-flex-col', 'tw-justify-between')}>
+            <div>
+              <div>
                 <Button
-                  title={'update team'}
+                  onClick={() => {
+                    window.open(
+                      `/connect/member/${orgId.current}/device/${teamId.current}/${memberId.current}`,
+                      '_blank'
+                    );
+                  }}
+                  title={'assign new device'}
                   size="sm"
-                  disabled={team?.value?.toString() === data?.teamId?.toString()}
-                  onClick={handleClickMoveTeam}
                 />
               </div>
             </div>
+            <div className="tw-flex tw-gap-2">
+              <div>
+                <div className="d-flex justify-end">
+                  <Button
+                    title={'update team'}
+                    size="sm"
+                    disabled={team?.value?.toString() === data?.teamId?.toString()}
+                    onClick={handleClickMoveTeam}
+                  />
+                </div>
+              </div>
 
-            <div className={clsx('tw-p-4')}>{renderActionContent()}</div>
+              <div>{renderActionContent()}</div>
+            </div>
           </div>
         </div>
       </div>
