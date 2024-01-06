@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as XLSX from 'xlsx/xlsx.mjs';
+import { utils, writeFile } from 'xlsx';
 import { queryTeamMembers, getRiskLevels } from '../http';
 import { celsiusToFahrenheit, numMinutesBetweenWithNow } from '../utils';
 import {
@@ -1585,26 +1585,22 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       if ([`xlsx`, `csv`].includes(exportOption?.value)) {
         const sheetLabel = (metrics?.findIndex((it) => it.value === metric) ?? 0).toString();
         if (visibleExport === VISIBLE_EXPORT_DATA[TABLE_DATA]) {
-          const wb = XLSX.utils.book_new();
-          const ws = XLSX.utils.json_to_sheet(data, {
+          const wb = utils.book_new();
+          const ws = utils.json_to_sheet(data, {
             origin: `A2`,
             skipHeader: true
           });
-          XLSX.utils.sheet_add_aoa(ws, [headers]);
+          utils.sheet_add_aoa(ws, [headers]);
 
-          XLSX.utils.book_append_sheet(wb, ws, sheetLabel + 1);
-          XLSX.writeFile(
-            wb,
-            `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
-            {
-              bookType: exportOption.value
-            }
-          );
+          utils.book_append_sheet(wb, ws, sheetLabel + 1);
+          writeFile(wb, `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`, {
+            bookType: exportOption.value
+          });
         } else {
           if (exportOption?.value === 'xlsx') {
-            const wb = XLSX.utils.book_new();
+            const wb = utils.book_new();
             for (const chartDataset of chartDatasets.datasets) {
-              const ws = XLSX.utils.aoa_to_sheet(
+              const ws = utils.aoa_to_sheet(
                 chartDataset.data.map((v) => [v.x, v.y]),
                 {
                   origin: `A2`,
@@ -1614,14 +1610,14 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
               const temp = chartDataset.label.split(' : ');
               const tzName = temp[0];
               const memberName = temp[1];
-              XLSX.utils.sheet_add_aoa(ws, [[tzName, memberName]]);
-              XLSX.utils.book_append_sheet(
+              utils.sheet_add_aoa(ws, [[tzName, memberName]]);
+              utils.book_append_sheet(
                 wb,
                 ws,
                 memberName.length > 30 ? memberName.slice(0, 30) + '...' : memberName
               );
             }
-            XLSX.writeFile(
+            writeFile(
               wb,
               `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
               {
@@ -1629,7 +1625,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
               }
             );
           } else {
-            const wb = XLSX.utils.book_new();
+            const wb = utils.book_new();
             const values = [];
             for (const chartDataset of chartDatasets.datasets) {
               const temp = chartDataset.label.split(' : ');
@@ -1638,12 +1634,12 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
               values.push([tzName, memberName]);
               values.push(...chartDataset.data.map((v) => [v.x, v.y]));
             }
-            const ws = XLSX.utils.aoa_to_sheet(values, {
+            const ws = utils.aoa_to_sheet(values, {
               origin: `A1`,
               skipHeader: true
             });
-            XLSX.utils.book_append_sheet(wb, ws, sheetLabel + 1);
-            XLSX.writeFile(
+            utils.book_append_sheet(wb, ws, sheetLabel + 1);
+            writeFile(
               wb,
               `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
               {
