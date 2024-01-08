@@ -735,5 +735,6 @@
   "copy token": "Copy Token",
   "global search": "Global Search",
   "go to": "Go To",
-  "copy token success": "Token Copied Successfully!"
+  "copy token success": "Token Copied Successfully!",
+  "percent of time in cbt zones": "Percent of time in Core Body Temperature Zones"
 }

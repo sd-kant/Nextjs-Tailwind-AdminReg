@@ -93,8 +93,8 @@ export const customStyles = (disabled = false) => ({
     backgroundColor: state.isSelected
       ? '#DE7D2C'
       : state.isFocused
-      ? '#5BAEB6'
-      : state.data.color ?? 'white',
+        ? '#5BAEB6'
+        : state.data.color ?? 'white',
     zIndex: 1,
     color: 'black',
     fontSize: '21px',
@@ -439,8 +439,8 @@ const FormInvite = (props) => {
                   {num === 0
                     ? t('no new team member')
                     : num > 1
-                    ? t('n new team members', { n: num })
-                    : t('n new team member', { n: 1 })}
+                      ? t('n new team members', { n: num })
+                      : t('n new team member', { n: 1 })}
                 </span>
               </div>
             </div>
@@ -583,8 +583,6 @@ const EnhancedForm = withFormik({
             showErrorNotification,
             t
           });
-
-        console.log('users 5', alreadyRegisteredUsers, numberOfSuccess, succeedRegisteredUsers);
 
         if (numberOfSuccess > 0) {
           setStatus({

@@ -12,9 +12,8 @@ import { get } from 'lodash';
 
 ChartJS.register(ArcElement);
 
-const ChartCBTZones = () => {
-  const { chartData, chartRef, setIsEnablePrint } = useAnalyticsContext();
-
+const ChartCBTZones = ({ t }) => {
+  const { chartData, chartRef, setIsEnablePrint, selectedTeams, teamLabel } = useAnalyticsContext();
   React.useEffect(() => {
     setIsEnablePrint(
       !checkEmptyData(chartData?.dataHeat?.datasets, 1) ||
@@ -22,10 +21,16 @@ const ChartCBTZones = () => {
     );
   }, [chartData, setIsEnablePrint]);
 
-  const ChartComponent = ({ title, data }) => {
+  const ChartComponent = ({ data }) => {
     return (
       <div>
-        <h1 className={clsx(style.TxtCenter)}>{title}</h1>
+        <h1 className={clsx(style.TxtCenter)}>
+          {t('percent of time in cbt zones')}
+
+          <div className={clsx(style.ChartLabel)}>
+            {t('for n', { n: selectedTeams?.length > 0 ? teamLabel : t('n team', { n: 0 }) })}
+          </div>
+        </h1>
         <Doughnut
           data={data}
           options={{
@@ -55,7 +60,7 @@ const ChartCBTZones = () => {
   return (
     <div ref={chartRef} className={clsx(style.ChartBody)}>
       <div className={clsx(style.DoughnutGrid2)}>
-        <ChartComponent title={''} data={chartData?.dataCBTZones} />
+        <ChartComponent data={chartData?.dataCBTZones} />
       </div>
     </div>
   );
