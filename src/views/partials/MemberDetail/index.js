@@ -556,7 +556,7 @@ const MemberDetail = ({
                 <Button
                   onClick={() => {
                     window.open(
-                      `/connect/member/${orgId.current}/device/${teamId.current}/${memberId.current}`,
+                      `/connect/member/${orgId.current}/device/${teamId.current}/${memberId.current}?tab=new`,
                       '_blank'
                     );
                   }}

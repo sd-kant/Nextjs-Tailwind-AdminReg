@@ -16,7 +16,7 @@ import {
 } from 'redux/action/ui';
 import SearchDropdown from 'views/components/SearchDropdown';
 import useClickOutSide from 'hooks/useClickOutSide';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 // import QRcodeReader from '../../QRcodeReader';
 import Html5QrcodePlugin from 'plugins/Html5QrcodePlugin';
 
@@ -39,7 +39,7 @@ const FormConnectMemberDevice = (props) => {
   const navigate = useNavigate();
   const [openQrCodeReader, setOpenQRcodeReader] = React.useState(false);
   const [scanedDeviceId, setScancedDeviceId] = React.useState();
-
+  const [searchParams] = useSearchParams();
   const changeFormField = (e) => {
     const { value, name } = e.target;
     setFieldValue(name, value);
@@ -146,7 +146,7 @@ const FormConnectMemberDevice = (props) => {
 
   const handleCancel = () => {
     if (isEditing) {
-      navigate(-1);
+      searchParams.get('tab') === 'new' ? window.close() : navigate(-1);
     } else {
       setFieldValue('isEditing', true);
     }
