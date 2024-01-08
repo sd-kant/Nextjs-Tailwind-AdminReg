@@ -573,16 +573,15 @@ const EnhancedForm = withFormik({
           lastName: it?.lastName?.trim() ?? 'last name'
         }));
 
-        const { numberOfSuccess, alreadyRegisteredUsers, succeedRegisteredUsers } =
-          await _handleSubmitV2({
-            users,
-            setLoading,
-            organizationId,
-            teamId,
-            isAdmin,
-            showErrorNotification,
-            t
-          });
+        const { numberOfSuccess, succeedRegisteredUsers } = await _handleSubmitV2({
+          users,
+          setLoading,
+          organizationId,
+          teamId,
+          isAdmin,
+          showErrorNotification,
+          t
+        });
 
         if (numberOfSuccess > 0) {
           setStatus({
