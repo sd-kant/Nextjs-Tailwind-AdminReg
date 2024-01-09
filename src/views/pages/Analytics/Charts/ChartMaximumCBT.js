@@ -37,7 +37,7 @@ const ChartMaximumCBT = ({ t }) => {
   return (
     <div ref={chartRef} className={clsx(style.ChartBody)}>
       <div className={clsx(style.LineBody)}>
-        {/*<h1 className={clsx(style.TxtCenter)}/>*/}
+        <h1 className={clsx(style.TxtCenter)}>{t('maximum cbt time of day')}</h1>
 
         <div className={clsx(style.FlexSpace)}>
           <Bar

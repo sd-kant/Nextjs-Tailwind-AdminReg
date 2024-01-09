@@ -736,5 +736,6 @@
   "global search": "Global Search",
   "go to": "Go To",
   "copy token success": "Token Copied Successfully!",
-  "percent of time in cbt zones": "Percent of time in Core Body Temperature Zones"
+  "percent of time in cbt zones": "Percent of time in Core Body Temperature Zones",
+  "maximum cbt time of day": "Maximum CBT Time of Day"
 }
