@@ -27,7 +27,7 @@ const MemberOperation = ({ t }) => {
     );
 
     return isMoveTo ? (
-      <TeamsPopup content={content} key={`action-popup-${title}-${index}`} />
+      <TeamsPopup content={content} moveTo={isMoveTo} key={`action-popup-${title}-${index}`} />
     ) : (
       content
     );
@@ -36,8 +36,13 @@ const MemberOperation = ({ t }) => {
   const actions = [
     {
       icon: moveToIcon,
-      title: t('move to'),
-      isMoveTo: true
+      title: t('move to another org'),
+      isMoveTo: 'organization'
+    },
+    {
+      icon: moveToIcon,
+      title: t('move to another team'),
+      isMoveTo: 'team'
     },
     {
       icon: removeIcon,

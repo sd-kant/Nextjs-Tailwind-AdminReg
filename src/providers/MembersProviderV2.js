@@ -11,14 +11,21 @@ const MembersContextV2 = React.createContext(null);
 
 export const MembersProviderV2Draft = ({ t, children }) => {
   const [selectedMembers, setSelectedMembers] = React.useState([]);
-  const { moveMember, formattedTeams, removeMember } = useDashboardContext();
+  const { moveMember, moveMemberToOrg, formattedTeams, formattedOrganizations, removeMember } =
+    useDashboardContext();
   const [confirmModal, setConfirmModal] = React.useState({ visible: false, title: '' });
   const [warningModal, setWarningModal] = React.useState({ visible: false, title: '', mode: null }); // mode: move, remove, unlock
   const [selectedTeam, setSelectedTeam] = React.useState(null);
+  const [selectedOrg, setSelectedOrg] = React.useState(null);
   const [selectedUsersTeams, setSelectedUsersTeams] = React.useState([]);
   const teamName = React.useMemo(() => {
     return formattedTeams?.find((it) => it.value?.toString() === selectedTeam?.toString())?.label;
   }, [selectedTeam, formattedTeams]);
+
+  const orgName = React.useMemo(() => {
+    return formattedOrganizations?.find((it) => it.value?.toString() === selectedOrg?.toString())
+      ?.label;
+  }, [selectedOrg, formattedOrganizations]);
 
   const teamNamePlaceholder = React.useMemo(() => {
     if (selectedUsersTeams?.length > 1) {
@@ -44,6 +51,23 @@ export const MembersProviderV2Draft = ({ t, children }) => {
     }
   };
 
+  const handleMoveToAnotherOrgClick = async (orgId) => {
+    setSelectedOrg(orgId);
+    if (selectedMembers?.length > 0) {
+      setWarningModal({
+        visible: true,
+        title: t(
+          `move n ${selectedMembers?.length > 1 ? 'users' : 'user'} to organization warning title`,
+          {
+            n: selectedMembers?.length,
+            organization: orgName
+          }
+        ),
+        mode: `move org`
+      });
+    }
+  };
+
   React.useEffect(() => {
     if (selectedMembers?.length > 0) {
       if (warningModal.mode === 'move') {
@@ -57,6 +81,20 @@ export const MembersProviderV2Draft = ({ t, children }) => {
             }
           ),
           mode: `move`
+        });
+      } else if (warningModal.mode === 'move org') {
+        setWarningModal({
+          visible: true,
+          title: t(
+            `move n ${
+              selectedMembers?.length > 1 ? 'users' : 'user'
+            } to organization warning title`,
+            {
+              n: selectedMembers?.length,
+              organization: orgName
+            }
+          ),
+          mode: `move org`
         });
       }
     }
@@ -87,6 +125,26 @@ export const MembersProviderV2Draft = ({ t, children }) => {
   };
 
   const handleWarningOk = React.useCallback(() => {
+    const handleMoveToOrg = async () => {
+      moveMemberToOrg(selectedMembers, selectedOrg)
+        .then(() => {
+          hideWarningModal();
+          setConfirmModal({
+            visible: true,
+            title: t(
+              `move n ${
+                selectedMembers?.length > 1 ? 'users' : 'user'
+              } to organization confirmation title`,
+              { n: selectedMembers?.length, organization: orgName }
+            )
+          });
+          setSelectedMembers([]);
+        })
+        .catch((e) => {
+          console.log('moving member to org error', e);
+        });
+    };
+
     const handleMove = async () => {
       moveMember(selectedMembers, selectedTeam)
         .then(() => {
@@ -126,6 +184,9 @@ export const MembersProviderV2Draft = ({ t, children }) => {
       case 'move':
         handleMove().then();
         break;
+      case 'move org':
+        handleMoveToOrg().then();
+        break;
       case 'remove':
         handleRemove().then();
         break;
@@ -140,13 +201,17 @@ export const MembersProviderV2Draft = ({ t, children }) => {
     selectedTeam,
     t,
     teamName,
-    teamNamePlaceholder
+    teamNamePlaceholder,
+    orgName,
+    moveMemberToOrg,
+    selectedOrg
   ]);
 
   const providerValue = {
     selectedMembers,
     setSelectedMembers,
     handleMoveClick,
+    handleMoveToAnotherOrgClick,
     handleRemoveClick
   };
 
