@@ -10,7 +10,8 @@ import {
   queryTeamMembers,
   queryTeams,
   subscribeDataEvents,
-  unlockUser
+  unlockUser,
+  updateUserByAdmin
 } from '../http';
 import axios from 'axios';
 import {
@@ -429,28 +430,6 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                   results?.forEach((result) => {
                     if (result.status === 'fulfilled') {
                       if (result.value?.data?.length > 0) {
-                        //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                        // const updated = [
-                        //   ...valuesV2Ref.current?.alerts,
-                        //   ...result.value?.data?.map((it) => ({
-                        //     ...it,
-                        //     utcTs: it.ts
-                        //   }))
-                        // ];
-                        // let uniqueUpdated = [];
-                        // for (const entry of updated) {
-                        //   if (
-                        //     !uniqueUpdated.some(
-                        //       (x) => entry.utcTs === x.utcTs && entry.userId === x.userId
-                        //     )
-                        //   ) {
-                        //     uniqueUpdated.push(entry);
-                        //   }
-                        // }
-                        // uniqueUpdated = uniqueUpdated?.filter((it) =>
-                        //   ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString())
-                        // );
-
                         const uniqueUpdated = _.chain(valuesV2Ref.current?.alerts)
                           .concat(
                             result.value?.data?.map((it) => {
@@ -572,6 +551,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   const formattedMembers = React.useMemo(() => {
     let arr = [];
     valuesV2.members?.forEach((member) => {
+      if (!hasStatusValue(member.teamId, pickedTeams)) return;
+
       const stat = valuesV2.stats?.find(
         (it) => it.userId?.toString() === member.userId?.toString()
       );
@@ -1082,6 +1063,62 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     [setLoading, t, pickedTeams, addNotification]
   );
 
+  const moveMemberToOrg = React.useCallback(
+    (members, orgId) => {
+      return new Promise((resolve, reject) => {
+        if (!orgId) reject('orgId not set');
+
+        const updateUserPromises = [];
+        members?.forEach((member) => {
+          if (member.orgId?.toString() !== orgId?.toString()) {
+            updateUserPromises.push(
+              updateUserByAdmin(member.orgId, member.userId, {
+                orgId: orgId,
+                teamId: null
+              })
+            );
+          } else {
+            addNotification(
+              t('msg user already on the org', { user: `${member.firstName} ${member.lastName}` }),
+              'success'
+            );
+          }
+        });
+        if (updateUserPromises.length > 0) {
+          setLoading(true);
+          let cnt = 0;
+          Promise.allSettled(updateUserPromises)
+            .then((results) => {
+              results?.forEach((result) => {
+                if (result.status === 'fulfilled') {
+                  const userData = result.value?.data;
+                  const member = valuesV2Ref.current.members?.find(
+                    (m) => m.userId == userData.userId
+                  );
+                  member.orgId = userData.orgId;
+                  member.teamId = userData.teamId;
+                  cnt += 1;
+                }
+              });
+              setValuesV2({
+                ...valuesV2Ref.current
+              });
+              setCount((prev) => (prev + 1) % 100);
+            })
+            .catch((e) => {
+              addNotification(e.response?.data?.message, 'error');
+              reject(e);
+            })
+            .finally(() => {
+              setLoading(false);
+              resolve({ cnt });
+            });
+        }
+      });
+    },
+    [setLoading, t, addNotification]
+  );
+
   const unlockMember = React.useCallback(
     (member) => {
       return new Promise((resolve, reject) => {
@@ -1148,6 +1185,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     keyword,
     setKeyword,
     moveMember,
+    moveMemberToOrg,
     setRefreshCount,
     removeMember,
     unlockMember,

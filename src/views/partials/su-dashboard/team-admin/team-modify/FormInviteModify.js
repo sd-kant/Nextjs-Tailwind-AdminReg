@@ -259,8 +259,8 @@ const FormInviteModify = (props) => {
                       newChanges === 0
                         ? 'no new change'
                         : newChanges > 1
-                        ? 'new changes'
-                        : 'new change',
+                          ? 'new changes'
+                          : 'new change',
                       { numberOfChanges: newChanges }
                     )}
                   </span>
