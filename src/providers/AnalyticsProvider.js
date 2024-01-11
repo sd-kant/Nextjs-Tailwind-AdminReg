@@ -107,7 +107,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   const [isEnablePrint, setIsEnablePrint] = React.useState(false);
 
   const formatNumber = (n) => {
-    if (!n) return '';
+    if (n === null || n === undefined || n === '') return '';
     return (Math.round(n * 10) / 10)?.toFixed(1);
   };
 

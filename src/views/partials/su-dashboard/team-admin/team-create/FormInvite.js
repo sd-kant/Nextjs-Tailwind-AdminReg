@@ -146,28 +146,32 @@ const FormInvite = (props) => {
       const job = it.jobRole?.toLowerCase()?.trim();
       const selectedLevel = permissionLevels.find((ele) => parseInt(ele.value) === parseInt(level));
       const selectedJob = AVAILABLE_JOBS.find((ele) => ele.value === job);
-      const phoneNumber =
-        !INVALID_VALUES3.includes(it.countryCode) && INVALID_VALUES3.includes(it.phoneNumber)
-          ? `${it.countryCode}${it.phoneNumber}`
-          : null;
-      const phoneNumberWithPlus = phoneNumber ? `+${phoneNumber}` : null;
+      let phoneNumber = null;
       let country = null;
-
-      if (phoneNumberWithPlus) {
-        const asYouType = new AsYouType();
-        asYouType.input(phoneNumberWithPlus);
-        country = asYouType?.getCountry();
+      if (it.phoneNumber !== 'null') {
+        phoneNumber =
+          !INVALID_VALUES3.includes(it.countryCode) && INVALID_VALUES3.includes(it.phoneNumber)
+            ? `${it.countryCode}${it.phoneNumber}`
+            : null;
+      }
+      if (phoneNumber) {
+        const phoneNumberWithPlus = phoneNumber ? `+${phoneNumber}` : null;
+        if (phoneNumberWithPlus) {
+          const asYouType = new AsYouType();
+          asYouType.input(phoneNumberWithPlus);
+          country = asYouType?.getCountry();
+        }
       }
 
       return {
-        email: it.email,
+        email: !it.email || it.email === 'null' ? '' : it.email,
         firstName: it.firstName,
         lastName: it.lastName,
         userType: selectedLevel || '',
         job: selectedJob || '',
         phoneNumber: {
           value: phoneNumber,
-          countryCode: country
+          countryCode: phoneNumber ? country : ''
         }
       };
     });
