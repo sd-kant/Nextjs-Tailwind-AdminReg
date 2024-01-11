@@ -550,21 +550,7 @@ const MemberDetail = ({
               <MetricLogs metricStats={metricStats} />
             </div>
           </Card>
-          <div className={clsx('tw-flex', 'tw-grow', 'tw-flex-col', 'tw-justify-between')}>
-            <div>
-              <div>
-                <Button
-                  onClick={() => {
-                    window.open(
-                      `/connect/member/${orgId.current}/device/${teamId.current}/${memberId.current}?tab=new`,
-                      '_blank'
-                    );
-                  }}
-                  title={'assign new device'}
-                  size="sm"
-                />
-              </div>
-            </div>
+          <div className={clsx('tw-flex', 'tw-gap-2', 'tw-justify-between')}>
             <div className="tw-flex tw-gap-2">
               <div>
                 <div className="d-flex justify-end">
@@ -578,6 +564,20 @@ const MemberDetail = ({
               </div>
 
               <div>{renderActionContent()}</div>
+            </div>
+            <div>
+              <div>
+                <Button
+                  onClick={() => {
+                    window.open(
+                      `/connect/member/${orgId.current}/device/${teamId.current}/${memberId.current}?tab=new`,
+                      '_blank'
+                    );
+                  }}
+                  title={'assign new device'}
+                  size="sm"
+                />
+              </div>
             </div>
           </div>
         </div>
