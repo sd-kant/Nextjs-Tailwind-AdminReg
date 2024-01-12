@@ -229,6 +229,10 @@ const MemberDetail = ({
     return `App Ver. ${apiDevice?.version ?? 'N/A'}`;
   }, [apiDevice]);
 
+  const userFullName = React.useMemo(() => {
+    return data?.firstName + ' ' + data?.lastName;
+  }, [data]);
+
   return (
     <div className="tw-p-2 lg:tw-p-12 tw-relative">
       <img
@@ -263,11 +267,9 @@ const MemberDetail = ({
               <div className="tw-col-span-12 md:tw-col-span-9 lg:tw-col-span-8 tw-flex tw-flex-col tw-gap-4">
                 <div>
                   <div
-                    title={data?.firstName + ' ' + data?.lastName}
+                    title={userFullName}
                     className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
-                    <span className={clsx('font-heading-small')}>
-                      {`${data?.firstName}  ${data?.lastName}`}
-                    </span>
+                    <span className={clsx('font-heading-small')}>{userFullName}</span>
                   </div>
 
                   <div
@@ -570,7 +572,7 @@ const MemberDetail = ({
                 <Button
                   onClick={() => {
                     window.open(
-                      `/connect/member/${orgId.current}/device/${teamId.current}/${memberId.current}?tab=new`,
+                      `/connect/member/${orgId.current}/device/${teamId.current}/${memberId.current}?tab=new&name=${userFullName}`,
                       '_blank'
                     );
                   }}
