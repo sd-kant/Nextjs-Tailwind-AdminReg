@@ -351,8 +351,7 @@ export const METRIC_USER_TABLE_VALUES = {
   SWR_ACCLIM_SWEAT: 4, // Deprecated
   SWR_ACCLIM_HEAT: 5,
   TIME_SPENT_IN_CBT_ZONES: 6,
-  DEVICE_DATA: 7,
-  USERS_IN_VARIOUS_CBT_ZONES: 8
+  DEVICE_DATA: 7
 };
 export const METRIC_TEAM_TABLE_VALUES = {
   AMBIENT_TEMP_HUMIDITY: 20,
@@ -361,7 +360,9 @@ export const METRIC_TEAM_TABLE_VALUES = {
   NO_USERS_IN_SWR_CATE: 23,
   NO_USERS_IN_HEAT_CATE: 24,
   NO_USERS_IN_CBT_ZONES: 25,
-  NO_USERS_UNACCLIMATED_ACCLIMATED: 26
+  NO_USERS_UNACCLIMATED_ACCLIMATED: 26,
+
+  USERS_IN_VARIOUS_CBT_ZONES: 8
 };
 export const METRIC_USER_CHART_VALUES = {
   CBT: 40,
@@ -453,12 +454,6 @@ export const USER_STATUS_METRICS = [
     category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
   },
   {
-    // label: `${i18n.t('table')} - ${i18n.t('users in various cbt zones')}`,
-    label: `${i18n.t('table')} - Percent of Time in CBT Zones`,
-    value: METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES, // 8
-    category: KA_CATEGORY_VALUES.DASHBOARD_SUMMARY
-  },
-  {
     label: `${i18n.t('chart')} - ${i18n.t('cbt')}`,
     value: METRIC_USER_CHART_VALUES.CBT, // 40
     category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
@@ -519,6 +514,11 @@ export const TEAM_STATUS_METRICS = [
   {
     label: 'Maximum CBT Time of Day',
     value: METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT,
+    category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
+  },
+  {
+    label: `${i18n.t('table')} - Percent of Time in CBT Zones`,
+    value: METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES, // 8
     category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
   }
 ];
@@ -626,7 +626,7 @@ export const KA_CATEGORY_SELECT_OPTIONS = [
 //   },
 //   {
 //     label: 'Core Body Temperature Percent of Time',
-//     value: METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES,
+//     value: METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES,
 //     type: 'user',
 //     category: KA_CATEGORY_VALUES.CORE_BODY_TEMPERATURE
 //   },

@@ -389,7 +389,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
           ])
         ];
         break;
-      case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
+      case METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
         ret = [
           null,
           makeSort('Sort', [
@@ -753,7 +753,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     } else if (checkMetric(METRIC_USER_CHART_VALUES, metric)) {
       // 40, 41
       return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.HEART_RATE, null, null);
-    } else if ([METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES].includes(metric)) {
+    } else if ([METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES].includes(metric)) {
       let safe = 0;
       let mild = 0;
       let moderate = 0;
@@ -1246,7 +1246,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
             new Date(it.ts).toLocaleString() ?? ''
           ];
         });
-    } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) {
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) {
       // 8
       ret = onFilterData(
         organizationAnalytics,

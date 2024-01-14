@@ -451,7 +451,7 @@ export const getKeyApiCall = (value) => {
         ANALYTICS_API_KEYS.MAX_HR_ALL
       ];
       break;
-    case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
+    case METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
       apiCalls = [queryOrganizationTempCateData];
       keys = [ANALYTICS_API_KEYS.TEMP_CATE_DATA];
       // apiCalls = [queryOrganizationUsersInCBTZones];
@@ -582,7 +582,7 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('date')
       ];
       break;
-    case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
+    case METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
       ret = [
         // i18n.t('temperature categories'),
         // i18n.t('user %')
