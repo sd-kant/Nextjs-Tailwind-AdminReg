@@ -238,10 +238,19 @@ const ChartUserAlert = ({ metric: unit }) => {
   }, [isCbt, unit]);
 
   return (
-    <div ref={chartRef} className={clsx(style.ChartBody)}>
-      <div className={clsx(style.LineBody)}>
+    <div ref={chartRef} className={clsx(style.ChartBody, 'tw-flex', 'tw-flex-col')}>
+      <div
+        className={clsx(
+          style.LineBody,
+          'tw-flex',
+          'tw-flex-col',
+          'tw-items-center',
+          'tw-justify-center',
+          'tw-grow',
+          'tw-w-full'
+        )}>
         <h1 className={clsx(style.TxtCenter)}>{chartTitle}</h1>
-        <div className={clsx(style.LineFlex, `mb-15`)}>
+        <div className={clsx(style.LineFlex, `mb-15`, 'tw-gap-2', 'tw-flex-wrap')}>
           {selectedMembers?.length > 0 ? (
             <div className={'d-flex flex-row'}>
               <span className="font-input-label d-flex align-center">{t(`users`)}</span>
@@ -259,7 +268,7 @@ const ChartUserAlert = ({ metric: unit }) => {
           ) : (
             <div />
           )}
-          <div className="d-flex flex-row ml-15">
+          <div className="d-flex flex-row">
             <span className="font-input-label d-flex align-center">{t(`types`)}</span>
 
             <ResponsiveSelect
@@ -273,7 +282,7 @@ const ChartUserAlert = ({ metric: unit }) => {
             />
           </div>
 
-          <div className="d-flex flex-row ml-15">
+          <div className="d-flex flex-row">
             <span className="font-input-label d-flex align-center">{t(`date range`)}</span>
 
             <ResponsiveSelect
@@ -288,7 +297,8 @@ const ChartUserAlert = ({ metric: unit }) => {
           </div>
         </div>
 
-        <div className={clsx(style.FlexSpace)}>
+        <div
+          className={clsx('tw-flex', 'tw-justify-center', 'tw-grow', 'tw-w-full', 'lg:tw-w-4/5')}>
           <Line
             options={{
               pointRadius: 1,

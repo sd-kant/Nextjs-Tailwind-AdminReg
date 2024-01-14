@@ -299,7 +299,11 @@ export const chartPlugins = (idStr, noDataStr) => {
       afterDraw(chart) {
         const { ctx } = chart;
         ctx.save();
-
+        // background
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = '#212121';
+        ctx.fillRect(0, 0, chart.width, chart.height);
+        ctx.restore();
         if ([`doughnut-sweat`, `doughnut-heat`].includes(idStr)) {
           chart.data.datasets.forEach((dataset, i) => {
             chart.getDatasetMeta(i).data.forEach((dataPoint, index) => {
@@ -330,7 +334,7 @@ export const chartPlugins = (idStr, noDataStr) => {
           });
         }
 
-        if (checkEmptyData(chart?.data?.datasets, 1)) {
+        if (noDataStr && checkEmptyData(chart?.data?.datasets, 1)) {
           let width = chart.width;
           let height = chart.height;
           ctx.textAlign = `center`;

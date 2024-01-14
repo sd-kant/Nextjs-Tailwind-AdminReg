@@ -8,7 +8,7 @@ import style from './Chart.module.scss';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
 import { METRIC_TEAM_TABLE_VALUES, METRIC_USER_TABLE_VALUES } from '../../../../constant';
-import { checkEmptyData } from '../../../../utils/anlytics';
+import { chartPlugins, checkEmptyData } from '../../../../utils/anlytics';
 
 ChartJS.register(ArcElement);
 
@@ -45,7 +45,7 @@ const ChartTeamDoughnut = () => {
               legend: {
                 display: true,
                 labels: {
-                  color: 'gray'
+                  color: 'white'
                 },
                 position: 'bottom'
               },
@@ -65,6 +65,7 @@ const ChartTeamDoughnut = () => {
               }
             }
           }}
+          plugins={chartPlugins('doughnut', null)}
         />
       </div>
     );
