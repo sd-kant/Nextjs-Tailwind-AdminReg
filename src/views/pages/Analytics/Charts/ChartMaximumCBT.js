@@ -19,7 +19,7 @@ import clsx from 'clsx';
 import style from './Chart.module.scss';
 import { withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
-import { chartPlugins } from '../../../../utils/anlytics';
+import { chartPlugins, checkEmptyData } from '../../../../utils/anlytics';
 
 ChartJS.register(
   CategoryScale,
@@ -33,13 +33,27 @@ ChartJS.register(
 );
 
 const ChartMaximumCBT = ({ t }) => {
-  const { chartRef, chartData } = useAnalyticsContext();
+  const { chartRef, chartData, setIsEnablePrint } = useAnalyticsContext();
+  React.useEffect(() => {
+    setIsEnablePrint(!checkEmptyData(chartData?.datasets, 1));
+  }, [chartData, setIsEnablePrint]);
+
   return (
     <div ref={chartRef} className={clsx(style.ChartBody)}>
-      <div className={clsx(style.LineBody)}>
+      <div
+        className={clsx(
+          style.LineBody,
+          'tw-flex',
+          'tw-flex-col',
+          'tw-items-center',
+          'tw-justify-center',
+          'tw-grow',
+          'tw-w-full'
+        )}>
         <h1 className={clsx(style.TxtCenter)}>{t('maximum cbt time of day')}</h1>
 
-        <div className={clsx(style.FlexSpace)}>
+        <div
+          className={clsx('tw-flex', 'tw-justify-center', 'tw-grow', 'tw-w-full', 'lg:tw-w-4/5')}>
           <Bar
             options={{
               scales: {

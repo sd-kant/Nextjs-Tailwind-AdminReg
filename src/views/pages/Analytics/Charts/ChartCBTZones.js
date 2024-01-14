@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import style from './Chart.module.scss';
 import { withTranslation } from 'react-i18next';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
-import { checkEmptyData } from '../../../../utils/anlytics';
+import { chartPlugins, checkEmptyData } from '../../../../utils/anlytics';
 import { get } from 'lodash';
 
 ChartJS.register(ArcElement);
@@ -38,7 +38,7 @@ const ChartCBTZones = ({ t }) => {
               legend: {
                 display: true,
                 labels: {
-                  color: 'gray'
+                  color: 'white'
                 },
                 position: 'bottom'
               },
@@ -51,6 +51,7 @@ const ChartCBTZones = ({ t }) => {
               }
             }
           }}
+          plugins={chartPlugins('Doughnut', null)}
         />
       </div>
     );
