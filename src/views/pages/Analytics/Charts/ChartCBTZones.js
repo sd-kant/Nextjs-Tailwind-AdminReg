@@ -15,10 +15,7 @@ ChartJS.register(ArcElement);
 const ChartCBTZones = ({ t }) => {
   const { chartData, chartRef, setIsEnablePrint, selectedTeams, teamLabel } = useAnalyticsContext();
   React.useEffect(() => {
-    setIsEnablePrint(
-      !checkEmptyData(chartData?.dataHeat?.datasets, 1) ||
-        !checkEmptyData(chartData?.dataHeat?.dataSweat, 1)
-    );
+    setIsEnablePrint(!checkEmptyData(chartData?.dataCBTZones?.datasets, 1));
   }, [chartData, setIsEnablePrint]);
 
   const ChartComponent = ({ data }) => {

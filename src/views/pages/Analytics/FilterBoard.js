@@ -154,7 +154,8 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
           METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK,
           METRIC_USER_CHART_VALUES.CBT,
           METRIC_USER_CHART_VALUES.HR,
-          METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT
+          METRIC_TEAM_CHART_VALUES.DAY_MAXIMUM_CBT,
+          METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES
         ].includes(selectedMetric?.value) && isEnablePrint
       );
     }
