@@ -58,7 +58,7 @@ instance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
+var countingNetworkErr = 0;
 // Add a response interceptor
 instance.interceptors.response.use(
   function (response) {
@@ -71,9 +71,14 @@ instance.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     if (error?.code === 'ERR_NETWORK') {
-      showNetworkError();
+      countingNetworkErr = countingNetworkErr + 1;
+      if (countingNetworkErr > 10) {
+        showNetworkError();
+      }
       return Promise.reject(error);
-    } else if (['401'].includes(error.response?.status?.toString())) {
+    }
+    countingNetworkErr = 0;
+    if (['401'].includes(error.response?.status?.toString())) {
       // if token expired
       if (!originalRequest._retry) {
         const refreshToken = localStorage.getItem('kop-v2-refresh-token');
