@@ -4,6 +4,8 @@ import { apiBaseUrl as baseUrl } from '../config';
 import { toastr } from 'react-redux-toastr';
 import i18n from '../i18nextInit';
 import { logout } from '../views/layouts/MainLayout';
+import axiosRetry from 'axios-retry';
+
 const { ConcurrencyManager } = require('axios-concurrency');
 
 const showErrorAndLogout = () => {
@@ -22,6 +24,19 @@ const cachedBaseUrl = localStorage.getItem('kop-v2-base-url');
 export const instance = axios.create({
   baseURL: cachedBaseUrl ?? baseUrl,
   timeout: 60000 // set 60s for long-polling
+});
+
+axiosRetry(instance, {
+  retries: 10, // Number of retries
+  retryCondition(error) {
+    // Conditional check the error status code
+    switch (error?.code) {
+      case 'ERR_NETWORK':
+        return true; // Retry request with response status code 404 or 429
+      default:
+        return false; // Do not retry the others
+    }
+  }
 });
 
 const MAX_CONCURRENT_REQUESTS = 50;
