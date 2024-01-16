@@ -126,19 +126,19 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
       errors.dateRange = t('date range invalid');
     }
     if (
-      !metric ||
-      (metric &&
+      !selectedMetric ||
+      (selectedMetric &&
         ((statsBy === 'user' &&
-          !checkMetric(METRIC_USER_TABLE_VALUES, metric) &&
-          !checkMetric(METRIC_USER_CHART_VALUES, metric)) ||
+          !checkMetric(METRIC_USER_TABLE_VALUES, selectedMetric?.value) &&
+          !checkMetric(METRIC_USER_CHART_VALUES, selectedMetric?.value)) ||
           (statsBy === 'team' &&
-            !checkMetric(METRIC_TEAM_TABLE_VALUES, metric) &&
-            !checkMetric(METRIC_TEAM_CHART_VALUES, metric))))
+            !checkMetric(METRIC_TEAM_TABLE_VALUES, selectedMetric?.value) &&
+            !checkMetric(METRIC_TEAM_CHART_VALUES, selectedMetric?.value))))
     ) {
       errors.metric = t('metric required');
     }
     return errors;
-  }, [startDate, endDate, metric, statsBy, t]);
+  }, [startDate, endDate, selectedMetric, statsBy, t]);
 
   const showChart = React.useCallback(() => {
     if (!selectedMetric) return false;
@@ -496,7 +496,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
                 }}
               />
             </div>
-            <div className="tw-flex tw-flex-col tw-justify-end tw-items-center">
+            <div className="tw-flex tw-flex-col lg:tw-pt-[44px] tw-justify-start tw-items-center">
               <Toggle
                 on={statsBy === 'team'}
                 titleOn={t('user')}

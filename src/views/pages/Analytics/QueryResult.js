@@ -117,16 +117,6 @@ const QueryResult = ({ metric }) => {
       </div>
 
       <div className={clsx(style.StatsSelectWrapper)}>
-        {/* <div className="tw-flex tw-justify-center tw-items-center">
-          <Toggle
-            on={statsBy === 'team'}
-            titleOn={t('user')}
-            titleOff={t('team')}
-            handleSwitch={(v) => {
-              setStatsBy(v ? 'team' : 'user');
-            }}
-          />
-        </div> */}
         {visibleExport > 0 && (
           <div className={clsx(style.ExportWrapper)}>
             <ResponsiveSelect
