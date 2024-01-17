@@ -560,10 +560,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         (it) => it.userId?.toString() === member.userId?.toString()
       )?.devices;
       const userKenzenDevice = userDevices
-        ?.filter(
-          (it) =>
-            it.type === 'kenzen' && it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase()
-        )
+        ?.filter((it) => it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase())
         ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
       const alertsForMe = valuesV2.alerts?.filter(
         (it) =>
@@ -593,7 +590,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         deviceId: stat?.deviceId,
         numberOfAlerts,
         stat,
-        alert
+        alert,
+        deviceType: userKenzenDevice?.type
       });
       const lastSync = getLatestDate(
         getLatestDate(
