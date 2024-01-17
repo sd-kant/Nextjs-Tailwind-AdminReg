@@ -30,7 +30,7 @@ const CustomInput = React.forwardRef(({ value, onClick, readOnly }, ref) => {
     <div className={clsx(style.CustomInputWrapper)} onClick={onClick}>
       <input
         className={clsx(
-          'input mt-10 font-heading-small text-white',
+          'input font-heading-small text-white',
           readOnly ? style.ReadOnlyInputField : style.InputField
         )}
         type="text"
@@ -365,14 +365,14 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
       <div
         className={clsx(
           style.FilterDiv,
-          'tw-flex tw-flex-col sm:tw-flex-row tw-justify-start tw-gap-[12px]'
+          'tw-flex tw-flex-col sm:tw-flex-row tw-justify-start tw-gap-[12px] tw-mt-[15px]'
         )}>
-        <div className="tw-flex tw-flex-col tw-min-w-[240px]">
-          <div className="tw-flex tw-flex-col">
-            <label className="font-input-label">{t('company name')}</label>
+        <div className="tw-flex tw-flex-col tw-min-w-[240px] tw-gap-[15px]">
+          <div className="tw-flex tw-flex-col tw-gap-[10px]">
+            <label className="font-input-label tw-text-neutral-300">{t('company name')}</label>
             {isAdmin ? (
               <ResponsiveSelect
-                className="mt-10 font-heading-small text-black"
+                className="font-heading-small text-black"
                 isClearable
                 options={organizations}
                 value={selectedOrganization}
@@ -394,8 +394,8 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
                 : 'tw-grow tw-border tw-border-gray-700 tw-border-dashed tw-mt-2'
             )}>
             {teams?.length > 0 ? (
-              <div className={'tw-flex tw-flex-col tw-min-w-[240px]'}>
-                <label className="font-input-label mb-10">{t('team')}</label>
+              <div className={'tw-flex tw-flex-col tw-min-w-[240px] tw-gap-[10px]'}>
+                <label className="font-input-label  tw-text-neutral-300">{t('team')}</label>
 
                 <MultiSelectPopup
                   label={teamLabel}
@@ -408,8 +408,8 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               </div>
             ) : null}
             {selectedTeams?.length > 0 && members?.length > 0 ? (
-              <div className={'tw-flex tw-flex-col tw-min-w-[240px]'}>
-                <label className="font-input-label mb-10">{t('users')}</label>
+              <div className={'tw-flex tw-flex-col tw-min-w-[240px]  tw-gap-[10px]'}>
+                <label className="font-input-label tw-text-neutral-300">{t('users')}</label>
 
                 <MultiSelectPopup
                   label={userLabel}
@@ -424,10 +424,10 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
           </div>
         </div>
 
-        <div className="tw-flex tw-flex-col tw-min-w-[240px]">
+        <div className="tw-flex tw-flex-col tw-min-w-[240px] tw-gap-[15px]">
           <div className="tw-flex tw-gap-4">
-            <div className="tw-flex tw-flex-col">
-              <label className="font-input-label">{t('start date')}</label>
+            <div className="tw-flex tw-flex-col  tw-gap-[10px]">
+              <label className="font-input-label tw-text-neutral-300">{t('start date')}</label>
               <div className={clsx(style.FlexLeft)}>
                 <CustomDatePicker
                   date={startDate}
@@ -446,8 +446,8 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               )}
             </div>
 
-            <div className="tw-flex tw-flex-col">
-              <label className="font-input-label">{t('end date')}</label>
+            <div className="tw-flex tw-flex-col  tw-gap-[10px]">
+              <label className="font-input-label tw-text-neutral-300">{t('end date')}</label>
               <div className={clsx(style.FlexLeft)}>
                 <CustomDatePicker
                   date={endDate}
@@ -463,10 +463,14 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               </div>
             </div>
           </div>
-          <div className={clsx('tw-flex tw-flex-col', datePickerReadOnly ? 'tw-opacity-50' : '')}>
-            <label className="font-input-label">{t('date range')}</label>
+          <div
+            className={clsx(
+              'tw-flex tw-flex-col  tw-gap-[10px]',
+              datePickerReadOnly ? 'tw-opacity-50' : ''
+            )}>
+            <label className="font-input-label tw-text-neutral-300">{t('date range')}</label>
             <ResponsiveSelect
-              className="mt-10 font-heading-small text-black"
+              className="font-heading-small text-black"
               isClearable
               isDisabled={datePickerReadOnly}
               options={dateRangPresets}
@@ -480,12 +484,12 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
           </div>
         </div>
 
-        <div className="tw-flex tw-flex-col md:tw-flex-row 2xl:tw-flex-col tw-gap-0 md:tw-gap-4 2xl:tw-gap-0 sm:tw-min-w-[480px]">
+        <div className="tw-flex tw-flex-col md:tw-flex-row 2xl:tw-flex-col tw-gap-[15px] sm:tw-min-w-[480px]">
           <div className="tw-flex tw-flex-col lg:tw-flex-row tw-gap-4">
-            <div className="tw-flex tw-flex-col tw-grow">
-              <label className="font-input-label">{t('select category')}</label>
+            <div className="tw-flex tw-flex-col tw-grow  tw-gap-[10px]">
+              <label className="font-input-label tw-text-neutral-300">{t('select category')}</label>
               <ResponsiveSelect
-                className="mt-10 font-heading-small text-black"
+                className="font-heading-small text-black"
                 isClearable
                 options={KA_CATEGORY_SELECT_OPTIONS}
                 value={selectedCategory}
@@ -496,7 +500,7 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
                 }}
               />
             </div>
-            <div className="tw-flex tw-flex-col lg:tw-pt-[44px] tw-justify-start tw-items-center">
+            <div className="tw-flex tw-flex-col lg:tw-pt-[30px] tw-justify-start tw-items-center">
               <Toggle
                 on={statsBy === 'team'}
                 titleOn={t('user')}
@@ -508,11 +512,11 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               />
             </div>
           </div>
-          <div className="tw-flex tw-flex-col sm:tw-min-w-[480px]">
-            <label className="font-input-label">{t('select metric')}</label>
+          <div className="tw-flex tw-flex-col  tw-gap-[10px] sm:tw-min-w-[480px]">
+            <label className="font-input-label tw-text-neutral-300">{t('select metric')}</label>
 
             <ResponsiveSelect
-              className="mt-10 font-heading-small text-black"
+              className="font-heading-small text-black"
               isClearable
               options={metrics}
               value={selectedMetric}
@@ -526,8 +530,11 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
             )}
           </div>
         </div>
-        <div className="tw-flex tw-flex-col tw-gap-[12px] sm:tw-flex-row tw-flex-wrap tw-justify-center tw-mt-[40px] sm:tw-ml-[20px]">
-          <div className={clsx('tw-w-full sm:tw-w-auto tw-min-w-[145px]')}>
+        <div className="tw-flex tw-items-start tw-pt-4 sm:tw-pt-8 tw-flex-col tw-gap-[12px] sm:tw-flex-row tw-flex-wrap tw-justify-center">
+          <div
+            className={clsx(
+              'tw-flex tw-justify-center md:tw-justify-end tw-w-full sm:tw-w-auto tw-min-w-[145px]'
+            )}>
             <button
               className={`${
                 submitActivated && !errors.metric && !errors.dateRange
@@ -538,7 +545,10 @@ const FilterBoard = ({ isAdmin, myOrganization }) => {
               <span className="font-button-label text-white text-uppercase">{t('process')}</span>
             </button>
           </div>
-          <div className={clsx('tw-w-full sm:tw-w-auto sm:tw-min-w-[145px]')}>
+          <div
+            className={clsx(
+              'tw-flex tw-justify-center md:tw-justify-start tw-w-full sm:tw-w-auto sm:tw-min-w-[145px]'
+            )}>
             <ReactToPrint
               content={reactToPrintContent}
               documentTitle={fileName}

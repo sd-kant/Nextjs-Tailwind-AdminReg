@@ -34,16 +34,16 @@
   }
 
   @media screen and (max-width: 480px) {
-    display: block;
+    // display: block;
 
     button {
       width: 100%;
     }
   }
 
-  label {
-    margin-top: 15px !important;
-  }
+  // label {
+  //   margin-top: 15px !important;
+  // }
 
   & > div {
 
