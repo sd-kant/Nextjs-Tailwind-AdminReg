@@ -175,6 +175,29 @@ declare global {
     heartCbtAvg: number;
     heartRateAvg: number;
   }
+
+  interface EVENT_DEVICE_LOG {
+    orgId: number;
+    teamId: number;
+    userId: number;
+    type: 'DeviceLog';
+    ts: number;
+    gmt: string;
+    data: {
+      id: number;
+      deviceId: string;
+      userId: number;
+      utcTs: string;
+      gmt: string;
+      batteryPercent: number;
+      charging: boolean;
+      ppg: boolean;
+      onOff: boolean;
+      connected: boolean;
+      source: string;
+      createdAt: string;
+    };
+  }
 }
 
 export {};

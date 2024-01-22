@@ -588,11 +588,6 @@ const MemberDetail = ({
   );
 };
 
-// MemberDetail.propTypes = {
-//   handleClickMoveTeam: PropTypes.func,
-//   handleClickUnlock: PropTypes.func
-// };
-
 const mapStateToProps = (state) => ({
   metric: get(state, 'ui.metric')
 });

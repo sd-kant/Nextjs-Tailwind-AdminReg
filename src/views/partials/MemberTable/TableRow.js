@@ -44,46 +44,73 @@ const TableRow = ({ member, visibleColumns, columnsMap }) => {
       setSelectedMembers([...selectedMembers, member]);
     }
   }, [checked, index, member, selectedMembers, setSelectedMembers]);
-
+  const hasOtherDevices = member?.others?.length > 0;
   return (
-    <tr
-      className={clsx(style.TableRow)}
-      key={`member-${member.userId}`}
-      onClick={() => {
-        setVisibleMemberModal(true);
-        setMember(member);
-      }}>
-      <td className={clsx(style.TableCell, userNameGray)}>
-        <div className={clsx(style.InnerWrapper)}>
-          <div className={clsx(style.Badge, badgeColorStyle)} />
-          <div style={{ marginTop: '20px' }}>
-            <Checkbox size={checkboxSize} checked={checked} setChecked={handleSetChecked} />
-          </div>
-          <img src={avatar} className={clsx(style.Avatar)} alt="avatar" />
-          <div style={{ textAlign: 'left' }}>
-            <div>
-              <span>{member['firstName']}</span>
+    <>
+      <tr
+        className={clsx(style.TableRow)}
+        key={`member-${member.userId}`}
+        onClick={() => {
+          setVisibleMemberModal(true);
+          setMember(member);
+        }}>
+        <td className={clsx(style.TableCell, userNameGray, hasOtherDevices ? style.BorderB0 : '')}>
+          <div className={clsx(style.InnerWrapper)}>
+            <div className={clsx(style.Badge, badgeColorStyle)} />
+            <div style={{ marginTop: '20px' }}>
+              <Checkbox size={checkboxSize} checked={checked} setChecked={handleSetChecked} />
             </div>
-            <div>
-              <span>{member['lastName']}</span>
+            <img src={avatar} className={clsx(style.Avatar)} alt="avatar" />
+            <div style={{ textAlign: 'left' }}>
+              <div>
+                <span>{member['firstName']}</span>
+              </div>
+              <div>
+                <span>{member['lastName']}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </td>
-      {Object.keys(columnsMap).map((header, index) =>
-        visibleColumns.includes(header) ? (
-          <TableCell
-            value={header}
-            key={`cell-${member.userId}-${index}`}
-            member={member}
-            hideCbtHR={hideCbtHR}
-          />
-        ) : null
-      )}
-      {visibleColumns?.length < Object.keys(columnsMap)?.length + 1 && (
-        <td className={clsx(style.TableCell)} />
-      )}
-    </tr>
+        </td>
+        {Object.keys(columnsMap).map((header, index) =>
+          visibleColumns.includes(header) ? (
+            <TableCell
+              value={header}
+              key={`cell-${member.userId}-${index}`}
+              member={member}
+              hideCbtHR={hideCbtHR}
+            />
+          ) : null
+        )}
+        {visibleColumns?.length < Object.keys(columnsMap)?.length + 1 && (
+          <td className={clsx(style.TableCell)} />
+        )}
+      </tr>
+      {hasOtherDevices &&
+        member?.others?.map((subMember, idx) => (
+          <tr
+            className={clsx(style.TableRow)}
+            key={`member-${member.userId}-${idx}`}
+            onClick={() => {
+              setVisibleMemberModal(true);
+              setMember(subMember);
+            }}>
+            <td className={clsx(style.TableCell, userNameGray, style.BorderT0)}></td>
+            {Object.keys(columnsMap).map((header, index) =>
+              visibleColumns.includes(header) ? (
+                <TableCell
+                  value={header}
+                  key={`cell-${member.userId}-${index}`}
+                  member={subMember}
+                  hideCbtHR={hideCbtHR}
+                />
+              ) : null
+            )}
+            {visibleColumns?.length < Object.keys(columnsMap)?.length + 1 && (
+              <td className={clsx(style.TableCell)} />
+            )}
+          </tr>
+        ))}
+    </>
   );
 };
 
