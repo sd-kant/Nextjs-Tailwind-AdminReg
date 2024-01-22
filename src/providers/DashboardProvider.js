@@ -407,7 +407,11 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                         // const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
                         setValuesV2({
                           ...valuesV2Ref.current,
-                          stats: result.value?.data
+                          stats: _.unionBy(
+                            result.value?.data,
+                            valuesV2Ref.current?.stats,
+                            (it) => it.userId + it.deviceId
+                          )
                         });
                       }
                     }
@@ -581,7 +585,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       const alertObj = formatAlert(alert?.alertStageId);
       let i = 0,
         subArr = [];
-      for (const stat of stats) {
+      function calData(stat = null) {
         const userKenzenDevices = userDevices
           ?.filter(
             (it) =>
@@ -642,6 +646,12 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           invisibleLastUpdates
         });
         i = i + 1;
+      }
+
+      if (stats?.length > 0) {
+        stats.forEach((s) => calData(s));
+      } else {
+        calData();
       }
 
       if (subArr.length > 0) {
