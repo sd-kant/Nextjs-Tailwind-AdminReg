@@ -8,14 +8,14 @@ import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
 import { TIME_LIST } from '../../../../constant';
 import { get } from 'lodash';
 import { checkEmptyData } from '../../../../utils/anlytics';
-import moment from 'moment';
+// import moment from 'moment';
 
 const ChartHighestCBT = ({ metric: unitMetric }) => {
   const {
     maxCBTTileData: chartData,
     setDetailCbt,
-    // selectedTeams,
-    // timeZone,
+    selectedTeams,
+    timeZone,
     chartRef,
     setIsEnablePrint
   } = useAnalyticsContext();
@@ -104,12 +104,11 @@ const ChartHighestCBT = ({ metric: unitMetric }) => {
 
         <div className={clsx(style.TxtCenter)}>
           <div className={clsx(style.TxtCenter, `mt-40`)}>
-            {/* {selectedTeams?.length === 1
+            {selectedTeams?.length === 1
               ? timeZone
                 ? timeZone?.displayName + ` - ` + timeZone?.name
                 : ``
-              : `UTC`} */}
-            {moment.tz.guess()}
+              : `UTC`}
           </div>
 
           <h1 className={clsx(style.Txt18, `mt-40`)}>{t(`time of day`)}</h1>

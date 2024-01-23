@@ -55,7 +55,7 @@ import { useUtilsContext } from './UtilsProvider';
 import { useTranslation } from 'react-i18next';
 import soft from 'timezone-soft';
 import spacetime from 'spacetime';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const AnalyticsContext = React.createContext(null);
 
@@ -982,8 +982,8 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       // const thisWeek = getThisWeekByTeam(timeZone);
       // const endD = thisWeek.endDate;
       // let startD = thisWeek.startDate;
-      const endDate = moment();
-      let startDate = moment().subtract(6, 'day').startOf('day');
+      const endDate = moment().tz(timeZone.name);
+      let startDate = moment().tz(timeZone.name).subtract(6, 'day').startOf('day');
 
       // 32
       while (startDate.isBefore(endDate)) {
@@ -1117,7 +1117,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         ?.map((it) => [
           getUserNameFromUserId(members, it.userId),
           getTeamNameFromUserId(members, formattedTeams, it.userId),
-          it.ts ? new Date(it.ts)?.toLocaleString() : ``,
+          it.ts ? moment(it.ts).tz(timeZone.name).format('DD/MM/YYYY HH:mm:ss') : ``,
           it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
           it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
           it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
@@ -1131,7 +1131,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         ?.map((it) => [
           getUserNameFromUserId(members, it.userId),
           getTeamNameFromUserId(members, formattedTeams, it.userId),
-          it.utcTs ? new Date(it.utcTs)?.toLocaleString() : ``,
+          it.utcTs ? moment(it.utcTs).tz(timeZone.name).format('DD/MM/YYYY HH:mm:ss') : ``,
           it.maxCbt ? formatHeartCbt(it.maxCbt) : ``
         ]);
     } else if (METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT === metric) {

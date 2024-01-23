@@ -8,16 +8,15 @@ import { useTranslation, withTranslation } from 'react-i18next';
 import style from './Chart.module.scss';
 import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
 import { chartPlugins, checkEmptyData } from '../../../../utils/anlytics';
-// import { METRIC_USER_TABLE_VALUES } from '../../../../constant';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
 
 const ChartTeamVerticalBar = () => {
   const {
     maxCBTTileData: chartData,
-    // selectedTeams,
+    selectedTeams,
     // selectedMetric,
-    // timeZone,
+    timeZone,
     // teamLabel,
     chartRef,
     setIsEnablePrint
@@ -50,13 +49,13 @@ const ChartTeamVerticalBar = () => {
           </div>
         </div>
 
-        {/* <div className={clsx(style.TxtCenter)}>
+        <div className={clsx(style.TxtCenter)}>
           {selectedTeams?.length === 1
             ? timeZone
               ? timeZone?.displayName + ` - ` + timeZone?.name
               : ``
             : `UTC`}
-        </div> */}
+        </div>
 
         <div className={clsx(style.TxtCenter, style.TxtWeek)}>{t(`date of alert`)}</div>
       </div>
