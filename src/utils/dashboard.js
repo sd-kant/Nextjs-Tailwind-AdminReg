@@ -1,6 +1,6 @@
 import { minutesToDaysHoursMinutes, numMinutesBetween, numMinutesBetweenWithNow } from './index';
 import { HEAT_SUSCEPTIBILITY_PRIORITIES, INVALID_VALUES2, PRIORITIES } from '../constant';
-import { get } from 'lodash';
+import * as _ from 'lodash';
 
 export const formatDevice4Digits = (str) => {
   const splits = str?.split(':');
@@ -43,6 +43,15 @@ export const literToQuart = (v) => {
 };
 
 export const sortMembers = ({ arrOrigin, filter }) => {
+  const chooseConProperty = (m, p = PRIORITIES) => {
+    if (m?.others) {
+      const c = [p[m?.connectionObj?.value]];
+      m?.others.forEach((o) => c.push(p[o?.connectionObj?.value]));
+      return _.min(c);
+    } else {
+      return p[m?.connectionObj?.value];
+    }
+  };
   const common = ({
     arr,
     invisibleKey,
@@ -62,10 +71,10 @@ export const sortMembers = ({ arrOrigin, filter }) => {
         } else {
           v =
             filterDirection === 1
-              ? columnPriorities[get(a, path)?.toString()?.toLowerCase()] -
-                columnPriorities[get(b, path)?.toString()?.toLowerCase()]
-              : columnPriorities[get(b, path)?.toString()?.toLowerCase()] -
-                columnPriorities[get(a, path)?.toString()?.toLowerCase()];
+              ? columnPriorities[_.get(a, path)?.toString()?.toLowerCase()] -
+                columnPriorities[_.get(b, path)?.toString()?.toLowerCase()]
+              : columnPriorities[_.get(b, path)?.toString()?.toLowerCase()] -
+                columnPriorities[_.get(a, path)?.toString()?.toLowerCase()];
           if (v === 0) {
             flag = true;
           }
@@ -73,8 +82,7 @@ export const sortMembers = ({ arrOrigin, filter }) => {
 
         if (flag) {
           v =
-            connectionPriorities[a.connectionObj?.value] -
-            connectionPriorities[b.connectionObj?.value];
+            chooseConProperty(a, connectionPriorities) - chooseConProperty(b, connectionPriorities);
           if (v === 0) {
             if (a.invisibleLastSync) {
               v = 1;
@@ -181,8 +189,8 @@ export const sortMembers = ({ arrOrigin, filter }) => {
     arr = arr?.sort((a, b) => {
       let v =
         filter?.connection === 1
-          ? PRIORITIES[a.connectionObj?.value] - PRIORITIES[b.connectionObj?.value]
-          : PRIORITIES[b.connectionObj?.value] - PRIORITIES[a.connectionObj?.value];
+          ? chooseConProperty(a) - chooseConProperty(b)
+          : chooseConProperty(b) - chooseConProperty(a);
       if (v === 0) {
         if (a.invisibleLastSync) {
           v = 1;

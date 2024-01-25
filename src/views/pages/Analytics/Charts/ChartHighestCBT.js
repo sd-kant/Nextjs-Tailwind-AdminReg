@@ -8,7 +8,6 @@ import { useAnalyticsContext } from '../../../../providers/AnalyticsProvider';
 import { TIME_LIST } from '../../../../constant';
 import { get } from 'lodash';
 import { checkEmptyData } from '../../../../utils/anlytics';
-// import moment from 'moment';
 
 const ChartHighestCBT = ({ metric: unitMetric }) => {
   const {

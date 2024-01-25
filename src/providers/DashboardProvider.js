@@ -584,7 +584,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       )?.length;
       const alertObj = formatAlert(alert?.alertStageId);
       let i = 0,
-        subArr = [];
+        subArr = [],
+        availableDevices = [];
       function calData(stat = null) {
         const userKenzenDevices = userDevices
           ?.filter(
@@ -593,7 +594,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               ['kenzen', 'hub'].includes(it?.type)
           )
           ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime());
-
+        if (stat?.deviceId) availableDevices.push(stat?.deviceId);
         const connectionObj = formatConnectionStatusV2({
           flag: stat?.onOffFlag,
           connected: userKenzenDevices?.[0]?.connected,
@@ -657,6 +658,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       if (subArr.length > 0) {
         arr[arr.length - 1]['others'] = subArr;
       }
+
+      arr[arr.length - 1]['devices'] = availableDevices;
     });
 
     return sortMembers({ arrOrigin: arr, filter });
@@ -682,10 +685,13 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
 
       return (
         lowerCaseKeyword.length >= 4 &&
-        it.stat?.deviceId &&
-        it.stat?.deviceId !== '<none>' &&
-        getLastDigitsOfDeviceId(it.stat?.deviceId).toLowerCase() ===
-          getLastDigitsOfDeviceId(lowerCaseKeyword).toLowerCase()
+        it.devices?.length > 0 &&
+        !it.devices?.every((d) => d === '<none>') &&
+        it.devices?.some(
+          (d) =>
+            getLastDigitsOfDeviceId(d).toLowerCase() ===
+            getLastDigitsOfDeviceId(lowerCaseKeyword).toLowerCase()
+        )
       );
     });
   }, [formattedMembers, keyword]);
