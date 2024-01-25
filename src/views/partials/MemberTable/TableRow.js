@@ -76,12 +76,7 @@ const TableRow = ({ member, visibleColumns, columnsMap }) => {
             setVisibleMemberModal(true);
             setMember(subMember);
           }}>
-          <td
-            className={clsx(
-              style.TableCell,
-              getUserNameGray(subMember?.connectionObj?.value),
-              subMember?.hasOtherDevices ? style.BorderB0 : idx > 0 ? style.BorderT0 : ''
-            )}>
+          <td className={clsx(style.TableCell, getUserNameGray(subMember?.connectionObj?.value))}>
             <div className={clsx(style.InnerWrapper)}>
               <div
                 className={clsx(
@@ -90,21 +85,19 @@ const TableRow = ({ member, visibleColumns, columnsMap }) => {
                 )}
               />
               {idx === 0 && (
-                <>
-                  <div style={{ marginTop: '20px' }}>
-                    <Checkbox size={checkboxSize} checked={checked} setChecked={handleSetChecked} />
-                  </div>
-                  <img src={avatar} className={clsx(style.Avatar)} alt="avatar" />
-                  <div style={{ textAlign: 'left' }}>
-                    <div>
-                      <span>{member['firstName']}</span>
-                    </div>
-                    <div>
-                      <span>{member['lastName']}</span>
-                    </div>
-                  </div>
-                </>
+                <div style={{ marginTop: '20px' }}>
+                  <Checkbox size={checkboxSize} checked={checked} setChecked={handleSetChecked} />
+                </div>
               )}
+              <img src={avatar} className={clsx(style.Avatar)} alt="avatar" />
+              <div style={{ textAlign: 'left' }}>
+                <div>
+                  <span>{member['firstName']}</span>
+                </div>
+                <div>
+                  <span>{member['lastName']}</span>
+                </div>
+              </div>
             </div>
           </td>
           {Object.keys(columnsMap).map((header, index) =>
