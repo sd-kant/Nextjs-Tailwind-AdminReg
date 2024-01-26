@@ -1133,12 +1133,21 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         });
     } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && !detailCbt) {
       // 32
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, pickedMembers, members)
+      ret = onFilterDataV2(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.MAX_CBT,
+        pickedMembers,
+        members
+      )
         ?.filter((it) => moment(it.utcTs).isBetween(startDate, endDate, undefined, '[]'))
         ?.map((it) => [
           getUserNameFromUserId(members, it.userId),
           getTeamNameFromUserId(members, formattedTeams, it.userId),
-          it.utcTs ? moment(it.utcTs).tz(timeZone.name).format('DD/MM/YYYY HH:mm:ss') : ``,
+          it.utcTs
+            ? moment(it.utcTs)
+                .tz(it?.gmt ?? timeZone.name)
+                .format('MM/DD/YYYY HH:mm:ss z')
+            : ``,
           it.maxCbt ? formatHeartCbt(it.maxCbt) : ``
         ]);
     } else if (METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT === metric) {
