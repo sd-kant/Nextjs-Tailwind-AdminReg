@@ -171,9 +171,25 @@ declare global {
   }
 
   interface EVENT_HEART_RATE {
-    utcTs: string;
-    heartCbtAvg: number;
-    heartRateAvg: number;
+    orgId: number;
+    teamId: number;
+    userId: number;
+    type: 'HeartRate';
+    ts: number;
+    gmt: string;
+    data: {
+      userId: number;
+      utcTs: string;
+      gmt: string;
+      stepRate: number;
+      stepCount: number;
+      heartCbtAvg: number;
+      heartRateAvg: number;
+      heatSusceptibility: string;
+      createdAt: string;
+      patch: string;
+      source: string;
+    };
   }
 
   interface EVENT_DEVICE_LOG {

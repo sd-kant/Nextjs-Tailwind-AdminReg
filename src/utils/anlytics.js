@@ -258,6 +258,32 @@ export const onFilterData = (data, key, userIds, members) => {
       : [];
 };
 
+export const onFilterDataV2 = (data, key, userIds, members) => {
+  if (!key) return [];
+  if (!Object.keys(data).includes(key)) return [];
+  if (userIds === null && members === null) return data[[key]] || [];
+  let list = [];
+  if (members?.length > 0) {
+    data[[key]]?.forEach((d) => {
+      const member = members?.find((d) => d?.userId == d?.userId);
+      if (!(userIds?.length > 0 && !userIds.includes(d?.userId))) {
+        if (member) {
+          list.push({ ...d, gmt: member?.gmt });
+        }
+      }
+    });
+  }
+  return list;
+  // else {
+  //   list = data[[key]] ?? [];
+  // }
+  // return userIds?.length > 0
+  //   ? list?.filter((it) => userIds.includes(it.userId))
+  //   : members?.length > 0
+  //     ? list
+  //     : [];
+};
+
 /**
  * filtering by organizationId
  * @param data

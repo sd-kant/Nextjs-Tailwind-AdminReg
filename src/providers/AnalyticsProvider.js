@@ -15,7 +15,8 @@ import {
   // getThisWeekByTeam,
   checkMetric,
   getKeyApiCall,
-  getHeaderMetrics
+  getHeaderMetrics,
+  onFilterDataV2
 } from '../utils/anlytics';
 import {
   COLOR_WHITE,
@@ -1107,23 +1108,29 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
     ) {
       // 2, 31
-      ret = onFilterData(
+      ret = onFilterDataV2(
         organizationAnalytics,
         ANALYTICS_API_KEYS.ALERT_METRICS,
         pickedMembers,
         members
       )
         ?.filter((it) => moment(it.ts).isBetween(startDate, endDate, undefined, '[]'))
-        ?.map((it) => [
-          getUserNameFromUserId(members, it.userId),
-          getTeamNameFromUserId(members, formattedTeams, it.userId),
-          it.ts ? moment(it.ts).tz(timeZone.name).format('DD/MM/YYYY HH:mm:ss') : ``,
-          it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
-          it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
-          it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
-          formatNumber(it.humidity) ?? '',
-          it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``
-        ]);
+        ?.map((it) => {
+          return [
+            getUserNameFromUserId(members, it.userId),
+            getTeamNameFromUserId(members, formattedTeams, it.userId),
+            it.ts
+              ? moment(it.ts)
+                  .tz(it?.gmt ?? timeZone.name)
+                  .format('MM/DD/YYYY HH:mm:ss z')
+              : ``,
+            it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
+            it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
+            it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
+            formatNumber(it.humidity) ?? '',
+            it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``
+          ];
+        });
     } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && !detailCbt) {
       // 32
       ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, pickedMembers, members)

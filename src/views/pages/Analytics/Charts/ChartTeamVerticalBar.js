@@ -12,15 +12,7 @@ import { chartPlugins, checkEmptyData } from '../../../../utils/anlytics';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
 
 const ChartTeamVerticalBar = () => {
-  const {
-    maxCBTTileData: chartData,
-    selectedTeams,
-    // selectedMetric,
-    timeZone,
-    // teamLabel,
-    chartRef,
-    setIsEnablePrint
-  } = useAnalyticsContext();
+  const { maxCBTTileData: chartData, chartRef, setIsEnablePrint } = useAnalyticsContext();
   const { t } = useTranslation();
 
   React.useEffect(() => {
@@ -48,16 +40,7 @@ const ChartTeamVerticalBar = () => {
             <Bar data={chartData} plugins={chartPlugins(`bar`, t(`no data to display`))} />
           </div>
         </div>
-
-        <div className={clsx(style.TxtCenter)}>
-          {selectedTeams?.length === 1
-            ? timeZone
-              ? timeZone?.displayName + ` - ` + timeZone?.name
-              : ``
-            : `UTC`}
-        </div>
-
-        <div className={clsx(style.TxtCenter, style.TxtWeek)}>{t(`date of alert`)}</div>
+        <div className={clsx(style.TxtCenter, style.TxtWeek)}>{t(`number of alerts each day`)}</div>
       </div>
     </div>
   );
