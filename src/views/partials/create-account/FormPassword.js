@@ -95,8 +95,6 @@ const FormPassword = (props) => {
           setIsLogin(true);
           setFieldValue('username', username);
         }
-      }else{
-        navigate('/');
       }
     }
   
