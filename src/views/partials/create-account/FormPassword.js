@@ -196,7 +196,7 @@ const EnhancedForm = withFormik({
     const username = localStorage.getItem('kop-v2-register-username');
     const { setLoading, showSuccessNotification, login, t, showErrorNotification, navigate } =
       props;
-    if (username) {
+    if (!username) {
       try {
         setLoading(true);
         login({

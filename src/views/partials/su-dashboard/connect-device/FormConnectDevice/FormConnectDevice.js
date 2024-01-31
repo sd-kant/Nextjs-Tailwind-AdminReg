@@ -61,18 +61,6 @@ const FormConnectDevice = (props) => {
 
   const { isEditing, deviceId } = values;
 
-  // const tDeviceId = React.useMemo(() => {
-  //   if (deviceId) {
-  //     const tDeviceId = deviceId.replace(/\W/g, '')?.slice(-4);
-  //     if (tDeviceId?.length === 4) {
-  //       return tDeviceId;
-  //     }
-  //     return '';
-  //   }
-
-  //   return '';
-  // }, [deviceId]);
-
   const handleItemClick = React.useCallback(
     (id) => {
       const scanDevice = devices?.find((it) => it.deviceId === id || it.serialNumber === id);
@@ -242,24 +230,6 @@ const FormConnectDevice = (props) => {
                     />
                   </div>
                 )}
-
-                {/* <QRcodeReader
-                  open={openQrCodeReader}
-                  onClose={() => setOpenQRcodeReader(false)}
-                  onScan={(data) => {
-                    if (data) {
-                      const macAddress = data.text.split('_')[1];
-                      setFieldValue('deviceId', macAddress);
-                      handleItemClick(macAddress);
-                      setScancedDeviceId(macAddress);
-                    }
-                  }}
-                  handleError={(error) => {
-                    console.log('err', error);
-                    alert(error);
-                    setOpenQRcodeReader(false);
-                  }}
-                /> */}
               </>
             ) : (
               <>
