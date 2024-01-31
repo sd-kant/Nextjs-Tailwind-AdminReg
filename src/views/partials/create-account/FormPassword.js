@@ -80,7 +80,7 @@ const formSchemaLogin = (t) => {
 };
 
 const FormPassword = (props) => {
-  const { setFieldValue, values, errors, touched, setRestBarClass, t, token } = props;
+  const { setFieldValue, values, errors, touched, setRestBarClass, t, token, setLoading } = props;
   const [isLogin, setIsLogin] = React.useState(false);
   const navigate = useNavigate();
   useEffect(() => {
@@ -102,6 +102,7 @@ const FormPassword = (props) => {
     }
 
     setRestBarClass('progress-0');
+    setLoading(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -196,7 +197,7 @@ const EnhancedForm = withFormik({
     const username = localStorage.getItem('kop-v2-register-username');
     const { setLoading, showSuccessNotification, login, t, showErrorNotification, navigate } =
       props;
-    if (!username) {
+    if (username) {
       try {
         setLoading(true);
         login({
