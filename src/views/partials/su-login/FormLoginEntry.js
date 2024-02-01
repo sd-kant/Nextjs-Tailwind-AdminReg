@@ -72,7 +72,7 @@ const FormLoginEntry = (props) => {
           showErrorNotification(t(message.toLowerCase() + ' pin'));
           navigate(`/create-account/pin`);
         } else {
-          showErrorNotification(message);
+          showErrorNotification(t(message.toLowerCase()));
         }
       } catch (e) {
         console.error('sso error response decode error', e);
