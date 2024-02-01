@@ -1,6 +1,6 @@
 {
   "name": "kenzen-invite-v2",
-  "version": "3.10.67",
+  "version": "3.10.68",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^6.1.4",
@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^14.4.3",
     "axios": "^1.6.0",
     "axios-concurrency": "^1.0.4",
+    "axios-retry": "^4.0.0",
     "buffer": "^6.0.3",
     "chart.js": "^4.3.0",
     "chartjs-adapter-spacetime": "^1.0.1",
@@ -54,7 +55,7 @@
     "timezone-soft": "^1.4.1",
     "uuid": "^9.0.0",
     "web-vitals": "^3.3.2",
-    "xlsx": "^0.18.5",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.1/xlsx-0.20.1.tgz",
     "yup": "^1.1.1"
   },
   "scripts": {

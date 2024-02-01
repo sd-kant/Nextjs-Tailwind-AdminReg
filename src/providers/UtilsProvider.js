@@ -15,7 +15,14 @@ import {
 const UtilsContext = React.createContext(null);
 
 export const UtilsProviderDraft = ({ t, metric, children }) => {
-  const formatConnectionStatusV2 = ({ flag: onOffFlag, deviceId, connected, stat, alert }) => {
+  const formatConnectionStatusV2 = ({
+    flag: onOffFlag,
+    deviceId,
+    connected,
+    stat,
+    alert,
+    deviceType
+  }) => {
     const calc = () => {
       if (
         numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 60 ||
@@ -102,12 +109,12 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20
       ) {
         return {
-          label: t('check app'),
+          label: deviceType === 'hub' ? t('no hub connection') : t('check app'),
           value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
         };
       } else {
         return {
-          label: t('no connection'),
+          label: deviceType === 'hub' ? t('no hub connection') : t('no connection'),
           value: DEVICE_CONNECTION_STATUS.NO_CONNECTION
         };
       }

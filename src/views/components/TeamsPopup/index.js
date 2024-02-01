@@ -17,10 +17,14 @@ const popupContentStyle = {
   position: 'absolute'
 };
 
-const TeamsPopup = ({ t, content }) => {
-  const { formattedTeams } = useDashboardContext();
-  const { handleMoveClick } = useMembersContextV2();
+const TeamsPopup = ({ t, content, moveTo }) => {
+  const { formattedTeams, formattedOrganizations } = useDashboardContext();
+  const { handleMoveClick, handleMoveToAnotherOrgClick } = useMembersContextV2();
   const ref = React.useRef();
+
+  const items = React.useMemo(() => {
+    return moveTo === 'team' ? formattedTeams : formattedOrganizations;
+  }, [moveTo, formattedTeams, formattedOrganizations]);
 
   return (
     <Popup
@@ -36,22 +40,29 @@ const TeamsPopup = ({ t, content }) => {
         <div className={clsx(style.Header)}>
           <img src={teamIcon} alt="team icon" />
           &nbsp;&nbsp;&nbsp;
-          <span className={clsx('font-heading-small text-white')}>{t('teams')}</span>
+          <span className={clsx('font-heading-small text-white')}>
+            {t(moveTo === 'team' ? 'teams' : 'companies')}
+          </span>
         </div>
 
         <div
           className={clsx(style.Body)}
           /*tabIndex={0}*/
         >
-          {formattedTeams?.map((team) => (
+          {items?.map((item) => (
             <div
-              key={`team-dropdown-item-team-${team.value}`}
+              key={`team-dropdown-item-team-${item.value}`}
               className={clsx(style.Item, 'font-binary')}
               onClick={() => {
-                handleMoveClick(team.value);
+                if (moveTo === 'team') {
+                  handleMoveClick(item.value);
+                } else {
+                  handleMoveToAnotherOrgClick(item.value);
+                }
+
                 ref.current.close();
               }}>
-              <span className={clsx('text-white')}>{team.label}</span>
+              <span className={clsx('text-white')}>{item.label}</span>
               {/*&nbsp;&nbsp;&nbsp;
                 <span className={clsx('text-gray-2')}>
                   ({team.cnt})

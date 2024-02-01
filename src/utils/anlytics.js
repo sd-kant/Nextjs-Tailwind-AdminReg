@@ -254,8 +254,34 @@ export const onFilterData = (data, key, userIds, members) => {
   return userIds?.length > 0
     ? list?.filter((it) => userIds.includes(it.userId))
     : members?.length > 0
-    ? list
-    : [];
+      ? list
+      : [];
+};
+
+export const onFilterDataV2 = (data, key, userIds, members) => {
+  if (!key) return [];
+  if (!Object.keys(data).includes(key)) return [];
+  if (userIds === null && members === null) return data[[key]] || [];
+  let list = [];
+  if (members?.length > 0) {
+    data[[key]]?.forEach((d) => {
+      const member = members?.find((d) => d?.userId == d?.userId);
+      if (!(userIds?.length > 0 && !userIds.includes(d?.userId))) {
+        if (member) {
+          list.push({ ...d, gmt: member?.gmt });
+        }
+      }
+    });
+  }
+  return list;
+  // else {
+  //   list = data[[key]] ?? [];
+  // }
+  // return userIds?.length > 0
+  //   ? list?.filter((it) => userIds.includes(it.userId))
+  //   : members?.length > 0
+  //     ? list
+  //     : [];
 };
 
 /**
@@ -299,7 +325,11 @@ export const chartPlugins = (idStr, noDataStr) => {
       afterDraw(chart) {
         const { ctx } = chart;
         ctx.save();
-
+        // background
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = '#212121';
+        ctx.fillRect(0, 0, chart.width, chart.height);
+        ctx.restore();
         if ([`doughnut-sweat`, `doughnut-heat`].includes(idStr)) {
           chart.data.datasets.forEach((dataset, i) => {
             chart.getDatasetMeta(i).data.forEach((dataPoint, index) => {
@@ -330,7 +360,7 @@ export const chartPlugins = (idStr, noDataStr) => {
           });
         }
 
-        if (checkEmptyData(chart?.data?.datasets, 1)) {
+        if (noDataStr && checkEmptyData(chart?.data?.datasets, 1)) {
           let width = chart.width;
           let height = chart.height;
           ctx.textAlign = `center`;
@@ -447,7 +477,7 @@ export const getKeyApiCall = (value) => {
         ANALYTICS_API_KEYS.MAX_HR_ALL
       ];
       break;
-    case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
+    case METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
       apiCalls = [queryOrganizationTempCateData];
       keys = [ANALYTICS_API_KEYS.TEMP_CATE_DATA];
       // apiCalls = [queryOrganizationUsersInCBTZones];
@@ -578,7 +608,7 @@ export const getHeaderMetrics = (metric, unitMetric) => {
         i18n.t('date')
       ];
       break;
-    case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
+    case METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
       ret = [
         // i18n.t('temperature categories'),
         // i18n.t('user %')

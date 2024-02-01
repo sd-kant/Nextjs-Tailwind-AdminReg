@@ -154,7 +154,8 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
                   deviceId: formatDeviceLog?.deviceId,
                   numberOfAlerts: userDataRef.numberOfAlerts,
                   stat: newstat,
-                  alert: userDataRef.current.alert
+                  alert: userDataRef.current.alert,
+                  deviceType: deviceLog?.type
                 });
 
                 const updateUserData = {
@@ -249,7 +250,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
           // const userKenzenDevice = devices
           //   ?.filter(
           //     (it) =>
-          //       it.type === 'kenzen' && it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase()
+          //       it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase()
           //   )
           //   ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
 
@@ -260,7 +261,8 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
             deviceId: stat?.deviceId,
             numberOfAlerts: newUserData.numberOfAlerts,
             stat,
-            alert
+            alert,
+            deviceType: 'kenzen'
           });
 
           newUserData = {

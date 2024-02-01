@@ -21,6 +21,7 @@ import {
 import { loginAction } from '../../../redux/action/auth';
 import { useNavigate } from 'react-router-dom';
 import PasswordInput from '../../components/PasswordInput';
+import { get } from 'lodash';
 
 const pwMinLength = getParamFromUrl('minPasswordLength') ?? 10;
 const formSchema = (t) => {
@@ -80,28 +81,30 @@ const formSchemaLogin = (t) => {
 };
 
 const FormPassword = (props) => {
-  const { setFieldValue, values, errors, touched, setRestBarClass, t, token } = props;
+  const { setFieldValue, values, errors, touched, setRestBarClass, t, token, profile, setLoading } = props;
   const [isLogin, setIsLogin] = React.useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    const tokenFromUrl = getTokenFromUrl();
-    if (!tokenFromUrl) {
-      if (token) {
+    if (profile?.userId) {
+      navigate('/create-account/name');
+    } 
+    else {
+      if(token){
         const username = localStorage.getItem('kop-v2-register-username');
         if (username) {
           setIsLogin(true);
           setFieldValue('username', username);
-        } else {
-          navigate('/create-account/name');
         }
-      } else {
-        navigate('/');
       }
-    } else {
+    }
+  
+    const tokenFromUrl = getTokenFromUrl();
+    if (tokenFromUrl) {
       setFieldValue('token', tokenFromUrl);
     }
 
     setRestBarClass('progress-0');
+    setLoading(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -193,10 +196,10 @@ const EnhancedForm = withFormik({
     }
   },
   handleSubmit: async (values, { props }) => {
-    const username = localStorage.getItem('kop-v2-register-username');
+    //const username = localStorage.getItem('kop-v2-register-username');
     const { setLoading, showSuccessNotification, login, t, showErrorNotification, navigate } =
       props;
-    if (username) {
+    if (!values['token']) {
       try {
         setLoading(true);
         login({
@@ -243,6 +246,10 @@ const EnhancedForm = withFormik({
   }
 })(FormPassword);
 
+const mapStateToProps = (state) => ({
+  profile: get(state, 'profile.profile')
+});
+
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
@@ -254,4 +261,4 @@ const mapDispatchToProps = (dispatch) =>
     dispatch
   );
 
-export default connect(null, mapDispatchToProps)(withTranslation()(EnhancedForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(EnhancedForm));

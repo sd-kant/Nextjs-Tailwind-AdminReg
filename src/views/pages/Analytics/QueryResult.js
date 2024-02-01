@@ -56,7 +56,7 @@ const QueryResult = ({ metric }) => {
     )
       // 2, 31
       return <ChartTeamVerticalBar />;
-    else if (selectedMetric?.value === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES)
+    else if (selectedMetric?.value === METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES)
       return <ChartCBTZones />;
     else if (selectedMetric?.value === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK)
       // 32
@@ -80,7 +80,7 @@ const QueryResult = ({ metric }) => {
         METRIC_USER_TABLE_VALUES.ALERTS,
         METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK,
         METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK,
-        METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES
+        METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES
       ].includes(selectedMetric?.value);
     }
   };
@@ -117,16 +117,6 @@ const QueryResult = ({ metric }) => {
       </div>
 
       <div className={clsx(style.StatsSelectWrapper)}>
-        {/* <div className="tw-flex tw-justify-center tw-items-center">
-          <Toggle
-            on={statsBy === 'team'}
-            titleOn={t('user')}
-            titleOff={t('team')}
-            handleSwitch={(v) => {
-              setStatsBy(v ? 'team' : 'user');
-            }}
-          />
-        </div> */}
         {visibleExport > 0 && (
           <div className={clsx(style.ExportWrapper)}>
             <ResponsiveSelect

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as XLSX from 'xlsx/xlsx.mjs';
+import { utils, writeFile } from 'xlsx';
 import { queryTeamMembers, getRiskLevels } from '../http';
 import { celsiusToFahrenheit, numMinutesBetweenWithNow } from '../utils';
 import {
@@ -15,7 +15,8 @@ import {
   // getThisWeekByTeam,
   checkMetric,
   getKeyApiCall,
-  getHeaderMetrics
+  getHeaderMetrics,
+  onFilterDataV2
 } from '../utils/anlytics';
 import {
   COLOR_WHITE,
@@ -55,7 +56,7 @@ import { useUtilsContext } from './UtilsProvider';
 import { useTranslation } from 'react-i18next';
 import soft from 'timezone-soft';
 import spacetime from 'spacetime';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const AnalyticsContext = React.createContext(null);
 
@@ -107,7 +108,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
   const [isEnablePrint, setIsEnablePrint] = React.useState(false);
 
   const formatNumber = (n) => {
-    if (!n) return '';
+    if (n === null || n === undefined || n === '') return '';
     return (Math.round(n * 10) / 10)?.toFixed(1);
   };
 
@@ -389,7 +390,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
           ])
         ];
         break;
-      case METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
+      case METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
         ret = [
           null,
           makeSort('Sort', [
@@ -753,7 +754,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
     } else if (checkMetric(METRIC_USER_CHART_VALUES, metric)) {
       // 40, 41
       return onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.HEART_RATE, null, null);
-    } else if ([METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES].includes(metric)) {
+    } else if ([METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES].includes(metric)) {
       let safe = 0;
       let mild = 0;
       let moderate = 0;
@@ -982,8 +983,8 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       // const thisWeek = getThisWeekByTeam(timeZone);
       // const endD = thisWeek.endDate;
       // let startD = thisWeek.startDate;
-      const endDate = moment();
-      let startDate = moment().subtract(6, 'day').startOf('day');
+      const endDate = moment().tz(timeZone.name);
+      let startDate = moment().tz(timeZone.name).subtract(6, 'day').startOf('day');
 
       // 32
       while (startDate.isBefore(endDate)) {
@@ -1092,14 +1093,13 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
         members
       )?.map((it) => {
         const daysWorn = it.avgWearTime ? Math.round(it.wearTime / it.avgWearTime) : ``;
-        const total = formatNumber(it.wearTime / 240) ?? '';
-        const _avg = daysWorn && total ? formatNumber(total / daysWorn) : '';
-        const avg = _avg > 24 ? 24 : _avg;
+        const totalHours = formatNumber(it.wearTime / 240) ?? '';
+        const avg = daysWorn && totalHours ? formatNumber(totalHours / daysWorn) : '';
         return [
           getUserNameFromUserId(members, it.userId),
           getTeamNameFromUserId(members, formattedTeams, it.userId),
-          avg,
-          total,
+          avg > 24 ? 24 : avg,
+          totalHours,
           daysWorn
         ];
       });
@@ -1108,31 +1108,46 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       metric === METRIC_TEAM_CHART_VALUES.NUMBER_ALERTS_WEEK
     ) {
       // 2, 31
-      ret = onFilterData(
+      ret = onFilterDataV2(
         organizationAnalytics,
         ANALYTICS_API_KEYS.ALERT_METRICS,
         pickedMembers,
         members
       )
         ?.filter((it) => moment(it.ts).isBetween(startDate, endDate, undefined, '[]'))
-        ?.map((it) => [
-          getUserNameFromUserId(members, it.userId),
-          getTeamNameFromUserId(members, formattedTeams, it.userId),
-          it.ts ? new Date(it.ts)?.toLocaleString() : ``,
-          it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
-          it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
-          it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
-          formatNumber(it.humidity) ?? '',
-          it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``
-        ]);
+        ?.map((it) => {
+          return [
+            getUserNameFromUserId(members, it.userId),
+            getTeamNameFromUserId(members, formattedTeams, it.userId),
+            it.ts
+              ? moment(it.ts)
+                  .tz(it?.gmt ?? timeZone.name)
+                  .format('MM/DD/YYYY HH:mm:ss z')
+              : ``,
+            it.alertStageId ? formatAlert(it.alertStageId)?.label : ``,
+            it.risklevelId ? formatRiskLevel(it.risklevelId) : ``,
+            it.heartCbtAvg ? formatHeartCbt(it.heartCbtAvg) : ``,
+            formatNumber(it.humidity) ?? '',
+            it.heartRateAvg ? formatHeartRate(it.heartRateAvg) : ``
+          ];
+        });
     } else if (metric === METRIC_TEAM_CHART_VALUES.HIGHEST_CBT_TIME_DAY_WEEK && !detailCbt) {
       // 32
-      ret = onFilterData(organizationAnalytics, ANALYTICS_API_KEYS.MAX_CBT, pickedMembers, members)
+      ret = onFilterDataV2(
+        organizationAnalytics,
+        ANALYTICS_API_KEYS.MAX_CBT,
+        pickedMembers,
+        members
+      )
         ?.filter((it) => moment(it.utcTs).isBetween(startDate, endDate, undefined, '[]'))
         ?.map((it) => [
           getUserNameFromUserId(members, it.userId),
           getTeamNameFromUserId(members, formattedTeams, it.userId),
-          it.utcTs ? new Date(it.utcTs)?.toLocaleString() : ``,
+          it.utcTs
+            ? moment(it.utcTs)
+                .tz(it?.gmt ?? timeZone.name)
+                .format('MM/DD/YYYY HH:mm:ss z')
+            : ``,
           it.maxCbt ? formatHeartCbt(it.maxCbt) : ``
         ]);
     } else if (METRIC_USER_TABLE_VALUES.SWR_ACCLIM_SWEAT === metric) {
@@ -1246,7 +1261,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
             new Date(it.ts).toLocaleString() ?? ''
           ];
         });
-    } else if (metric === METRIC_USER_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) {
+    } else if (metric === METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES) {
       // 8
       ret = onFilterData(
         organizationAnalytics,
@@ -1585,26 +1600,22 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
       if ([`xlsx`, `csv`].includes(exportOption?.value)) {
         const sheetLabel = (metrics?.findIndex((it) => it.value === metric) ?? 0).toString();
         if (visibleExport === VISIBLE_EXPORT_DATA[TABLE_DATA]) {
-          const wb = XLSX.utils.book_new();
-          const ws = XLSX.utils.json_to_sheet(data, {
+          const wb = utils.book_new();
+          const ws = utils.json_to_sheet(data, {
             origin: `A2`,
             skipHeader: true
           });
-          XLSX.utils.sheet_add_aoa(ws, [headers]);
+          utils.sheet_add_aoa(ws, [headers]);
 
-          XLSX.utils.book_append_sheet(wb, ws, sheetLabel + 1);
-          XLSX.writeFile(
-            wb,
-            `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
-            {
-              bookType: exportOption.value
-            }
-          );
+          utils.book_append_sheet(wb, ws, sheetLabel + 1);
+          writeFile(wb, `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`, {
+            bookType: exportOption.value
+          });
         } else {
           if (exportOption?.value === 'xlsx') {
-            const wb = XLSX.utils.book_new();
+            const wb = utils.book_new();
             for (const chartDataset of chartDatasets.datasets) {
-              const ws = XLSX.utils.aoa_to_sheet(
+              const ws = utils.aoa_to_sheet(
                 chartDataset.data.map((v) => [v.x, v.y]),
                 {
                   origin: `A2`,
@@ -1614,14 +1625,14 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
               const temp = chartDataset.label.split(' : ');
               const tzName = temp[0];
               const memberName = temp[1];
-              XLSX.utils.sheet_add_aoa(ws, [[tzName, memberName]]);
-              XLSX.utils.book_append_sheet(
+              utils.sheet_add_aoa(ws, [[tzName, memberName]]);
+              utils.book_append_sheet(
                 wb,
                 ws,
                 memberName.length > 30 ? memberName.slice(0, 30) + '...' : memberName
               );
             }
-            XLSX.writeFile(
+            writeFile(
               wb,
               `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
               {
@@ -1629,7 +1640,7 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
               }
             );
           } else {
-            const wb = XLSX.utils.book_new();
+            const wb = utils.book_new();
             const values = [];
             for (const chartDataset of chartDatasets.datasets) {
               const temp = chartDataset.label.split(' : ');
@@ -1638,12 +1649,12 @@ export const AnalyticsProvider = ({ children, setLoading, metric: unitMetric }) 
               values.push([tzName, memberName]);
               values.push(...chartDataset.data.map((v) => [v.x, v.y]));
             }
-            const ws = XLSX.utils.aoa_to_sheet(values, {
+            const ws = utils.aoa_to_sheet(values, {
               origin: `A1`,
               skipHeader: true
             });
-            XLSX.utils.book_append_sheet(wb, ws, sheetLabel + 1);
-            XLSX.writeFile(
+            utils.book_append_sheet(wb, ws, sheetLabel + 1);
+            writeFile(
               wb,
               `KA-${sheetLabel}-${new Date().toLocaleString()}.${exportOption?.value}`,
               {

@@ -28,13 +28,9 @@ const Toggle = ({
 }) => {
   return (
     <div className={clsx('tw-flex tw-flex-row tw-gap-2 tw-bg-zinc-800 tw-rounded-full tw-p-1')}>
-      {remove && on && (
-        <ToggleButton selected={on} title={titleOff} handleClick={() => handleSwitch(!on)} />
-      )}
-      {remove && !on && (
-        <ToggleButton selected={!on} title={titleOn} handleClick={() => handleSwitch(!on)} />
-      )}
-      {!remove && (
+      {remove ? (
+        <ToggleButton selected={false} title={titleOn} handleClick={() => {}} />
+      ) : (
         <>
           <ToggleButton selected={!on} title={titleOn} handleClick={() => handleSwitch(!on)} />
           <ToggleButton selected={on} title={titleOff} handleClick={() => handleSwitch(!on)} />

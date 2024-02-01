@@ -10,7 +10,8 @@ import {
   queryTeamMembers,
   queryTeams,
   subscribeDataEvents,
-  unlockUser
+  unlockUser,
+  updateUserByAdmin
 } from '../http';
 import axios from 'axios';
 import {
@@ -58,7 +59,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   const [teams, setTeams] = React.useState([]);
   const [pickedTeams, setPickedTeams] = React.useState(teamsInUrl ? teamsInUrl.split(',') : []);
 
-  const [member, setMember] = React.useState(null);
+  const [selectedMember, setSelectedMember] = React.useState(null);
   const [visibleMemberModal, setVisibleMemberModal] = React.useState(false);
 
   const [refreshCount, setRefreshCount] = React.useState(0);
@@ -341,7 +342,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formattedTeams]);
-
+  // Load Initial Data
   React.useEffect(() => {
     if (formattedTeams?.length > 0) {
       const validPickedTeams = pickedTeams?.filter((ele) =>
@@ -366,19 +367,14 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           const statsPromises = [];
           const alertsPromises = [];
           const devicePromises = [];
-          const d = new Date();
-          d.setHours(0, 0, 0, 0);
-          // d.setDate(d.getDate() - 1);
-          // todo filter daily alerts every time you got response from subscribe
-          const since = d.toISOString();
           validPickedTeams.forEach((team) => {
             membersPromises.push(queryTeamMembers(team));
             statsPromises.push(getTeamStats(team));
-            alertsPromises.push(getTeamAlerts(team, since));
+            alertsPromises.push(getTeamAlerts(team, moment().startOf('day').toISOString()));
             devicePromises.push(getTeamDevices(team));
           });
           // Member List API Promises
-          const a = () =>
+          const membersApiPromise = () =>
             new Promise((resolve) => {
               Promise.allSettled(membersPromises)
                 .then((results) => {
@@ -401,7 +397,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                 .finally(() => resolve());
             });
           // Stat List API Promises
-          const b = () =>
+          const statsApiPromise = () =>
             new Promise((resolve) => {
               Promise.allSettled(statsPromises)
                 .then((results) => {
@@ -411,7 +407,11 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                         // const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
                         setValuesV2({
                           ...valuesV2Ref.current,
-                          stats: [...valuesV2Ref.current?.stats, ...result.value?.data]
+                          stats: _.unionBy(
+                            result.value?.data,
+                            valuesV2Ref.current?.stats,
+                            (it) => it.userId + it.deviceId
+                          )
                         });
                       }
                     }
@@ -422,35 +422,13 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                 });
             });
           // Alerts List API Promises
-          const c = () =>
+          const alertsApiPromise = () =>
             new Promise((resolve) => {
               Promise.allSettled(alertsPromises)
                 .then((results) => {
                   results?.forEach((result) => {
                     if (result.status === 'fulfilled') {
                       if (result.value?.data?.length > 0) {
-                        //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                        // const updated = [
-                        //   ...valuesV2Ref.current?.alerts,
-                        //   ...result.value?.data?.map((it) => ({
-                        //     ...it,
-                        //     utcTs: it.ts
-                        //   }))
-                        // ];
-                        // let uniqueUpdated = [];
-                        // for (const entry of updated) {
-                        //   if (
-                        //     !uniqueUpdated.some(
-                        //       (x) => entry.utcTs === x.utcTs && entry.userId === x.userId
-                        //     )
-                        //   ) {
-                        //     uniqueUpdated.push(entry);
-                        //   }
-                        // }
-                        // uniqueUpdated = uniqueUpdated?.filter((it) =>
-                        //   ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString())
-                        // );
-
                         const uniqueUpdated = _.chain(valuesV2Ref.current?.alerts)
                           .concat(
                             result.value?.data?.map((it) => {
@@ -478,7 +456,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                 });
             });
           // Device List API Promies
-          const e = () =>
+          const devicesApiPromise = () =>
             new Promise((resolve) => {
               Promise.allSettled(devicePromises)
                 .then((results) => {
@@ -499,7 +477,12 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                 });
             });
           setLoading(true);
-          Promise.allSettled([a(), b(), c(), e()])
+          Promise.allSettled([
+            membersApiPromise(),
+            statsApiPromise(),
+            alertsApiPromise(),
+            devicesApiPromise()
+          ])
             .then(() => {
               if (organization < 0) {
                 //
@@ -572,18 +555,14 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   const formattedMembers = React.useMemo(() => {
     let arr = [];
     valuesV2.members?.forEach((member) => {
-      const stat = valuesV2.stats?.find(
-        (it) => it.userId?.toString() === member.userId?.toString()
-      );
+      if (!hasStatusValue(member.teamId, pickedTeams)) return;
+
+      const stats = valuesV2.stats
+        ?.filter((it) => it.userId?.toString() === member.userId?.toString())
+        .sort((a, b) => new Date(b.deviceLogTs).getTime() - new Date(a.deviceLogTs).getTime());
       const userDevices = valuesV2.devices?.find(
         (it) => it.userId?.toString() === member.userId?.toString()
       )?.devices;
-      const userKenzenDevice = userDevices
-        ?.filter(
-          (it) =>
-            it.type === 'kenzen' && it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase()
-        )
-        ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
       const alertsForMe = valuesV2.alerts?.filter(
         (it) =>
           it.userId?.toString() === member.userId?.toString() &&
@@ -594,7 +573,6 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       const alert = alertsForMe?.sort(function (a, b) {
         return new Date(b.utcTs) - new Date(a.utcTs);
       })?.[0];
-
       const numberOfAlerts = (
         alertsForMe?.filter((it) =>
           hasStatusValue(it?.alertStageId, [
@@ -605,57 +583,83 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         ) ?? []
       )?.length;
       const alertObj = formatAlert(alert?.alertStageId);
-      const connectionObj = formatConnectionStatusV2({
-        flag: stat?.onOffFlag,
-        connected: userKenzenDevice?.connected,
-        lastTimestamp: stat?.tempHumidityTs,
-        deviceId: stat?.deviceId,
-        numberOfAlerts,
-        stat,
-        alert
-      });
-      const lastSync = getLatestDate(
-        getLatestDate(
-          stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
-          stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null
-        ),
-        getLatestDate(
-          stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
-          alert?.utcTs ? new Date(alert?.utcTs) : null
-        )
-      );
-      const lastSyncStr = formatLastSync(lastSync);
+      let i = 0,
+        subArr = [],
+        availableDevices = [];
+      function calData(stat = null) {
+        const userKenzenDevices = userDevices
+          ?.filter(
+            (it) =>
+              it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase() &&
+              ['kenzen', 'hub'].includes(it?.type)
+          )
+          ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime());
+        if (stat?.deviceId) availableDevices.push(stat?.deviceId);
+        const connectionObj = formatConnectionStatusV2({
+          flag: stat?.onOffFlag,
+          connected: userKenzenDevices?.[0]?.connected,
+          lastTimestamp: stat?.tempHumidityTs,
+          deviceId: stat?.deviceId,
+          numberOfAlerts,
+          stat,
+          alert,
+          deviceType: userKenzenDevices?.[0]?.type
+        });
+        const lastSync = getLatestDate(
+          getLatestDate(
+            stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
+            stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null
+          ),
+          getLatestDate(
+            stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
+            alert?.utcTs ? new Date(alert?.utcTs) : null
+          )
+        );
+        const lastSyncStr = formatLastSync(lastSync);
 
-      const invisibleAlerts = ['1'].includes(connectionObj?.value?.toString()) || !numberOfAlerts;
-      const invisibleDeviceMac = ['1'].includes(connectionObj?.value?.toString());
-      const invisibleBattery =
-        ['1', '8'].includes(connectionObj?.value?.toString()) ||
-        (['2', '4'].includes(connectionObj?.value?.toString()) &&
-          numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 240);
-      const invisibleHeatRisk =
-        !alert || ['1', '2', '8'].includes(connectionObj?.value?.toString());
-      const invisibleLastSync =
-        new Date(lastSync).getTime() > new Date().getTime() + 60 * 1000 ||
-        ['1'].includes(connectionObj?.value?.toString());
-      const invisibleLastUpdates = ['1', '2', '8'].includes(connectionObj?.value?.toString());
+        const invisibleAlerts = ['1'].includes(connectionObj?.value?.toString()) || !numberOfAlerts;
+        const invisibleDeviceMac = ['1'].includes(connectionObj?.value?.toString());
+        const invisibleBattery =
+          ['1', '8'].includes(connectionObj?.value?.toString()) ||
+          (['2', '4'].includes(connectionObj?.value?.toString()) &&
+            numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 240);
+        const invisibleHeatRisk =
+          !alert || ['1', '2', '8'].includes(connectionObj?.value?.toString());
+        const invisibleLastSync =
+          new Date(lastSync).getTime() > new Date().getTime() + 60 * 1000 ||
+          ['1'].includes(connectionObj?.value?.toString());
+        const invisibleLastUpdates = ['1', '2', '8'].includes(connectionObj?.value?.toString());
+        (i === 0 ? arr : subArr).push({
+          ...member,
+          stat,
+          alert,
+          numberOfAlerts,
+          alertsForMe,
+          alertObj,
+          connectionObj,
+          lastSync,
+          lastSyncStr,
+          invisibleAlerts,
+          invisibleDeviceMac,
+          invisibleBattery,
+          invisibleHeatRisk,
+          invisibleLastSync,
+          invisibleLastUpdates
+        });
+        i = i + 1;
+      }
 
-      arr.push({
-        ...member,
-        stat,
-        alert,
-        numberOfAlerts,
-        alertsForMe,
-        alertObj,
-        connectionObj,
-        lastSync,
-        lastSyncStr,
-        invisibleAlerts,
-        invisibleDeviceMac,
-        invisibleBattery,
-        invisibleHeatRisk,
-        invisibleLastSync,
-        invisibleLastUpdates
-      });
+      if (stats?.length > 0) {
+        stats.forEach((s) => calData(s));
+      } else {
+        calData();
+      }
+
+      if (subArr.length > 0) {
+        arr[arr.length - 1]['others'] = subArr;
+      }
+
+      arr[arr.length - 1]['devices'] = availableDevices;
     });
 
     return sortMembers({ arrOrigin: arr, filter });
@@ -681,10 +685,13 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
 
       return (
         lowerCaseKeyword.length >= 4 &&
-        it.stat?.deviceId &&
-        it.stat?.deviceId !== '<none>' &&
-        getLastDigitsOfDeviceId(it.stat?.deviceId).toLowerCase() ===
-          getLastDigitsOfDeviceId(lowerCaseKeyword).toLowerCase()
+        it.devices?.length > 0 &&
+        !it.devices?.every((d) => d === '<none>') &&
+        it.devices?.some(
+          (d) =>
+            getLastDigitsOfDeviceId(d).toLowerCase() ===
+            getLastDigitsOfDeviceId(lowerCaseKeyword).toLowerCase()
+        )
       );
     });
   }, [formattedMembers, keyword]);
@@ -724,14 +731,14 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     return filteredMembers?.slice((page - 1) * sizePerPage, page * sizePerPage);
   }, [filteredMembers, page, sizePerPage]);
 
-  React.useEffect(() => {
-    if (member) {
-      const updatedMember = paginatedMembers?.find(
-        (it) => it.userId?.toString() === member?.userId?.toString()
-      );
-      setMember(updatedMember);
-    }
-  }, [paginatedMembers, member]);
+  // React.useEffect(() => {
+  //   if (selectedMember) {
+  //     const updatedMember = paginatedMembers?.find(
+  //       (it) => it.userId?.toString() === selectedMember?.userId?.toString()
+  //     );
+  //     setSelectedMember(updatedMember);
+  //   }
+  // }, [paginatedMembers, selectedMember]);
 
   const updateDataFromEvents = React.useCallback(
     (events) => {
@@ -739,25 +746,9 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         const latestTs = events?.sort((a, b) => b.ts - a.ts)?.[0]?.ts;
         if (latestTs) {
           setHorizon(latestTs);
-          // sinceTs = horizonRef.current;
         }
         const alerts = events?.filter((it) => it.type === EVENT_DATA_TYPE.ALERT);
         if (alerts?.length > 0) {
-          // const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-          // const updated = [...prev.alerts, ...alerts?.map((it) => it.data)];
-          // let uniqueUpdated = [];
-          // for (const entry of updated) {
-          //   if (
-          //     !uniqueUpdated.some(
-          //       (x) => entry.utcTs === x.utcTs && entry.userId === x.userId
-          //     )
-          //   ) {
-          //     uniqueUpdated.push(entry);
-          //   }
-          // }
-          // uniqueUpdated = uniqueUpdated?.filter((it) =>
-          //   ALERT_STAGE_ID_LIST.includes(it.alertStageId?.toString())
-          // );
           const uniqueUpdated = _.chain(valuesV2Ref.current.alerts)
             .concat(alerts?.map((it) => it.data))
             .uniqBy(function (_alert) {
@@ -827,7 +818,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               if (index !== -1) {
                 memberDevices.splice(index, 1, {
                   ...it,
-                  type: 'kenzen',
+                  type: memberDevices[index]?.type,
                   version: memberDevices[index].version
                 });
               } else {
@@ -854,11 +845,23 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               (a, b) => new Date(b.data.utcTs).getTime() - new Date(a.data.utcTs).getTime()
             )?.[0]?.data;
           const prev = JSON.parse(JSON.stringify(valuesV2Temp));
-          const statIndex = prev.stats?.findIndex(
-            (it) => it.userId?.toString() === member?.userId?.toString()
-          );
+          let statIndex = -1;
+          if (latestDeviceLog) {
+            statIndex = prev.stats?.findIndex(
+              (it) =>
+                it.userId?.toString() === member?.userId?.toString() &&
+                it?.deviceId == latestDeviceLog.deviceId
+            );
+          }
+
+          if (statIndex === -1) {
+            statIndex = prev.stats?.findIndex(
+              (it) => it.userId?.toString() === member?.userId?.toString()
+            );
+          }
+
           if (statIndex !== -1) {
-            const temp = JSON.parse(JSON.stringify(prev.stats));
+            let temp = JSON.parse(JSON.stringify(prev.stats));
             let updatedLastConnectedTs = temp[statIndex].lastConnectedTs;
             let updatedLastOnTs = temp[statIndex].lastOnTs;
 
@@ -896,7 +899,12 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               lastConnectedTs: updatedLastConnectedTs,
               lastOnTs: updatedLastOnTs
             };
-            temp.splice(statIndex, 1, newEle);
+            if (latestDeviceLog && latestDeviceLog?.deviceId !== temp[statIndex].deviceId) {
+              temp = [...temp.slice(0, statIndex + 1), newEle, ...temp.slice(statIndex + 1)];
+            } else {
+              temp.splice(statIndex, 1, newEle);
+            }
+
             valuesV2Temp = {
               ...valuesV2Temp,
               stats: temp
@@ -930,9 +938,6 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                 // update data with events
                 updateDataFromEvents(res.data);
               }
-              // else if (res.status?.toString() === '204') {
-              //   // when there is no updates
-              // }
             }
           })
           .catch((error) => {
@@ -1082,6 +1087,62 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     [setLoading, t, pickedTeams, addNotification]
   );
 
+  const moveMemberToOrg = React.useCallback(
+    (members, orgId) => {
+      return new Promise((resolve, reject) => {
+        if (!orgId) reject('orgId not set');
+
+        const updateUserPromises = [];
+        members?.forEach((member) => {
+          if (member.orgId?.toString() !== orgId?.toString()) {
+            updateUserPromises.push(
+              updateUserByAdmin(member.orgId, member.userId, {
+                orgId: orgId,
+                teamId: null
+              })
+            );
+          } else {
+            addNotification(
+              t('msg user already on the org', { user: `${member.firstName} ${member.lastName}` }),
+              'success'
+            );
+          }
+        });
+        if (updateUserPromises.length > 0) {
+          setLoading(true);
+          let cnt = 0;
+          Promise.allSettled(updateUserPromises)
+            .then((results) => {
+              results?.forEach((result) => {
+                if (result.status === 'fulfilled') {
+                  const userData = result.value?.data;
+                  const member = valuesV2Ref.current.members?.find(
+                    (m) => m.userId == userData.userId
+                  );
+                  member.orgId = userData.orgId;
+                  member.teamId = userData.teamId;
+                  cnt += 1;
+                }
+              });
+              setValuesV2({
+                ...valuesV2Ref.current
+              });
+              setCount((prev) => (prev + 1) % 100);
+            })
+            .catch((e) => {
+              addNotification(e.response?.data?.message, 'error');
+              reject(e);
+            })
+            .finally(() => {
+              setLoading(false);
+              resolve({ cnt });
+            });
+        }
+      });
+    },
+    [setLoading, t, addNotification]
+  );
+
   const unlockMember = React.useCallback(
     (member) => {
       return new Promise((resolve, reject) => {
@@ -1125,8 +1186,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     organization,
     setOrganization,
     values: valuesV2Ref.current,
-    member,
-    setMember,
+    member: selectedMember,
+    setMember: setSelectedMember,
     visibleMemberModal,
     setVisibleMemberModal,
     formattedTeams,
@@ -1148,6 +1209,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     keyword,
     setKeyword,
     moveMember,
+    moveMemberToOrg,
     setRefreshCount,
     removeMember,
     unlockMember,

@@ -4,6 +4,8 @@ import { apiBaseUrl as baseUrl } from '../config';
 import { toastr } from 'react-redux-toastr';
 import i18n from '../i18nextInit';
 import { logout } from '../views/layouts/MainLayout';
+import axiosRetry from 'axios-retry';
+
 const { ConcurrencyManager } = require('axios-concurrency');
 
 const showErrorAndLogout = () => {
@@ -22,6 +24,19 @@ const cachedBaseUrl = localStorage.getItem('kop-v2-base-url');
 export const instance = axios.create({
   baseURL: cachedBaseUrl ?? baseUrl,
   timeout: 60000 // set 60s for long-polling
+});
+
+axiosRetry(instance, {
+  retries: 10, // Number of retries
+  retryCondition(error) {
+    // Conditional check the error status code
+    switch (error?.code) {
+      case 'ERR_NETWORK':
+        return true; // Retry request with response status code 404 or 429
+      default:
+        return false; // Do not retry the others
+    }
+  }
 });
 
 const MAX_CONCURRENT_REQUESTS = 50;
@@ -58,7 +73,7 @@ instance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
+var countingNetworkErr = 0;
 // Add a response interceptor
 instance.interceptors.response.use(
   function (response) {
@@ -71,9 +86,14 @@ instance.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     if (error?.code === 'ERR_NETWORK') {
-      showNetworkError();
+      countingNetworkErr = countingNetworkErr + 1;
+      if (countingNetworkErr > 10) {
+        showNetworkError();
+      }
       return Promise.reject(error);
-    } else if (['401'].includes(error.response?.status?.toString())) {
+    }
+    countingNetworkErr = 0;
+    if (['401'].includes(error.response?.status?.toString())) {
       // if token expired
       if (!originalRequest._retry) {
         const refreshToken = localStorage.getItem('kop-v2-refresh-token');

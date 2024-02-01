@@ -74,6 +74,8 @@ const MemberDetail = ({
     return logs.filter((it) => it.type === EVENT_DATA_TYPE.ALERT)?.length;
   }, [logs]);
   const memberId = React.useRef(origin?.userId);
+  const teamId = React.useRef(origin?.teamId);
+  const orgId = React.useRef(origin?.orgId);
   const data = React.useMemo(() => {
     return origin
       ? origin
@@ -227,6 +229,10 @@ const MemberDetail = ({
     return `App Ver. ${apiDevice?.version ?? 'N/A'}`;
   }, [apiDevice]);
 
+  const userFullName = React.useMemo(() => {
+    return data?.firstName + ' ' + data?.lastName;
+  }, [data]);
+
   return (
     <div className="tw-p-2 lg:tw-p-12 tw-relative">
       <img
@@ -261,11 +267,9 @@ const MemberDetail = ({
               <div className="tw-col-span-12 md:tw-col-span-9 lg:tw-col-span-8 tw-flex tw-flex-col tw-gap-4">
                 <div>
                   <div
-                    title={data?.firstName + ' ' + data?.lastName}
+                    title={userFullName}
                     className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
-                    <span className={clsx('font-heading-small')}>
-                      {`${data?.firstName}  ${data?.lastName}`}
-                    </span>
+                    <span className={clsx('font-heading-small')}>{userFullName}</span>
                   </div>
 
                   <div
@@ -548,30 +552,41 @@ const MemberDetail = ({
               <MetricLogs metricStats={metricStats} />
             </div>
           </Card>
-          <div className={clsx('tw-flex')}>
-            <div className={clsx('tw-p-4')}>
-              <div className="d-flex justify-end">
+          <div className={clsx('tw-flex', 'tw-gap-2', 'tw-justify-between')}>
+            <div className="tw-flex tw-gap-2">
+              <div>
+                <div className="d-flex justify-end">
+                  <Button
+                    title={'update team'}
+                    size="sm"
+                    disabled={team?.value?.toString() === data?.teamId?.toString()}
+                    onClick={handleClickMoveTeam}
+                  />
+                </div>
+              </div>
+
+              <div>{renderActionContent()}</div>
+            </div>
+            <div>
+              <div>
                 <Button
-                  title={'update team'}
+                  onClick={() => {
+                    window.open(
+                      `/connect/member/${orgId.current}/device/${teamId.current}/${memberId.current}?tab=new&name=${userFullName}`,
+                      '_blank'
+                    );
+                  }}
+                  title={'assign new device'}
                   size="sm"
-                  disabled={team?.value?.toString() === data?.teamId?.toString()}
-                  onClick={handleClickMoveTeam}
                 />
               </div>
             </div>
-
-            <div className={clsx('tw-p-4')}>{renderActionContent()}</div>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-// MemberDetail.propTypes = {
-//   handleClickMoveTeam: PropTypes.func,
-//   handleClickUnlock: PropTypes.func
-// };
 
 const mapStateToProps = (state) => ({
   metric: get(state, 'ui.metric')
