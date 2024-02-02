@@ -17,9 +17,7 @@ import {
 import SearchDropdown from 'views/components/SearchDropdown';
 import useClickOutSide from 'hooks/useClickOutSide';
 import { useNavigate } from 'react-router-dom';
-// import QRcodeReader from '../../QRcodeReader';
-import Html5QrcodePlugin from 'plugins/Html5QrcodePlugin';
-// import { Html5QrcodeSupportedFormats } from 'html5-qrcode';
+import QrScanPlugin from 'plugins/QrScanPlugin';
 
 export const formSchema = (t) => {
   return Yup.object().shape({
@@ -144,8 +142,8 @@ const FormConnectDevice = (props) => {
     return isValidMacAddress(values['deviceId']);
   };
 
-  const onScanResult = (decodedText, decodedResult) => {
-    console.log('scan result', decodedText, decodedResult);
+  const onScanResult = (decodedText) => {
+    console.log('scan result', decodedText);
     let macAddress = null;
     if (decodedText.includes('_')) {
       macAddress = decodedText.split('_')[1];
@@ -156,6 +154,7 @@ const FormConnectDevice = (props) => {
       setFieldValue('deviceId', macAddress);
       handleItemClick(macAddress);
       setScancedDeviceId(macAddress);
+      setOpenQRcodeReader(false);
     }
   };
 
@@ -180,7 +179,10 @@ const FormConnectDevice = (props) => {
                         value={values['deviceId']}
                         placeholder={t('device id placeholder')}
                         onChange={changeFormField}
-                        onClick={() => setVisible(true)}
+                        onClick={() => {
+                          setOpenQRcodeReader(false);
+                          setVisible(true)
+                        }}
                       />
                     )}
                     items={dropdownItems}
@@ -219,14 +221,9 @@ const FormConnectDevice = (props) => {
                 </div>
                 {openQrCodeReader && (
                   <div className="tw-mt-4 tw-bg-gray-500">
-                    <Html5QrcodePlugin
-                      // formatsToSupport={[Html5QrcodeSupportedFormats.QR_CODE, Html5QrcodeSupportedFormats.CODE_39]}
-                      useBarCodeDetectorIfSupported={true}
-                      fps={30}
-                      qrbox={250}
-                      disableFlip={false}
+                    <QrScanPlugin
+                      
                       qrCodeSuccessCallback={onScanResult}
-                      videoConstraints={{ facingMode: 'environment' }}
                     />
                   </div>
                 )}
