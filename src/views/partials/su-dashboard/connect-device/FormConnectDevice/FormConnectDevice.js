@@ -24,7 +24,7 @@ export const formSchema = (t) => {
     isEditing: Yup.bool(),
     deviceId: Yup.string()
       .required(t('device id required'))
-      .test('is-valid', t('device id invalid'), function (value) {
+      .test('is-valid', t('mac address format required'), function (value) {
         return isValidMacAddress(value);
       })
   });
@@ -172,18 +172,21 @@ const FormConnectDevice = (props) => {
                   <SearchDropdown
                     ref={dropdownRef}
                     renderInput={() => (
-                      <input
-                        className="input lg:tw-w-[350px] md:tw-w-[280px] tw-w-[250px] mt-10 font-heading-small text-white"
-                        name="deviceId"
-                        type="text"
-                        value={values['deviceId']}
-                        placeholder={t('device id placeholder')}
-                        onChange={changeFormField}
-                        onClick={() => {
-                          setOpenQRcodeReader(false);
-                          setVisible(true)
-                        }}
-                      />
+                      <div>
+                        <input
+                          className="input lg:tw-w-[350px] md:tw-w-[280px] tw-w-[250px] mt-10 font-heading-small text-white"
+                          name="deviceId"
+                          type="text"
+                          value={values['deviceId']}
+                          placeholder={t('device id placeholder')}
+                          onChange={changeFormField}
+                          onClick={() => {
+                            setOpenQRcodeReader(false);
+                            setVisible(true)
+                          }}
+                        />
+                        <span className="font-helper-text text-error mt-10">{errors.deviceId}</span>
+                      </div>
                     )}
                     items={dropdownItems}
                     visibleDropdown={visibleDropdown}
@@ -222,7 +225,6 @@ const FormConnectDevice = (props) => {
                 {openQrCodeReader && (
                   <div className="tw-mt-4 tw-bg-gray-500">
                     <QrScanPlugin
-                      
                       qrCodeSuccessCallback={onScanResult}
                     />
                   </div>
