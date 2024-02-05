@@ -240,7 +240,7 @@ const EnhancedForm = withFormik({
           showErrorNotification(e.response?.data.message);
         }
       } finally {
-        //setLoading(false);
+        setLoading(false);
       }
     }
   }

@@ -93,7 +93,7 @@ const AppRouter = ({ token, loggedIn, getMyProfile, getMyOrganization }) => {
               <RequireAuth requireLoggedIn={true}>
                 <RequirePasswordValid>
                   <SignInLayout loggedIn={true}>
-                    <ConnectDevice />
+                      <ConnectDevice />
                   </SignInLayout>
                 </RequirePasswordValid>
               </RequireAuth>

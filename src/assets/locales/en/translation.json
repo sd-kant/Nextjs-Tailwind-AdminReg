@@ -113,6 +113,7 @@
   "create new account": "Create a new account",
   "register with pin":"Register with a PIN",
   "the token was not found pin": "Incorrect PIN, please try again",
+  "the token was not found": "User is already registered",
   "required pin": "Please enter the registration PIN number provided by your adminstrator",
   "admin provide pin": "Please provide the PIN number(s) to users invited without an email or phone number",
   "not receive pin": "If you did not receive a registration PIN, please contact your administrator or a Kenzen representative support@kenzen.com",
@@ -743,5 +744,6 @@
   "go to": "Go To",
   "copy token success": "Token Copied Successfully!",
   "percent of time in cbt zones": "Percent of time in Core Body Temperature Zones",
-  "maximum cbt time of day": "Maximum CBT Time of Day"
+  "maximum cbt time of day": "Maximum CBT Time of Day",
+  "mac address format required": "Please use format XX:XX:XX:XX:XX:XX"
 }
