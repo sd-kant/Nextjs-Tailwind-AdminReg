@@ -698,7 +698,7 @@ export const MONTHS = [
 
 export const FT_OPTIONS = [1, 2, 3, 4, 5, 6, 7];
 export const IN_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-export const M_OPTIONS = [1, 2, 3];
+export const M_OPTIONS = [0, 1, 2, 3];
 export const CM_OPTIONS = Array.from(Array(101).keys()).reverse();
 
 export const NEWS_PAGINATION = 10;
