@@ -301,7 +301,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
 
 const mapStateToProps = (state) => ({
   userType: get(state, 'auth.userType'),
-  metric: get(state, 'ui.metric')
+  metric: get(state, 'ui.measure')
 });
 
 export const UtilsProvider = connect(mapStateToProps, null)(withTranslation()(UtilsProviderDraft));

@@ -347,7 +347,7 @@ const ChartUserAlert = ({ metric: unit }) => {
 };
 
 const mapStateToProps = (state) => ({
-  metric: get(state, 'ui.metric')
+  metric: get(state, 'ui.measure')
 });
 
 export default connect(mapStateToProps, null)(withTranslation()(ChartUserAlert));

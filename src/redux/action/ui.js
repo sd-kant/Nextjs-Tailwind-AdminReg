@@ -37,9 +37,13 @@ export const setVisibleSuccessModalAction = (visible) => ({
   }
 });
 
-export const setMetricAction = (metric) => ({
+export const setMetricAction = (measure, apiCall = false) => ({
   type: actionTypes.SET_METRIC,
   payload: {
-    metric
+    measure,
+    body: {
+      measure: measure ? 'metric' : 'imperial'
+    },
+    apiCall
   }
 });
