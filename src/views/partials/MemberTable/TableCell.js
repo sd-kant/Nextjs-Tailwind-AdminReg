@@ -151,7 +151,7 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
 };
 
 const mapStateToProps = (state) => ({
-  metric: get(state, 'ui.metric')
+  metric: get(state, 'ui.measure')
 });
 
 export default connect(mapStateToProps, null)(React.memo(TableCell));

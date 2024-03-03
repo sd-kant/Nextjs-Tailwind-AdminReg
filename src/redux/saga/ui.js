@@ -1,10 +1,12 @@
 import { takeLatest } from 'redux-saga/effects';
 import { actionTypes } from '../type';
 import { toastr } from 'react-redux-toastr';
+import { updateProfileSaga } from './funcs';
 
 function* actionWatcher() {
   yield takeLatest(actionTypes.SUCCESS_NOTIFICATION, showSuccessNotificationSaga);
   yield takeLatest(actionTypes.ERROR_NOTIFICATION, showErrorNotificationSaga);
+  yield takeLatest(actionTypes.SET_METRIC, updateProfileSaga);
 }
 
 function showSuccessNotificationSaga({ payload: { msg, title = '' } }) {

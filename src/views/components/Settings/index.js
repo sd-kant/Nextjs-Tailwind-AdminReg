@@ -280,7 +280,7 @@ const Settings = ({
                 on={metric}
                 titleOn={t('imperial')}
                 titleOff={t('metric')}
-                handleSwitch={(v) => setMetric(v)}
+                handleSwitch={(v) => setMetric(v, true)}
               />
             </div>
           ) : null}
@@ -327,7 +327,7 @@ const Settings = ({
 };
 
 const mapStateToProps = (state) => ({
-  metric: get(state, 'ui.metric'),
+  metric: get(state, 'ui.measure'),
   userType: get(state, 'auth.userType'),
   profile: get(state, 'profile.profile'),
   myOrganization: get(state, 'profile.organization')
