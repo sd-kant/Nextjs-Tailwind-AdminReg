@@ -745,5 +745,6 @@
   "copy token success": "Token Copied Successfully!",
   "percent of time in cbt zones": "Percent of time in Core Body Temperature Zones",
   "maximum cbt time of day": "Maximum CBT Time of Day",
-  "mac address format required": "Please use format XX:XX:XX:XX:XX:XX"
+  "mac address format required": "Please use format XX:XX:XX:XX:XX:XX",
+  "non-registered user in mapping device": "{{fullname}} has not completed Kenzen User Registration. A device cannot be assigned until Use Registration is completed."
 }
