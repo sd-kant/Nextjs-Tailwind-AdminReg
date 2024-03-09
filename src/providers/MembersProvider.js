@@ -1043,7 +1043,8 @@ const MembersProvider = ({
           value: it.userId,
           title: `${it.firstName} ${it.lastName}`,
           subtitle: it.email ?? it.phoneNumber,
-          teamId: it.teamId
+          teamId: it.teamId,
+          heatSusceptibility: it.heatSusceptibility
         })) ?? []
     );
   }, [searchedUsers, users, admins]);
