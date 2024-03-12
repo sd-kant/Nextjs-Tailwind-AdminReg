@@ -61,6 +61,7 @@ const MemberDetail = ({
     formattedTeams
   } = useDashboardContext();
   const {
+    user,
     setUser,
     logs,
     metricStats,
@@ -164,19 +165,10 @@ const MemberDetail = ({
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
-  //const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
 
   const renderActionContent = () => {
     return (
       <>
-        {/*<div className={clsx(style.Control)}>
-          <Button
-            size="sm"
-            bgColor={'transparent'}
-            borderColor={'orange'}
-            title={t("send a message")}
-          />
-        </div>*/}
         {data?.locked ? (
           <div>
             <Button
@@ -191,25 +183,6 @@ const MemberDetail = ({
       </>
     );
   };
-
-  // const handleClickMoveTeam = () => {
-  //   // setWarningModal({
-  //   //   visible: true,
-  //   //   title: t('move user to team warning title', {
-  //   //     user: `${data?.firstName} ${data?.lastName}`,
-  //   //     team: team?.label
-  //   //   }),
-  //   //   mode: 'move'
-  //   // });
-  // };
-
-  // const handleClickUnlock = () => {
-  //   // setWarningModal({
-  //   //   visible: true,
-  //   //   title: t('unlock user warning title'),
-  //   //   mode: 'unlock'
-  //   // });
-  // };
 
   const apiDeviceInfo = React.useMemo(() => {
     if (!apiDevice) return null;
@@ -570,6 +543,7 @@ const MemberDetail = ({
             <div>
               <div>
                 <Button
+                  disabled={!!user?.heatSusceptibility}
                   onClick={() => {
                     window.open(
                       `/connect/member/${orgId.current}/device/${teamId.current}/${memberId.current}?tab=new&name=${userFullName}`,
