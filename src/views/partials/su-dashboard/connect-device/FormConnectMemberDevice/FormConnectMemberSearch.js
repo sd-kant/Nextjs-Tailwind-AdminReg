@@ -57,7 +57,7 @@ const FormConnectMemberSearch = ({ t }) => {
           ref={dropdownRef}
           renderInput={() => (
             <input
-              className={clsx(style.Input, 'input mt-10 font-heading-small text-white')}
+              className={clsx(style.Input, 'input mt-10 font-heading-small text-white sm:tw-w-full tw-w-[280px]')}
               type="text"
               value={keywordOnInvite}
               placeholder={t('search user')}
