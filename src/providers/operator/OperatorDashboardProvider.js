@@ -147,6 +147,8 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
                   ...formatDeviceLog
                 };
 
+                const sourceDevice = userData?.devices?.find(d => d.deviceId == deviceLog?.source);
+
                 const connectionObj = formatConnectionStatusV2({
                   flag: formatDeviceLog?.onOffFlag,
                   connected: formatDeviceLog?.connected,
@@ -155,7 +157,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
                   numberOfAlerts: userDataRef.numberOfAlerts,
                   stat: newstat,
                   alert: userDataRef.current.alert,
-                  deviceType: deviceLog?.type
+                  deviceType: sourceDevice?.type
                 });
 
                 const updateUserData = {
@@ -188,7 +190,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
           console.log(`user last event signal received at ${new Date().toLocaleString()}`);
         });
     },
-    [formatConnectionStatusV2]
+    [formatConnectionStatusV2, userData]
   );
 
   const fetchUserData = React.useCallback(() => {
@@ -246,13 +248,8 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
             ...newUserData,
             lastSyncStr
           };
-
-          // const userKenzenDevice = devices
-          //   ?.filter(
-          //     (it) =>
-          //       it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase()
-          //   )
           //   ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+          const sourceDevice = devices.find(d => d.deviceId === stat?.sourceDeviceId);
 
           const connectionObj = formatConnectionStatusV2({
             flag: stat?.onOffFlag,
@@ -262,7 +259,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
             numberOfAlerts: newUserData.numberOfAlerts,
             stat,
             alert,
-            deviceType: 'kenzen'
+            deviceType: sourceDevice?.type
           });
 
           newUserData = {

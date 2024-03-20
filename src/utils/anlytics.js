@@ -12,7 +12,7 @@ import {
   queryOrganizationActiveUsers,
   queryOrganizationAlertedUserCount,
   queryOrganizationAlertMetrics,
-  queryOrganizationCategoriesUsersInCBTZones,
+  // queryOrganizationCategoriesUsersInCBTZones,
   queryOrganizationDeviceData,
   queryOrganizationFluidMetricsByTeam,
   queryOrganizationHeartRate,
@@ -480,8 +480,6 @@ export const getKeyApiCall = (value) => {
     case METRIC_TEAM_TABLE_VALUES.USERS_IN_VARIOUS_CBT_ZONES: // 8
       apiCalls = [queryOrganizationTempCateData];
       keys = [ANALYTICS_API_KEYS.TEMP_CATE_DATA];
-      // apiCalls = [queryOrganizationUsersInCBTZones];
-      // keys = [ANALYTICS_API_KEYS.USERS_IN_CBT_ZONES];
       break;
     case METRIC_TEAM_TABLE_VALUES.AMBIENT_TEMP_HUMIDITY: // 20
       apiCalls = [queryAmbientTempHumidity];
@@ -502,10 +500,10 @@ export const getKeyApiCall = (value) => {
       apiCalls = [queryOrganizationActiveUsers];
       keys = [ANALYTICS_API_KEYS.ACTIVE_USERS];
       break;
-    case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
-      apiCalls = [queryOrganizationCategoriesUsersInCBTZones];
-      keys = [ANALYTICS_API_KEYS.TEMP_CATE_IN_CBT_ZONES];
-      break;
+    // case METRIC_TEAM_TABLE_VALUES.NO_USERS_IN_CBT_ZONES: // 25
+    //   apiCalls = [queryOrganizationCategoriesUsersInCBTZones];
+    //   keys = [ANALYTICS_API_KEYS.TEMP_CATE_IN_CBT_ZONES];
+    //   break;
     case METRIC_TEAM_TABLE_VALUES.NO_USERS_UNACCLIMATED_ACCLIMATED: // 26
       apiCalls = [queryOrganizationFluidMetricsByTeam];
       keys = [ANALYTICS_API_KEYS.FLUID_METRICS_BY_TEAM];
