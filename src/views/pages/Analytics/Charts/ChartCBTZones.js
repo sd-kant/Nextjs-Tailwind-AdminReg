@@ -65,7 +65,7 @@ const ChartCBTZones = ({ t }) => {
 };
 
 const mapStateToProps = (state) => ({
-  metric: get(state, 'ui.metric')
+  metric: get(state, 'ui.measure')
 });
 
 export default connect(mapStateToProps, null)(withTranslation()(ChartCBTZones));

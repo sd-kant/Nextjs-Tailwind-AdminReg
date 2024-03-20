@@ -292,6 +292,7 @@ export const UserSubscriptionProvider = ({ children }) => {
   };
 
   const providerValue = {
+    user,
     setUser,
     logs,
     metricStats,

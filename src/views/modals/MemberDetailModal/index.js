@@ -175,7 +175,7 @@ const MemberDetailModal = ({ t, open = false, closeModal = () => {}, data: origi
 };
 
 const mapStateToProps = (state) => ({
-  metric: get(state, 'ui.metric')
+  metric: get(state, 'ui.measure')
 });
 
 export default connect(mapStateToProps, null)(withTranslation()(React.memo(MemberDetailModal)));

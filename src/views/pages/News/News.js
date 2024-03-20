@@ -24,7 +24,7 @@ const News = ({ setLoading }) => {
 };
 
 const mapStateToProps = (state) => ({
-  metric: get(state, 'ui.metric')
+  metric: get(state, 'ui.measure')
 });
 
 const mapDispatchToProps = (dispatch) =>

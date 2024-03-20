@@ -5,7 +5,7 @@ const initialState = {
   restBarClass: '',
   loading: false,
   visibleSuccessModal: false,
-  metric: localStorage.getItem('kop-v2-metric')?.toString() === 'true'
+  measure: localStorage.getItem('kop-v2-metric')?.toString() === 'true'
 };
 
 const uiReducer = (state = initialState, action) => {
@@ -16,8 +16,8 @@ const uiReducer = (state = initialState, action) => {
       });
     case actionTypes.SET_METRIC:
       return produce(state, (draft) => {
-        localStorage.setItem('kop-v2-metric', action.payload.metric?.toString());
-        draft.metric = action.payload.metric;
+        localStorage.setItem('kop-v2-metric', action.payload.measure?.toString());
+        draft.measure = action.payload.measure;
       });
     case actionTypes.LOADING:
       return produce(state, (draft) => {

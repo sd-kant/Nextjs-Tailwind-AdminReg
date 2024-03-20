@@ -17,6 +17,7 @@ const FormConnectMemberSearch = ({ t }) => {
   }, [searching, searchedOperators, keywordOnInvite]);
 
   const [visible, setVisible] = React.useState(false);
+  const [nonRegisteredErrorMessage, setNonRegisteredErrorMessage] = React.useState('');
   const dropdownRef = React.useRef(null);
   useClickOutSide(dropdownRef, () => setVisible(false));
 
@@ -27,11 +28,18 @@ const FormConnectMemberSearch = ({ t }) => {
   const handleItemClick = (id) => {
     const item = searchedOperators?.find((it) => it.value === id);
     if (item) {
-      navigate(
-        `/connect/member/${organizationId}/device/${item.teamId}/${id}?name=${encodeURIComponent(
-          item.title
-        )}`
-      );
+      if (item?.heatSusceptibility) {
+        navigate(
+          `/connect/member/${organizationId}/device/${item.teamId}/${id}?name=${encodeURIComponent(
+            item.title
+          )}`
+        );
+      } else {
+        setNonRegisteredErrorMessage(
+          t('non-registered user in mapping device', { fullname: item.title })
+        );
+      }
+      setVisible(false);
     }
   };
 
@@ -49,11 +57,14 @@ const FormConnectMemberSearch = ({ t }) => {
           ref={dropdownRef}
           renderInput={() => (
             <input
-              className={clsx(style.Input, 'input mt-10 font-heading-small text-white')}
+              className={clsx(style.Input, 'input mt-10 font-heading-small text-white sm:tw-w-full tw-w-[280px]')}
               type="text"
               value={keywordOnInvite}
               placeholder={t('search user')}
-              onChange={(e) => setKeywordOnInvite(e.target.value)}
+              onChange={(e) => {
+                setNonRegisteredErrorMessage('');
+                setKeywordOnInvite(e.target.value);
+              }}
               onClick={() => setVisible(true)}
             />
           )}
@@ -65,6 +76,11 @@ const FormConnectMemberSearch = ({ t }) => {
         />
       </div>
       <div>
+        <div>
+          <div className="md:tw-w-3/4">
+            <span className="font-helper-text text-error">{nonRegisteredErrorMessage}</span>
+          </div>
+        </div>
         <div>
           <button className="button cursor-pointer cancel" type="button" onClick={handleCancel}>
             <span className="font-button-label text-orange text-uppercase">{'cancel'}</span>
