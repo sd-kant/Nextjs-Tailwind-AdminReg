@@ -810,11 +810,11 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               if (index !== -1) {
                 memberDevices.splice(index, 1, {
                   ...it,
-                  type: memberDevices[index]?.type,
-                  version: memberDevices[index].version
+                  type: it.type ?? memberDevices[index]?.type,
+                  version: it.version ?? memberDevices[index].version
                 });
               } else {
-                memberDevices.push({ ...it, type: 'kenzen' });
+                memberDevices.push({ ...it, type: it.type ?? 'kenzen' });
               }
             });
             if (devicesMemberIndex !== -1) {
