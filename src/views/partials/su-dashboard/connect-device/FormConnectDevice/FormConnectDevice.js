@@ -25,7 +25,7 @@ export const formSchema = (t) => {
     deviceId: Yup.string()
       .required(t('device id required'))
       .test('is-valid', t('mac address format required'), function (value) {
-        return isValidMacAddress(value);
+        return value?.trim()?.length < 5 || isValidMacAddress(value);
       })
   });
 };
@@ -249,7 +249,7 @@ const FormConnectDevice = (props) => {
                 <span className="font-input-label">{t('connect device confirm')}</span>
               </div>
             ) : (
-              noMatch && (
+              noMatch && isValidDeviceId() && (
                 <div>
                   <span className="font-input-label text-orange">
                     {t('create device and pair it')}
