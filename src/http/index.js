@@ -442,9 +442,9 @@ export const queryOrganizationMaxHrAll = (orgId, data) => {
   return post(`/organization/${orgId}/data/maxHrAll`, data);
 };
 
-export const queryOrganizationUsersInCBTZones = (orgId, data) => {
-  return post(`/organization/${orgId}/data/temperatureCategories`, data);
-};
+// export const queryOrganizationUsersInCBTZones = (orgId, data) => {
+//   return post(`/organization/${orgId}/data/temperatureCategories`, data);
+// };
 
 export const queryOrganizationActiveUsers = (orgId, data) => {
   return post(`/organization/${orgId}/data/activeUsers`, data);
@@ -478,9 +478,9 @@ export const queryOrganizationTempCateData = (orgId, data) => {
   return post(`/organization/${orgId}/data/temperatureCategoriesByUser`, data);
 };
 
-export const queryOrganizationCategoriesUsersInCBTZones = (orgId, data) => {
-  return post(`/organization/${orgId}/data/temperatureCategoriesAndAlerts`, data);
-};
+// export const queryOrganizationCategoriesUsersInCBTZones = (orgId, data) => {
+//   return post(`/organization/${orgId}/data/temperatureCategoriesAndAlerts`, data);
+// };
 
 export const queryOrganizationHeartRate = (orgId, data) => {
   return post(`/organization/${orgId}/data/heartRate`, data);

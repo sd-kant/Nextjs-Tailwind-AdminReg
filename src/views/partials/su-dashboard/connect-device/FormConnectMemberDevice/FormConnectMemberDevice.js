@@ -25,7 +25,7 @@ export const formSchema = (t) => {
     deviceId: Yup.string()
       .required(t('device id required'))
       .test('is-valid', t('mac address format required'), function (value) {
-        return isValidMacAddress(value);
+        return value?.trim()?.length < 5 || isValidMacAddress(value);
       })
   });
 };
@@ -231,23 +231,6 @@ const FormConnectMemberDevice = (props) => {
                     />
                   </div>
                 )}
-                {/* <QRcodeReader
-                  open={openQrCodeReader}
-                  onClose={() => setOpenQRcodeReader(false)}
-                  onScan={(data) => {
-                    if (data) {
-                      const macAddress = data.text.split('_')[1];
-                      setFieldValue('deviceId', macAddress);
-                      handleItemClick(macAddress);
-                      setScancedDeviceId(macAddress);
-                    }
-                  }}
-                  handleError={(error) => {
-                    console.log('err', error);
-                    alert(error);
-                    setOpenQRcodeReader(false);
-                  }}
-                /> */}
               </>
             ) : (
               <>
@@ -270,7 +253,7 @@ const FormConnectMemberDevice = (props) => {
                 </span>
               </div>
             ) : (
-              noMatch && (
+              noMatch && isValidDeviceId() && (
                 <div>
                   <span className="font-input-label text-orange">
                     {t('create device and pair it')}

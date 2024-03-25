@@ -591,9 +591,10 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           ?.filter(
             (it) =>
               it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase() &&
-              ['kenzen', 'hub'].includes(it?.type)
+              ['kenzen'].includes(it?.type)
           )
           ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime());
+        const sourceDevice = userDevices?.find(d => d.deviceId == stat?.sourceDeviceId);
         if (stat?.deviceId) availableDevices.push(stat?.deviceId);
         const connectionObj = formatConnectionStatusV2({
           flag: stat?.onOffFlag,
@@ -603,7 +604,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           numberOfAlerts,
           stat,
           alert,
-          deviceType: userKenzenDevices?.[0]?.type
+          deviceType: sourceDevice?.type
         });
         const lastSync = getLatestDate(
           getLatestDate(
@@ -731,15 +732,6 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     return filteredMembers?.slice((page - 1) * sizePerPage, page * sizePerPage);
   }, [filteredMembers, page, sizePerPage]);
 
-  // React.useEffect(() => {
-  //   if (selectedMember) {
-  //     const updatedMember = paginatedMembers?.find(
-  //       (it) => it.userId?.toString() === selectedMember?.userId?.toString()
-  //     );
-  //     setSelectedMember(updatedMember);
-  //   }
-  // }, [paginatedMembers, selectedMember]);
-
   const updateDataFromEvents = React.useCallback(
     (events) => {
       if (events?.length > 0) {
@@ -818,11 +810,11 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               if (index !== -1) {
                 memberDevices.splice(index, 1, {
                   ...it,
-                  type: memberDevices[index]?.type,
-                  version: memberDevices[index].version
+                  type: it.type ?? memberDevices[index]?.type,
+                  version: it.version ?? memberDevices[index].version
                 });
               } else {
-                memberDevices.push({ ...it, type: 'kenzen' });
+                memberDevices.push({ ...it, type: it.type ?? 'kenzen' });
               }
             });
             if (devicesMemberIndex !== -1) {

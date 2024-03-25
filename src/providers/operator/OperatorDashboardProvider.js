@@ -147,27 +147,42 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
                   ...formatDeviceLog
                 };
 
+                // update userData.devices
+                const devicesTemp = JSON.parse(JSON.stringify(userDataRef.current?.devices));
+                const deviceIndex = devicesTemp?.findIndex(d => d.deviceId == deviceLog?.deviceId);
+                if(deviceIndex !== -1){
+                  devicesTemp.splice(deviceIndex, 1, {
+                    ...deviceLog,
+                    type: deviceLog.type ?? devicesTemp[deviceIndex]?.type,
+                    version: deviceLog.version ?? devicesTemp[deviceIndex]?.version
+                  });
+                }else{
+                  devicesTemp.push({ ...it, type: it.type ?? 'kenzen' });
+                }
+
+                const sourceDevice = userDataRef.current?.devices?.find(d => d.deviceId == deviceLog?.source);
+                
                 const connectionObj = formatConnectionStatusV2({
                   flag: formatDeviceLog?.onOffFlag,
                   connected: formatDeviceLog?.connected,
                   lastTimestamp: userDataRef.current.stat.tempHumidityTs,
                   deviceId: formatDeviceLog?.deviceId,
-                  numberOfAlerts: userDataRef.numberOfAlerts,
+                  numberOfAlerts: userDataRef.current.numberOfAlerts,
                   stat: newstat,
                   alert: userDataRef.current.alert,
-                  deviceType: deviceLog?.type
+                  deviceType: sourceDevice?.type
                 });
 
                 const updateUserData = {
                   ...userDataRef.current,
                   ...{
                     connectionObj,
-                    stat: newstat
+                    stat: newstat,
+                    devices: devicesTemp
                   }
                 };
                 setUserData(updateUserData);
               }
-
               // const latestTempHumidity = events
               //   ?.filter((it) => it.type === 'TempHumidity')
               //   ?.sort(
@@ -246,13 +261,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
             ...newUserData,
             lastSyncStr
           };
-
-          // const userKenzenDevice = devices
-          //   ?.filter(
-          //     (it) =>
-          //       it.deviceId?.toLowerCase() === stat?.deviceId?.toLowerCase()
-          //   )
-          //   ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())?.[0];
+          const sourceDevice = devices.find(d => d.deviceId === stat?.sourceDeviceId);
 
           const connectionObj = formatConnectionStatusV2({
             flag: stat?.onOffFlag,
@@ -262,7 +271,7 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
             numberOfAlerts: newUserData.numberOfAlerts,
             stat,
             alert,
-            deviceType: 'kenzen'
+            deviceType: sourceDevice?.type
           });
 
           newUserData = {
