@@ -165,7 +165,7 @@ const MemberDetail = ({
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
-  const cbtRateZone = getHeartCBTZone(stat?.cbtAvg);
+  const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
 
   const renderActionContent = () => {
     return (
@@ -351,8 +351,8 @@ const MemberDetail = ({
                 <div className="tw-flex tw-justify-center">
                   <span
                     className={clsx('font-binary')}
-                    style={heartCBTZoneStyles[cbtRateZone?.value?.toString()]}>
-                    {cbtRateZone?.label}
+                    style={heartCBTZoneStyles[heartCBTZone?.value?.toString()]}>
+                    {heartCBTZone?.label}
                   </span>
                 </div>
               )}
@@ -413,8 +413,8 @@ const MemberDetail = ({
                   <div className="tw-flex tw-justify-center">
                     <span
                       className={clsx('font-binary')}
-                      style={heartCBTZoneStyles[cbtRateZone?.value?.toString()]}>
-                      {cbtRateZone?.label}
+                      style={heartCBTZoneStyles[heartCBTZone?.value?.toString()]}>
+                      {heartCBTZone?.label}
                     </span>
                   </div>
                 )}
