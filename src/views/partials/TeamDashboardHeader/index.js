@@ -219,7 +219,7 @@ const TeamDashboardHeader = ({ t, myOrganization }) => {
               <SearchInput
                 keyword={keyword}
                 visibleClearIcon={keyword !== ''}
-                onChange={(e) => setKeyword(e.target.value?.trim())}
+                onChange={(e) => setKeyword(e.target?.value)}
                 onClear={() => setKeyword('')}
               />
               <img
