@@ -165,7 +165,7 @@ const MemberDetail = ({
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
-  const cbtRateZone = getHeartCBTZone(data?.cbtAvg);
+  const cbtRateZone = getHeartCBTZone(stat?.cbtAvg);
 
   const renderActionContent = () => {
     return (
@@ -351,10 +351,8 @@ const MemberDetail = ({
                 <div className="tw-flex tw-justify-center">
                   <span
                     className={clsx('font-binary')}
-                    style={{
-                      color: alertStatusColor
-                    }}>
-                    {alertObj?.label}
+                    style={heartCBTZoneStyles[cbtRateZone?.value?.toString()]}>
+                    {cbtRateZone?.label}
                   </span>
                 </div>
               )}
