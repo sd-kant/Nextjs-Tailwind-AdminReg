@@ -107,18 +107,18 @@ const MemberDetail = ({
     connectStatus = 'sleep';
   }
 
-  const alertStatusColor = React.useMemo(() => {
-    if (connectionObj?.value != DEVICE_CONNECTION_STATUS.CONNECTED) return null;
-    if (alertObj?.value == ALERT_STAGE_STATUS.SAFE) return '#35EA6C';
-    else if (
-      hasStatusValue(alertObj?.value, [
-        ALERT_STAGE_STATUS.AT_RISK,
-        ALERT_STAGE_STATUS.ELEVATED_RISK
-      ])
-    )
-      return '#F1374E';
-    return null;
-  }, [alertObj, connectionObj]);
+  // const alertStatusColor = React.useMemo(() => {
+  //   if (connectionObj?.value != DEVICE_CONNECTION_STATUS.CONNECTED) return null;
+  //   if (alertObj?.value == ALERT_STAGE_STATUS.SAFE) return '#35EA6C';
+  //   else if (
+  //     hasStatusValue(alertObj?.value, [
+  //       ALERT_STAGE_STATUS.AT_RISK,
+  //       ALERT_STAGE_STATUS.ELEVATED_RISK
+  //     ])
+  //   )
+  //     return '#F1374E';
+  //   return null;
+  // }, [alertObj, connectionObj]);
 
   // const [team, setTeam] = React.useState(null);
   React.useEffect(() => {
