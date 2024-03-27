@@ -124,7 +124,7 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
               {!hideCbtHR && !invisibleLastUpdates && (
                 <div>
                   <span
-                    style={heartCBTZoneStyles[heartCBTZone?.value?.toString()]}>
+                    style={visibleHeartStats? heartCBTZoneStyles[heartCBTZone?.value?.toString()]: null}>
                     {formatHeartCbt(visibleHeartStats ? stat?.cbtAvg : null)}
                     {metric ? '°C' : '°F'}&nbsp;&nbsp;&nbsp;
                   </span>
