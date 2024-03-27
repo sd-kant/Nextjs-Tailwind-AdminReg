@@ -51,8 +51,8 @@ const MemberDetail = ({
   const {
     getHeartRateZone,
     formatHeartCbt,
-    // getHeartCBTZone,
-    // heartCBTZoneStyles,
+    getHeartCBTZone,
+    heartCBTZoneStyles,
     heartRateZoneStyles
   } = useUtilsContext();
   const {
@@ -107,18 +107,18 @@ const MemberDetail = ({
     connectStatus = 'sleep';
   }
 
-  const alertStatusColor = React.useMemo(() => {
-    if (connectionObj?.value != DEVICE_CONNECTION_STATUS.CONNECTED) return null;
-    if (alertObj?.value == ALERT_STAGE_STATUS.SAFE) return '#35EA6C';
-    else if (
-      hasStatusValue(alertObj?.value, [
-        ALERT_STAGE_STATUS.AT_RISK,
-        ALERT_STAGE_STATUS.ELEVATED_RISK
-      ])
-    )
-      return '#F1374E';
-    return null;
-  }, [alertObj, connectionObj]);
+  // const alertStatusColor = React.useMemo(() => {
+  //   if (connectionObj?.value != DEVICE_CONNECTION_STATUS.CONNECTED) return null;
+  //   if (alertObj?.value == ALERT_STAGE_STATUS.SAFE) return '#35EA6C';
+  //   else if (
+  //     hasStatusValue(alertObj?.value, [
+  //       ALERT_STAGE_STATUS.AT_RISK,
+  //       ALERT_STAGE_STATUS.ELEVATED_RISK
+  //     ])
+  //   )
+  //     return '#F1374E';
+  //   return null;
+  // }, [alertObj, connectionObj]);
 
   // const [team, setTeam] = React.useState(null);
   React.useEffect(() => {
@@ -165,6 +165,7 @@ const MemberDetail = ({
   const visibleHeartStats =
     numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60 && stat?.onOffFlag;
   const heartRateZone = getHeartRateZone(data?.dateOfBirth, stat?.heartRateAvg);
+  const heartCBTZone = getHeartCBTZone(stat?.cbtAvg);
 
   const renderActionContent = () => {
     return (
@@ -350,10 +351,8 @@ const MemberDetail = ({
                 <div className="tw-flex tw-justify-center">
                   <span
                     className={clsx('font-binary')}
-                    style={{
-                      color: alertStatusColor
-                    }}>
-                    {alertObj?.label}
+                    style={heartCBTZoneStyles[heartCBTZone?.value?.toString()]}>
+                    {heartCBTZone?.label}
                   </span>
                 </div>
               )}
@@ -414,10 +413,8 @@ const MemberDetail = ({
                   <div className="tw-flex tw-justify-center">
                     <span
                       className={clsx('font-binary')}
-                      style={{
-                        color: alertStatusColor
-                      }}>
-                      {alertObj?.label}
+                      style={heartCBTZoneStyles[heartCBTZone?.value?.toString()]}>
+                      {heartCBTZone?.label}
                     </span>
                   </div>
                 )}
