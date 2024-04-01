@@ -5,6 +5,8 @@ export const USER_TYPE_ORG_ADMIN = 'OrgAdmin';
 export const USER_TYPE_TEAM_ADMIN = 'TeamAdmin';
 export const USER_TYPE_OPERATOR = 'Operator';
 
+export const USER_TYPE_ANALYTIC = 'Analytic';
+
 export const EXPORT_OPTIONS = [
   {
     label: 'CSV',
@@ -735,3 +737,9 @@ export const EVENT_DATA_TYPE = {
   TEMP_HUMIDITY: 'TempHumidity',
   EVENT: 'Event'
 };
+
+export const UpdateUserRoleFrom  = {
+  None: 0,
+  WearingDevice: 1,
+  AnalyticAccess: 2
+}

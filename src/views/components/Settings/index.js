@@ -10,7 +10,7 @@ import Toggle from '../Toggle';
 import { get } from 'lodash';
 import { setMetricAction } from '../../../redux/action/ui';
 import ConfirmModalV2 from '../ConfirmModalV2';
-import { USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN } from '../../../constant';
+import { USER_TYPE_ADMIN, USER_TYPE_ANALYTIC, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN } from '../../../constant';
 import { logout } from '../../layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { isAdmin, concatAsUrlParam, getUrlParamAsJson } from '../../../utils';
@@ -59,7 +59,7 @@ const Settings = ({
     title: ''
   });
   const hasAccessToAnalytics = React.useMemo(() => {
-    return userType?.some((it) => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it));
+    return userType?.some((it) => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN, USER_TYPE_ANALYTIC].includes(it));
   }, [userType]);
   const hasAccessToNews = React.useMemo(() => {
     if (isProductionMode) {

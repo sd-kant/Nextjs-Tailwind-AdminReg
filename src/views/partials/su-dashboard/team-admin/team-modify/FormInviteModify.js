@@ -222,20 +222,6 @@ const FormInviteModify = (props) => {
       />
       <Form className="form-group mt-57">
         <div>
-          {/* <div className="d-flex align-center">
-            <img
-              src={backIcon}
-              alt="back"
-              className={'cursor-pointer'}
-              onClick={() => navigate(`/invite/${organizationId}/team-modify`)}
-            />
-            &nbsp;&nbsp;
-            <span
-              className="font-button-label text-orange cursor-pointer"
-              onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
-              {t('previous')}
-            </span>
-          </div> */}
           <div className="tw-flex">
             <PreviousButton onClick={() => navigate(`/invite/${organizationId}/team-modify`)}>
               {t('previous')}
@@ -318,13 +304,6 @@ const FormInviteModify = (props) => {
                     {t('add a team member')}
                   </span>
                 </div>
-
-                {/*<div className={clsx(style.AddButton)} onClick={() => null}>*/}
-                {/*  <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon"/>*/}
-                {/*  <span className="font-heading-small text-capitalize">*/}
-                {/*  {t("bulk add team members")}*/}
-                {/*</span>*/}
-                {/*</div>*/}
               </div>
             )}
           </div>
