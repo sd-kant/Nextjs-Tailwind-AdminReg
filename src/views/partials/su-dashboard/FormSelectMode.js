@@ -14,6 +14,7 @@ import clsx from 'clsx';
 import style from './FormSelectMode.module.scss';
 import { concatAsUrlParam, getUrlParamAsJson, isAdmin, isOperator } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
+import { checkIfHasAnalyticRole } from 'utils/members';
 
 const FormSelectMode = (props) => {
   const { t, setRestBarClass, userType } = props;
@@ -21,6 +22,7 @@ const FormSelectMode = (props) => {
   const navigate = useNavigate();
   const hasAdminRole = React.useMemo(() => isAdmin(userType), [userType]);
   const hasOperatorRole = React.useMemo(() => isOperator(userType), [userType]);
+  const hasAnalyticRole = React.useMemo(() => checkIfHasAnalyticRole(userType), [userType]);
 
   useEffect(() => {
     setRestBarClass(`progress-50`);
@@ -103,7 +105,7 @@ const FormSelectMode = (props) => {
             </>
           )}
 
-          {hasAdminRole && (
+          {hasAnalyticRole && (
             <>
               <div
                 className={clsx(style.OptionWrapper)}

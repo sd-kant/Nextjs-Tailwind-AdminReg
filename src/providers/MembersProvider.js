@@ -9,7 +9,9 @@ import {
   USER_TYPE_TEAM_ADMIN,
   USER_TYPE_OPERATOR,
   permissionLevels,
-  INVALID_VALUES1
+  INVALID_VALUES1,
+  UpdateUserRoleFrom,
+  USER_TYPE_ANALYTIC
 } from '../constant';
 import { queryAllTeamsAction } from '../redux/action/base';
 import {
@@ -321,6 +323,7 @@ const MembersProvider = ({
 
         let permissionLevel = getPermissionLevelFromUserTypes(it?.userTypes);
         if (['1'].includes(permissionLevel?.value?.toString())) {
+          const hasAnalytic = it?.userTypes?.includes(USER_TYPE_ANALYTIC);
           // if this user is an team administrator
           it['teams']?.forEach((ele) => {
             const already = accessibleTeams?.findIndex(
@@ -331,6 +334,7 @@ const MembersProvider = ({
                 if (!accessibleTeams[already]?.userTypes?.includes(USER_TYPE_TEAM_ADMIN)) {
                   const newUserTypes = accessibleTeams[already].userTypes;
                   newUserTypes.push(USER_TYPE_TEAM_ADMIN);
+                  if(hasAnalytic) newUserTypes.push(USER_TYPE_ANALYTIC);
                   accessibleTeams[already] = {
                     teamId: ele.teamId,
                     userTypes: newUserTypes?.sort()
@@ -339,13 +343,13 @@ const MembersProvider = ({
               } else {
                 accessibleTeams[already] = {
                   teamId: ele.teamId,
-                  userTypes: [USER_TYPE_TEAM_ADMIN]
+                  userTypes: hasAnalytic?[USER_TYPE_TEAM_ADMIN, USER_TYPE_ANALYTIC]: [USER_TYPE_TEAM_ADMIN]
                 };
               }
             } else {
               accessibleTeams.push({
                 teamId: ele.teamId,
-                userTypes: [USER_TYPE_TEAM_ADMIN]
+                userTypes: hasAnalytic?[USER_TYPE_TEAM_ADMIN, USER_TYPE_ANALYTIC]: [USER_TYPE_TEAM_ADMIN]
               });
             }
           });
@@ -404,7 +408,7 @@ const MembersProvider = ({
       handleMemberTeamUserTypeChange(
         permissionLevels.find((it) => it.value?.toString() === '1'),
         index,
-        false,
+        UpdateUserRoleFrom.None,
         value
       );
     } else if (permissionLevel?.value?.toString() === '2') {
@@ -412,7 +416,7 @@ const MembersProvider = ({
       handleMemberTeamUserTypeChange(
         permissionLevels.find((it) => it.value?.toString() === '2'),
         index,
-        false,
+        UpdateUserRoleFrom.None,
         value
       );
     }
@@ -430,12 +434,19 @@ const MembersProvider = ({
     let roleToRemove = [];
     let needToUpdateAccessibleTeams = false;
 
-    if (fromWearingDevice) {
+    if (fromWearingDevice === UpdateUserRoleFrom.WearingDevice) {
       needToUpdateAccessibleTeams = true;
       if (optionValue?.value?.toString() === 'true') {
         roleToAdd = USER_TYPE_OPERATOR;
       } else if (optionValue?.value?.toString() === 'false') {
         roleToRemove = [USER_TYPE_OPERATOR];
+      }
+    } else if(fromWearingDevice === UpdateUserRoleFrom.AnalyticAccess) {
+      needToUpdateAccessibleTeams = true;
+      if (optionValue?.value?.toString() === 'true') {
+        roleToAdd = USER_TYPE_ANALYTIC;
+      } else if (optionValue?.value?.toString() === 'false') {
+        roleToRemove = [USER_TYPE_ANALYTIC];
       }
     } else {
       /*check if logged-in-user has right to change role*/
