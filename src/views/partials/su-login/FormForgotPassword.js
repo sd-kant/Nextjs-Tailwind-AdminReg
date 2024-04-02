@@ -93,7 +93,7 @@ const FormForgotPassword = (props) => {
       {status?.visibleModal && (
         <ConfirmModal
           show={status?.visibleModal}
-          header={t('forgot password confirm header')}
+          header={t('forgot password confirm header' + (status?.pinBased ? ' pin' : ''))}
           subheader={t('forgot password confirm subheader')}
           onOk={(e) => {
             e.preventDefault();
@@ -121,8 +121,13 @@ const EnhancedForm = withFormik({
       if (baseUri) {
         instance.defaults.baseURL = lookupRes.data?.baseUri;
       }
-      await requestResetPassword(values?.username);
-      setStatus({ visibleModal: true });
+      const res = await requestResetPassword(values?.username);
+      if (res.data?.pinBased) {
+        setStatus({ visibleModal: true, pinBased: true });
+      }else{
+        setStatus({ visibleModal: true });
+      }
+      
     } catch (e) {
       if (e.response?.data?.status?.toString() === '404') {
         // if user not found
