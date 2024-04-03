@@ -49,7 +49,7 @@ const SearchUserItem = ({ user, index, isAdmin, id, errorField, touchField, t })
   }
   const wearingDeviceDisabled =
     selectedPermissionLevel?.value?.toString() === '2' || !isAdmin || !hasRightToEdit;
-  const isOperator = selectedPermissionLevel?.value?.toString() === '2';
+  const disabledToUpdateAnalyticRole = selectedPermissionLevel?.value?.toString() === '2' || !isAdmin;
   const newlyFormattedTeams = teams.map((it) => {
     let color;
     if (!['3', '4'].includes(selectedPermissionLevel?.value?.toString())) {
@@ -301,8 +301,8 @@ const SearchUserItem = ({ user, index, isAdmin, id, errorField, touchField, t })
               options={yesNoOptions}
               placeholder={t('select')}
               value={yesOrNoAnalyticRole}
-              styles={customStyles(isOperator)}
-              isDisabled={isOperator}
+              styles={customStyles(disabledToUpdateAnalyticRole)}
+              isDisabled={disabledToUpdateAnalyticRole}
               menuPortalTarget={document.body}
               menuPosition={'fixed'}
               onChange={(e) =>
