@@ -47,9 +47,10 @@ const SearchUserItem = ({ user, index, isAdmin, id, errorField, touchField, t })
   } else {
     selectedPermissionLevel = getPermissionLevelFromUserTypes(entity?.userTypes);
   }
+  const isSelectedUserAdmin = ['3', '4'].includes(selectedPermissionLevel?.value?.toString());
   const wearingDeviceDisabled =
     selectedPermissionLevel?.value?.toString() === '2' || !isAdmin || !hasRightToEdit;
-  const disabledToUpdateAnalyticRole = selectedPermissionLevel?.value?.toString() === '2' || !isAdmin;
+  const disabledToUpdateAnalyticRole = selectedPermissionLevel?.value?.toString() === '2' || !isAdmin || isSelectedUserAdmin;
   const newlyFormattedTeams = teams.map((it) => {
     let color;
     if (!['3', '4'].includes(selectedPermissionLevel?.value?.toString())) {
@@ -93,7 +94,8 @@ const SearchUserItem = ({ user, index, isAdmin, id, errorField, touchField, t })
   if (entity?.userTypes?.includes(USER_TYPE_OPERATOR)) {
     wearingDeviceSelected = yesNoOptions?.[0];
   }
-  if(checkIfHasAnalyticRole(entity?.userTypes)){
+
+  if(isSelectedUserAdmin || checkIfHasAnalyticRole(entity?.userTypes)){
     yesOrNoAnalyticRole = yesNoOptions?.[0];
   }else{
     yesOrNoAnalyticRole = yesNoOptions?.[1];
