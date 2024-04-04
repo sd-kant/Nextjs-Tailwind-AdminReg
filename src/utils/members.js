@@ -1,6 +1,7 @@
 import {
   permissionLevels,
   USER_TYPE_ADMIN,
+  USER_TYPE_ANALYTIC,
   USER_TYPE_OPERATOR,
   USER_TYPE_ORG_ADMIN,
   USER_TYPE_TEAM_ADMIN
@@ -32,3 +33,7 @@ export const checkIfHigherThanMe = (myUserType, opponentPermissionLevel) => {
 
   return true;
 };
+
+export const checkIfHasAnalyticRole= (userTypes) => {
+  return userTypes?.includes(USER_TYPE_ANALYTIC) || userTypes?.includes(USER_TYPE_ADMIN) || userTypes?.includes(USER_TYPE_ORG_ADMIN)
+}
