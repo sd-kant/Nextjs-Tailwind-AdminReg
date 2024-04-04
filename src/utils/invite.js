@@ -305,7 +305,7 @@ export const handleModifyUsers = async ({
       lastName: it.lastName,
       job: it.job,
       email: it.email,
-      userType: it.userType,
+      userTypes: [it.userType],
       accessibleTeams: it.accessibleTeams,
       originalAccessibleTeams: it.originalAccessibleTeams
     }));
