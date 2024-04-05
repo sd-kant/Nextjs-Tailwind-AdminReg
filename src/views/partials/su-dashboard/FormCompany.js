@@ -232,15 +232,6 @@ const FormCompany = (props) => {
   const fetchOrgHubProfiles = (organizationId) => {
     queryGetAllHubProfiles(organizationId)
       .then((res) => {
-        // setFieldValue(
-        //   'bluetoothTokens',
-        //   res.data?.map((it) => {
-        //     return {
-        //       macAddress: it.deviceId,
-        //       refreshToken: it.refreshToken
-        //     };
-        //   })
-        // );
         setBluetoothTokens(
           res.data?.map((it) => {
             return {
@@ -1101,7 +1092,6 @@ const EnhancedForm = withFormik({
         hideCbtHR: values.hideCbtHR
       }
     };
-    console.log('valuse', values);
     if (values.isEditing) {
       const initialize = () => {
         setFieldValue('isEditing', false);

@@ -313,7 +313,7 @@ export const setUserTypeToUsers = (users, userType) => {
     users &&
     users.map((user) => ({
       ...user,
-      userType: userType
+      userTypes: [userType]
     }))
   );
 };
