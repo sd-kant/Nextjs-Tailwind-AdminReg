@@ -196,6 +196,7 @@
   "msg user deleted success": "{{user}} has been deleted from the DB",
   "msg user email conflicts": "There is a user whose email is same with {{email}}",
   "msg user invite success": "{{user}} should have received the invitation email successfully!",
+  "msg user invite success pin": "Please provide the PIN <b>{{pinCode}}</b> to {{user}}!",
   "australia": "Australia",
   "canada": "Canada",
   "france": "France",

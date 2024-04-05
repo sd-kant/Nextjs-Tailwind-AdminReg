@@ -766,15 +766,22 @@ const MembersProvider = ({
     if (requestHttp) {
       setLoading(true);
       requestHttp(payload)
-        .then(() => {
+        .then((res) => {
           handleWarningHide();
+          const pinCode = res?.data?.registrationCode;
           setConfirmModal({
             visible: true,
-            title: t('re-invite user confirmation title')
+            title: t(pinCode?'msg user invite success pin':'re-invite user confirmation title', {
+              user: `${user?.firstName} ${user?.lastName}`,
+              pinCode: pinCode
+            }),
+            
           });
+
           showSuccessNotification(
-            t('msg user invite success', {
-              user: `${user?.firstName} ${user?.lastName}`
+            t(pinCode?'msg user invite success pin':'msg user invite success', {
+              user: `${user?.firstName} ${user?.lastName}`,
+              pinCode: pinCode
             })
           );
         })

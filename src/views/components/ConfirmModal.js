@@ -26,7 +26,7 @@ const ConfirmModal = ({
     <div className={clsx(style.Overlay, show ? 'd-block' : 'd-none')}>
       <div className={clsx(style.Modal, `z-index-2 ${show ? 'd-block' : 'd-none'}`)}>
         <div className={clsx(style.ModalHeader, 'text-center')}>
-          <span className={'font-modal-header text-white'}>{header}</span>
+          <span className={'font-modal-header text-white'} dangerouslySetInnerHTML={{__html: header}}></span>
         </div>
 
         <div className={clsx(style.ModalSubheader, 'mt-10 text-center')}>
