@@ -249,12 +249,14 @@
     }
 
     .AddButton_Space {
-      display: block;
-      //display: flex;
-      //justify-content: space-between;
-      //align-items: center;
+      // display: block;
+      display: flex;
+      // justify-content: space-between;
+      align-items: center;
+      gap: 10px;
 
       .AddButton {
+        flex: 1;
         display: flex;
         justify-content: center;
         border: 1px solid #DE7D2C;
