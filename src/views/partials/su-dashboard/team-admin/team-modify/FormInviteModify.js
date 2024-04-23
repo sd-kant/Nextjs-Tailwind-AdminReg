@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Yup from 'yup';
 import { Form, withFormik, useFormikContext } from 'formik';
-import { withTranslation } from 'react-i18next';
+import { Trans, withTranslation } from 'react-i18next';
 import plusIcon from 'assets/images/plus-circle-fire.svg';
 import searchIcon from 'assets/images/search.svg';
+import uploadIcon from 'assets/images/upload-fire.svg';
 import {
   setLoadingAction,
   setRestBarClassAction,
@@ -241,14 +242,22 @@ const FormInviteModify = (props) => {
               <div className={clsx(style.NoteWrapper)}>
                 <div className={clsx('align-center', style.ChangeNote)}>
                   <span>
-                    {t(
-                      newChanges === 0
+                    <Trans
+                      i18nKey={
+                        newChanges === 0
                         ? 'no new change'
                         : newChanges > 1
                           ? 'new changes'
-                          : 'new change',
-                      { numberOfChanges: newChanges }
-                    )}
+                          : 'new change'}
+                      values={{ numberOfChanges: newChanges }}
+                      components={{
+                        a: (
+                          <span
+                            className={'text-approval-green'}
+                          />
+                        )
+                      }}
+                    />
                   </span>
                 </div>
 
@@ -277,12 +286,18 @@ const FormInviteModify = (props) => {
               </div>
 
               {visibleAddBtn && (
-                <div className={clsx(style.AddIconWrapper)}>
+                <div className={clsx(style.AddIconWrapper, 'tw-justify-center tw-gap-[8px]')}>
                   <img
                     className={clsx(style.AddIcon)}
                     src={plusIcon}
                     alt="save icon"
                     onClick={addAnother}
+                  />
+                  <img
+                    className={clsx(style.AddIcon)}
+                    src={uploadIcon}
+                    alt="upload icon"
+                    onClick={() => navigate(`/invite/${organizationId}/upload/${id}`)}
                   />
                 </div>
               )}
@@ -302,6 +317,12 @@ const FormInviteModify = (props) => {
                   <img src={plusIcon} className={clsx(style.PlusIcon)} alt="plus icon" />
                   <span className="font-heading-small text-capitalize">
                     {t('add a team member')}
+                  </span>
+                </div>
+                <div className={clsx(style.AddButton)} onClick={() => navigate(`/invite/${organizationId}/upload/${id}`)}>
+                  <img src={uploadIcon} className={clsx(style.PlusIcon)} alt="upload icon" />
+                  <span className="font-heading-small text-capitalize">
+                    {t('bulk upload')}
                   </span>
                 </div>
               </div>

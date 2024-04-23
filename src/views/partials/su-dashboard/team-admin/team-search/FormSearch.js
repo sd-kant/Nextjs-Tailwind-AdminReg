@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Yup from 'yup';
 import { Form, useFormikContext, withFormik } from 'formik';
-import { withTranslation } from 'react-i18next';
+import { Trans, withTranslation } from 'react-i18next';
 import searchIcon from 'assets/images/search.svg';
 import {
   setLoadingAction,
@@ -153,14 +153,22 @@ const FormSearch = (props) => {
               <div className={clsx(style.NoteWrapper)}>
                 <div className={clsx('d-flex align-center', style.ChangeNote)}>
                   <span>
-                    {t(
-                      newChanges === 0
+                    <Trans
+                      i18nKey={
+                        newChanges === 0
                         ? 'no new change'
                         : newChanges > 1
-                        ? 'new changes'
-                        : 'new change',
-                      { numberOfChanges: newChanges }
-                    )}
+                          ? 'new changes'
+                          : 'new change'}
+                      values={{ numberOfChanges: newChanges }}
+                      components={{
+                        a: (
+                          <span
+                            className={'text-approval-green'}
+                          />
+                        )
+                      }}
+                    />
                   </span>
                 </div>
                 {visibleSubmitBtn && (
