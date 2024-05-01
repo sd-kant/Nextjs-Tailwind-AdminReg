@@ -150,7 +150,7 @@ const FormInvite = (props) => {
       let country = null;
       if (it.phoneNumber !== 'null') {
         phoneNumber =
-          !INVALID_VALUES3.includes(it.countryCode) && INVALID_VALUES3.includes(it.phoneNumber)
+          !(INVALID_VALUES3.includes(it.countryCode) && INVALID_VALUES3.includes(it.phoneNumber))
             ? `${it.countryCode}${it.phoneNumber}`
             : null;
       }
