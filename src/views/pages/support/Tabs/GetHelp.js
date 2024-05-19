@@ -26,7 +26,7 @@ export default function GetHelp() {
                     
                 </div>
                 {toggleUI?(
-                    <div className="tw-text-[14px] sm:tw-text-[18px]  md:tw-text-[24px] tw-flex tw-flex-col tw-gap-2 tw-pt-2 sm:tw-p-2 md:tw-p-4 lg:tw-p-6 tw-w-[200px] sm:tw-w-[250px] md:tw-w-[300px] lg:tw-w-[350px]">
+                    <div className="tw-text-[14px] sm:tw-text-[18px]  md:tw-text-[21px] tw-flex tw-flex-col tw-gap-2 tw-pt-2 sm:tw-p-2 md:tw-p-4 lg:tw-p-6 tw-w-[200px] sm:tw-w-[250px] md:tw-w-[300px] lg:tw-w-[350px]">
                         <div className="tw-flex tw-flex-col">
                             <label className="tw-mb-2">{t(`product name`)}*</label>
                             <input className="tw-w-full tw-text-[14px] sm:tw-text-[18px]  md:tw-text-[24px]" name="productName" type="text"/>
@@ -41,7 +41,7 @@ export default function GetHelp() {
                             <input className="tw-w-full tw-text-[14px] sm:tw-text-[18px]  md:tw-text-[24px]" name="contactName" type="text"/>
                         </div>
                         <div className="tw-flex tw-flex-col">
-                            <label className="tw-mb-2 tw-text-[12px] sm:tw-text-[16px]  md:tw-text-[21px]">{t(`describe your issue or question and any steps token`)}*</label>
+                            <label className="tw-mb-2 tw-text-[12px] sm:tw-text-[16px]  md:tw-text-[18px]">{t(`describe your issue or question and any steps token`)}*</label>
                             <textarea rows="5" className="tw-w-full tw-text-[12px] sm:tw-text-[16px]  md:tw-text-[21px]" name="description"></textarea>
                         </div>
                         <div className="tw-flex tw-justify-start tw-gap-1 tw-items-center tw-text-orange-400 tw-mt-1 font-ubuntu-bold tw-text-[12px] sm:tw-text-[14px] md:tw-text-[16px] tw-cursor-pointer"><span>{t(`ATTACH`)}</span><img src={attachImage} alt="attach icon"/></div>

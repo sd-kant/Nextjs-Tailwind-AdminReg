@@ -55,6 +55,7 @@ const NavMenu = () => {
                         <div key={index} >
                             <NavBigBtn
                                 text={t(item.text)}
+                                textClassName="font-ubuntu-regular tw-text-[14px] sm:tw-text-[16px] md:tw-text-[18px]"
                                 iconName={item.iconName}
                                 onClick={() => navigate(item.path)} >
                                 {item.img && <img src={item.img} className="" alt={item.text} />}

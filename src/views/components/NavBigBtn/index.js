@@ -87,7 +87,7 @@ const NavBigBtn = ({ text, topLabel = '', iconName, iconImage, onClick, children
             )}
             {renderIcon(iconName, iconImage)}
             <div className={clsx(styles.DescriptionDiv)}>
-                <span className={clsx('font-small', textClassName)}>{text}</span>
+                <span className={clsx({'font-small': !textClassName}, textClassName)}>{text}</span>
             </div>
         </div>
     );
