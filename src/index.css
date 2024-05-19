@@ -3,6 +3,22 @@
 @tailwind utilities;
 
 @layer components {
+  .font-heading-large-44-auto {
+    font-family: Ubuntu-Bold;
+    @apply tw-text-[16px] sm:tw-text-[24px] md:tw-text-[36px];
+  }
+  .font-heading-large-44-auto-regular {
+    font-family: Ubuntu-Regular;
+    @apply tw-text-[16px] sm:tw-text-[24px] md:tw-text-[36px];
+  }
+  .font-heading-large {
+    font-family: Ubuntu-Bold;
+    @apply tw-text-xs md:tw-text-[32px] md:tw-leading-[57.5px];
+  }
+  .font-heading-medium {
+    font-family: Ubuntu-Bold;
+    @apply tw-text-xs md:tw-text-[20px] md:tw-leading-[32px];
+  }
   .font-heading-small {
     font-family: Ubuntu-Regular;
     @apply tw-text-xs md:tw-text-[21px] md:tw-leading-[24.13px];
@@ -22,6 +38,7 @@
     font-family: Ubuntu-Medium;
     @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[18.38px];
   }
+
   .font-helper-text {
     font-family: Ubuntu-Regular;
     @apply tw-text-xs md:tw-text-[14px] md:tw-leading-[21px];
@@ -31,6 +48,14 @@
     font-family: Ubuntu-Regular;
     @apply tw-text-xs md:tw-text-[16px] md:tw-leading-[24px];
     
+  }
+
+  .font-ubuntu-regular {
+    font-family: Ubuntu-Regular;
+  }
+
+  .font-ubuntu-bold {
+    font-family: Ubuntu-Bold;
   }
 
   /* ... */

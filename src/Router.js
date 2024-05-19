@@ -32,11 +32,14 @@ const ConnectMember = lazy(() => import('./views/pages/ConnectMember'));
 const CreateAccount = lazy(() => import('./views/pages/CreateAccount'));
 const LoginEntry = lazy(() => import('./views/pages/auth/LoginEntry'));
 const Analytics = lazy(() => import('./views/pages/Analytics'));
+const Support = lazy(() => import('./views/pages/support'));
+
 import Loader from './views/components/Loader';
 import News from './views/pages/News/News';
 import NewsDetail from './views/pages/News/NewsDetail';
 import AuthorDetail from './views/pages/News/AuthorDetail';
 import OperatorDashboardWrapper from './views/pages/operator/dashboard/OperatorDashboardWrapper';
+import BaseLayout from 'views/layouts/BaseLayout';
 
 const AppRouter = ({ token, loggedIn, getMyProfile, getMyOrganization }) => {
   React.useEffect(() => {
@@ -253,6 +256,19 @@ const AppRouter = ({ token, loggedIn, getMyProfile, getMyOrganization }) => {
                   <MainLayoutV2>
                     <AuthorDetail />
                   </MainLayoutV2>
+                </RequirePasswordValid>
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/support/*"
+            element={
+              <RequireAuth requireLoggedIn={true}>
+                <RequirePasswordValid>
+                  <BaseLayout>
+                    <Support />
+                  </BaseLayout>
                 </RequirePasswordValid>
               </RequireAuth>
             }
