@@ -12,7 +12,7 @@ import { setMetricAction } from '../../../redux/action/ui';
 import ConfirmModalV2 from '../ConfirmModalV2';
 import { USER_TYPE_ADMIN, USER_TYPE_ANALYTIC, USER_TYPE_ORG_ADMIN, USER_TYPE_TEAM_ADMIN } from '../../../constant';
 import { logout } from '../../layouts/MainLayout';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { isAdmin, concatAsUrlParam, getUrlParamAsJson } from '../../../utils';
 import LanguageModal from '../LanguageModal';
 import closeIconV2 from '../../../assets/images/close-white.svg';
@@ -99,13 +99,9 @@ const Settings = ({
       },
       {
         title: (
-          <a
-            href={'https://kenzen.com/support/'}
-            target="_blank"
-            rel="noreferrer"
-            className="text-black no-underline no-outline">
+          <Link className="text-black no-underline no-outline" to={'/support'} target='_blank'>
             {t('support')}
-          </a>
+          </Link>
         )
       },
       {

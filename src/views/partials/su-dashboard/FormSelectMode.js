@@ -4,17 +4,12 @@ import { get } from 'lodash';
 import { withTranslation } from 'react-i18next';
 import { bindActionCreators } from 'redux';
 import { setRestBarClassAction, showErrorNotificationAction } from '../../../redux/action/ui';
-import workerOrange from 'assets/images/worker-orange-2.svg';
-import workerOrange1 from 'assets/images/worker-orange.svg';
-import graphBar from 'assets/images/graph-bars.svg';
-import settings from 'assets/images/settings-orange.svg';
-import ArrowIcon from 'assets/images/arrow.svg';
-import KenzenDeviceImg from 'assets/images/kenzen-device.png';
 import clsx from 'clsx';
 import style from './FormSelectMode.module.scss';
 import { concatAsUrlParam, getUrlParamAsJson, isAdmin, isOperator } from '../../../utils';
 import { useNavigate } from 'react-router-dom';
 import { checkIfHasAnalyticRole } from 'utils/members';
+import NavBigBtn from 'views/components/NavBigBtn';
 
 const FormSelectMode = (props) => {
   const { t, setRestBarClass, userType } = props;
@@ -46,167 +41,55 @@ const FormSelectMode = (props) => {
 
         <div className={clsx(style.Row, 'mt-40')}>
           {hasAdminRole && (
-            <>
-              <div className={clsx(style.OptionWrapper)} onClick={() => navigate('/invite')}>
-                <div>
-                  <span className={clsx('font-button-label')}>{t('administration')}</span>
-                </div>
-
-                <div className={clsx(style.ImageWrapper)}>
-                  <img
-                    src={workerOrange1}
-                    className={clsx(style.WorkerOrangeImage)}
-                    alt="worker orange"
-                  />
-                  <img src={settings} className={clsx(style.SettingsImage)} alt="settings" />
-                </div>
-
-                <div className={clsx(style.DescriptionDiv)}>
-                  <span className={clsx('font-small')}>{t('create or modify team')}</span>
-                </div>
-              </div>
-            </>
+            <NavBigBtn 
+              text={t('create or modify team')} 
+              topLabel={t('administration')} 
+              iconName="admin"
+              onClick={() => navigate('/invite')}
+            />
           )}
 
           {hasAdminRole && (
-            <>
-              <div
-                className={clsx(style.OptionWrapper)}
-                // todo encodeURIComponent
-                onClick={() => openInNewTab(`/dashboard/multi?${flattened}`)}>
-                <div>
-                  <span className={clsx('font-button-label')}>{t('dashboard')}</span>
-                </div>
-
-                <div className={clsx(style.ImageWrapper2_Body)}>
-                  <div className={clsx(style.ImageWrapper2)}>
-                    <img
-                      src={workerOrange}
-                      className={clsx(style.WorkerWhiteImage1)}
-                      alt="settings"
-                    />
-                    {/*<img
-                      src={workerOrange}
-                      className={clsx(style.WorkerWhiteImage2)}
-                      alt="settings"
-                    />*/}
-                    <img
-                      src={workerOrange}
-                      className={clsx(style.WorkerOrangeImage)}
-                      alt="worker orange"
-                    />
-                  </div>
-                </div>
-
-                <div className={clsx(style.DescriptionDiv)}>
-                  <span className={clsx('font-small')}>{t('monitor your team')}</span>
-                </div>
-              </div>
-            </>
+            <NavBigBtn 
+              text={t('monitor your team')} 
+              topLabel={t('dashboard')} 
+              iconName="dashboard"
+              onClick={() => openInNewTab(`/dashboard/multi?${flattened}`)}
+            />
           )}
 
           {hasAnalyticRole && (
-            <>
-              <div
-                className={clsx(style.OptionWrapper)}
-                // todo encodeURIComponent
-                onClick={() => openInNewTab(`/analytics`)}>
-                <div>
-                  <span className={clsx('font-button-label')}>{t('analytics')}</span>
-                </div>
-
-                <div className={clsx(style.ImageWrapper, 'tw-w-full')}>
-                  <img src={graphBar} className="tw-w-full tw-h-[94px]" alt="analytics" />
-                </div>
-
-                <div className={clsx(style.DescriptionDiv)}>
-                  <span className={clsx('font-small')}>{t('analytics')}</span>
-                </div>
-              </div>
-            </>
+            <NavBigBtn 
+              text={t('analytics')} 
+              topLabel={t('analytics')} 
+              iconName="analytics"
+              onClick={() => openInNewTab(`/analytics`)}
+            />
           )}
 
           {hasOperatorRole && (
-            <>
-              <div
-                className={clsx(style.OptionWrapper)}
-                // todo encodeURIComponent
-                onClick={() => openInNewTab(`/dashboard/me`)}>
-                <div>
-                  <span className={clsx('font-button-label')}>{t('my dashboard')}</span>
-                </div>
-
-                <div className={clsx(style.ImageWrapper2_Body)}>
-                  <div className={clsx(style.ImageWrapper2)}>
-                    <img
-                      src={workerOrange}
-                      className={clsx(style.WorkerWhiteImage1)}
-                      alt="settings"
-                    />
-                    {/*<img
-                      src={workerOrange}
-                      className={clsx(style.WorkerWhiteImage2)}
-                      alt="settings"
-                    />*/}
-                    <img
-                      src={workerOrange}
-                      className={clsx(style.WorkerOrangeImage)}
-                      alt="worker orange"
-                    />
-                  </div>
-                </div>
-
-                <div className={clsx(style.DescriptionDiv)}>
-                  <span className={clsx('font-small')}>{t('monitor your data')}</span>
-                </div>
-              </div>
-            </>
+            <NavBigBtn 
+              text={t('monitor your data')} 
+              topLabel={t('my dashboard')} 
+              iconName="dashboard"
+              onClick={() => openInNewTab(`/dashboard/me`)}
+            />
           )}
 
           {hasAdminRole && (
-            <>
-              <div
-                className={clsx(style.OptionWrapper)}
-                onClick={() => navigate('/connect/member/company')}>
-                <div>
-                  <span className={clsx('font-button-label')}>{t('phone free hub')}</span>
-                </div>
-
-                <div className={clsx(style.ImageWrapper3)}>
-                  <div className={clsx(style.GroupMembers)}>
-                    <img
-                      src={workerOrange}
-                      className={clsx(style.WorkerWhiteImage1)}
-                      alt="settings"
-                    />
-                    <img src={workerOrange} alt="worker" />
-                  </div>
-                  <img src={ArrowIcon} className={clsx(style.Arrow)} alt="arrow" />
-                  <img src={KenzenDeviceImg} alt="kenzen device" />
-                </div>
-
-                <div className={clsx(style.DescriptionDiv)}>
-                  <span className={clsx('font-small')}>{t('connect team member')}</span>
-                </div>
-              </div>
-            </>
+            <NavBigBtn 
+              text={t('connect team member')} 
+              topLabel={t('phone free hub')} 
+              iconName="connect_device1"
+              onClick={() => navigate('/connect/member/company')}
+            />
           )}
-
-          <div className={clsx(style.OptionWrapper)} onClick={() => navigate('/connect/device')}>
-            <div>
-              <span className={clsx('font-button-label')}>{t('phone free hub')}</span>
-            </div>
-
-            <div className={clsx(style.ImageWrapper4)}>
-              <img src={workerOrange} alt="worker" />
-              <img src={ArrowIcon} alt="arrow" />
-              <img src={KenzenDeviceImg} alt="kenzen device" />
-            </div>
-
-            <div className={clsx(style.DescriptionDiv)}>
-              <span className={clsx('font-small')}>{t('connect your device')}</span>
-            </div>
-          </div>
+          <NavBigBtn 
+            text={t('connect your device')} 
+            topLabel={t('phone free hub')} 
+            iconName="connect_device2"
+            onClick={() => navigate('/connect/device')}
+          />
         </div>
       </div>
     </div>
