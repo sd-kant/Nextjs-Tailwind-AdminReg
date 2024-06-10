@@ -313,7 +313,7 @@
   "medical question 10": "Are you currently taking any sort of medications that affect or treat ADHD?",
   "medical question 11": "Are you currently taking any sort of medications that affect or treat Kidney disease, multiple sclerosis, or narcolepsy?",
   "medical complete header": "You are all done!",
-  "medical complete description": "Thank you for completing the Kenzen Registration process.  Please download the Kenzen mobile app for iOS or Android from the links below.  Use your username and password to log into the mobile app.",
+  "medical complete description": "Thank you for completing the Kenzen Registration process. If you are connecting to a Kenzen Hub, please confirm your device has been assigned to you and no further action is needed. If you are using a mobile phone to connect to your Kenzen device,  please download the Kenzen mobile app for iOS or Android from the links below. Use your username and password to log into the mobile app.",
   "medical complete support": "Have a question or concern? Check out our support page <a1>here</a1>! Or email us at: <a2>{{supportEmail}}</a2>",
   "resend": "resend",
   "resend invitation": "resend invitation",
