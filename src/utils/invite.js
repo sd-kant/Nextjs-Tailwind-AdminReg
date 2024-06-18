@@ -121,11 +121,20 @@ export const _handleSubmitV2 = ({
               items.forEach((item, index) => {
                 let userItem = null;
                 if (item.status === 'fulfilled') {
+                  
                   if (item.value?.config?.url?.includes('user/phone')) {
                     // if find by phone number
                     if (item.value?.data) {
                       if (item.value?.data?.orgId?.toString() === organizationId?.toString()) {
-                        userItem = item.value?.data;
+                        const eUserIndex = payload.findIndex(u => u.phoneNumber === item.value?.data?.phoneNumber);
+                        if(eUserIndex > -1 && payload[eUserIndex].userTypes.every(ut => item.value?.data?.userTypes.includes(ut))){
+                          showErrorNotification(
+                            t('msg phone belongs', { phone: payload[index]?.phoneNumber })
+                          );
+                          payload.splice(eUserIndex, 1);
+                        }else{
+                          userItem = item.value?.data;
+                        }
                       } else {
                         // show error notification phone number used for other organization member
                         showErrorNotification(
@@ -133,14 +142,24 @@ export const _handleSubmitV2 = ({
                         );
                       }
                     }
-                  } else {
+                  } else {          
                     // if find by keyword
                     let error = false;
                     if (item.value?.data?.length === 0) {
                       error = true;
-                    } else if (item.value?.data?.length === 1) {
-                      if (item.value?.data?.[0]?.orgId?.toString() === organizationId?.toString()) {
-                        userItem = item.value?.data?.[0];
+                    } else if (item.value?.data?.length > 0) {
+                      if (
+                        item.value?.data?.[0]?.orgId?.toString() === organizationId?.toString()
+                      ) {
+                        const eUserIndex = payload.findIndex(u => u.email === item.value?.data?.[0]?.email);
+                        if(payload[eUserIndex] && payload[eUserIndex].userTypes.every(ut => item.value?.data?.[0]?.userTypes.includes(ut))){
+                          showErrorNotification(
+                            t('msg email belongs', { email: payload[index]?.email })
+                          );
+                          payload.splice(eUserIndex, 1);
+                        }else{
+                          userItem = item.value?.data?.[0];
+                        }
                       } else {
                         error = true;
                       }
@@ -153,6 +172,9 @@ export const _handleSubmitV2 = ({
                     }
                   }
                 } else {
+                  showErrorNotification(
+                    "Unexpected error occurred while searching for the member. Please try again."
+                  );
                   //
                   // this is because the member is not in the scope of current logged-in user
                 }

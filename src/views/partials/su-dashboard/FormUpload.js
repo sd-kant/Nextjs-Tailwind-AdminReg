@@ -114,7 +114,7 @@ const FormUpload = (props) => {
       <div>
         <div
           className="d-flex align-center cursor-pointer"
-          onClick={() => navigate(`/invite/${organizationId}/select/${id}`)}>
+          onClick={() => navigate(-1)}>
           <img src={backIcon} alt="back" />
           &nbsp;&nbsp;
           <span className="font-button-label text-orange">{t('previous')}</span>

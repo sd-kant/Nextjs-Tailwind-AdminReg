@@ -1,0 +1,104 @@
+@import "src/assets/scss/colors";
+.OptionWrapper {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 20px;
+    padding: 12px 28px;
+    width: calc(200px - 56px);
+    background: $app-tf;
+    cursor: pointer;
+
+
+    .ImageWrapper {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      padding: 15px 0;
+
+      .WorkerOrangeImage {
+        width: 83px;
+      }
+
+      .SettingsImage {
+        position: absolute;
+        right: -15px;
+        margin-top: 10px;
+        width: 26px;
+      }
+    }
+
+    .ImageWrapper2_Body {
+      position: relative;
+
+      .ImageWrapper2 {
+        display: flex;
+        justify-content: center;
+        padding: 15px 0;
+        width: 100%;
+
+        .WorkerOrangeImage {
+          margin-left: 35px;
+          width: 78px;
+          z-index: 2;
+        }
+
+        .WorkerWhiteImage1,
+        .WorkerWhiteImage2 {
+          position: absolute;
+          top: 13px;
+          left: 0;
+          width: 54px;
+        }
+      }
+    }
+
+    .ImageWrapper3 {
+      position: relative;
+      display: flex;
+      padding: 15px 0;
+
+      .GroupMembers {
+        position: relative;
+        display: flex;
+        width: 80px;
+
+        & > img:nth-child(1) {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          width: 30px;
+        }
+
+        & > img:nth-child(2) {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          right: 0;
+          width: 50px;
+        }
+      }
+
+      .Arrow {
+        width: 20px;
+      }
+    }
+
+    .ImageWrapper4 {
+      position: relative;
+      display: flex;
+      padding: 15px 0;
+    }
+
+    &:nth-child(1) {
+      margin-top: 0;
+    }
+
+    .DescriptionDiv {
+      width: 144px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+  }

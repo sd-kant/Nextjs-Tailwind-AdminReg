@@ -150,7 +150,7 @@ const FormInvite = (props) => {
       let country = null;
       if (it.phoneNumber !== 'null') {
         phoneNumber =
-          !INVALID_VALUES3.includes(it.countryCode) && INVALID_VALUES3.includes(it.phoneNumber)
+          !(INVALID_VALUES3.includes(it.countryCode) && INVALID_VALUES3.includes(it.phoneNumber))
             ? `${it.countryCode}${it.phoneNumber}`
             : null;
       }
@@ -415,7 +415,7 @@ const FormInvite = (props) => {
 
       <SuccessModal
         show={status?.visibleSuccessModal}
-        data={status?.succeedRegisteredUsers}
+        data={status}
         onCancel={() => {
           setStatus({ visibleSuccessModal: false });
           navigate(`/invite/${organizationId}/team-mode`);
@@ -577,7 +577,7 @@ const EnhancedForm = withFormik({
           lastName: it?.lastName?.trim() ?? 'last name'
         }));
 
-        const { numberOfSuccess, succeedRegisteredUsers } = await _handleSubmitV2({
+        const { numberOfSuccess, succeedRegisteredUsers, alreadyRegisteredUsers } = await _handleSubmitV2({
           users,
           setLoading,
           organizationId,
@@ -590,7 +590,9 @@ const EnhancedForm = withFormik({
         if (numberOfSuccess > 0) {
           setStatus({
             visibleSuccessModal: true,
-            succeedRegisteredUsers
+            succeedRegisteredUsers,
+            alreadyRegisteredUsers,
+            numberOfSuccess
           });
         }
       }

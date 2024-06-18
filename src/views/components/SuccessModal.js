@@ -19,9 +19,12 @@ const SuccessModal = (props) => {
         <div className="modal-subheader mt-10 text-center">
           <span className="font-binary text-white">{t('team create success description')}</span>
         </div>
-        <div className="modal-subheader mt-10 text-center">
-          <span className="tw-text-lg text-white tw-font-medium">{t('admin provide pin')}</span>
-        </div>
+
+        {props.data?.succeedRegisteredUsers?.length > 0 && (
+          <div className="modal-subheader mt-10 text-center">
+            <span className="tw-text-lg text-white tw-font-medium">{t('admin provide pin')}</span>
+          </div>
+        )}
 
         {/* <div className="modal-body mt-60">
           <div className="d-flex justify-center">
@@ -29,11 +32,11 @@ const SuccessModal = (props) => {
           </div>
         </div> */}
 
-        {props.data?.length > 0 && (
+        {props.data?.succeedRegisteredUsers?.length > 0 && (
           <div className="tw-flex tw-w-full tw-justify-center tw-text-4xl tw-mt-6">
             <table className="tw-table-auto tw-font-medium">
               <tbody>
-                {props.data?.map((item, index) => (
+                {props.data?.succeedRegisteredUsers?.map((item, index) => (
                   <tr
                     key={index}
                     className="tw-flex tw-justify-between tw-gap-4 tw-whitespace-nowrap">
