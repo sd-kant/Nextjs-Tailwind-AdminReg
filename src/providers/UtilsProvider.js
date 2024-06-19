@@ -69,8 +69,8 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     if (!deviceId || deviceId?.toString().includes('none')) {
       // if no device
       return {
-        label: t('never connected'),
-        value: DEVICE_CONNECTION_STATUS.NEVER_CONNECTION
+        label: t('no connection'),
+        value: DEVICE_CONNECTION_STATUS.NO_CONNECTION
       };
     }
     if (stat?.chargingFlag) {
@@ -109,7 +109,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20
       ) {
         return {
-          label: deviceType === 'hub' ? t('no hub connection') : t('check app'),
+          label: t('check app'),
           value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
         };
       } else {
