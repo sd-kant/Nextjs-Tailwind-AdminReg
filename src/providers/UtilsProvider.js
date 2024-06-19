@@ -109,7 +109,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20
       ) {
         return {
-          label: deviceType === 'hub' ? t('no hub connection') : t('check app'),
+          label: t('check app'),
           value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
         };
       } else {
