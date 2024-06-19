@@ -69,8 +69,8 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     if (!deviceId || deviceId?.toString().includes('none')) {
       // if no device
       return {
-        label: t('never connected'),
-        value: DEVICE_CONNECTION_STATUS.NEVER_CONNECTION
+        label: t('no connection'),
+        value: DEVICE_CONNECTION_STATUS.NO_CONNECTION
       };
     }
     if (stat?.chargingFlag) {
