@@ -114,8 +114,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
           value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
         };
       } else if(
-        onOffFlag &&
-        !connected &&
+        (onOffFlag || connected) &&
         numMinutesBetween(new Date(), new Date(lastSyncDataDateTime)) <= 20){
         return {
           label: deviceType === 'hub' ? t('check device') : t('check app'),
