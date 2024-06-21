@@ -596,16 +596,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           ?.sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime());
         const sourceDevice = userDevices?.find(d => d.deviceId == stat?.sourceDeviceId);
         if (stat?.deviceId) availableDevices.push(stat?.deviceId);
-        const connectionObj = formatConnectionStatusV2({
-          flag: stat?.onOffFlag,
-          connected: userKenzenDevices?.[0]?.connected,
-          lastTimestamp: stat?.tempHumidityTs,
-          deviceId: stat?.deviceId,
-          numberOfAlerts,
-          stat,
-          alert,
-          deviceType: sourceDevice?.type
-        });
+
         const lastSync = getLatestDate(
           getLatestDate(
             stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
@@ -616,6 +607,18 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
             alert?.utcTs ? new Date(alert?.utcTs) : null
           )
         );
+
+        const connectionObj = formatConnectionStatusV2({
+          flag: stat?.onOffFlag,
+          connected: userKenzenDevices?.[0]?.connected,
+          lastSyncDataDateTime: lastSync,
+          deviceId: stat?.deviceId,
+          numberOfAlerts,
+          stat,
+          alert,
+          deviceType: sourceDevice?.type
+        });
+
         const lastSyncStr = formatLastSync(lastSync);
 
         const invisibleAlerts = ['1'].includes(connectionObj?.value?.toString()) || !numberOfAlerts;
