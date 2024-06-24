@@ -50,19 +50,21 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
           label: t('limited connectivity'),
           value: DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION
         };
-      } else if (
-        (numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 90 &&
-          numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 120) ||
-        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 120
-      ) {
+      } 
+      // else if (
+      //   (numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 90 &&
+      //     numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 120) ||
+      //   numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 120
+      // ) {
+      //   return {
+      //     label: t('no connection'),
+      //     value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
+      //   };
+      // } 
+      else {
         return {
-          label: t('no connection'),
+          label: t('check device'),
           value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
-        };
-      } else {
-        return {
-          label: t('no connection'),
-          value: DEVICE_CONNECTION_STATUS.NO_CONNECTION
         };
       }
     };

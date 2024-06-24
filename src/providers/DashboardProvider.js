@@ -29,6 +29,7 @@ import {
   ALERT_STAGE_ID_LIST,
   ALERT_STAGE_STATUS,
   DEMO_DATA_MINUTE,
+  DEVICE_CONNECTION_STATUS,
   EVENT_DATA_TYPE,
   USER_TYPE_ADMIN,
   USER_TYPE_OPERATOR,
@@ -624,8 +625,11 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         const invisibleAlerts = ['1'].includes(connectionObj?.value?.toString()) || !numberOfAlerts;
         const invisibleDeviceMac = ['1'].includes(connectionObj?.value?.toString());
         const invisibleBattery =
-          ['1', '8'].includes(connectionObj?.value?.toString()) ||
-          (['2', '4'].includes(connectionObj?.value?.toString()) &&
+          [
+            DEVICE_CONNECTION_STATUS.NEVER_CONNECTION, 
+            DEVICE_CONNECTION_STATUS.NO_CONNECTION
+          ].includes(connectionObj?.value) ||
+          ([DEVICE_CONNECTION_STATUS.CHARGING, DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION].includes(connectionObj?.value) &&
             numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 240);
         const invisibleHeatRisk =
           !alert || ['1', '2', '8'].includes(connectionObj?.value?.toString());
