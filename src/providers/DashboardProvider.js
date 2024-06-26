@@ -632,11 +632,19 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
           ([DEVICE_CONNECTION_STATUS.CHARGING, DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION].includes(connectionObj?.value) &&
             numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 240);
         const invisibleHeatRisk =
-          !alert || ['1', '2', '8'].includes(connectionObj?.value?.toString());
+          !alert || [
+            DEVICE_CONNECTION_STATUS.NEVER_CONNECTION,
+            DEVICE_CONNECTION_STATUS.CHARGING,
+            DEVICE_CONNECTION_STATUS.NO_CONNECTION
+          ].includes(connectionObj?.value);
         const invisibleLastSync =
           new Date(lastSync).getTime() > new Date().getTime() + 60 * 1000 ||
-          ['1'].includes(connectionObj?.value?.toString());
-        const invisibleLastUpdates = ['1', '2', '8'].includes(connectionObj?.value?.toString());
+          [DEVICE_CONNECTION_STATUS.NEVER_CONNECTION].includes(connectionObj?.value);
+        const invisibleLastUpdates = [
+          DEVICE_CONNECTION_STATUS.NEVER_CONNECTION,
+          DEVICE_CONNECTION_STATUS.CHARGING,
+          DEVICE_CONNECTION_STATUS.NO_CONNECTION
+        ].includes(connectionObj?.value);
         (i === 0 ? arr : subArr).push({
           ...member,
           stat,
