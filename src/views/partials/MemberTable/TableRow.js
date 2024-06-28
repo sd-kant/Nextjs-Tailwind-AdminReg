@@ -25,16 +25,13 @@ const TableRow = ({ member, visibleColumns, columnsMap }) => {
 
   const getBadgeColorStyle = React.useCallback((_connectionValue, _alertValue) => {
     let badgeColorStyle = null;
-    if (_connectionValue == DEVICE_CONNECTION_STATUS.CONNECTED) {
+    if (_connectionValue?.toString() === '3') {
       if (['1', '2'].includes(_alertValue?.toString())) {
         badgeColorStyle = style.Red;
       } else {
         badgeColorStyle = style.Green;
       }
-    } else if ([
-        DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION, 
-        DEVICE_CONNECTION_STATUS.CHECK_DEVICE
-      ].includes(_connectionValue)) {
+    } else if (['4', '7'].includes(_connectionValue?.toString())) {
       badgeColorStyle = style.Yellow;
     }
     return badgeColorStyle;

@@ -20,7 +20,7 @@ export const formatLastSync = (lastTimestamp) => {
     lastSyncStr = `${hours} ${hours > 1 ? 'hours' : 'hour'} ago`;
   } else if (minutes >= 1) {
     lastSyncStr = `${minutes} ${minutes > 1 ? 'minutes' : 'minute'} ago`;
-  } else if (minutes >= 0) {
+  } else if (minutes > 0) {
     lastSyncStr = `less than a minute ago`;
   }
 

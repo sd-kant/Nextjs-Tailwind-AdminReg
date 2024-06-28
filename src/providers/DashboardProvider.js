@@ -16,8 +16,7 @@ import {
 import axios from 'axios';
 import {
   getLastDigitsOfDeviceId,
-  // getLatestDateBeforeNow as getLatestDate,
-  getLatestDateFromMultipleArrays,
+  getLatestDateBeforeNow as getLatestDate,
   getParamFromUrl,
   hasStatusValue,
   numMinutesBetweenWithNow as numMinutesBetween,
@@ -30,7 +29,6 @@ import {
   ALERT_STAGE_ID_LIST,
   ALERT_STAGE_STATUS,
   DEMO_DATA_MINUTE,
-  DEVICE_CONNECTION_STATUS,
   EVENT_DATA_TYPE,
   USER_TYPE_ADMIN,
   USER_TYPE_OPERATOR,
@@ -599,22 +597,16 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         const sourceDevice = userDevices?.find(d => d.deviceId == stat?.sourceDeviceId);
         if (stat?.deviceId) availableDevices.push(stat?.deviceId);
 
-        // const lastSync = getLatestDate(
-        //   getLatestDate(
-        //     stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
-        //     stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null
-        //   ),
-        //   getLatestDate(
-        //     stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
-        //     alert?.utcTs ? new Date(alert?.utcTs) : null
-        //   )
-        // );
-        const lastSync = getLatestDateFromMultipleArrays([
-          stat?.heartRateTs,
-          stat?.deviceLogTs,
-          stat?.tempHumidityTs,
-          alert?.utcTs
-        ])
+        const lastSync = getLatestDate(
+          getLatestDate(
+            stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
+            stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null
+          ),
+          getLatestDate(
+            stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
+            alert?.utcTs ? new Date(alert?.utcTs) : null
+          )
+        );
 
         const connectionObj = formatConnectionStatusV2({
           flag: stat?.onOffFlag,
@@ -632,26 +624,15 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         const invisibleAlerts = ['1'].includes(connectionObj?.value?.toString()) || !numberOfAlerts;
         const invisibleDeviceMac = ['1'].includes(connectionObj?.value?.toString());
         const invisibleBattery =
-          [
-            DEVICE_CONNECTION_STATUS.NEVER_CONNECTION, 
-            DEVICE_CONNECTION_STATUS.NO_CONNECTION
-          ].includes(connectionObj?.value) ||
-          ([DEVICE_CONNECTION_STATUS.CHARGING, DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION].includes(connectionObj?.value) &&
+          ['1', '8'].includes(connectionObj?.value?.toString()) ||
+          (['2', '4'].includes(connectionObj?.value?.toString()) &&
             numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) > 240);
         const invisibleHeatRisk =
-          !alert || [
-            DEVICE_CONNECTION_STATUS.NEVER_CONNECTION,
-            DEVICE_CONNECTION_STATUS.CHARGING,
-            DEVICE_CONNECTION_STATUS.NO_CONNECTION
-          ].includes(connectionObj?.value);
+          !alert || ['1', '2', '8'].includes(connectionObj?.value?.toString());
         const invisibleLastSync =
           new Date(lastSync).getTime() > new Date().getTime() + 60 * 1000 ||
-          [DEVICE_CONNECTION_STATUS.NEVER_CONNECTION].includes(connectionObj?.value);
-        const invisibleLastUpdates = [
-          DEVICE_CONNECTION_STATUS.NEVER_CONNECTION,
-          DEVICE_CONNECTION_STATUS.CHARGING,
-          DEVICE_CONNECTION_STATUS.NO_CONNECTION
-        ].includes(connectionObj?.value);
+          ['1'].includes(connectionObj?.value?.toString());
+        const invisibleLastUpdates = ['1', '2', '8'].includes(connectionObj?.value?.toString());
         (i === 0 ? arr : subArr).push({
           ...member,
           stat,
@@ -913,8 +894,6 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               lastConnectedTs: updatedLastConnectedTs,
               lastOnTs: updatedLastOnTs
             };
-            // if(newEle.deviceId == 'EA:2A:12:4A:42:D6' && member.userId == 63)
-            // console.log(newEle.deviceId, newEle?.deviceLogTs, temp[statIndex]?.deviceLogTs, latestDeviceLog?.utcTs)
             if (latestDeviceLog && latestDeviceLog?.deviceId !== temp[statIndex].deviceId) {
               temp = [...temp.slice(0, statIndex + 1), newEle, ...temp.slice(statIndex + 1)];
             } else {
