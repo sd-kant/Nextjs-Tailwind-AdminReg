@@ -24,7 +24,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     lastSyncDataDateTime
   }) => {
     const calc = () => {
-      if(numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 10){
+      if(numMinutesBetween(new Date(), new Date(lastSyncDataDateTime)) <= 10){
         return {
           label: t('device connected'),
           value: DEVICE_CONNECTION_STATUS.CONNECTED
