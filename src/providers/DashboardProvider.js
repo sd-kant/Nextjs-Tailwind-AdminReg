@@ -16,7 +16,8 @@ import {
 import axios from 'axios';
 import {
   getLastDigitsOfDeviceId,
-  getLatestDateBeforeNow as getLatestDate,
+  // getLatestDateBeforeNow as getLatestDate,
+  getLatestDateFromMultipleArrays,
   getParamFromUrl,
   hasStatusValue,
   numMinutesBetweenWithNow as numMinutesBetween,
@@ -598,16 +599,22 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         const sourceDevice = userDevices?.find(d => d.deviceId == stat?.sourceDeviceId);
         if (stat?.deviceId) availableDevices.push(stat?.deviceId);
 
-        const lastSync = getLatestDate(
-          getLatestDate(
-            stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
-            stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null
-          ),
-          getLatestDate(
-            stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
-            alert?.utcTs ? new Date(alert?.utcTs) : null
-          )
-        );
+        // const lastSync = getLatestDate(
+        //   getLatestDate(
+        //     stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
+        //     stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null
+        //   ),
+        //   getLatestDate(
+        //     stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
+        //     alert?.utcTs ? new Date(alert?.utcTs) : null
+        //   )
+        // );
+        const lastSync = getLatestDateFromMultipleArrays([
+          stat?.heartRateTs,
+          stat?.deviceLogTs,
+          stat?.tempHumidityTs,
+          alert?.utcTs
+        ])
 
         const connectionObj = formatConnectionStatusV2({
           flag: stat?.onOffFlag,
@@ -906,6 +913,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               lastConnectedTs: updatedLastConnectedTs,
               lastOnTs: updatedLastOnTs
             };
+            // if(newEle.deviceId == 'EA:2A:12:4A:42:D6' && member.userId == 63)
+            // console.log(newEle.deviceId, newEle?.deviceLogTs, temp[statIndex]?.deviceLogTs, latestDeviceLog?.utcTs)
             if (latestDeviceLog && latestDeviceLog?.deviceId !== temp[statIndex].deviceId) {
               temp = [...temp.slice(0, statIndex + 1), newEle, ...temp.slice(statIndex + 1)];
             } else {

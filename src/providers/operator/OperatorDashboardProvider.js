@@ -7,7 +7,7 @@ import { setLoadingAction } from 'redux/action/ui';
 import { gerUserData, getUserAlerts, getUserOrganization, subscribeDataEvents } from 'http/user';
 import { formatLastSync, formatHeartRate } from 'utils/dashboard';
 import { ACTIVITIES_FILTERS, ALERT_STAGE_ID_LIST } from 'constant';
-import { getLatestDateBeforeNow as getLatestDate } from 'utils';
+import { getLatestDateFromMultipleArrays } from 'utils';
 import { useUtilsContext } from 'providers/UtilsProvider';
 import moment from 'moment-timezone';
 
@@ -246,16 +246,22 @@ const OperatorDashboardProviderDraft = ({ children, profile }) => {
             alertObj
           };
 
-          const lastSync = getLatestDate(
-            getLatestDate(
-              stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
-              stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null
-            ),
-            getLatestDate(
-              stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
-              alert?.utcTs ? new Date(alert?.utcTs) : null
-            )
-          );
+          // const lastSync = getLatestDate(
+          //   getLatestDate(
+          //     stat?.heartRateTs ? new Date(stat?.heartRateTs) : null,
+          //     stat?.deviceLogTs ? new Date(stat?.deviceLogTs) : null
+          //   ),
+          //   getLatestDate(
+          //     stat?.tempHumidityTs ? new Date(stat?.tempHumidityTs) : null,
+          //     alert?.utcTs ? new Date(alert?.utcTs) : null
+          //   )
+          // );
+          const lastSync = getLatestDateFromMultipleArrays([
+            stat?.heartRateTs,
+            stat?.deviceLogTs,
+            stat?.tempHumidityTs,
+            alert?.utcTs
+          ]);
           const lastSyncStr = formatLastSync(lastSync);
           newUserData = {
             ...newUserData,
