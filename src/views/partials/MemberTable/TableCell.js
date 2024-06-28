@@ -72,7 +72,7 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
             ) : null}
             <span>{connectionObj?.label}</span>
             {!invisibleBattery ? (
-              stat?.batteryPercent >= 20 ? (
+              stat?.batteryPercent > 5 ? (
                 <BatteryV3 percent={stat?.batteryPercent} charging={stat?.chargingFlag} />
               ) : (
                 <span className={clsx('text-risk')}>{t('battery very low')}</span>

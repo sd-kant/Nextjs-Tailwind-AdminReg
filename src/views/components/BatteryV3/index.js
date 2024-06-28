@@ -22,7 +22,7 @@ const BatteryV3 = ({ percent = Math.floor(Math.random() * 100), charging }) => {
       return charging ? battery3Charge : battery3;
     } else if (percent > 20) {
       return charging ? battery1Charge : battery1;
-    } else if (percent > 10) {
+    } else if (percent > 5) {
       return charging ? battery2Charge : battery2;
     } else {
       return charging ? battery5Charge : battery5;
