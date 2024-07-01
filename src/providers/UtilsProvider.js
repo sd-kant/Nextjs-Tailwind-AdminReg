@@ -24,59 +24,59 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     lastSyncDataDateTime
   }) => {
     const calc = () => {
-      if(numMinutesBetween(new Date(), new Date(lastSyncDataDateTime)) <= 10){
-        return {
-          label: t('device connected'),
-          value: DEVICE_CONNECTION_STATUS.CONNECTED
-        };
-      }else{
-        return {
-          label: t('check device'),
-          value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
-        };
-      }
-      // if (
-      //   numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 60 ||
-      //   numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60
-      // ) {
-      //   if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 20) {
-      //     return {
-      //       label: t('device connected'),
-      //       value: DEVICE_CONNECTION_STATUS.CONNECTED
-      //     };
-      //   } else {
-      //     return {
-      //       label: t('limited connectivity'),
-      //       value: DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION
-      //     };
-      //   }
-      // } else if (
-      //   numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 60 &&
-      //   numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 90 &&
-      //   numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) > 60 &&
-      //   numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 90
-      // ) {
+      // if(numMinutesBetween(new Date(), new Date(lastSyncDataDateTime)) <= 10){
       //   return {
-      //     label: t('limited connectivity'),
-      //     value: DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION
+      //     label: t('device connected'),
+      //     value: DEVICE_CONNECTION_STATUS.CONNECTED
       //   };
-      // } 
-      // // else if (
-      // //   (numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 90 &&
-      // //     numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 120) ||
-      // //   numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 120
-      // // ) {
-      // //   return {
-      // //     label: t('no connection'),
-      // //     value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
-      // //   };
-      // // } 
-      // else {
+      // }else{
       //   return {
       //     label: t('check device'),
       //     value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
       //   };
       // }
+      if (
+        numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 60 ||
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60
+      ) {
+        if (numMinutesBetween(new Date(), new Date(stat?.deviceLogTs)) <= 20) {
+          return {
+            label: t('device connected'),
+            value: DEVICE_CONNECTION_STATUS.CONNECTED
+          };
+        } else {
+          return {
+            label: t('limited connectivity'),
+            value: DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION
+          };
+        }
+      } else if (
+        numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 60 &&
+        numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 90 &&
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) > 60 &&
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 90
+      ) {
+        return {
+          label: t('limited connectivity'),
+          value: DEVICE_CONNECTION_STATUS.LIMITED_CONNECTION
+        };
+      } 
+      else if (
+        (numMinutesBetween(new Date(), new Date(alert?.utcTs)) > 90 &&
+          numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 120) ||
+        numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 120
+      ) {
+        return {
+          label: t('check device'),
+          value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
+        };
+      } 
+      else {
+        return {
+          label: t('no connection'),
+          value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
+        };
+      }
     };
 
     if (!deviceId || deviceId?.toString().includes('none')) {
