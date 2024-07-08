@@ -743,3 +743,5 @@ export const UpdateUserRoleFrom  = {
   WearingDevice: 1,
   AnalyticAccess: 2
 }
+
+export const DASHBOARD_TEAMS_CHUNK_SIZE = 10;

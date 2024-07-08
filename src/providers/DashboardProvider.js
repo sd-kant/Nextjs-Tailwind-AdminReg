@@ -2,18 +2,22 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
-  getTeamAlerts,
-  getTeamDevices,
-  getTeamStats,
+  getAlertsByTeamIDs,
+  getDevicesByTeamIds,
+  getStatsByTeamIds,
+  // getTeamAlerts,
+  // getTeamDevices,
+  // getTeamStats,
   inviteTeamMemberV2,
   queryAllOrganizations,
-  queryTeamMembers,
+  queryMembersByTeamIds,
+  // queryTeamMembers,
   queryTeams,
   subscribeDataEvents,
   unlockUser,
   updateUserByAdmin
 } from '../http';
-import axios from 'axios';
+import axios, { HttpStatusCode } from 'axios';
 import {
   getLastDigitsOfDeviceId,
   // getLatestDateBeforeNow as getLatestDate,
@@ -29,6 +33,7 @@ import {
   ACME_INSTANCE_BASE_URI,
   ALERT_STAGE_ID_LIST,
   ALERT_STAGE_STATUS,
+  DASHBOARD_TEAMS_CHUNK_SIZE,
   DEMO_DATA_MINUTE,
   DEVICE_CONNECTION_STATUS,
   EVENT_DATA_TYPE,
@@ -206,7 +211,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
 
     numMinutesDemoData.current = numMinutesDemoData.current + 1;
   };
-
+  // Querying Teams, sorting by name
   React.useEffect(() => {
     queryTeams()
       .then((res) => {
@@ -220,7 +225,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
         console.error('getting teams error', e);
         // todo show error
       });
-  }, []);
+  }, [refreshCount]);
 
   React.useEffect(() => {
     updateUrlParam({ param: { key: 'keyword', value: trimmedKeyword } });
@@ -232,6 +237,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     setIsAdmin(userType?.some((it) => [USER_TYPE_ADMIN, USER_TYPE_ORG_ADMIN].includes(it)));
   }, [userType]);
 
+  // Query all organizations, sorting by name
   React.useEffect(() => {
     if (isAdmin) {
       queryAllOrganizations()
@@ -249,12 +255,14 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     }
   }, [isAdmin, refreshCount]);
 
+  // Set my organization if not Admin role.
   React.useEffect(() => {
     if (!isAdmin && myOrganization?.id) {
       setOrganization(myOrganization?.id);
     }
   }, [myOrganization?.id, isAdmin]);
 
+  // Update organization query param whenever changing organization
   React.useEffect(() => {
     function startDemoData() {
       numMinutesDemoData.current = 0;
@@ -286,6 +294,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     return item?.settings?.hideCbtHR;
   }, [organization, organizations]);
 
+  //Update sortBy, sortDirection Query params whenever changing filter options
   React.useEffect(() => {
     const sortBy = Object.keys(filter)?.[0];
     let sortDirection = undefined;
@@ -333,6 +342,13 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     );
   }, [formattedTeams, pickedTeams]);
 
+  const validPickedTeams = React.useMemo(() => {
+      return pickedTeams?.filter((ele) =>
+          formattedTeams?.some((it) => it.value?.toString() === ele.toString())
+        );
+    }, [formattedTeams, pickedTeams]
+  );
+
   React.useEffect(() => {
     if (formattedTeams?.length === 1 && pickedTeams?.length === 0) {
       const teamId = formattedTeams[0].value?.toString();
@@ -346,94 +362,219 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   }, [formattedTeams]);
   // Load Initial Data
   React.useEffect(() => {
-    if (formattedTeams?.length > 0) {
-      const validPickedTeams = pickedTeams?.filter((ele) =>
-        formattedTeams?.some((it) => it.value?.toString() === ele.toString())
-      );
-      updateUrlParam({ param: { key: 'teams', value: validPickedTeams?.toString() } });
-      localStorage.setItem('kop-params', location.search);
+    // function oldVer(source) {
+    //   if (validPickedTeams?.length > 0) {
+    //     const membersPromises = [];
+    //     const statsPromises = [];
+    //     const alertsPromises = [];
+    //     const devicePromises = [];
+    //     validPickedTeams.forEach((team) => {
+    //       membersPromises.push(queryTeamMembers(team));
+    //       statsPromises.push(getTeamStats(team));
+    //       alertsPromises.push(getTeamAlerts(team, moment().startOf('day').toISOString()));
+    //       devicePromises.push(getTeamDevices(team));
+    //     });
+    //     // Member List API Promises
+    //     const membersApiPromise = () =>
+    //       new Promise((resolve) => {
+    //         Promise.allSettled(membersPromises)
+    //           .then((results) => {
+    //             results?.forEach((result, index) => {
+    //               if (result.status === 'fulfilled') {
+    //                 if (result.value?.data?.members?.length > 0) {
+    //                   const operators =
+    //                     result.value?.data?.members?.filter(
+    //                       (it) => it.teamId?.toString() === validPickedTeams?.[index]?.toString()
+    //                     ) ?? [];
+    //                   //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+    //                   setValuesV2({
+    //                     ...valuesV2Ref.current,
+    //                     members: unionBy(valuesV2Ref.current?.members, operators, 'userId')
+    //                   });
+    //                 }
+    //               }
+    //             });
+    //           })
+    //           .finally(() => resolve());
+    //       });
+    //     // Stat List API Promises
+    //     const statsApiPromise = () =>
+    //       new Promise((resolve) => {
+    //         Promise.allSettled(statsPromises)
+    //           .then((results) => {
+    //             results?.forEach((result) => {
+    //               if (result.status === 'fulfilled') {
+    //                 if (result.value?.data?.length > 0) {
+    //                   // const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+    //                   setValuesV2({
+    //                     ...valuesV2Ref.current,
+    //                     stats: _.unionBy(
+    //                       result.value?.data,
+    //                       valuesV2Ref.current?.stats, 
+    //                       (it) => it.userId + it.deviceId
+    //                     )
+    //                   });
+    //                 }
+    //               }
+    //             });
+    //           })
+    //           .finally(() => {
+    //             resolve();
+    //           });
+    //       });
+    //     // Alerts List API Promises
+    //     const alertsApiPromise = () =>
+    //       new Promise((resolve) => {
+    //         Promise.allSettled(alertsPromises)
+    //           .then((results) => {
+    //             results?.forEach((result) => {
+    //               if (result.status === 'fulfilled') {
+    //                 if (result.value?.data?.length > 0) {
+    //                   const uniqueUpdated = _.chain(valuesV2Ref.current?.alerts)
+    //                     .concat(
+    //                       result.value?.data?.map((it) => {
+    //                         return { ...it, utcTs: it.ts };
+    //                       })
+    //                     )
+    //                     .uniqBy(function (_alert) {
+    //                       return _alert.utcTs + _alert.userId;
+    //                     })
+    //                     .filter(function (_alert) {
+    //                       return hasStatusValue(_alert.alertStageId, ALERT_STAGE_ID_LIST);
+    //                     })
+    //                     .value();
 
-      if (validPickedTeams?.length !== pickedTeams?.length) {
-        setPickedTeams(validPickedTeams);
-      } else {
-        setPage(null);
-        setValuesV2({
-          members: [],
-          alerts: [],
-          stats: [],
-          devices: []
-        });
-        const source = axios.CancelToken.source();
-        if (validPickedTeams?.length > 0) {
-          const membersPromises = [];
-          const statsPromises = [];
-          const alertsPromises = [];
-          const devicePromises = [];
-          validPickedTeams.forEach((team) => {
-            membersPromises.push(queryTeamMembers(team));
-            statsPromises.push(getTeamStats(team));
-            alertsPromises.push(getTeamAlerts(team, moment().startOf('day').toISOString()));
-            devicePromises.push(getTeamDevices(team));
-          });
+    //                   setValuesV2({
+    //                     ...valuesV2Ref.current,
+    //                     alerts: uniqueUpdated
+    //                   });
+    //                 }
+    //               }
+    //             });
+    //           })
+    //           .finally(() => {
+    //             resolve();
+    //           });
+    //       });
+    //     // Device List API Promies
+    //     const devicesApiPromise = () =>
+    //       new Promise((resolve) => {
+    //         Promise.allSettled(devicePromises)
+    //           .then((results) => {
+    //             results?.forEach((result) => {
+    //               if (result.status === 'fulfilled') {
+    //                 if (result.value?.data?.length > 0) {
+    //                   //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+    //                   setValuesV2({
+    //                     ...valuesV2Ref.current,
+    //                     devices: [...valuesV2Ref.current?.devices, ...result.value?.data]
+    //                   });
+    //                 }
+    //               }
+    //             });
+    //           })
+    //           .finally(() => {
+    //             resolve();
+    //           });
+    //       });
+    //     setLoading(true);
+    //     Promise.allSettled([
+    //       membersApiPromise(),
+    //       statsApiPromise(),
+    //       alertsApiPromise(),
+    //       devicesApiPromise()
+    //     ])
+    //       .then(() => {
+    //         if (organization < 0) {
+    //           //
+    //           generateDemoData();
+    //           console.log('first demo event data', demoEventData.current);
+    //           updateDataFromEvents(demoEventData.current);
+    //         }
+    //         // fixme there might be new events between the time when api returned and now
+    //         const d = new Date().getTime();
+    //         setHorizon(d);
+    //         subscribe(d, source.token);
+    //         setPage(1);
+    //       })
+    //       .catch((err) => {
+    //         console.error('initial loading error', err);
+    //         source.cancel('cancel by user');
+    //       })
+    //       .finally(() => {
+    //         setLoading(false);
+    //       });
+    //   }
+    // }
+    function newVer(source) {
+      if (validPickedTeams?.length > 0) {
+        setLoading(true);
+        for(let i = 0; i < validPickedTeams.length; i += DASHBOARD_TEAMS_CHUNK_SIZE) {
+          const chunkTeamsCSV = validPickedTeams.slice(i, i + DASHBOARD_TEAMS_CHUNK_SIZE).join(',');
+
           // Member List API Promises
           const membersApiPromise = () =>
             new Promise((resolve) => {
-              Promise.allSettled(membersPromises)
-                .then((results) => {
-                  results?.forEach((result, index) => {
-                    if (result.status === 'fulfilled') {
-                      if (result.value?.data?.members?.length > 0) {
-                        const operators =
-                          result.value?.data?.members?.filter(
-                            (it) => it.teamId?.toString() === validPickedTeams?.[index]?.toString()
-                          ) ?? [];
+              queryMembersByTeamIds(chunkTeamsCSV)
+                .then((result) => {
+                    if (result.status === HttpStatusCode.Ok) {
+                      if (result?.data?.length > 0) {
+                        // const operators =
+                        //   result?.data?.members?.filter(
+                        //     (it) => it.teamId?.toString() === validPickedTeams?.[index]?.toString()
+                        //   ) ?? [];
                         //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                        const operators = [];
+                        result?.data?.forEach((it) => {
+                          operators.push(...it.members);
+                        });
                         setValuesV2({
                           ...valuesV2Ref.current,
                           members: unionBy(valuesV2Ref.current?.members, operators, 'userId')
                         });
                       }
                     }
-                  });
+                  
                 })
                 .finally(() => resolve());
-            });
+          });
           // Stat List API Promises
           const statsApiPromise = () =>
             new Promise((resolve) => {
-              Promise.allSettled(statsPromises)
-                .then((results) => {
-                  results?.forEach((result) => {
-                    if (result.status === 'fulfilled') {
-                      if (result.value?.data?.length > 0) {
-                        // const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+              getStatsByTeamIds(chunkTeamsCSV)
+                .then((result) => {
+                    if (result.status === HttpStatusCode.Ok) {
+                      if (result?.data?.length > 0) {
+                        const operators = [];
+                        result?.data?.forEach((it) => {
+                          operators.push(...it.stats);
+                        });
                         setValuesV2({
                           ...valuesV2Ref.current,
                           stats: _.unionBy(
-                            result.value?.data,
-                            valuesV2Ref.current?.stats,
+                            operators,
+                            valuesV2Ref.current?.stats, 
                             (it) => it.userId + it.deviceId
                           )
                         });
                       }
                     }
-                  });
                 })
                 .finally(() => {
                   resolve();
                 });
-            });
+          });
+
           // Alerts List API Promises
           const alertsApiPromise = () =>
             new Promise((resolve) => {
-              Promise.allSettled(alertsPromises)
-                .then((results) => {
-                  results?.forEach((result) => {
-                    if (result.status === 'fulfilled') {
-                      if (result.value?.data?.length > 0) {
+              getAlertsByTeamIDs(chunkTeamsCSV, moment().startOf('day').toISOString())
+                .then((result) => {
+                    if (result.status === HttpStatusCode.Ok) {
+                      if (result?.data?.length > 0) {
                         const uniqueUpdated = _.chain(valuesV2Ref.current?.alerts)
                           .concat(
-                            result.value?.data?.map((it) => {
+                            result?.data?.map((it) => {
                               return { ...it, utcTs: it.ts };
                             })
                           )
@@ -451,34 +592,37 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                         });
                       }
                     }
-                  });
                 })
                 .finally(() => {
                   resolve();
                 });
-            });
+          });
+
           // Device List API Promies
           const devicesApiPromise = () =>
-            new Promise((resolve) => {
-              Promise.allSettled(devicePromises)
-                .then((results) => {
-                  results?.forEach((result) => {
-                    if (result.status === 'fulfilled') {
-                      if (result.value?.data?.length > 0) {
-                        //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                        setValuesV2({
-                          ...valuesV2Ref.current,
-                          devices: [...valuesV2Ref.current?.devices, ...result.value?.data]
+          new Promise((resolve) => {
+            getDevicesByTeamIds(chunkTeamsCSV)
+              .then((result) => {
+                  if (result.status === HttpStatusCode.Ok) {
+                    if (result?.data?.length > 0) {
+                      console.log(result?.data)
+                      const operators = [];
+                        result?.data?.forEach((it) => {
+                          operators.push(...it.devices);
                         });
-                      }
+                      //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                      setValuesV2({
+                        ...valuesV2Ref.current,
+                        devices: [...valuesV2Ref.current?.devices, ...operators]
+                      });
                     }
-                  });
-                })
-                .finally(() => {
-                  resolve();
-                });
-            });
-          setLoading(true);
+                  }
+              })
+              .finally(() => {
+                resolve();
+              });
+          });
+
           Promise.allSettled([
             membersApiPromise(),
             statsApiPromise(),
@@ -506,6 +650,28 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               setLoading(false);
             });
         }
+      }
+    }
+    if (formattedTeams?.length > 0) {
+      updateUrlParam({ param: { key: 'teams', value: validPickedTeams?.toString() } });
+      localStorage.setItem('kop-params', location.search);
+
+      if (validPickedTeams?.length !== pickedTeams?.length) {
+        setPickedTeams(validPickedTeams);
+      } else {
+        setPage(null);
+        setValuesV2({
+          members: [],
+          alerts: [],
+          stats: [],
+          devices: []
+        });
+        const source = axios.CancelToken.source();
+
+
+        //oldVer(source);
+        newVer(source);
+
 
         return () => {
           source.cancel('cancel by user');
@@ -520,7 +686,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickedTeams, refreshCount, formattedTeams]);
+  }, [pickedTeams, refreshCount, formattedTeams, validPickedTeams]);
 
   const formattedOrganizations = React.useMemo(() => {
     let orgs = organizations?.map((organization) => ({

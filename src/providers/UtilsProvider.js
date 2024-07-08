@@ -74,7 +74,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
       else {
         return {
           label: t('no connection'),
-          value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
+          value: DEVICE_CONNECTION_STATUS.NO_CONNECTION
         };
       }
     };
