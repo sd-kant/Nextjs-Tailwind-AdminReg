@@ -605,7 +605,6 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
               .then((result) => {
                   if (result.status === HttpStatusCode.Ok) {
                     if (result?.data?.length > 0) {
-                      console.log(result?.data)
                       const operators = [];
                         result?.data?.forEach((it) => {
                           operators.push(...it.devices);
