@@ -258,6 +258,21 @@ export const hideCbtHROptions = [
   }
 ];
 
+export const medicalQuestionnaireOptions = [
+  {
+    value: 1,
+    title: i18n.t('yes')
+  },
+  {
+    value: 0,
+    title: i18n.t('no')
+  },
+  {
+    value: 2,
+    title: i18n.t('optional')
+  }
+];
+
 export const IMPERIAL = 'imperial';
 export const METRIC = 'metric';
 export const MALE = 'male';
@@ -745,3 +760,5 @@ export const UpdateUserRoleFrom  = {
 }
 
 export const DASHBOARD_TEAMS_CHUNK_SIZE = 10;
+
+export const REGISTER_MEDICAL_QUESTIONNAIRE_KEY = 'kop-v2-register-medical-q';

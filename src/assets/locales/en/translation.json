@@ -296,6 +296,8 @@
   "photo selected file uploaded": "<span>{{filename}}</span> has been uploaded!",
   "medical initial header": "Great! Before we get started...",
   "medical initial description": "Please answer the following questions about your health. They are important to making personalized predictions to keep you safe at the worksite. This information will NOT be shared with your employer and will be de-identified according to our <a>Privacy Policy</a>.",
+  "medical initial description 2": "Your company has made the following questions about your health optional. They are important to making personalized predictions to keep you safe at the worksite. This information will NOT be shared with your employer and will be de-identified according to our <a>Privacy Policy</a>.",
+  "medical initial description 3": "Would you like to continue to the Medical Questionnaire?",
   "medical terms understand": "I understand the Kenzen Device is NOT a medical device",
   "medical terms agree": "I agree with the <a1>Terms of Service</a1> and the Kenzen <a2>Privacy Policy</a2>",
   "medical question 1": "Have you ever had a heat injury or illness before? (heat-related muscle cramping, dizziness, goosebumps, fainting, hospitalization from heat stress, rhabdomyolysis, and/or nausea/vomiting)",
@@ -773,5 +775,6 @@
   "contact name": "Contact Name",
   "describe your issue or question and any steps token": "Describe your issue or question and any troubleshooting steps token",
   "ATTACH": "ATTACH",
-  "DONE": "DONE"
+  "DONE": "DONE",
+  "optional": "Optional"
 }

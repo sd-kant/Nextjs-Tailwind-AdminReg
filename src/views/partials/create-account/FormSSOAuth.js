@@ -7,6 +7,7 @@ import { setLoadingAction } from '../../../redux/action/ui';
 import { connect } from 'react-redux';
 
 const pwMinLength = getParamFromUrl('minPasswordLength') ?? 10;
+const medicalQuestionnaire = getParamFromUrl('medicalQuestionnaire') ?? 1;
 
 const FormSSOAuth = ({ setLoading }) => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const FormSSOAuth = ({ setLoading }) => {
       // todo encodeURIComponent
       window.location.href = `${apiBaseUrl}/master/token?token=${tokenFromUrl}&deviceId=${deviceId}&source=${
         source ?? 'create-account'
-      }&minPasswordLength=${pwMinLength}`;
+      }&minPasswordLength=${pwMinLength}&medicalQuestionnaire=${medicalQuestionnaire}`;
       setLoading(true);
     }
 
