@@ -760,3 +760,5 @@ export const UpdateUserRoleFrom  = {
 }
 
 export const DASHBOARD_TEAMS_CHUNK_SIZE = 10;
+
+export const REGISTER_MEDICAL_QUESTIONNAIRE_KEY = 'kop-v2-register-medical-q';
