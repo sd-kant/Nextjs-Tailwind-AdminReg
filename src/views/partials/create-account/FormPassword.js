@@ -22,10 +22,8 @@ import { loginAction } from '../../../redux/action/auth';
 import { useNavigate } from 'react-router-dom';
 import PasswordInput from '../../components/PasswordInput';
 import { get } from 'lodash';
-import { REGISTER_MEDICAL_QUESTIONNAIRE_KEY } from 'constant';
 
 const pwMinLength = getParamFromUrl('minPasswordLength') ?? 10;
-const medicalQuestionnaire = getParamFromUrl('medicalQuestionnaire') ?? 1;
 const formSchema = (t) => {
   return Yup.object().shape({
     token: Yup.string(),
@@ -198,8 +196,6 @@ const EnhancedForm = withFormik({
     }
   },
   handleSubmit: async (values, { props }) => {
-    //const username = localStorage.getItem('kop-v2-register-username');
-    localStorage.setItem(REGISTER_MEDICAL_QUESTIONNAIRE_KEY, medicalQuestionnaire);
     const { setLoading, showSuccessNotification, login, t, showErrorNotification, navigate } =
       props;
     if (!values['token']) {

@@ -2,32 +2,39 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withTranslation, Trans } from 'react-i18next';
 import { get } from 'lodash';
+import { get as httpGetRequest } from 'http';
 import { bindActionCreators } from 'redux';
 import { showErrorNotificationAction } from '../../../redux/action/ui';
 import { useNavigate } from 'react-router-dom';
-import { REGISTER_MEDICAL_QUESTIONNAIRE_KEY } from 'constant';
 
 const FormInitial = (props) => {
-  const { t, medicalQuestions, showErrorNotification, setRestBarClass } = props;
+  const { t, medicalQuestions, showErrorNotification, setRestBarClass, profile, token } = props;
   const [understandTerms, setUnderstandTerms] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const navigate = useNavigate();
   const [isShowMedicalOption, setIsShowMedicalOptions] = useState(false);
+  const [medicalQuestionnaire, setMedicalQuestionnaire] = useState(null);
 
   useEffect(() => {
     setRestBarClass('progress-0 medical');
+    httpGetRequest(`/organization/${profile.orgId}`, token).then((res) => {
+      setMedicalQuestionnaire(res.data.settings.medicalQuestionnaire ?? 1);
+    }).catch(err => {
+      console.log(err);
+      showErrorNotification(err.message);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submit = (mq = -1) => {
-    let medicalQuestionnaire = 1;
+    let result = 1;
     if(mq >= 0){
-      medicalQuestionnaire = mq;
+      result = mq;
     }else{
-      medicalQuestionnaire = parseInt(localStorage.getItem(REGISTER_MEDICAL_QUESTIONNAIRE_KEY)??2);
+      result = medicalQuestionnaire;
     }
 
-    if(medicalQuestionnaire === 1){
+    if(result === 1){
       if (medicalQuestions && medicalQuestions.length > 0) {
         const temp = JSON.parse(JSON.stringify(medicalQuestions));
         const sortedMedicalQuestions = temp.sort((a, b) => {
@@ -38,12 +45,16 @@ const FormInitial = (props) => {
       } else {
         showErrorNotification(t('msg no medical questions'));
       }
-    }else if(medicalQuestionnaire === 0){
+    }else if(result === 0){
       navigate('/create-account/medical-complete');
     }else {
       setIsShowMedicalOptions(true);
     }
   };
+
+  if(medicalQuestionnaire === null){
+    return null;
+  }
 
   return (
     <div className="form-group mt-57">
@@ -176,7 +187,9 @@ const FormInitial = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  medicalQuestions: get(state, 'profile.medicalQuestions')
+  medicalQuestions: get(state, 'profile.medicalQuestions'),
+  profile: get(state, 'profile.profile'),
+  token: get(state, 'auth.registerToken'),
 });
 
 const mapDispatchToProps = (dispatch) =>
