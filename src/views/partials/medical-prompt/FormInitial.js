@@ -153,13 +153,13 @@ const FormInitial = (props) => {
             </div>
             <div className="mt-25 tw-flex tw-gap-4">
               <button
-                className={`button active cursor-pointer`}
+                className={`button button-a inactive cursor-pointer`}
                 type="button"
                 onClick={() => {submit(1);}}>
                 <span className="font-button-label text-white">{t('yes')}</span>
               </button>
               <button
-                className={`button inactive cursor-pointer`}
+                className={`button button-a inactive cursor-pointer`}
                 type="button"
                 onClick={()=>{submit(0);}}>
                 <span className="font-button-label text-white">{t('no')}</span>
