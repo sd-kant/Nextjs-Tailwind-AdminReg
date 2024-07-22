@@ -759,4 +759,4 @@ export const UpdateUserRoleFrom  = {
   AnalyticAccess: 2
 }
 
-export const DASHBOARD_TEAMS_CHUNK_SIZE = 10;
+export const DASHBOARD_TEAMS_CHUNK_SIZE = 1000;

@@ -1185,111 +1185,53 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     function newVer(source) {
       if (validPickedTeams?.length > 0) {
         setLoading(true);
-        // Member List API Promises
-        const membersApiPromise = () =>
-          new Promise((resolve) => {
-            queryMembersByTeamIds(validPickedTeams)
-              .then((result) => {
-                  if (result.status === HttpStatusCode.Ok) {
-                    if (result?.data?.length > 0) {
-                      // const operators =
-                      //   result?.data?.members?.filter(
-                      //     (it) => it.teamId?.toString() === validPickedTeams?.[index]?.toString()
-                      //   ) ?? [];
-                      //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
-                      const operators = [];
-                      result?.data?.forEach((it) => {
-                        operators.push(...it.members);
-                      });
-                      setValuesV2({
-                        ...valuesV2Ref.current,
-                        members: unionBy(valuesV2Ref.current?.members, operators, 'userId')
-                      });
-                      setLoading(false);
-                    }
-                  }
-                
-              })
-              .finally(() => resolve());
-        });
-        membersApiPromise().then(() => {
-          for(let i = 0; i < validPickedTeams.length; i += DASHBOARD_TEAMS_CHUNK_SIZE) {
-            const chunkTeamsCSV = validPickedTeams.slice(i, i + DASHBOARD_TEAMS_CHUNK_SIZE);
-            // Stat List API Promises
-            const statsApiPromise = () =>
-              new Promise((resolve) => {
-                getStatsByTeamIds(chunkTeamsCSV)
-                  .then((result) => {
-                      if (result.status === HttpStatusCode.Ok) {
-                        if (result?.data?.length > 0) {
-                          const operators = [];
-                          result?.data?.forEach((it) => {
-                            operators.push(...it.stats);
-                          });
-                          setValuesV2({
-                            ...valuesV2Ref.current,
-                            stats: _.unionBy(
-                              operators,
-                              valuesV2Ref.current?.stats, 
-                              (it) => it.userId + it.deviceId
-                            )
-                          });
-                        }
-                      }
-                  })
-                  .finally(() => {
-                    resolve();
-                  });
-            });
-  
-            // Alerts List API Promises
-            const alertsApiPromise = () =>
-              new Promise((resolve) => {
-                getAlertsByTeamIDs(chunkTeamsCSV, moment().startOf('day').toISOString())
-                  .then((result) => {
-                      if (result.status === HttpStatusCode.Ok) {
-                        if (result?.data?.length > 0) {
-                          const uniqueUpdated = _.chain(valuesV2Ref.current?.alerts)
-                            .concat(
-                              result?.data?.map((it) => {
-                                return { ...it, utcTs: it.ts };
-                              })
-                            )
-                            .uniqBy(function (_alert) {
-                              return _alert.utcTs + _alert.userId;
-                            })
-                            .filter(function (_alert) {
-                              return hasStatusValue(_alert.alertStageId, ALERT_STAGE_ID_LIST);
-                            })
-                            .value();
-  
-                          setValuesV2({
-                            ...valuesV2Ref.current,
-                            alerts: uniqueUpdated
-                          });
-                        }
-                      }
-                  })
-                  .finally(() => {
-                    resolve();
-                  });
-            });
-  
-            // Device List API Promies
-            const devicesApiPromise = () =>
+        for(let i = 0; i < validPickedTeams.length; i += DASHBOARD_TEAMS_CHUNK_SIZE) {
+          const chunkTeamsCSV = validPickedTeams.slice(i, i + DASHBOARD_TEAMS_CHUNK_SIZE);
+          // Member List API Promises
+          const membersApiPromise = () =>
             new Promise((resolve) => {
-              getDevicesByTeamIds(chunkTeamsCSV)
+              queryMembersByTeamIds(chunkTeamsCSV)
+                .then((result) => {
+                    if (result.status === HttpStatusCode.Ok) {
+                      if (result?.data?.length > 0) {
+                        // const operators =
+                        //   result?.data?.members?.filter(
+                        //     (it) => it.teamId?.toString() === validPickedTeams?.[index]?.toString()
+                        //   ) ?? [];
+                        //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                        const operators = [];
+                        result?.data?.forEach((it) => {
+                          operators.push(...it.members);
+                        });
+                        setValuesV2({
+                          ...valuesV2Ref.current,
+                          members: unionBy(valuesV2Ref.current?.members, operators, 'userId')
+                        });
+                        setLoading(false);
+                      }
+                    }
+                  
+                })
+                .finally(() => resolve());
+          });
+          // Stat List API Promises
+          const statsApiPromise = () =>
+            new Promise((resolve) => {
+              getStatsByTeamIds(chunkTeamsCSV)
                 .then((result) => {
                     if (result.status === HttpStatusCode.Ok) {
                       if (result?.data?.length > 0) {
                         const operators = [];
-                          result?.data?.forEach((it) => {
-                            operators.push(...it.devices);
-                          });
-                        //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                        result?.data?.forEach((it) => {
+                          operators.push(...it.stats);
+                        });
                         setValuesV2({
                           ...valuesV2Ref.current,
-                          devices: [...valuesV2Ref.current?.devices, ...operators]
+                          stats: _.unionBy(
+                            operators,
+                            valuesV2Ref.current?.stats, 
+                            (it) => it.userId + it.deviceId
+                          )
                         });
                       }
                     }
@@ -1297,27 +1239,82 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                 .finally(() => {
                   resolve();
                 });
-            });
-  
-            Promise.allSettled([
-              // membersApiPromise(),
-              statsApiPromise(),
-              alertsApiPromise(),
-              devicesApiPromise()
-            ])
-              .then(() => {
-                lazyLoadedTeamsCount += 1;
-              })
-              .catch((err) => {
-                console.error('initial loading error', err);
-                source.cancel('cancel by user');
+          });
+
+          // Alerts List API Promises
+          const alertsApiPromise = () =>
+            new Promise((resolve) => {
+              getAlertsByTeamIDs(chunkTeamsCSV, moment().startOf('day').toISOString())
+                .then((result) => {
+                    if (result.status === HttpStatusCode.Ok) {
+                      if (result?.data?.length > 0) {
+                        const uniqueUpdated = _.chain(valuesV2Ref.current?.alerts)
+                          .concat(
+                            result?.data?.map((it) => {
+                              return { ...it, utcTs: it.ts };
+                            })
+                          )
+                          .uniqBy(function (_alert) {
+                            return _alert.utcTs + _alert.userId;
+                          })
+                          .filter(function (_alert) {
+                            return hasStatusValue(_alert.alertStageId, ALERT_STAGE_ID_LIST);
+                          })
+                          .value();
+
+                        setValuesV2({
+                          ...valuesV2Ref.current,
+                          alerts: uniqueUpdated
+                        });
+                      }
+                    }
+                })
+                .finally(() => {
+                  resolve();
+                });
+          });
+
+          // Device List API Promies
+          const devicesApiPromise = () =>
+          new Promise((resolve) => {
+            getDevicesByTeamIds(chunkTeamsCSV)
+              .then((result) => {
+                  if (result.status === HttpStatusCode.Ok) {
+                    if (result?.data?.length > 0) {
+                      const operators = [];
+                        result?.data?.forEach((it) => {
+                          operators.push(...it.devices);
+                        });
+                      //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
+                      setValuesV2({
+                        ...valuesV2Ref.current,
+                        devices: [...valuesV2Ref.current?.devices, ...operators]
+                      });
+                    }
+                  }
               })
               .finally(() => {
-                setLoading(false);
+                resolve();
               });
-          }
-        })
+          });
 
+          Promise.allSettled([
+            membersApiPromise(),
+            statsApiPromise(),
+            alertsApiPromise(),
+            devicesApiPromise()
+          ])
+            .then(() => {
+              lazyLoadedTeamsCount += 1;
+            })
+            .catch((err) => {
+              console.error('initial loading error', err);
+              source.cancel('cancel by user');
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
       }
     }
     if (formattedTeams?.length > 0) {
