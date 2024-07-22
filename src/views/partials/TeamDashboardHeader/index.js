@@ -16,8 +16,10 @@ import SearchInput from '../../components/SearchInput';
 import Pagination from '../../components/Pagination';
 import refreshIcon from '../../../assets/images/refresh.svg';
 import MemberSearchResultModal from 'views/modals/MemberSearchResultModal';
+import { bindActionCreators } from 'redux';
+import { setLoadingAction } from 'redux/action/ui';
 
-const TeamDashboardHeader = ({ t, myOrganization }) => {
+const TeamDashboardHeader = ({ t, myOrganization, setLoading }) => {
   const {
     pickedTeams,
     setPickedTeams,
@@ -35,7 +37,7 @@ const TeamDashboardHeader = ({ t, myOrganization }) => {
     setSizePerPage,
     keyword,
     setKeyword,
-    setRefreshCount
+    setRefreshCount,
   } = useDashboardContext();
   // const { visible, setVisible } = useStickyComponentsContext();
   // eslint-disable-next-line no-unused-vars
@@ -206,7 +208,7 @@ const TeamDashboardHeader = ({ t, myOrganization }) => {
             <Button
               size="sm"
               title={t('refresh')}
-              onClick={() => setRefreshCount((prev) => prev + 1)}
+              onClick={() => {setLoading(true); setRefreshCount((prev) => prev + 1);}}
             />
           </div>
         )}
@@ -226,7 +228,7 @@ const TeamDashboardHeader = ({ t, myOrganization }) => {
                 src={refreshIcon}
                 className={clsx(style.RefreshIcon)}
                 alt="refresh"
-                onClick={() => setRefreshCount((prev) => prev + 1)}
+                onClick={() => {setLoading(true);setRefreshCount((prev) => prev + 1)}}
               />
             </div>
 
@@ -289,4 +291,12 @@ const mapStateToProps = (state) => ({
   myOrganization: get(state, 'profile.organization')
 });
 
-export default connect(mapStateToProps, null)(withTranslation()(TeamDashboardHeader));
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setLoading: setLoadingAction
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(TeamDashboardHeader));

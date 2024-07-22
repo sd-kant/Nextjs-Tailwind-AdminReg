@@ -1207,7 +1207,6 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                           ...valuesV2Ref.current,
                           members: unionBy(valuesV2Ref.current?.members, operators, 'userId')
                         });
-                        setLoading(false);
                       }
                     }
                   
