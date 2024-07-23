@@ -139,7 +139,7 @@ const TeamDashboardHeader = ({ t, myOrganization, setLoading }) => {
       <div className={clsx(style.Second, 'tw-gap-2')}>
         <div className={clsx(style.SearchInputWrapper)}>
           <div className="tw-flex tw-flex-col sm:tw-flex-row tw-gap-2 sm:tw-gap-4 tw-w-full">
-            <div className="tw-flex tw-justify-between tw-items-center tw-w-[100%] tw-gap-2">
+            <div className="tw-flex tw-justify-between tw-items-center tw-w-[100%] tw-gap-2 tw-min-w-56">
               <SearchInputV2
                 placeholder={t('search a user or device placeholder')}
                 keyword={keyword}
