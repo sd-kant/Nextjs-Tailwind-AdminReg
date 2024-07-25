@@ -10,7 +10,7 @@ const SearchInputV2 = ({ t, keyword, visibleClearIcon, onChange, onClear, placeh
     <div className={clsx(style.Wrapper)}>
       <img className={clsx(style.SearchIcon)} src={searchIcon} alt="search icon" />
       <input
-        className={clsx(style.Input)}
+        className={clsx(style.Input, 'font-heading-small')}
         placeholder={t(placeholder || 'search input placeholder')}
         value={keyword}
         onChange={onChange}
