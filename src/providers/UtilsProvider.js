@@ -20,21 +20,11 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
     deviceId,
     connected,
     stat,
+    alert,
     deviceType,
     lastSyncDataDateTime
   }) => {
     const calc = () => {
-      // if(numMinutesBetween(new Date(), new Date(lastSyncDataDateTime)) <= 10){
-      //   return {
-      //     label: t('device connected'),
-      //     value: DEVICE_CONNECTION_STATUS.CONNECTED
-      //   };
-      // }else{
-      //   return {
-      //     label: t('check device'),
-      //     value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
-      //   };
-      // }
       if (
         numMinutesBetween(new Date(), new Date(alert?.utcTs)) <= 60 ||
         numMinutesBetween(new Date(), new Date(stat?.heartRateTs)) <= 60
@@ -122,7 +112,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         numMinutesBetween(new Date(), new Date(stat?.lastConnectedTs)) <= 20
       ) {
         return {
-          label: t('check app'),
+          label: deviceType === 'hub' ? t('check device'):t('check app'),
           value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
         };
       } else if(
@@ -130,7 +120,7 @@ export const UtilsProviderDraft = ({ t, metric, children }) => {
         numMinutesBetween(new Date(), new Date(lastSyncDataDateTime)) <= 20){
         return {
           label: deviceType === 'hub' ? t('check device') : t('check app'),
-          value: DEVICE_CONNECTION_STATUS.CHECK_DEVICE
+          value: DEVICE_CONNECTION_STATUS.NO_CONNECTION
         };
       } else {
         return {

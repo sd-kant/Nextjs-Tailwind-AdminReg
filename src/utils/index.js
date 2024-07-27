@@ -207,49 +207,37 @@ export const celsiusToFahrenheit = (t) => {
   return Math.round(a * 10) / 10;
 };
 
-// export const getLatestDate = (d1, d2) => {
-//   if (!d1) return d2;
-//   if (!d2) return d1;
-//   if (d2?.getTime() <= d1?.getTime()) {
-//     return d1;
-//   }
+export const getLatestDate = (d1, d2) => {
+  if (!d1) return d2;
+  if (!d2) return d1;
+  if (d2?.getTime() <= d1?.getTime()) {
+    return d1;
+  }
 
-//   return d2;
-// };
+  return d2;
+};
 
-export function getLatestDateFromMultipleArrays(...arrays) {
-  // Flatten the array and filter out null or undefined values
-  const allDates = arrays.flat().filter(Boolean);
+export const getLatestDateBeforeNow = (d1, d2) => {
+  const now = new Date().getTime();
+  const gap1 = now - d1;
+  const gap2 = now - d2;
+  if (gap1 < 0 && gap2 < 0) {
+    return null;
+  }
+  if (gap1 < 0) {
+    return d2;
+  }
+  if (gap2 < 0) {
+    return d1;
+  }
+  if (!d1) return d2;
+  if (!d2) return d1;
+  if (d2?.getTime() <= d1?.getTime()) {
+    return d1;
+  }
 
-  // Convert all elements to Date objects and find the latest date
-  const latestDate = allDates
-    .map(date => new Date(date))
-    .reduce((latest, current) => current > latest ? current : latest, new Date(0));
-
-  return latestDate?new Date(latestDate?.getTime()): null;
-}
-
-// export const getLatestDateBeforeNow = (d1, d2) => {
-//   const now = new Date().getTime();
-//   const gap1 = now - d1;
-//   const gap2 = now - d2;
-//   if (gap1 < 0 && gap2 < 0) {
-//     return null;
-//   }
-//   if (gap1 < 0) {
-//     return d2;
-//   }
-//   if (gap2 < 0) {
-//     return d1;
-//   }
-//   if (!d1) return d2;
-//   if (!d2) return d1;
-//   if (d2?.getTime() <= d1?.getTime()) {
-//     return d1;
-//   }
-
-//   return d2;
-// };
+  return d2;
+};
 
 export const getUrlParamAsJson = () => {
   const cachedSearchUrl = localStorage.getItem('kop-params');
