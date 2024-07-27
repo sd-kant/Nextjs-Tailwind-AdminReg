@@ -196,7 +196,6 @@ const EnhancedForm = withFormik({
     }
   },
   handleSubmit: async (values, { props }) => {
-    //const username = localStorage.getItem('kop-v2-register-username');
     const { setLoading, showSuccessNotification, login, t, showErrorNotification, navigate } =
       props;
     if (!values['token']) {

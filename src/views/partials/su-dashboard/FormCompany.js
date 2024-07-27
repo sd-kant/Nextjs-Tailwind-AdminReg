@@ -22,7 +22,8 @@ import {
   passwordMinLengthOptions,
   twoFAOptions,
   USER_TYPE_ORG_ADMIN,
-  hideCbtHROptions
+  hideCbtHROptions,
+  medicalQuestionnaireOptions
 } from '../../../constant';
 import { queryAllOrganizationsAction } from '../../../redux/action/base';
 import { get, isEqual } from 'lodash';
@@ -104,6 +105,7 @@ const formSchema = (t) => {
       }),
     // regions: Yup.array().required(t('company region required')),
     twoFA: Yup.boolean(),
+    medicalQuestionnaire: Yup.number(),
     passwordMinimumLength: Yup.number(),
     passwordExpirationDays: Yup.number(),
     hideCbtHR: Yup.boolean(),
@@ -296,6 +298,7 @@ const FormCompany = (props) => {
         }
         const fields = [
           'twoFA',
+          'medicalQuestionnaire',
           'passwordMinimumLength',
           'passwordExpirationDays',
           'hideCbtHR',
@@ -319,6 +322,7 @@ const FormCompany = (props) => {
           label: organization.name,
           country: organization.country?.split('@') ?? [],
           twoFA: organization.settings?.twoFA ?? false,
+          medicalQuestionnaire: organization.settings?.medicalQuestionnaire ?? 1,
           passwordMinimumLength: organization.settings?.passwordMinimumLength ?? 10,
           passwordExpirationDays: organization.settings?.passwordExpirationDays ?? 0,
           hideCbtHR: organization.settings?.hideCbtHR ?? false,
@@ -414,6 +418,11 @@ const FormCompany = (props) => {
       if (values?.sso !== organization?.sso) {
         ret.push('sso');
       }
+
+      if (values?.medicalQuestionnaire !== organization?.medicalQuestionnaire) {
+        ret.push('medicalQuestionnaire');
+      }
+
       let fields;
       if (values?.sso) {
         fields = ['samlUrl', 'samlLogoutUrl', 'samlIssuer', 'idp'];
@@ -1002,6 +1011,19 @@ const FormCompany = (props) => {
                   />
                 </div>
               </div>
+              <div className="d-flex flex-column mt-25">
+                <label className="font-input-label">{t('medical questionnaire')}</label>
+
+                <div className="d-inline-block mt-10">
+                  <ButtonGroup
+                    options={medicalQuestionnaireOptions}
+                    disabled={!values.medicalQuestionnaire?.__isNew__ && !values['isEditing']}
+                    value={values['medicalQuestionnaire']}
+                    id={'medical-questionnaire-option'}
+                    setValue={(v) => changeHandler('medicalQuestionnaire', v)}
+                  />
+                </div>
+              </div>
             </React.Fragment>
           )}
         </div>
@@ -1052,6 +1074,7 @@ const EnhancedForm = withFormik({
     companyCountry: [],
     regions: [],
     twoFA: false,
+    medicalQuestionnaire: 1,
     passwordMinimumLength: 10,
     passwordExpirationDays: 0,
     hideCbtHR: false,
@@ -1086,6 +1109,7 @@ const EnhancedForm = withFormik({
         samlIssuer: values.samlIssuer,
         idp: values.idp,
         twoFA: values.twoFA,
+        medicalQuestionnaire: values.medicalQuestionnaire,
         passwordMinimumLength: values.passwordMinimumLength,
         passwordExpirationDays: values.passwordExpirationDays,
         expirationDaysEnable: values.passwordExpirationDays?.toString() !== '0',

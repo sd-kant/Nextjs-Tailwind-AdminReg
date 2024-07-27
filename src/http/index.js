@@ -266,12 +266,24 @@ export const queryTeamMembers = (teamId) => {
   return get(`team/${teamId}/members`);
 };
 
+export const queryMembersByTeamIds = (teamIds) => {
+  return get(`team/members/${teamIds}`);
+};
+
 export const getTeamStats = (teamId) => {
   return get(`team/${teamId}/stats`);
 };
 
+export const getStatsByTeamIds = (teamIds) => {
+  return get(`team/stats/${teamIds}`);
+};
+
 export const getTeamDevices = (teamId) => {
   return get(`team/${teamId}/devices`);
+};
+
+export const getDevicesByTeamIds = (teamIds) => {
+  return get(`team/devices/${teamIds}`);
 };
 
 export const getTeamAlerts = (teamId, since) => {
@@ -279,6 +291,12 @@ export const getTeamAlerts = (teamId, since) => {
     'If-None-Match': since
   });
 };
+
+export const getAlertsByTeamIDs = (teamIds, since) => {
+  return get(`team/alerts/${teamIds}`, null, {
+    'If-None-Match': since
+  });
+}
 
 export const searchMembers = (keyword) => {
   return get(`user/find/${keyword}`);

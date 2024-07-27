@@ -49,7 +49,7 @@ const SearchUserItem = ({ user, index, isAdmin, id, errorField, touchField, t })
   }
   const isSelectedUserAdmin = ['3', '4'].includes(selectedPermissionLevel?.value?.toString());
   const wearingDeviceDisabled =
-    selectedPermissionLevel?.value?.toString() === '2' || !isAdmin || !hasRightToEdit;
+    selectedPermissionLevel?.value?.toString() === '2' || !hasRightToEdit;
   const disabledToUpdateAnalyticRole = selectedPermissionLevel?.value?.toString() === '2' || !isAdmin || isSelectedUserAdmin;
   const newlyFormattedTeams = teams.map((it) => {
     let color;

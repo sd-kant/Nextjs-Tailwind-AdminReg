@@ -47,7 +47,7 @@ const MemberTable = ({ t, forceWidthUpdate, isLoading }) => {
 
   return (
     <>
-      {members?.length > 0 ? (
+      {members?.length > 0 && !isLoading ? (
         <table className={clsx(style.Table)}>
           <TableHeader
             columnsMap={columnsMap}

@@ -34,6 +34,10 @@
   background-color: $app-bg;
 }
 
+.button-a:active {
+  background-color: $app-orange;
+}
+
 .tap {
   display: flex;
   flex-direction: column;

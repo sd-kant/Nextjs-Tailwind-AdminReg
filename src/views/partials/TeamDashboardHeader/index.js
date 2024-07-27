@@ -6,18 +6,19 @@ import style from './Header.module.scss';
 import Button from '../../components/Button';
 import { customStyles } from '../../pages/team/dashboard/DashboardV2';
 import { withTranslation } from 'react-i18next';
-// import { useStickyComponentsContext } from '../../../providers/StickyComponentsProvider';
 import { useDashboardContext } from '../../../providers/DashboardProvider';
 import ResponsiveSelect from '../../components/ResponsiveSelect';
 import { useWidthContext } from '../../../providers/WidthProvider';
 import MultiSelectPopup from '../../components/MultiSelectPopup';
 import { get } from 'lodash';
-import SearchInput from '../../components/SearchInput';
 import Pagination from '../../components/Pagination';
 import refreshIcon from '../../../assets/images/refresh.svg';
 import MemberSearchResultModal from 'views/modals/MemberSearchResultModal';
+import { bindActionCreators } from 'redux';
+import { setLoadingAction } from 'redux/action/ui';
+import SearchInputV2 from 'views/components/SearchInputV2';
 
-const TeamDashboardHeader = ({ t, myOrganization }) => {
+const TeamDashboardHeader = ({ t, myOrganization, setLoading }) => {
   const {
     pickedTeams,
     setPickedTeams,
@@ -28,72 +29,24 @@ const TeamDashboardHeader = ({ t, myOrganization }) => {
     selectedOrganization,
     isAdmin,
     filteredMembers,
-    // formattedMembers,
     page,
     setPage,
     sizePerPage,
     setSizePerPage,
     keyword,
     setKeyword,
-    setRefreshCount
+    setRefreshCount,
   } = useDashboardContext();
-  // const { visible, setVisible } = useStickyComponentsContext();
-  // eslint-disable-next-line no-unused-vars
-  // const [visibleWorkRestButton, setVisibleWorkRestButton] = React.useState(false);
-  // const [visibleStatisticsButton, setVisibleStatisticsButton] = React.useState(false);
+
   const { tableWidth } = useWidthContext();
   const [orgLabel, setOrgLabel] = React.useState(null);
   const [isOpenGlobalSearchResult, setIsOpenGlobalSearchResult] = React.useState(false);
-  // React.useEffect(() => {
-  //   /*window.addEventListener('scroll', handleScroll);
-  //   return () => {
-  //     window.removeEventListener('scroll', handleScroll);
-  //   };*/
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
 
-  // }, []);
-  // React.useEffect(() => {
-  //   setVisible({
-  //     workRestBar: false,
-  //     statistics: visibleStatisticsButton
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [visibleStatisticsButton]);
   React.useEffect(() => {
     if (!isAdmin && myOrganization?.name) {
       setOrgLabel(myOrganization?.name);
     }
   }, [isAdmin, myOrganization?.name]);
-
-  // eslint-disable-next-line no-unused-vars
-  // const handleScroll = () => {
-  //   let scrollTop = window.pageYOffset;
-  //   let valueForStatisticsVisible = 180;
-  //   let valueForWorkRestVisible = 280;
-  //   if (window.innerWidth < 1024) {
-  //     valueForStatisticsVisible = 380;
-  //     // eslint-disable-next-line no-unused-vars
-  //     valueForWorkRestVisible = 700;
-  //   }
-  //   if (scrollTop > valueForStatisticsVisible) {
-  //     setVisibleStatisticsButton(true);
-  //   } else {
-  //     setVisibleStatisticsButton(false);
-  //     setVisible({
-  //       ...visible,
-  //       statistics: false
-  //     });
-  //   }
-  //   // if (scrollTop > valueForWorkRestVisible) {
-  //   //   setVisibleWorkRestButton(true);
-  //   // } else {
-  //   //   setVisibleWorkRestButton(false);
-  //   //   setVisible({
-  //   //     ...visible,
-  //   //     workRestBar: false,
-  //   //   });
-  //   // }
-  // };
 
   const label = React.useMemo(() => {
     if (pickedTeams?.length > 0) {
@@ -169,44 +122,15 @@ const TeamDashboardHeader = ({ t, myOrganization }) => {
           ) : null}
         </div>
 
-        <div className={clsx(style.Additional)}>
-          {/* {visibleWorkRestButton && (
-            <Button
-              bgColor={visible.workRestBar ? 'orange' : 'gray'}
-              color="white"
-              size="sm"
-              title={t('work rest bar')}
-              onClick={() =>
-                setVisible({
-                  workRestBar: !visible.workRestBar,
-                  statistics: !visible.workRestBar ? false : visible.statistics
-                })
-              }
-            />
-          )} */}
-          {/*{
-          visibleStatisticsButton && (
-            <>
-              <div className={clsx(style.Separator)}/>
-              <Button
-                bgColor={visible.statistics ? 'orange' : 'gray'}
-                size="sm"
-                title={t('team statistics')}
-                onClick={() => setVisible({
-                  workRestBar: !visible.statistics ? false : visible.workRestBar,
-                  statistics: !visible.statistics,
-                })}
-              />
-            </>
-          )
-        }*/}
-        </div>
+        {/* <div className={clsx(style.Additional)}>
+          
+        </div> */}
         {pickedTeams?.length > 0 && (
           <div className={clsx(style.ModifyButton)}>
             <Button
               size="sm"
               title={t('refresh')}
-              onClick={() => setRefreshCount((prev) => prev + 1)}
+              onClick={() => {setLoading(true); setRefreshCount((prev) => prev + 1);}}
             />
           </div>
         )}
@@ -215,8 +139,9 @@ const TeamDashboardHeader = ({ t, myOrganization }) => {
       <div className={clsx(style.Second, 'tw-gap-2')}>
         <div className={clsx(style.SearchInputWrapper)}>
           <div className="tw-flex tw-flex-col sm:tw-flex-row tw-gap-2 sm:tw-gap-4 tw-w-full">
-            <div className="tw-flex tw-justify-between tw-items-center">
-              <SearchInput
+            <div className="tw-flex tw-justify-between tw-items-center tw-w-[100%] tw-gap-2 tw-min-w-56">
+              <SearchInputV2
+                placeholder={t('search a user or device placeholder')}
                 keyword={keyword}
                 visibleClearIcon={keyword !== ''}
                 onChange={(e) => setKeyword(e.target?.value)}
@@ -226,7 +151,7 @@ const TeamDashboardHeader = ({ t, myOrganization }) => {
                 src={refreshIcon}
                 className={clsx(style.RefreshIcon)}
                 alt="refresh"
-                onClick={() => setRefreshCount((prev) => prev + 1)}
+                onClick={() => {setLoading(true);setRefreshCount((prev) => prev + 1)}}
               />
             </div>
 
@@ -289,4 +214,12 @@ const mapStateToProps = (state) => ({
   myOrganization: get(state, 'profile.organization')
 });
 
-export default connect(mapStateToProps, null)(withTranslation()(TeamDashboardHeader));
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      setLoading: setLoadingAction
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(TeamDashboardHeader));
