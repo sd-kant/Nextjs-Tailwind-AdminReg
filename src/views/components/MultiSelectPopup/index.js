@@ -9,7 +9,7 @@ import { isEqual } from 'lodash';
 import closeIcon from '../../../assets/images/close.svg';
 import SearchInput from '../SearchInput';
 
-const MultiSelectPopup = ({ label, options, value, onChange }) => {
+const MultiSelectPopup = ({ label, options, value, onChange, disableSelectAll = false }) => {
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [checkedItems, setCheckedItems] = React.useState(value);
@@ -86,7 +86,7 @@ const MultiSelectPopup = ({ label, options, value, onChange }) => {
               />
             </div>
 
-            {options?.length > 0 && !keyword && (
+            {!disableSelectAll && options?.length > 0 && !keyword && (
               <div>
                 <Checkbox
                   label={t('select all')}
