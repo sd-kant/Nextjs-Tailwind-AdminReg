@@ -113,7 +113,7 @@ const TeamDashboardHeader = ({ t, myOrganization, setLoading }) => {
           )}
           {formattedTeams?.length > 0 ? (
             <MultiSelectPopup
-              disableSelectAll={totalUsersCount > 100}
+              disableSelectAll={totalUsersCount > 300}
               label={label}
               options={formattedTeams}
               value={selectedTeams}
