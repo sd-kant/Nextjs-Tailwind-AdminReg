@@ -36,7 +36,6 @@ const TeamDashboardHeader = ({ t, myOrganization, setLoading }) => {
     keyword,
     setKeyword,
     setRefreshCount,
-    totalUsersCount,
   } = useDashboardContext();
 
   const { tableWidth } = useWidthContext();
@@ -113,7 +112,6 @@ const TeamDashboardHeader = ({ t, myOrganization, setLoading }) => {
           )}
           {formattedTeams?.length > 0 ? (
             <MultiSelectPopup
-              disableSelectAll={totalUsersCount > 300}
               label={label}
               options={formattedTeams}
               value={selectedTeams}

@@ -587,7 +587,6 @@
   "msg email belongs": "The user associated with {{email}} exists.",
   "msg phone belongs": "The user associated with {{phone}} exists.",
   "error.identity.missing": "An email address or a phone number must be provided to identify the user",
-  "error.phone.notMobile": "The phone number you provided is not capable of receiving SMS messages. Please provide a mobile number",
   "select metric": "Select Metric",
   "all users": "All Users",
   "select user": "Select User",

@@ -540,7 +540,7 @@ const MemberDetail = ({
             <div>
               <div>
                 <Button
-                  disabled={!user?.dateOfBirth}
+                  disabled={!user?.heatSusceptibility}
                   onClick={() => {
                     window.open(
                       `/connect/member/${orgId.current}/device/${teamId.current}/${memberId.current}?tab=new&name=${userFullName}`,

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
   getAlertsByTeamIDs,
-  getAllUsersByOrgId,
   getDevicesByTeamIds,
   getStatsByTeamIds,
   // getTeamAlerts,
@@ -77,7 +76,6 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   const [keyword, setKeyword] = React.useState(keywordInUrl ?? '');
   const trimmedKeyword = React.useMemo(() => keyword?.trim(), [keyword]);
   const [count, setCount] = React.useState(0);
-  const [totalUsersCount, setTotalUsersCount] = React.useState(0);
 
   const [valuesV2, _setValuesV2] = React.useState({
     members: [],
@@ -262,24 +260,8 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     }
   }, [myOrganization?.id, isAdmin]);
 
-  const fetchAllUsers = React.useCallback(() => {
-    getAllUsersByOrgId(Math.abs(organization))
-    .then((result) => {
-        if (result.status === HttpStatusCode.Ok) {
-          if (result?.data?.length > 0) {
-            setTotalUsersCount(result?.data?.length || 0);
-            setValuesV2({
-              ...valuesV2Ref.current,
-              members: result?.data
-            });
-          }
-        }
-    }).catch((err) => console.error(err));
-  }, [organization]);
-
   // Update organization query param whenever changing organization
   React.useEffect(() => {
-    fetchAllUsers();
     function startDemoData() {
       numMinutesDemoData.current = 0;
       const intervalId = setInterval(generateDemoData, 60 * 1000);
@@ -303,7 +285,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     return () => {
       stopDemoData();
     };
-  }, [organization, fetchAllUsers]);
+  }, [organization]);
 
   const hideCbtHR = React.useMemo(() => {
     const item = organizations?.find((it) => it.id == Math.abs(organization));
@@ -323,9 +305,6 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
   }, [filter]);
 
   const formattedTeams = React.useMemo(() => {
-    if(totalUsersCount <= 0){
-      return [];
-    }
     const ret = [];
     teams?.forEach((team) => {
       if (isAdmin) {
@@ -353,7 +332,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     });
 
     return ret;
-  }, [organization, teams, isAdmin, baseUri, totalUsersCount]);
+  }, [organization, teams, isAdmin, baseUri]);
 
   const selectedTeams = React.useMemo(() => {
     return formattedTeams?.filter((it) =>
@@ -1051,6 +1030,11 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
                 .then((result) => {
                     if (result.status === HttpStatusCode.Ok) {
                       if (result?.data?.length > 0) {
+                        // const operators =
+                        //   result?.data?.members?.filter(
+                        //     (it) => it.teamId?.toString() === validPickedTeams?.[index]?.toString()
+                        //   ) ?? [];
+                        //const prev = JSON.parse(JSON.stringify(valuesV2Ref.current));
                         const operators = [];
                         result?.data?.forEach((it) => {
                           operators.push(...it.members);
@@ -1177,8 +1161,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       } else {
         setPage(1);
         setValuesV2({
-          ...valuesV2Ref.current,
-          //members: [],
+          members: [],
           alerts: [],
           stats: [],
           devices: []
@@ -1209,8 +1192,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
       }
     } else {
       setValuesV2({
-        ...valuesV2Ref.current,
-        // members: [],
+        members: [],
         alerts: [],
         stats: [],
         devices: []
@@ -1254,8 +1236,7 @@ const DashboardProviderDraft = ({ children, setLoading, userType, t, myOrganizat
     unlockMember,
     hideCbtHR,
     columnStats,
-    demoEventData,
-    totalUsersCount
+    demoEventData
   };
 
   return <DashboardContext.Provider value={providerValue}>{children}</DashboardContext.Provider>;
