@@ -1062,8 +1062,7 @@ const MembersProvider = ({
           title: `${it.firstName} ${it.lastName}`,
           subtitle: it.email ?? it.phoneNumber,
           teamId: it.teamId,
-          heatSusceptibility: it.heatSusceptibility,
-          dateOfBirth: it.dateOfBirth
+          heatSusceptibility: it.heatSusceptibility
         })) ?? []
     );
   }, [searchedUsers, users, admins]);
