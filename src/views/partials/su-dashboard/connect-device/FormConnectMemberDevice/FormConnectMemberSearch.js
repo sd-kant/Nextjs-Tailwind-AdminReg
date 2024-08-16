@@ -28,7 +28,7 @@ const FormConnectMemberSearch = ({ t }) => {
   const handleItemClick = (id) => {
     const item = searchedOperators?.find((it) => it.value === id);
     if (item) {
-      if (item?.heatSusceptibility) {
+      if (item?.dateOfBirth) {
         navigate(
           `/connect/member/${organizationId}/device/${item.teamId}/${id}?name=${encodeURIComponent(
             item.title

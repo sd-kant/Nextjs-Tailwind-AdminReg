@@ -238,6 +238,10 @@ export const getCompanyById = (id) => {
   return get(`/organization/${id}`);
 };
 
+export const getAllUsersByOrgId = (id) => {
+  return get(`/organization/${id}/user`);
+};
+
 export const updateCompany = (id, body) => {
   return patch(`/organization/${id}`, body);
 };
