@@ -260,6 +260,10 @@ export const _handleSubmitV2 = ({
               error?.message === 'Validation of userDto failed'
             ) {
               showErrorNotification(t('error.identity.missing'));
+            } else if(error?.status == 400 && error?.error == 'error.phone.notMobile'){
+              showErrorNotification(t('error.phone.notMobile'));
+            }else {
+              console.error('unknown', error);
             }
           }
         });
