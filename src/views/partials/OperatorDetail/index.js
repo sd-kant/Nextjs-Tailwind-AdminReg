@@ -220,8 +220,8 @@ const OperatorDetail = ({ t, profile, metric }) => {
                     </div>
                     <div title={invisibleHeatRisk ? null : alertObj?.label}>
                       <div className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
-                        <span className={clsx('font-input-label')} title={connectionObj?.label}>
-                          {connectionObj?.label}
+                        <span className={clsx('font-input-label')} title={t(connectionObj?.label)}>
+                          {t(connectionObj?.label)}
                         </span>
                       </div>
                       <div className="tw-flex tw-items-center tw-mt-2">
@@ -242,19 +242,6 @@ const OperatorDetail = ({ t, profile, metric }) => {
                       <span className={clsx('font-input-label')}>{numberOfAlerts ?? 0}</span>
                     </div>
                   </div>
-
-                  {/* <div className="tw-mt-2">
-                    <div>
-                      <span className="tw-text-app-ns font-helper-text tw-uppercase">
-                        {t('connection status')}
-                      </span>
-                    </div>
-                    <div className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
-                      <span className={clsx('font-input-label')} title={connectionObj?.label}>
-                        {connectionObj?.label}
-                      </span>
-                    </div>
-                  </div> */}
                 </div>
               </div>
             </Card>
