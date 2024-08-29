@@ -20,10 +20,10 @@ const formSchema = (t, pwMinLength) => {
   return Yup.object().shape({
     password: Yup.string()
       .required(t('your password required'))
-      // .min(pwMinLength, t('n password min error', { n: pwMinLength }))
+      .min(pwMinLength, t('n password min error', { n: pwMinLength }))
       .max(1024, t('password max error'))
       .test('is-valid', t('password invalid'), function (value) {
-        return checkPasswordValidation(value, 5);
+        return checkPasswordValidation(value, pwMinLength);
       }),
     newPassword: Yup.string()
       .required(t('your password required'))
