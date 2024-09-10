@@ -1,4 +1,4 @@
-import { minutesToDaysHoursMinutes, numMinutesBetween, numMinutesBetweenWithNow } from './index';
+import { getParamFromUrl, minutesToDaysHoursMinutes, numMinutesBetween, numMinutesBetweenWithNow } from './index';
 import { HEAT_SUSCEPTIBILITY_PRIORITIES, INVALID_VALUES2, PRIORITIES } from '../constant';
 import * as _ from 'lodash';
 
@@ -209,3 +209,13 @@ export const sortMembers = ({ arrOrigin, filter }) => {
 
   return arr;
 };
+
+export const getUrlParams = () => {
+  return {
+    sortBy: getParamFromUrl('sortBy'),
+    sortDirection: getParamFromUrl('sortDirection'),
+    keywordInUrl: getParamFromUrl('keyword'),
+    organizationInUrl: getParamFromUrl('organization'),
+    teamsInUrl: getParamFromUrl('teams')
+  }
+}

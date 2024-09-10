@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { get } from 'lodash';
 
-const PasswordExpired = ({ organization }) => {
+const PasswordExpired = ({ myOrganization }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ const PasswordExpired = ({ organization }) => {
       </div>
 
       <FormPasswordExpired
-        pwMinLength={organization?.settings?.passwordMinimumLength ?? 10}
+        pwMinLength={myOrganization?.settings?.passwordMinimumLength ?? 9}
         navigate={navigate}
       />
     </div>

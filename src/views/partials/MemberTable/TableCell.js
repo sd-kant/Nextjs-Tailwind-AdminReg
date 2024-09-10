@@ -70,7 +70,7 @@ const TableCell = ({ value, member, metric, hideCbtHR }) => {
             {!invisibleDeviceMac && formatDevice4Digits(stat?.deviceId) ? (
               <span>{formatDevice4Digits(stat?.deviceId)}</span>
             ) : null}
-            <span>{connectionObj?.label}</span>
+            <span>{t(connectionObj?.label)}</span>
             {!invisibleBattery ? (
               stat?.batteryPercent >= 20 ? (
                 <BatteryV3 percent={stat?.batteryPercent} charging={stat?.chargingFlag} />

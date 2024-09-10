@@ -300,8 +300,8 @@ const MemberDetail = ({
                   </div>
                   <div title={invisibleHeatRisk ? null : alertObj?.label}>
                     <div className="tw-text-ellipsis tw-whitespace-nowrap tw-overflow-hidden">
-                      <span className={clsx('font-input-label')} title={connectionObj?.label}>
-                        {connectionObj?.label}
+                      <span className={clsx('font-input-label')} title={t(connectionObj?.label)}>
+                        {t(connectionObj?.label)}
                       </span>
                     </div>
                     <div className="tw-flex tw-items-center tw-mt-2">
